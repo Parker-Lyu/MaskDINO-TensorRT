@@ -1,5 +1,6 @@
 """Prepare native input manifests and use the existing COCO evaluation and alignment rules."""
 import argparse
+import ctypes as ct
 from hashlib import file_digest
 import json
 from pathlib import Path
@@ -12,6 +13,7 @@ from PIL import Image
 from detectron2.data import MetadataCatalog
 from detectron2.evaluation import COCOPanopticEvaluator
 from stage2.run import postprocess_batch, prepare_batch
+from stage4.check_restore import Geometry
 from stage3.alignment import LIMITS, panoptic_metrics
 from stage3.trt_backend import Engine
 
@@ -57,6 +59,17 @@ def align(output, engine, images):
     model.backbone.cpu()
     model.sem_seg_head.cpu()
     torch.cuda.empty_cache()
+    class Segment(ct.Structure):
+        _fields_ = [(name, ct.c_int) for name in ("id", "category_id", "isthing")]
+
+    class Segments(ct.Structure):
+        _fields_ = [("count", ct.c_int), ("items", Segment * 300)]
+
+    panoptic = ct.CDLL(str(output / "restore-check.so")).stage4_panoptic
+    panoptic.argtypes = [ct.c_void_p] * 3 + [Geometry] + [ct.c_void_p] * 3
+    things = torch.zeros(133, dtype=torch.int32, device="cuda")
+    things[list(model.metadata.thing_dataset_id_to_contiguous_id.values())] = 1
+    torch.cuda.synchronize()
     observations = []
     limits = LIMITS["fp32"]
     with torch.cuda.stream(torch.cuda.Stream()):
@@ -65,15 +78,30 @@ def align(output, engine, images):
             inputs, geometry = prepare_batch(model, [image_path(image).read_bytes()], SIZE)
             raw = network(inputs)
             reference = postprocess_batch(model, [image], geometry, raw, SIZE, time.perf_counter(), False)[0][0]
+            _, valid, original = geometry[0]
+            result_map = np.empty(original, dtype=np.int32)
+            segments = Segments()
+            status = panoptic(raw["pred_logits"].data_ptr(), raw["pred_masks"].data_ptr(), things.data_ptr(),
+                              Geometry(*original, *valid), torch.cuda.current_stream().cuda_stream,
+                              result_map.ctypes.data, ct.byref(segments))
+            assert status == 0
+            metadata = [dict(id=s.id, category_id=s.category_id, isthing=bool(s.isthing))
+                        for s in segments.items[:segments.count]]
+            isolated = {"panoptic_seg": (torch.from_numpy(result_map), metadata)}
+            isolated_metrics, _ = panoptic_metrics(reference, isolated)
             actual = native_prediction(output, image)
             metrics, diff = panoptic_metrics(reference, actual)
             iou = min((match["iou"] for match in metrics["same_category_matches"]), default=1)
             passed = (metrics["category_agreement"] >= limits["category_agreement"]
                       and not any(metrics["unmatched_segments"]) and iou >= limits["segment_iou"])
-            observations.append(dict(image_id=image["id"], passed=passed, panoptic=metrics))
+            observations.append(dict(image_id=image["id"], passed=passed, panoptic=metrics,
+                                     same_tensor_panoptic=isolated_metrics))
+            print(image["id"], metrics["category_agreement"], isolated_metrics["category_agreement"], flush=True)
             if not passed:
                 Image.fromarray(diff.astype(np.uint8) * 255).save(output / f"anomaly-{image['id']}.png")
-                torch.save({"reference": reference, "native": actual}, output / f"anomaly-{image['id']}.pt")
+                torch.save({"reference": reference, "native": actual, "isolated": isolated,
+                            "raw": {key: tensor.cpu() for key, tensor in raw.items()},
+                            "geometry": [*original, *valid]}, output / f"anomaly-{image['id']}.pt")
     return {"per_image": observations, "passed": all(row["passed"] for row in observations)}
 
 
