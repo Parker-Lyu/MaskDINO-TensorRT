@@ -57,19 +57,26 @@
 
 ## Stage 3 · TensorRT 单请求后端
 
-固定 1024×1024、batch=1、单 slot，两种后端共用 Stage 2 的预处理和 panoptic 后处理。PyTorch FP32 与 TensorRT 均关闭 TF32。每种配置评估 5,000 个唯一预测 ID，性能使用同一 500 张清单，每轮预热 20 次，表中为三轮中位数。
+本阶段在固定 **1024×1024、batch=1、单 slot** 下，将 MaskDINO 网络替换为 TensorRT FP32，以 PyTorch FP32 为对照量化准确率和性能变化。两组均关闭 TF32，共用 Stage 2 的预处理和 panoptic 后处理。
+
+1. 固定 RTX 4090 环境、权重与 COCO 清单，导出 opset 17 的 FP32 ONNX，验证 NVIDIA MSDA v2 插件并构建 engine。
+2. 使用相同的输入 tensor 完成 32 张数值与分割对齐，再分别运行 5,000 张全量 COCO panoptic 验收，检查预测 ID 的唯一性和完整性。
+3. 使用同一份 500 张清单，每轮预热 20 次、测三轮。另用 32 张图采集 Nsight Systems trace。下表性能为三轮中位数。
 
 | 网络后端 | PQ / PQ_th / PQ_st | 网络 GPU P50 / P95（ms） | 端到端 P50 / P95（ms） | 吞吐（图/s） | 整卡采样峰值（GiB） |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | PyTorch FP32 | 53.1863 / 59.0273 / 44.3696 | 37.58 / 37.75 | 48.68 / 51.87 | 20.44 | 5.79 |
 | TensorRT FP32 | 53.1863 / 59.0273 / 44.3696 | 20.65 / 21.79 | 31.91 / 35.18 | 31.18 | 5.59 |
-| TensorRT，最终 mask 投影 FP16 | 53.1882 / 59.0305 / 44.3697 | 20.82 / 21.56 | 31.92 / 35.16 | 31.10 | 5.59 |
 
-TensorRT FP32 使网络 P95 降低 **42.3%**、端到端 P95 降低 **32.2%**、吞吐提高 **52.5%**。最终混合版通过逐图和全量准确率验收，端到端 P95 中位数比 TensorRT FP32 低 0.024 ms，落在两组三轮的波动范围内。
+TensorRT FP32 使网络 P95 降低 **42.3%**、端到端 P95 降低 **32.2%**、吞吐提高 **52.5%**。
 
 ![Stage 1–3 的 COCO PQ，以及 Stage 3 的同口径 1024 B1 性能](stage3/results/comparison.svg)
 
-[Stage 3 复现步骤、原始结果与 Nsight 分析](stage3/README.md) · 验收 tag `stage3-tensorrt-b1`
+混合精度在较大范围使用 FP16 时测试数值误差较大，暂不纳入后续优化，待进一步定位原因。 [问题记录](stage3/mixed-precision.md)
+
+![Nsight Systems 采集的同图 FP32 时间线](stage3/results/nsight-fp32-timeline.svg)
+
+[Stage 3 复现步骤、原始结果与 Nsight 分析](stage3/README.md) · 验收 tag `stage3-fp32-accepted`
 
 ## 仓库结构
 
@@ -78,7 +85,7 @@ TensorRT FP32 使网络 P95 降低 **42.3%**、端到端 P95 降低 **32.2%**、
 | [maskdino/](maskdino/) | 固定上游源码版本、PyTorch 环境和 CUDA 扩展兼容补丁 |
 | [stage1/](stage1/) | 官方评估入口、复现命令和结果 |
 | [stage2/](stage2/) | 方形 PyTorch 推理、全量 PQ 和性能样本 |
-| [stage3/](stage3/) | 单 slot TensorRT 网络、FP32 与混合精度验收、Nsight 基线 |
+| [stage3/](stage3/) | 单 slot TensorRT FP32 验收与 Nsight 基线 |
 | [docs/](docs/) | 环境、数据及权重说明 |
 
 构建镜像时会检出指定版本的官方 MaskDINO 源码。

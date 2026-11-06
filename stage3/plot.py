@@ -6,8 +6,7 @@ from pathlib import Path
 
 
 def plot(results):
-    modes = [("PyTorch FP32", "pytorch", "pt-pq"), ("TensorRT FP32", "fp32", "fp32-pq-rerun"),
-             ("TensorRT mixed", "mixed", "mixed-pq")]
+    modes = [("PyTorch FP32", "pytorch", "pt-pq"), ("TensorRT FP32", "fp32", "fp32-pq-rerun")]
     data = json.loads((results / "summary.json").read_text())
     accuracy = [(name, json.loads((results / run / "result.json").read_text())["scores"]["PQ"])
                 for name, _, run in modes if (results / run / "result.json").exists()]
@@ -34,7 +33,7 @@ def plot(results):
 
     label(30, 39, "MaskDINO R50 panoptic · RTX 4090", 24, 700)
     label(30, 62, "Stage 3 performance · 1024×1024 · batch 1 · single slot · median of 3 rounds", 13)
-    palette = {"PyTorch FP32": "#457caa", "TensorRT FP32": "#168477", "TensorRT mixed": "#7a59aa"}
+    palette = {"PyTorch FP32": "#457caa", "TensorRT FP32": "#168477"}
     for index, (title, unit, rows) in enumerate(panels):
         x, y = 24 + 512 * (index % 2), 80 + 215 * (index // 2)
         svg.append(f'<rect x="{x}" y="{y}" width="500" height="202" rx="10" fill="white"/>')
