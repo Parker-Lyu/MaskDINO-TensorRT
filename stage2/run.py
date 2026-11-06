@@ -1,5 +1,6 @@
 """Evaluate and benchmark fixed-square MaskDINO panoptic inference."""
 import argparse
+from contextlib import nullcontext
 from io import BytesIO
 import json
 from pathlib import Path
@@ -32,11 +33,12 @@ def resize_pad(rgb, size):
     return canvas, valid
 
 
-def prepare(jpeg, size):
-    with Image.open(BytesIO(jpeg)) as image:
+def prepare(jpeg, size, region=nullcontext):
+    with region("decode"), Image.open(BytesIO(jpeg)) as image:
         rgb = np.asarray(ImageOps.exif_transpose(image).convert("RGB"))
-    canvas, valid = resize_pad(rgb, size)
-    return torch.from_numpy(canvas).permute(2, 0, 1), valid, rgb.shape[:2]
+    with region("preprocess"):
+        canvas, valid = resize_pad(rgb, size)
+        return torch.from_numpy(canvas).permute(2, 0, 1), valid, rgb.shape[:2]
 
 
 def geometry_check(size):
@@ -51,17 +53,23 @@ def geometry_check(size):
         torch.testing.assert_close(restored, torch.full_like(restored, 2))
 
 
-def run_batch(model, records, jpegs, size, timing=False, capture=False):
-    start = time.perf_counter()
-    inputs = [prepare(jpeg, size) for jpeg in jpegs]
-    images = torch.stack([image for image, _, _ in inputs]).to(model.device)
-    images = (images - model.pixel_mean) / model.pixel_std
-    if timing:
-        begin, end = (torch.cuda.Event(enable_timing=True) for _ in range(2))
-        begin.record()
+def prepare_batch(model, jpegs, size, region=nullcontext):
+    inputs = [prepare(jpeg, size, region) for jpeg in jpegs]
+    with region("preprocess"):
+        batch = torch.stack([image for image, _, _ in inputs])
+    with region("H2D"):
+        images = batch.to(model.device)
+    with region("preprocess_gpu"):
+        images = (images - model.pixel_mean) / model.pixel_std
+    return images, inputs
+
+
+def pytorch_network(model, images):
     outputs, _ = model.sem_seg_head(model.backbone(images))
-    if timing:
-        end.record()
+    return outputs
+
+
+def postprocess_batch(model, records, inputs, outputs, size, start, capture, region=nullcontext):
     logits, masks = outputs["pred_logits"], outputs["pred_masks"]
     raw = []
     predictions = []
@@ -71,12 +79,28 @@ def run_batch(model, records, jpegs, size, timing=False, capture=False):
             raise ValueError(f"Decoded size {original} disagrees with COCO image {record['id']}")
         if capture:
             raw.append((cls.cpu(), mask.cpu()))
-        square = F.interpolate(mask[None], (size, size), mode="bilinear", align_corners=False)[0]
-        restored = sem_seg_postprocess(square, valid, *original)
-        panoptic_map, segments = model.panoptic_inference(cls, restored)
-        predictions.append({"panoptic_seg": (panoptic_map.cpu(), segments)})
+        with region("postprocess"):
+            square = F.interpolate(mask[None], (size, size), mode="bilinear", align_corners=False)[0]
+            restored = sem_seg_postprocess(square, valid, *original)
+            panoptic_map, segments = model.panoptic_inference(cls, restored)
+        with region("D2H"):
+            predictions.append({"panoptic_seg": (panoptic_map.cpu(), segments)})
         elapsed.append((time.perf_counter() - start) * 1000)
         del square, restored, panoptic_map
+    return predictions, raw, elapsed
+
+
+def run_batch(model, records, jpegs, size, timing=False, capture=False, network=None, region=nullcontext):
+    start = time.perf_counter()
+    images, inputs = prepare_batch(model, jpegs, size, region)
+    if timing:
+        begin, end = (torch.cuda.Event(enable_timing=True) for _ in range(2))
+        begin.record()
+    with region("network"):
+        outputs = pytorch_network(model, images) if network is None else network(images)
+    if timing:
+        end.record()
+    predictions, raw, elapsed = postprocess_batch(model, records, inputs, outputs, size, start, capture, region)
     network_ms = begin.elapsed_time(end) if timing else None
     return predictions, raw, elapsed, network_ms
 
@@ -94,6 +118,39 @@ def describe_difference(reference, current):
     result["segments_equal"] = ref_segments == segments
     result["changed_pixel_fraction"] = (ref_map != pan_map).float().mean().item()
     return result
+
+
+def load_model(checkpoint):
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
+    torch.backends.cudnn.benchmark = False
+    cfg = get_cfg()
+    add_deeplab_config(cfg)
+    add_maskdino_config(cfg)
+    cfg.merge_from_file(
+        "configs/coco/panoptic-segmentation/maskdino_R50_bs16_50ep_3s_dowsample1_2048.yaml"
+    )
+    cfg.MODEL.MaskDINO.TEST.INSTANCE_ON = False
+    cfg.MODEL.MaskDINO.TEST.SEMANTIC_ON = False
+    cfg.MODEL.WEIGHTS = checkpoint
+    model = build_model(cfg).eval()
+    DetectionCheckpointer(model).load(cfg.MODEL.WEIGHTS)
+    return model, cfg
+
+
+def make_evaluator(model, cfg, annotation, dataset, output):
+    meta = MetadataCatalog.get(cfg.DATASETS.TEST[0])
+    assert meta.thing_dataset_id_to_contiguous_id == model.metadata.thing_dataset_id_to_contiguous_id
+    evaluation_meta = MetadataCatalog.get("stage2_coco_panoptic_val")
+    evaluation_meta.set(
+        thing_dataset_id_to_contiguous_id=meta.thing_dataset_id_to_contiguous_id,
+        stuff_dataset_id_to_contiguous_id=meta.stuff_dataset_id_to_contiguous_id,
+        panoptic_json=str(annotation),
+        panoptic_root=str(dataset / "panoptic_val2017"),
+    )
+    evaluator = COCOPanopticEvaluator(evaluation_meta.name, str(output))
+    evaluator.reset()
+    return evaluator
 
 
 def main():
@@ -122,33 +179,10 @@ def main():
     }[args.mode]
     assert len(ids) == len(set(ids)) and set(ids) <= expected
     geometry_check(args.size)
-    torch.backends.cuda.matmul.allow_tf32 = False
-    torch.backends.cudnn.allow_tf32 = False
-    torch.backends.cudnn.benchmark = False
-    cfg = get_cfg()
-    add_deeplab_config(cfg)
-    add_maskdino_config(cfg)
-    cfg.merge_from_file(
-        "configs/coco/panoptic-segmentation/maskdino_R50_bs16_50ep_3s_dowsample1_2048.yaml"
-    )
-    cfg.MODEL.MaskDINO.TEST.INSTANCE_ON = False
-    cfg.MODEL.MaskDINO.TEST.SEMANTIC_ON = False
-    cfg.MODEL.WEIGHTS = args.checkpoint
-    model = build_model(cfg).eval()
-    DetectionCheckpointer(model).load(cfg.MODEL.WEIGHTS)
+    model, cfg = load_model(args.checkpoint)
     evaluator = None
     if args.mode == "evaluate":
-        meta = MetadataCatalog.get(cfg.DATASETS.TEST[0])
-        assert meta.thing_dataset_id_to_contiguous_id == model.metadata.thing_dataset_id_to_contiguous_id
-        evaluation_meta = MetadataCatalog.get("stage2_coco_panoptic_val")
-        evaluation_meta.set(
-            thing_dataset_id_to_contiguous_id=meta.thing_dataset_id_to_contiguous_id,
-            stuff_dataset_id_to_contiguous_id=meta.stuff_dataset_id_to_contiguous_id,
-            panoptic_json=str(annotation),
-            panoptic_root=str(args.dataset / "panoptic_val2017"),
-        )
-        evaluator = COCOPanopticEvaluator(evaluation_meta.name, str(args.output))
-        evaluator.reset()
+        evaluator = make_evaluator(model, cfg, annotation, args.dataset, args.output)
 
     def read(image_id):
         return (args.dataset / "val2017" / records[image_id]["file_name"]).read_bytes()
