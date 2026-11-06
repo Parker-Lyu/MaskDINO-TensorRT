@@ -51,6 +51,72 @@ def native_prediction(output, image):
     return {"panoptic_seg": (torch.from_numpy(ids), segments)}
 
 
+class Segment(ct.Structure):
+    _fields_ = [(name, ct.c_int) for name in ("id", "category_id", "isthing")]
+
+
+class Segments(ct.Structure):
+    _fields_ = [("count", ct.c_int), ("items", Segment * 300)]
+
+
+class NativePanoptic:
+    def __init__(self, library, model):
+        self.run = ct.CDLL(str(library)).stage4_panoptic
+        self.run.argtypes = [ct.c_void_p] * 3 + [Geometry] + [ct.c_void_p] * 3
+        self.things = torch.zeros(133, dtype=torch.int32, device="cuda")
+        self.things[list(model.metadata.thing_dataset_id_to_contiguous_id.values())] = 1
+        torch.cuda.synchronize()
+
+    def __call__(self, logits, masks, geometry):
+        result_map = np.empty((geometry.height, geometry.width), dtype=np.int32)
+        segments = Segments()
+        status = self.run(logits.data_ptr(), masks.data_ptr(), self.things.data_ptr(), geometry,
+                          torch.cuda.current_stream().cuda_stream, result_map.ctypes.data, ct.byref(segments))
+        assert status == 0
+        metadata = [dict(id=s.id, category_id=s.category_id, isthing=bool(s.isthing))
+                    for s in segments.items[:segments.count]]
+        return {"panoptic_seg": (torch.from_numpy(result_map), metadata)}
+
+
+def check_boundaries(model, native):
+    geometry = Geometry(1, 5, 205, 1024)
+    checked = {}
+
+    def verify(name, logits, masks, expected_ids, expected_categories):
+        reference = postprocess_batch(
+            model, [dict(id=name, height=1, width=5)], [(None, (205, 1024), (1, 5))],
+            {"pred_logits": logits, "pred_masks": masks}, SIZE, time.perf_counter(), False,
+        )[0][0]["panoptic_seg"]
+        result = native(logits, masks, geometry)["panoptic_seg"]
+        assert result[0].tolist() == reference[0].tolist() == [expected_ids], name
+        assert result[1] == reference[1], name
+        assert [segment["category_id"] for segment in result[1]] == expected_categories, name
+        checked[name] = dict(map=expected_ids, metadata=result[1])
+
+    logits = torch.full((1, 300, 133), -100.0, device="cuda")
+    masks = torch.zeros((1, 300, 256, 256), device="cuda")
+    verify("no_candidates", logits, masks, [0] * 5, [])
+    logits[0, 0, 132] = -1.0986123085021973  # FP32 logit(0.25)
+    assert logits[0, 0, 132].sigmoid().item() == 0.25
+    verify("score_equal_to_threshold", logits, masks, [0] * 5, [])
+    logits[0, 0, 132] = -1.09861
+    verify("mask_equal_to_threshold_and_class_132", logits, masks, [1] * 5, [132])
+
+    logits[0, 0, 132] = logits[0, 1, 0] = 0.0
+    verify("winner_tie_uses_first_query", logits, masks, [1] * 5, [132])
+    masks[0, 1].fill_(-20.0)
+    masks[0, 1, :, :51] = 20.0
+    verify("overlap_equal_to_threshold", logits, masks, [2, 1, 1, 1, 1], [132, 0])
+    masks[0, 1, :, :102] = 20.0
+    verify("overlap_below_threshold", logits, masks, [1, 1, 0, 0, 0], [0])
+
+    logits[0, 1, 0] = -100.0
+    logits[0, 1, 132] = 0.0
+    masks[0, 0].copy_(-masks[0, 1])
+    verify("merge_same_stuff_category", logits, masks, [1] * 5, [132])
+    return checked
+
+
 @torch.inference_mode()
 def align(output, engine, images):
     from stage2.run import load_model
@@ -59,17 +125,8 @@ def align(output, engine, images):
     model.backbone.cpu()
     model.sem_seg_head.cpu()
     torch.cuda.empty_cache()
-    class Segment(ct.Structure):
-        _fields_ = [(name, ct.c_int) for name in ("id", "category_id", "isthing")]
-
-    class Segments(ct.Structure):
-        _fields_ = [("count", ct.c_int), ("items", Segment * 300)]
-
-    panoptic = ct.CDLL(str(output / "restore-check.so")).stage4_panoptic
-    panoptic.argtypes = [ct.c_void_p] * 3 + [Geometry] + [ct.c_void_p] * 3
-    things = torch.zeros(133, dtype=torch.int32, device="cuda")
-    things[list(model.metadata.thing_dataset_id_to_contiguous_id.values())] = 1
-    torch.cuda.synchronize()
+    panoptic = NativePanoptic(output / "restore-check.so", model)
+    boundary_checks = check_boundaries(model, panoptic)
     observations = []
     limits = LIMITS["fp32"]
     with torch.cuda.stream(torch.cuda.Stream()):
@@ -79,15 +136,7 @@ def align(output, engine, images):
             raw = network(inputs)
             reference = postprocess_batch(model, [image], geometry, raw, SIZE, time.perf_counter(), False)[0][0]
             _, valid, original = geometry[0]
-            result_map = np.empty(original, dtype=np.int32)
-            segments = Segments()
-            status = panoptic(raw["pred_logits"].data_ptr(), raw["pred_masks"].data_ptr(), things.data_ptr(),
-                              Geometry(*original, *valid), torch.cuda.current_stream().cuda_stream,
-                              result_map.ctypes.data, ct.byref(segments))
-            assert status == 0
-            metadata = [dict(id=s.id, category_id=s.category_id, isthing=bool(s.isthing))
-                        for s in segments.items[:segments.count]]
-            isolated = {"panoptic_seg": (torch.from_numpy(result_map), metadata)}
+            isolated = panoptic(raw["pred_logits"], raw["pred_masks"], Geometry(*original, *valid))
             isolated_metrics, _ = panoptic_metrics(reference, isolated)
             actual = native_prediction(output, image)
             metrics, diff = panoptic_metrics(reference, actual)
@@ -105,7 +154,8 @@ def align(output, engine, images):
                 torch.save({"reference": reference, "native": actual, "isolated": isolated,
                             "raw": {key: tensor.cpu() for key, tensor in raw.items()},
                             "geometry": [*original, *valid]}, output / f"anomaly-{image['id']}.pt")
-    return {"per_image": observations, "passed": all(row["passed"] for row in observations)}
+    return {"per_image": observations, "boundary_checks": boundary_checks,
+            "passed": all(row["passed"] for row in observations)}
 
 
 def evaluate(output, annotation, images):
