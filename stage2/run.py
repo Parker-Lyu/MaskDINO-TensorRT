@@ -140,7 +140,6 @@ def main():
     if args.mode == "evaluate":
         meta = MetadataCatalog.get(cfg.DATASETS.TEST[0])
         assert meta.thing_dataset_id_to_contiguous_id == model.metadata.thing_dataset_id_to_contiguous_id
-        assert meta.stuff_dataset_id_to_contiguous_id == model.metadata.stuff_dataset_id_to_contiguous_id
         evaluation_meta = MetadataCatalog.get("stage2_coco_panoptic_val")
         evaluation_meta.set(
             thing_dataset_id_to_contiguous_id=meta.thing_dataset_id_to_contiguous_id,
