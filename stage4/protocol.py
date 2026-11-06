@@ -102,8 +102,14 @@ def check_boundaries(model, native):
     logits[0, 0, 132] = -1.09861
     verify("mask_equal_to_threshold_and_class_132", logits, masks, [1] * 5, [132])
 
-    logits[0, 0, 132] = logits[0, 1, 0] = 0.0
-    verify("winner_tie_uses_first_query", logits, masks, [1] * 5, [132])
+    logits[0, 0, 132] = logits[0, 1, 132] = 0.0
+    masks[0, 0, :, 204:] = -20.0
+    masks[0, 1, :, :153] = -20.0
+    verify("winner_tie_uses_first_query", logits, masks, [1, 1, 1, 1, 0], [132])
+
+    logits[0, 1, 132] = -100.0
+    logits[0, 1, 0] = 0.0
+    masks[0, 0].zero_()
     masks[0, 1].fill_(-20.0)
     masks[0, 1, :, :51] = 20.0
     verify("overlap_equal_to_threshold", logits, masks, [2, 1, 1, 1, 1], [132, 0])
