@@ -170,7 +170,8 @@ def evaluate(output, annotation, images):
     evaluator = COCOPanopticEvaluator(name, str(output))
     evaluator.reset()
     for image in images:
-        evaluator.process([image], [native_prediction(output, image)])
+        evaluator.process([{"image_id": image["id"], "file_name": image["file_name"]}],
+                          [native_prediction(output, image)])
     scores = evaluator.evaluate()["panoptic_seg"]
     covered = [p["image_id"] for p in json.loads((output / "predictions.json").read_text())["annotations"]]
     assert len(covered) == 5000 and set(covered) == {image["id"] for image in images}
