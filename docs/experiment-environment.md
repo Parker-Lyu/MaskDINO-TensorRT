@@ -1,5 +1,16 @@
 # Experiment environment
 
+## RTX 4090 experiment host
+
+| Component | Recorded configuration |
+| --- | --- |
+| GPU | NVIDIA GeForce RTX 4090, 24,564 MiB reported by `nvidia-smi` |
+| CPU | Intel Core i9-14900KF, 24 cores and 32 logical CPUs |
+| System memory | About 62 GiB visible to Ubuntu |
+| Code and dataset storage | Samsung MZVL22T0HBLB-00B00 NVMe SSD, 1.9 TiB device, ext4 |
+| OS and kernel | Ubuntu 24.04.4 LTS, Linux `7.0.0-42-generic` |
+| Docker Engine | `29.1.3` |
+
 ## COCO 2017 panoptic validation assets
 
 Download the [COCO val2017 images](https://images.cocodataset.org/zips/val2017.zip) and [COCO panoptic annotations](https://s3.amazonaws.com/images.cocodataset.org/annotations/panoptic_annotations_trainval2017.zip). Arrange the validation files relative to your dataset root as follows.
