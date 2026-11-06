@@ -1,6 +1,6 @@
 # MaskDINO-TensorRT
 
-本项目面向 RTX 4090 台式机上的 MaskDINO R50 全景分割部署，目标是用 TensorRT 优化推理，并在统一口径下评估准确率、延迟、吞吐和显存。Stage 1 先用官方 PyTorch 流程在 COCO 2017 验证集上建立准确率基线。
+本项目面向 RTX 4090 台式机上的 MaskDINO R50 全景分割部署，目标是用 TensorRT 优化推理，并在统一口径下评估准确率、延迟、吞吐和显存。
 
 实验平台为 NVIDIA GeForce RTX 4090（24 GB 显存）、Intel Core i9-14900KF（24 核、32 线程）和 Ubuntu 24.04 LTS。系统可见内存约 62 GiB，代码和数据位于 NVMe SSD。[完整环境](docs/experiment-environment.md)
 
