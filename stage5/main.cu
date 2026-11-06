@@ -19,6 +19,7 @@ struct Sample {
     size_t dispatch_depth = 0, arrival_depth = 0, group = 0;
     int slot = -1, batch = 0;
     float network_ms = 0;
+    double batch_wait_ms = 0;
     bool rejected = false;
 };
 
@@ -85,6 +86,7 @@ class Scheduler {
     std::mutex mutex_;
     std::condition_variable changed_;
     std::deque<size_t> queue_;
+    Clock::time_point batch_wait_started_{};
     size_t next_ = 0, group_ = 0;
     bool closed_ = false;
     std::exception_ptr error_;
@@ -142,6 +144,7 @@ private:
                 if (error_ || queue_.empty()) return 0;
                 const auto deadline = samples[queue_.front()].arrival + delay_;
                 if (closed_ || queue_.size() >= size_t(batch_) || Clock::now() >= deadline) break;
+                if (batch_wait_started_ == Clock::time_point{}) batch_wait_started_ = Clock::now();
                 changed_.wait_until(lock, deadline);
             }
         } else if (error_ || next_ == samples.size()) {
@@ -161,11 +164,14 @@ private:
             }
             auto& sample = samples[ids[i]];
             sample.dispatched = start;
+            if (batch_wait_started_ != Clock::time_point{})
+                sample.batch_wait_ms = Milliseconds(start - std::max(sample.queued, batch_wait_started_)).count();
             sample.dispatch_depth = depth;
             sample.slot = slot_id;
             sample.batch = count;
             sample.group = group;
         }
+        batch_wait_started_ = {};
         return count;
     }
 
@@ -196,11 +202,12 @@ private:
 void run(int argc, char** argv) {
     if (argc != 12)
         throw std::runtime_error("Usage: maskdino-slots ENGINE FALLBACK|- THINGS MANIFEST OUTPUT "
-                                 "BATCH SLOTS benchmark|predict|trace|online REPEATS|ARRIVALS DELAY_MS QUEUE_CAPACITY");
+                                 "BATCH SLOTS benchmark|predict|trace|online|online-predict REPEATS|ARRIVALS DELAY_MS QUEUE_CAPACITY");
     const int batch = integer(argv[6]), slots = integer(argv[7]);
     if (batch > 8 || slots > 16) throw std::runtime_error("Batch or slot count exceeds supported range");
     const std::string mode = argv[8];
-    const bool online = mode == "online", predict = mode == "predict", trace = mode == "trace";
+    const bool online = mode == "online" || mode == "online-predict";
+    const bool predict = mode == "predict" || mode == "online-predict", trace = mode == "trace";
     if (!(online || predict || trace || mode == "benchmark")) throw std::runtime_error("Unknown mode");
     const size_t capacity = integer(argv[11]);
     size_t consumed;
@@ -215,7 +222,7 @@ void run(int argc, char** argv) {
     if (predict) {
         std::set<int> ids;
         for (const auto& image : images) ids.insert(image.id);
-        if (repeats != 1 || ids.size() != images.size()) throw std::runtime_error("Prediction IDs must be unique");
+        if (count != images.size() || ids.size() != images.size()) throw std::runtime_error("Prediction IDs must be unique");
     }
     const fs::path output = argv[5];
     fs::create_directories(output);
@@ -230,7 +237,7 @@ void run(int argc, char** argv) {
 
     std::vector<JpegView> warmup(batch);
     for (int i = 0; i < batch; ++i) warmup[i] = jpeg_view(images[i % images.size()]);
-    if (!predict) {
+    if (!predict || online) {
         for (auto& worker : workers) {
             for (int i = 0; i < 20; ++i) {
                 worker->full.run_batch(warmup.data(), false);
@@ -274,16 +281,16 @@ void run(int argc, char** argv) {
     const double seconds = std::chrono::duration<double>(last - start).count();
     std::ofstream metrics(output / "requests.tsv");
     metrics << std::setprecision(12) << "request\timage\tarrival_ms\tqueued_ms\tdispatch_ms\tready_ms"
-            "\tarrival_depth\tdispatch_depth\tslot\tbatch\tgroup\tnetwork_ms\tstatus\n";
+            "\tarrival_depth\tdispatch_depth\tslot\tbatch\tgroup\tnetwork_ms\tbatch_wait_ms\tstatus\n";
     auto relative = [&](auto timestamp) { return Milliseconds(timestamp - start).count(); };
     for (size_t i = 0; i < count; ++i) {
         const auto& s = scheduler.samples[i];
         metrics << i << '\t' << images[i % images.size()].id << '\t' << relative(s.arrival) << '\t'
                 << relative(s.queued) << '\t';
-        if (s.rejected) metrics << "\t\t" << s.arrival_depth << "\t\t\t\t\t\trejected\n";
+        if (s.rejected) metrics << "\t\t" << s.arrival_depth << "\t\t\t\t\t\t\trejected\n";
         else metrics << relative(s.dispatched) << '\t' << relative(s.ready) << '\t'
                      << s.arrival_depth << '\t' << s.dispatch_depth << '\t' << s.slot << '\t'
-                     << s.batch << '\t' << s.group << '\t' << s.network_ms << "\tok\n";
+                     << s.batch << '\t' << s.group << '\t' << s.network_ms << '\t' << s.batch_wait_ms << "\tok\n";
     }
     metrics.close();
     std::ofstream summary(output / "run.tsv");
