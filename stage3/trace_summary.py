@@ -14,6 +14,7 @@ TRACE_LABELS = {
 }
 STAGE_BY_LABEL = {label: stage for stage, label in TRACE_LABELS.items()}
 STAGE_BY_LABEL.update({
+    "TensorRT inference": "network",
     "CPU / submit CUDA postprocess": "postprocess",
     "CPU / submit D2H copies": "D2H",
     "CPU / wait for preprocess": "preprocess_wait",

@@ -75,6 +75,10 @@ mkdir "$output"
                 nsys export --type=sqlite --output="$output/trace.sqlite" "$output/trace.nsys-rep"
                 nsys stats --report nvtx_sum,cuda_gpu_kern_sum,cuda_api_sum,cuda_gpu_mem_time_sum \
                     "$output/trace.sqlite" > "$output/nsys-stats.txt"
+                if [[ "$backend" == native ]]; then
+                    nsys stats --report nvtx_gpu_proj_sum,nvtx_gpu_proj_trace \
+                        "$output/trace.sqlite" > "$output/nsys-gpu-projection.txt"
+                fi
                 python -m stage3.trace_summary "$output/trace.sqlite" > "$output/trace-summary.json"
                 (cd "$output"; sha256sum trace.nsys-rep > trace.sha256)
             fi

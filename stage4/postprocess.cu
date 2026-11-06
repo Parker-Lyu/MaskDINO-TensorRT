@@ -131,7 +131,7 @@ void Postprocess::run(const float* logits, const float* masks, const int* things
 
 void Postprocess::download(Geometry geometry, cudaStream_t stream, bool stage_waits) {
     {
-        Range range("CPU / submit D2H copies");
+        Range range("D2H");
         check(cudaMemcpyAsync(host_map_.get(), map_.get(), size_t(geometry.height) * geometry.width * sizeof(int),
                               cudaMemcpyDeviceToHost, stream));
         check(cudaMemcpyAsync(host_segments_.get(), segments_.get(), sizeof(Segments), cudaMemcpyDeviceToHost, stream));

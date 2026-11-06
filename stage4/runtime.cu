@@ -58,7 +58,7 @@ void Pipeline::run(const unsigned char* jpeg, size_t length, int height, int wid
     postprocess_.reserve(size_t(height) * width);
     if (timing) check(cudaEventRecord(begin_.value, stream));
     {
-        Range range("CPU / network call (GPU may continue after return)");
+        Range range("TensorRT inference");
         if (!context_->enqueueV3(stream)) throw std::runtime_error("TensorRT enqueue failed");
     }
     if (timing) check(cudaEventRecord(end_.value, stream));
@@ -67,7 +67,7 @@ void Pipeline::run(const unsigned char* jpeg, size_t length, int height, int wid
         check(cudaStreamSynchronize(stream));
     }
     {
-        Range range("CPU / submit CUDA postprocess");
+        Range range("postprocess");
         postprocess_.run(logits_.get(), masks_.get(), things_.get(), geometry, stream);
     }
     if (stage_waits) {
