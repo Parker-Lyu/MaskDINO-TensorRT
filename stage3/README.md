@@ -141,3 +141,21 @@ python3 stage3/plot.py stage3/results
 bash stage3/run.sh "$data" trace-pytorch-nvtx trace --backend pytorch
 bash stage3/run.sh "$data" trace-fp32-nvtx trace --backend fp32 --engine "$runs/build-fp32/network.engine"
 ```
+
+### GPU 分阶段原始报告
+
+从 `d88ff9c` 在 RTX 4090 重采 Stage 3 的 Python 前后处理 + TensorRT FP32 链路。固定原 engine、1024×1024、B1、单 slot、同一份 32 张清单和 20 次预热。NVTX 标签为 `TensorRT inference`、`postprocess` 和 `D2H`，与 Stage 4 最新原始报告使用同样的阶段名。Nsight 的 GPU 投影跨度包含同阶段 GPU 操作之间的空隙。
+
+| 阶段 | GPU 投影跨度中位数（ms/图） |
+| --- | ---: |
+| TensorRT inference | 19.879 |
+| postprocess | 4.737 |
+| D2H | 0.051 |
+
+[新版 Nsight 原始报告](results/trace-fp32-gpu-projection/trace.nsys-rep) · [Nsight GPU Projection 统计](results/trace-fp32-gpu-projection/nsys-gpu-projection.txt)
+
+使用 Stage 4 的对照入口可复现同一条 Stage 3 链路与统计。设置 `data`、`engine` 和 `MASKDINO_CHECKPOINT` 后运行：
+
+```bash
+bash stage4/run.sh "$data" "$engine" trace-stage3-gpu-projection reference trace
+```

@@ -1,0 +1,83 @@
+{
+  "requests": 32,
+  "synchronization_apis": {
+    "output_wait/cudaStreamSynchronize_v3020": {
+      "count": 32,
+      "host_ms": 636.1397539999998
+    }
+  },
+  "ranges": {
+    "decode": {
+      "count": 32,
+      "median_host_ms": 1.138374,
+      "total_host_ms": 34.586909,
+      "overlapping_gpu_activity_ms": 0.0,
+      "gpu_idle_fraction": 1.0,
+      "gpu_ms_attributed_to_cuda_api_calls": 0.0
+    },
+    "preprocess": {
+      "count": 32,
+      "median_host_ms": 0.011601,
+      "total_host_ms": 0.573313,
+      "overlapping_gpu_activity_ms": 0.0,
+      "gpu_idle_fraction": 1.0,
+      "gpu_ms_attributed_to_cuda_api_calls": 0.0
+    },
+    "H2D": {
+      "count": 32,
+      "median_host_ms": 0.0053965,
+      "total_host_ms": 0.200266,
+      "overlapping_gpu_activity_ms": 0.04861,
+      "gpu_idle_fraction": 0.757272827139904,
+      "gpu_ms_attributed_to_cuda_api_calls": 1.237021
+    },
+    "preprocess_gpu": {
+      "count": 32,
+      "median_host_ms": 0.00529,
+      "total_host_ms": 0.205461,
+      "overlapping_gpu_activity_ms": 0.186781,
+      "gpu_idle_fraction": 0.09091749772462901,
+      "gpu_ms_attributed_to_cuda_api_calls": 0.549735
+    },
+    "network": {
+      "count": 32,
+      "median_host_ms": 0.9869855,
+      "total_host_ms": 32.576664,
+      "overlapping_gpu_activity_ms": 32.128611,
+      "gpu_idle_fraction": 0.01375380241512759,
+      "gpu_ms_attributed_to_cuda_api_calls": 650.804055
+    },
+    "postprocess": {
+      "count": 32,
+      "median_host_ms": 0.0094695,
+      "total_host_ms": 0.316102,
+      "overlapping_gpu_activity_ms": 0.312522,
+      "gpu_idle_fraction": 0.011325458238163631,
+      "gpu_ms_attributed_to_cuda_api_calls": 3.607614
+    },
+    "D2H": {
+      "count": 32,
+      "median_host_ms": 0.003934,
+      "total_host_ms": 0.139471,
+      "overlapping_gpu_activity_ms": 0.136656,
+      "gpu_idle_fraction": 0.020183407303310367,
+      "gpu_ms_attributed_to_cuda_api_calls": 1.370332
+    },
+    "output_wait": {
+      "count": 32,
+      "median_host_ms": 19.461326,
+      "total_host_ms": 636.149483,
+      "overlapping_gpu_activity_ms": 624.611459,
+      "gpu_idle_fraction": 0.018137284252103997,
+      "gpu_ms_attributed_to_cuda_api_calls": 0.0
+    },
+    "request": {
+      "count": 32,
+      "median_host_ms": 22.3569635,
+      "total_host_ms": 705.378038,
+      "overlapping_gpu_activity_ms": 657.568757,
+      "gpu_idle_fraction": 0.0677782386527889,
+      "gpu_ms_attributed_to_cuda_api_calls": 0.0
+    }
+  }
+}

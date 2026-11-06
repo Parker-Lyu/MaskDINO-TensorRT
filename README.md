@@ -76,7 +76,27 @@ TensorRT FP32 使网络 P95 降低 **42.3%**、端到端 P95 降低 **32.2%**、
 
 ![Nsight Systems 采集的同图 FP32 时间线](stage3/results/nsight-fp32-timeline.svg)
 
+Nsight Systems 原始报告 · [TensorRT FP32（GPU 分阶段）](stage3/results/trace-fp32-gpu-projection/trace.nsys-rep) · [PyTorch FP32](stage3/results/trace-pytorch-nvtx/trace.nsys-rep)
+
 [Stage 3 复现步骤、原始结果与 Nsight 分析](stage3/README.md) · 验收 tag `stage3-fp32-accepted`
+
+## Stage 4 · C++/CUDA 单请求流水线
+
+复用 Stage 3 的 **1024×1024、FP32、batch 1、单 slot** TensorRT engine。C++ 从内存 JPEG 开始，CUDA 完成 resize、padding、归一化、mask 恢复和 panoptic 合并，最后一次 stream 同步交付 CPU map 和 segment metadata。原生推理进程独立运行，Python 用于评估与实验驱动。
+
+| 路径 | 网络 GPU P50 / P95（ms） | 端到端 P50 / P95（ms） | 吞吐（图/s） | 进程显存采样峰值（GiB） |
+| --- | ---: | ---: | ---: | ---: |
+| PyTorch FP32 | 37.57 / 37.81 | 48.70 / 51.86 | 20.43 | 5.19 |
+| Python + TensorRT FP32 | 20.63 / 21.76 | 31.89 / 35.16 | 31.21 | 4.98 |
+| C++/CUDA + 同一 TensorRT engine | 21.56 / 21.81 | 22.92 / 23.63 | 43.65 | 1.24 |
+
+在 RTX 4090 上按同一顺序各跑 500 张、三轮。相对 Python/TensorRT，原生链路的端到端 P95 降低 **32.8%**，吞吐增加 **39.8%**，同口径 NVML 进程显存采样峰值降低 **75.1%**。32 张对齐的类别图、segment IoU 和 metadata 均与 Stage 3 一致。完整 COCO val2017 覆盖 5,000 张，PQ / PQ_th / PQ_st 为 **53.186256 / 59.027261 / 44.369645**，三项与 Stage 3 的差异均小于 0.000001 点。
+
+![Stage 1–4 COCO PQ 与 1024 B1 性能对照](stage4/results/comparison.svg)
+
+Nsight Systems 原始报告 · [C++/CUDA + TensorRT FP32（GPU 分阶段）](stage4/results/trace-native-gpu-projection/trace.nsys-rep)
+
+[Stage 4 复现、逐轮数据与 Nsight 报告](stage4/README.md) · 验收 tag `stage4-native-fp32-accepted`
 
 ## 仓库结构
 
@@ -86,6 +106,7 @@ TensorRT FP32 使网络 P95 降低 **42.3%**、端到端 P95 降低 **32.2%**、
 | [stage1/](stage1/) | 官方评估入口、复现命令和结果 |
 | [stage2/](stage2/) | 方形 PyTorch 推理、全量 PQ 和性能样本 |
 | [stage3/](stage3/) | 单 slot TensorRT FP32 验收与 Nsight 基线 |
+| [stage4/](stage4/) | 原生 TensorRT/CUDA 单请求流水线与全量评估 |
 | [docs/](docs/) | 环境、数据及权重说明 |
 
 构建镜像时会检出指定版本的官方 MaskDINO 源码。

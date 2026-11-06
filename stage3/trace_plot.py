@@ -13,9 +13,10 @@ COLORS = {
     "postprocess": "#2f9f80", "D2H": "#a47732", "unattributed": "#8894a0",
 }
 SYNC = "#b83d50"
+WAIT = "#a6aab8"
 
 
-def capture(path, request):
+def capture(path, request, split_legacy_output=False):
     with sqlite3.connect(path) as db:
         ranges = db.execute("""
             SELECT coalesce(e.text, s.value), e.start, e.end
@@ -52,6 +53,17 @@ def capture(path, request):
                     gpu[correlation.get(event_id, "unattributed")].append((max(start, left), min(end, right)))
 
     assert host and gpu
+    if split_legacy_output:
+        output = [(left, right) for name, left, right in host if name == "D2H"]
+        assert len(output) == 1 and not any(name == "output_wait" for name, _, _ in host)
+        left, right = output[0]
+        output_api = [(name, a, b) for name, a, b, _ in api if left <= a < b <= right]
+        copies = union((a, b) for name, a, b in output_api if name.startswith("cudaMemcpyAsync"))
+        waits = union((a, b) for name, a, b in output_api if name.startswith("cudaStreamSynchronize"))
+        assert copies and len(waits) == 1
+        host = [(name, a, b) for name, a, b in host if name != "D2H"]
+        host.extend(("D2H", a, b) for a, b in copies)
+        host.extend(("output_wait", a, b) for a, b in waits)
     sync = union((left, min(end, right)) for name, left, right, _ in api if "Synchronize" in name)
     return request, start, end, host, sync, {name: union(intervals) for name, intervals in gpu.items()}
 
@@ -60,9 +72,12 @@ def duration_ms(intervals):
     return sum(right - left for left, right in intervals) / 1e6
 
 
-def plot(pytorch, tensorrt, output):
+def plot(pytorch, tensorrt, output, labels=("PyTorch FP32", "TensorRT FP32"), split_legacy_output=False):
     request, *pt = capture(pytorch, None)
-    _, *trt = capture(tensorrt, request)
+    _, *trt = capture(tensorrt, request, split_legacy_output)
+    split_output = any(name.endswith("_wait") for trace in (pt, trt) for name, _, _ in trace[2])
+    colors = {**COLORS, **dict.fromkeys(("output_wait", "preprocess_wait", "network_wait",
+                                         "postprocess_wait", "d2h_wait"), WAIT)}
     tick_ns = 5_000_000
     span = max(end - start for start, end, *_ in (pt, trt))
     limit = ((span + tick_ns - 1) // tick_ns) * tick_ns
@@ -89,34 +104,46 @@ def plot(pytorch, tensorrt, output):
     text(1087, 363, "ms")
 
     for index, (title, (start, end, host, sync, gpu)) in enumerate(
-        (("PyTorch FP32", pt), ("TensorRT FP32", trt))
+        zip(labels, (pt, trt))
     ):
         y = 78 + index * 134
         text(24, y + 12, f"{title} · {(end - start) / 1e6:.2f} ms request", 16)
-        for offset, label in ((24, "CPU NVTX"), (46, "CPU sync API"), (68, "GPU by submit stage")):
+        for offset, label in ((24, "CPU ranges" if split_legacy_output else "CPU NVTX"),
+                              (46, "CPU sync API"), (68, "GPU by submit stage")):
             text(24, y + offset + 12, label)
             band(0, end - start, y + offset, "#e7edf3")
         for name, left, right in host:
-            band(left - start, right - start, y + 24, COLORS[name])
+            band(left - start, right - start, y + 24, colors[name])
         for left, right in sync:
             band(left - start, right - start, y + 46, SYNC)
         for name, intervals in gpu.items():
             for left, right in intervals:
-                band(left - start, right - start, y + 68, COLORS[name])
-        post_left, post_right = next((left, right) for name, left, right in host if name == "postprocess")
-        overlap = duration_ms((max(left, post_left), min(right, post_right))
-                              for left, right in gpu["network"] if left < post_right and right > post_left)
-        text(origin, y + 108,
-             f"CPU postprocess {(post_right - post_left) / 1e6:.2f} ms"
-             f"  ·  overlaps {overlap:.2f} ms of network GPU activity"
-             f"  ·  postprocess GPU activity {duration_ms(gpu['postprocess']):.2f} ms")
+                band(left - start, right - start, y + 68, colors[name])
+        wait = next(((left, right) for name, left, right in host if name == "output_wait"), None)
+        stage = "postprocess"
+        if wait is None:
+            left, right = next((left, right) for name, left, right in host if name == stage)
+            note = f"CPU postprocess {(right - left) / 1e6:.2f} ms"
+            gpu_note = f"postprocess GPU activity {duration_ms(gpu[stage]):.2f} ms"
+        else:
+            left, right = wait
+            note = f"CPU output wait {(right - left) / 1e6:.2f} ms"
+            gpu_note = f"GPU D2H copies {duration_ms(gpu['D2H']):.3f} ms"
+        overlap = duration_ms((max(a, left), min(b, right))
+                              for a, b in gpu["network"] if a < right and b > left)
+        text(origin, y + 108, f"{note}  ·  overlaps {overlap:.2f} ms of network GPU activity  ·  {gpu_note}")
 
-    labels = {**COLORS, "sync API": SYNC}
-    for index, (name, color) in enumerate(labels.items()):
-        left = 24 + 118 * index
+    legend = {**COLORS, "sync API": SYNC}
+    if split_output:
+        legend["CPU wait"] = WAIT
+    for index, (name, color) in enumerate(legend.items()):
+        left = 24 + (106 if split_output else 118) * index
         svg.append(f'<rect x="{left}" y="389" width="12" height="12" rx="2" fill="{color}"/>')
         text(left + 17, 400, name)
-    text(24, 428, "GPU colors follow CUDA API correlation IDs. CPU sync time overlaps GPU execution.")
+    footer = "GPU colors follow CUDA API correlation IDs. CPU sync time overlaps GPU execution."
+    if split_legacy_output:
+        footer = "Legacy C++ D2H range split using CUDA API events. GPU colors follow CUDA API correlation IDs."
+    text(24, 428, footer)
     svg.append("</g></svg>")
     output.write_text("\n".join(svg) + "\n")
 
@@ -126,5 +153,8 @@ if __name__ == "__main__":
     parser.add_argument("pytorch", type=Path)
     parser.add_argument("tensorrt", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--labels", nargs=2, default=("PyTorch FP32", "TensorRT FP32"))
+    parser.add_argument("--split-legacy-output", action="store_true",
+                        help="Split the second trace's legacy D2H NVTX range using its CUDA API events")
     args = parser.parse_args()
-    plot(args.pytorch, args.tensorrt, args.output)
+    plot(args.pytorch, args.tensorrt, args.output, args.labels, args.split_legacy_output)

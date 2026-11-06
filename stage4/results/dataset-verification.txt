@@ -1,0 +1,6 @@
+f5360de9388ee1674c567d49f28a7c890a06dd8ab8fde8c649eabe3f24082295  /home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/dataset-manifests/stage3-panoptic_val2017.sha256
+5000 /home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/dataset-manifests/stage3-panoptic_val2017.sha256
+All files verified
+4139c13607c7470210971b49a57f8c476537ec68110819fee22553673fa7ef1b  /home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/dataset-manifests/stage3-val2017.sha256
+5000 /home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/dataset-manifests/stage3-val2017.sha256
+All files verified

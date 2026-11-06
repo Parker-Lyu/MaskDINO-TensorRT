@@ -37,3 +37,31 @@ class GpuMemory:
             "memory_at_measurement_start_bytes": self.start,
             "sampled_peak_device_used_bytes": self.peak,
         }
+
+
+class ProcessGpuMemory(GpuMemory):
+    """Use the CUDA compute process entry (Docker must share the host PID namespace)."""
+
+    def used(self):
+        import os
+
+        pid = os.getpid()
+        for process in self.nvml.nvmlDeviceGetComputeRunningProcesses(self.handle):
+            if process.pid == pid and process.usedGpuMemory is not None:
+                return process.usedGpuMemory
+        raise RuntimeError(f"NVML cannot find CUDA compute PID {pid}; use Docker --pid=host")
+
+    def sample(self):
+        try:
+            super().sample()
+        except Exception as error:
+            self.sample_error = error
+
+    def results(self):
+        if hasattr(self, "sample_error"):
+            raise self.sample_error
+        return {
+            "memory_scope": "NVML CUDA compute process (host PID)",
+            "memory_sample_interval_ms": self.interval_seconds * 1000,
+            "sampled_peak_process_used_bytes": self.peak,
+        }
