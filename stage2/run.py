@@ -185,7 +185,10 @@ def main():
                 observations.update(zip(batch_ids, zip(raw, predictions)))
             if cached:
                 batch_samples.append({
-                    "image_ids": batch_ids, "e2e_ms": elapsed, "network_ms": network_ms
+                    "image_ids": batch_ids,
+                    "e2e_ms": elapsed,
+                    "network_ms": network_ms,
+                    "loop_elapsed_seconds": time.perf_counter() - start,
                 })
         report["loop_seconds"] = time.perf_counter() - start
         report["peak_allocated_bytes"] = torch.cuda.max_memory_allocated()
