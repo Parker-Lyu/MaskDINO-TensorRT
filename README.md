@@ -55,6 +55,22 @@
 
 [Stage 2 复现步骤、运行版本与原始结果](stage2/README.md) · 验收 tag `stage2-pytorch-square`
 
+## Stage 3 · TensorRT 单请求后端
+
+固定 1024×1024、batch=1、单 slot，两种后端共用 Stage 2 的预处理和 panoptic 后处理。PyTorch FP32 与 TensorRT 均关闭 TF32。每种配置评估 5,000 个唯一预测 ID，性能使用同一 500 张清单，每轮预热 20 次，表中为三轮中位数。
+
+| 网络后端 | PQ / PQ_th / PQ_st | 网络 GPU P50 / P95（ms） | 端到端 P50 / P95（ms） | 吞吐（图/s） | 整卡采样峰值（GiB） |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| PyTorch FP32 | 53.1863 / 59.0273 / 44.3696 | 37.58 / 37.75 | 48.68 / 51.87 | 20.44 | 5.79 |
+| TensorRT FP32 | 53.1863 / 59.0273 / 44.3696 | 20.65 / 21.79 | 31.91 / 35.18 | 31.18 | 5.59 |
+| TensorRT，最终 mask 投影 FP16 | 53.1882 / 59.0305 / 44.3697 | 20.82 / 21.56 | 31.92 / 35.16 | 31.10 | 5.59 |
+
+TensorRT FP32 使网络 P95 降低 **42.3%**、端到端 P95 降低 **32.2%**、吞吐提高 **52.5%**。最终混合版通过逐图和全量准确率验收，端到端 P95 中位数比 TensorRT FP32 低 0.024 ms，落在两组三轮的波动范围内。
+
+![Stage 1–3 的 COCO PQ，以及 Stage 3 的同口径 1024 B1 性能](stage3/results/comparison.svg)
+
+[Stage 3 复现步骤、原始结果与 Nsight 分析](stage3/README.md) · 验收 tag `stage3-tensorrt-b1`
+
 ## 仓库结构
 
 | 目录 | 内容 |
@@ -62,6 +78,7 @@
 | [maskdino/](maskdino/) | 固定上游源码版本、PyTorch 环境和 CUDA 扩展兼容补丁 |
 | [stage1/](stage1/) | 官方评估入口、复现命令和结果 |
 | [stage2/](stage2/) | 方形 PyTorch 推理、全量 PQ 和性能样本 |
+| [stage3/](stage3/) | 单 slot TensorRT 网络、FP32 与混合精度验收、Nsight 基线 |
 | [docs/](docs/) | 环境、数据及权重说明 |
 
 构建镜像时会检出指定版本的官方 MaskDINO 源码。

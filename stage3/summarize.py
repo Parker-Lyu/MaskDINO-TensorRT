@@ -39,10 +39,11 @@ def main():
     report["performance"] = {}
     for backend, rounds in groups.items():
         assert len(rounds) == 3 and len({data["engine_sha256"] for data in rounds}) == 1
-        report["performance"][backend] = {
-            key: {"median": median(values), "min": min(values), "max": max(values)}
-            for key in METRICS for values in ([data[key] for data in rounds],)
-        }
+        statistics = {}
+        for key in METRICS:
+            values = [data[key] for data in rounds]
+            statistics[key] = {"median": median(values), "min": min(values), "max": max(values)}
+        report["performance"][backend] = statistics
     print(json.dumps(report, indent=2))
     if not passed:
         raise SystemExit(1)

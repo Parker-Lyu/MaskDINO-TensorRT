@@ -1,0 +1,72 @@
+{
+  "precision": "fp32",
+  "seed": 20261010,
+  "atol": 1e-05,
+  "rtol": 0.0001,
+  "inputs": {
+    "value": [
+      1,
+      21760,
+      8,
+      32
+    ],
+    "shapes": [
+      4,
+      2
+    ],
+    "starts": [
+      4
+    ],
+    "locations": [
+      1,
+      300,
+      8,
+      4,
+      4,
+      2
+    ],
+    "weights": [
+      1,
+      300,
+      8,
+      4,
+      4
+    ]
+  },
+  "spatial_shapes": [
+    [
+      128,
+      128
+    ],
+    [
+      64,
+      64
+    ],
+    [
+      32,
+      32
+    ],
+    [
+      16,
+      16
+    ]
+  ],
+  "starts": [
+    0,
+    16384,
+    20480,
+    21504
+  ],
+  "cuda_vs_grid_sample": {
+    "max_abs": 6.668269634246826e-07,
+    "mean_abs": 9.401259326580202e-09,
+    "relative_l2": 1.8443316207594762e-07,
+    "passed": true
+  },
+  "trt_vs_cuda": {
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "relative_l2": 0.0,
+    "passed": true
+  }
+}

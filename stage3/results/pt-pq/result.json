@@ -1,0 +1,28 @@
+{
+  "mode": "evaluate",
+  "backend": "pytorch",
+  "size": 1024,
+  "batch": 1,
+  "slots": 1,
+  "torch": "2.10.0a0+b558c986e8.nv25.11",
+  "cuda": "13.0",
+  "tf32": false,
+  "sample_sha256": "270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5",
+  "config_sha256": "89f9b1e0497cf6adf27d4e8231865f76dfefe01d71dec77537768848fde2c7ff",
+  "engine_sha256": null,
+  "images": 5000,
+  "failures": 0,
+  "loop_seconds": 264.6043316100004,
+  "scores": {
+    "PQ": 53.18625177121247,
+    "SQ": 83.31827547148072,
+    "RQ": 63.03539783312569,
+    "PQ_th": 59.02725865706703,
+    "SQ_th": 84.6195362339153,
+    "RQ_th": 69.29701728160741,
+    "PQ_st": 44.36963760388476,
+    "SQ_st": 81.35410828290017,
+    "RQ_st": 53.58389677881357
+  },
+  "unique_prediction_ids": 5000
+}

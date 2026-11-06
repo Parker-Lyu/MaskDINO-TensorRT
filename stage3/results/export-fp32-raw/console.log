@@ -1,0 +1,92 @@
+Project commit: b4c5eb3fdd7d6f7d767cd9b98dca898eefe9e8a7
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Command: export --backend fp32
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth: OK
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+3e3d04a930ad42e14e97bc68d0e5844eefde702aa3d0a2324e603e5e9b5d0d37  /home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+/usr/local/lib/python3.12/dist-packages/torch/backends/__init__.py:46: UserWarning: Please use the new API settings to control TF32 behavior, such as torch.backends.cudnn.conv.fp32_precision = 'tf32' or torch.backends.cuda.matmul.fp32_precision = 'ieee'. Old settings, e.g, torch.backends.cuda.matmul.allow_tf32 = True, torch.backends.cudnn.allow_tf32 = True, allowTF32CuDNN() and allowTF32CuBLAS() will be deprecated after Pytorch 2.9. Please see https://pytorch.org/docs/main/notes/cuda.html#tensorfloat-32-tf32-on-ampere-and-later-devices (Triggered internally at /opt/pytorch/pytorch/aten/src/ATen/Context.cpp:45.)
+  self.setter(val)
+criterion.weight_dict  {'loss_ce': 4.0, 'loss_mask': 5.0, 'loss_dice': 5.0, 'loss_bbox': 5.0, 'loss_giou': 2.0, 'loss_ce_interm': 4.0, 'loss_mask_interm': 5.0, 'loss_dice_interm': 5.0, 'loss_bbox_interm': 5.0, 'loss_giou_interm': 2.0, 'loss_ce_dn': 4.0, 'loss_mask_dn': 5.0, 'loss_dice_dn': 5.0, 'loss_bbox_dn': 5.0, 'loss_giou_dn': 2.0, 'loss_ce_interm_dn': 4.0, 'loss_mask_interm_dn': 5.0, 'loss_dice_interm_dn': 5.0, 'loss_bbox_interm_dn': 5.0, 'loss_giou_interm_dn': 2.0, 'loss_ce_0': 4.0, 'loss_mask_0': 5.0, 'loss_dice_0': 5.0, 'loss_bbox_0': 5.0, 'loss_giou_0': 2.0, 'loss_ce_interm_0': 4.0, 'loss_mask_interm_0': 5.0, 'loss_dice_interm_0': 5.0, 'loss_bbox_interm_0': 5.0, 'loss_giou_interm_0': 2.0, 'loss_ce_dn_0': 4.0, 'loss_mask_dn_0': 5.0, 'loss_dice_dn_0': 5.0, 'loss_bbox_dn_0': 5.0, 'loss_giou_dn_0': 2.0, 'loss_ce_interm_dn_0': 4.0, 'loss_mask_interm_dn_0': 5.0, 'loss_dice_interm_dn_0': 5.0, 'loss_bbox_interm_dn_0': 5.0, 'loss_giou_interm_dn_0': 2.0, 'loss_ce_1': 4.0, 'loss_mask_1': 5.0, 'loss_dice_1': 5.0, 'loss_bbox_1': 5.0, 'loss_giou_1': 2.0, 'loss_ce_interm_1': 4.0, 'loss_mask_interm_1': 5.0, 'loss_dice_interm_1': 5.0, 'loss_bbox_interm_1': 5.0, 'loss_giou_interm_1': 2.0, 'loss_ce_dn_1': 4.0, 'loss_mask_dn_1': 5.0, 'loss_dice_dn_1': 5.0, 'loss_bbox_dn_1': 5.0, 'loss_giou_dn_1': 2.0, 'loss_ce_interm_dn_1': 4.0, 'loss_mask_interm_dn_1': 5.0, 'loss_dice_interm_dn_1': 5.0, 'loss_bbox_interm_dn_1': 5.0, 'loss_giou_interm_dn_1': 2.0, 'loss_ce_2': 4.0, 'loss_mask_2': 5.0, 'loss_dice_2': 5.0, 'loss_bbox_2': 5.0, 'loss_giou_2': 2.0, 'loss_ce_interm_2': 4.0, 'loss_mask_interm_2': 5.0, 'loss_dice_interm_2': 5.0, 'loss_bbox_interm_2': 5.0, 'loss_giou_interm_2': 2.0, 'loss_ce_dn_2': 4.0, 'loss_mask_dn_2': 5.0, 'loss_dice_dn_2': 5.0, 'loss_bbox_dn_2': 5.0, 'loss_giou_dn_2': 2.0, 'loss_ce_interm_dn_2': 4.0, 'loss_mask_interm_dn_2': 5.0, 'loss_dice_interm_dn_2': 5.0, 'loss_bbox_interm_dn_2': 5.0, 'loss_giou_interm_dn_2': 2.0, 'loss_ce_3': 4.0, 'loss_mask_3': 5.0, 'loss_dice_3': 5.0, 'loss_bbox_3': 5.0, 'loss_giou_3': 2.0, 'loss_ce_interm_3': 4.0, 'loss_mask_interm_3': 5.0, 'loss_dice_interm_3': 5.0, 'loss_bbox_interm_3': 5.0, 'loss_giou_interm_3': 2.0, 'loss_ce_dn_3': 4.0, 'loss_mask_dn_3': 5.0, 'loss_dice_dn_3': 5.0, 'loss_bbox_dn_3': 5.0, 'loss_giou_dn_3': 2.0, 'loss_ce_interm_dn_3': 4.0, 'loss_mask_interm_dn_3': 5.0, 'loss_dice_interm_dn_3': 5.0, 'loss_bbox_interm_dn_3': 5.0, 'loss_giou_interm_dn_3': 2.0, 'loss_ce_4': 4.0, 'loss_mask_4': 5.0, 'loss_dice_4': 5.0, 'loss_bbox_4': 5.0, 'loss_giou_4': 2.0, 'loss_ce_interm_4': 4.0, 'loss_mask_interm_4': 5.0, 'loss_dice_interm_4': 5.0, 'loss_bbox_interm_4': 5.0, 'loss_giou_interm_4': 2.0, 'loss_ce_dn_4': 4.0, 'loss_mask_dn_4': 5.0, 'loss_dice_dn_4': 5.0, 'loss_bbox_dn_4': 5.0, 'loss_giou_dn_4': 2.0, 'loss_ce_interm_dn_4': 4.0, 'loss_mask_interm_dn_4': 5.0, 'loss_dice_interm_dn_4': 5.0, 'loss_bbox_interm_dn_4': 5.0, 'loss_giou_interm_dn_4': 2.0, 'loss_ce_5': 4.0, 'loss_mask_5': 5.0, 'loss_dice_5': 5.0, 'loss_bbox_5': 5.0, 'loss_giou_5': 2.0, 'loss_ce_interm_5': 4.0, 'loss_mask_interm_5': 5.0, 'loss_dice_interm_5': 5.0, 'loss_bbox_interm_5': 5.0, 'loss_giou_interm_5': 2.0, 'loss_ce_dn_5': 4.0, 'loss_mask_dn_5': 5.0, 'loss_dice_dn_5': 5.0, 'loss_bbox_dn_5': 5.0, 'loss_giou_dn_5': 2.0, 'loss_ce_interm_dn_5': 4.0, 'loss_mask_interm_dn_5': 5.0, 'loss_dice_interm_dn_5': 5.0, 'loss_bbox_interm_dn_5': 5.0, 'loss_giou_interm_dn_5': 2.0, 'loss_ce_6': 4.0, 'loss_mask_6': 5.0, 'loss_dice_6': 5.0, 'loss_bbox_6': 5.0, 'loss_giou_6': 2.0, 'loss_ce_interm_6': 4.0, 'loss_mask_interm_6': 5.0, 'loss_dice_interm_6': 5.0, 'loss_bbox_interm_6': 5.0, 'loss_giou_interm_6': 2.0, 'loss_ce_dn_6': 4.0, 'loss_mask_dn_6': 5.0, 'loss_dice_dn_6': 5.0, 'loss_bbox_dn_6': 5.0, 'loss_giou_dn_6': 2.0, 'loss_ce_interm_dn_6': 4.0, 'loss_mask_interm_dn_6': 5.0, 'loss_dice_interm_dn_6': 5.0, 'loss_bbox_interm_dn_6': 5.0, 'loss_giou_interm_dn_6': 2.0, 'loss_ce_7': 4.0, 'loss_mask_7': 5.0, 'loss_dice_7': 5.0, 'loss_bbox_7': 5.0, 'loss_giou_7': 2.0, 'loss_ce_interm_7': 4.0, 'loss_mask_interm_7': 5.0, 'loss_dice_interm_7': 5.0, 'loss_bbox_interm_7': 5.0, 'loss_giou_interm_7': 2.0, 'loss_ce_dn_7': 4.0, 'loss_mask_dn_7': 5.0, 'loss_dice_dn_7': 5.0, 'loss_bbox_dn_7': 5.0, 'loss_giou_dn_7': 2.0, 'loss_ce_interm_dn_7': 4.0, 'loss_mask_interm_dn_7': 5.0, 'loss_dice_interm_dn_7': 5.0, 'loss_bbox_interm_dn_7': 5.0, 'loss_giou_interm_dn_7': 2.0, 'loss_ce_8': 4.0, 'loss_mask_8': 5.0, 'loss_dice_8': 5.0, 'loss_bbox_8': 5.0, 'loss_giou_8': 2.0, 'loss_ce_interm_8': 4.0, 'loss_mask_interm_8': 5.0, 'loss_dice_interm_8': 5.0, 'loss_bbox_interm_8': 5.0, 'loss_giou_interm_8': 2.0, 'loss_ce_dn_8': 4.0, 'loss_mask_dn_8': 5.0, 'loss_dice_dn_8': 5.0, 'loss_bbox_dn_8': 5.0, 'loss_giou_dn_8': 2.0, 'loss_ce_interm_dn_8': 4.0, 'loss_mask_interm_dn_8': 5.0, 'loss_dice_interm_dn_8': 5.0, 'loss_bbox_interm_dn_8': 5.0, 'loss_giou_interm_dn_8': 2.0}
+[11/06 08:34:55 d2.checkpoint.detection_checkpoint]: [DetectionCheckpointer] Loading from /checkpoint.pth ...
+/usr/local/lib/python3.12/dist-packages/fvcore/common/checkpoint.py:252: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  return torch.load(f, map_location=torch.device("cpu"))
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:108: TracerWarning: torch.as_tensor results are registered as constants in the trace. You can safely ignore this warning if you use this function to create tensors out of constant variables that would be the same every time you call this function. In any other case, this might cause the trace to be incorrect.
+  spatial_shapes = torch.as_tensor(spatial_shapes, dtype=torch.long, device=src_flatten.device)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:169: TracerWarning: Iterating over a tensor might cause the trace to be incorrect. Passing a tensor of different shape won't change the number of iterations executed (and might lead to errors or silently give incorrect results).
+  for lvl, (H_, W_) in enumerate(spatial_shapes):
+/usr/local/lib/python3.12/dist-packages/torch/functional.py:505: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /opt/pytorch/pytorch/aten/src/ATen/native/TensorShape.cpp:4333.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:96: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  assert (input_spatial_shapes[:, 0] * input_spatial_shapes[:, 1]).sum() == Len_in
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:106: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if reference_points.shape[-1] == 2:
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/maskdino_decoder.py:394: TracerWarning: torch.as_tensor results are registered as constants in the trace. You can safely ignore this warning if you use this function to create tensors out of constant variables that would be the same every time you call this function. In any other case, this might cause the trace to be incorrect.
+  spatial_shapes = torch.as_tensor(spatial_shapes, dtype=torch.long, device=src_flatten.device)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:47: TracerWarning: Iterating over a tensor might cause the trace to be incorrect. Passing a tensor of different shape won't change the number of iterations executed (and might lead to errors or silently give incorrect results).
+  for lvl, (H_, W_) in enumerate(spatial_shapes):
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:86: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if pos_tensor.size(-1) == 2:
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:88: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  elif pos_tensor.size(-1) == 4:
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:96: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  assert (input_spatial_shapes[:, 0] * input_spatial_shapes[:, 1]).sum() == Len_in
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:106: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if reference_points.shape[-1] == 2:
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:110: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  elif reference_points.shape[-1] == 4:
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/maskdino_decoder.py:528: TracerWarning: Iterating over a tensor might cause the trace to be incorrect. Passing a tensor of different shape won't change the number of iterations executed (and might lead to errors or silently give incorrect results).
+  for a, b, c in zip(outputs_class[:-1], outputs_seg_masks[:-1], out_boxes[:-1])
+[63cad56ca317:1    :0:1] Caught signal 11 (Segmentation fault: invalid permissions for mapped object at address 0x7cf0a95fbc00)
+==== backtrace (tid:      1) ====
+ 0  /opt/hpcx/ucx/lib/libucs.so.0(ucs_handle_error+0x2e4) [0x7cf1bd704774]
+ 1  /opt/hpcx/ucx/lib/libucs.so.0(+0x3796a) [0x7cf1bd70496a]
+ 2  /opt/hpcx/ucx/lib/libucs.so.0(+0x37ba8) [0x7cf1bd704ba8]
+ 3  /usr/lib/x86_64-linux-gnu/libc.so.6(+0x45330) [0x7cf1cbe48330]
+ 4  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xa3089a) [0x7cf1bc84189a]
+ 5  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xa79789) [0x7cf1bc88a789]
+ 6  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xa7d2e4) [0x7cf1bc88e2e4]
+ 7  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(_ZN5torch3jit22ONNXShapeTypeInferenceEPNS0_4NodeERKSt3mapINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEN3c106IValueESt4lessIS9_ESaISt4pairIKS9_SB_EEEi+0x1241) [0x7cf1bc892b21]
+ 8  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xca5d3d) [0x7cf1bcab6d3d]
+ 9  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xca9db3) [0x7cf1bcabadb3]
+10  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0x3db476) [0x7cf1bc1ec476]
+11  python() [0x581a6f]
+12  python(_PyObject_MakeTpCall+0x75) [0x5492f5]
+13  python(_PyEval_EvalFrameDefault+0xadf) [0x5d68bf]
+14  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xa1c6a0) [0x7cf1bc82d6a0]
+15  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(_ZN5torch3jit10NodeToONNXEPNS0_4NodeEPNS0_5BlockENS_4onnx19OperatorExportTypesERN8pybind114dictERNS7_3setE+0x7db) [0x7cf1bc8284ab]
+16  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(_ZN5torch3jit11BlockToONNXEPNS0_5BlockES2_NS_4onnx19OperatorExportTypesERN8pybind114dictERNS5_3setEb+0x396) [0x7cf1bc829dd6]
+17  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(_ZN5torch3jit6ToONNXERSt10shared_ptrINS0_5GraphEENS_4onnx19OperatorExportTypesE+0x142) [0x7cf1bc82a3f2]
+18  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xcb4493) [0x7cf1bcac5493]
+19  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0x3db476) [0x7cf1bc1ec476]
+20  python() [0x581a6f]
+21  python(_PyObject_MakeTpCall+0x75) [0x5492f5]
+22  python(_PyEval_EvalFrameDefault+0xadf) [0x5d68bf]
+23  python(PyEval_EvalCode+0x15b) [0x5d4dab]
+24  python() [0x5d2bac]
+25  python() [0x5818ed]
+26  python(PyObject_Vectorcall+0x35) [0x549cf5]
+27  python(_PyEval_EvalFrameDefault+0xadf) [0x5d68bf]
+28  python() [0x6bc192]
+29  python(Py_RunMain+0x232) [0x6bbdc2]
+30  python(Py_BytesMain+0x2d) [0x6bba2d]
+31  /usr/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca) [0x7cf1cbe2d1ca]
+32  /usr/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b) [0x7cf1cbe2d28b]
+33  python(_start+0x25) [0x656a35]
+=================================

@@ -1,0 +1,40 @@
+Project commit: b4c5eb3fdd7d6f7d767cd9b98dca898eefe9e8a7
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Command: repro-constants
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth: OK
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+3e3d04a930ad42e14e97bc68d0e5844eefde702aa3d0a2324e603e5e9b5d0d37  /home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+BEFORE_SLICE
+[c3e19241bedf:1    :0:1] Caught signal 11 (Segmentation fault: invalid permissions for mapped object at address 0x7e2286c00200)
+==== backtrace (tid:      1) ====
+ 0  /opt/hpcx/ucx/lib/libucs.so.0(ucs_handle_error+0x2e4) [0x7e234b304774]
+ 1  /opt/hpcx/ucx/lib/libucs.so.0(+0x3796a) [0x7e234b30496a]
+ 2  /opt/hpcx/ucx/lib/libucs.so.0(+0x37ba8) [0x7e234b304ba8]
+ 3  /usr/lib/x86_64-linux-gnu/libc.so.6(+0x45330) [0x7e235687d330]
+ 4  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xa3089a) [0x7e234a44189a]
+ 5  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xa79789) [0x7e234a48a789]
+ 6  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xa7d2e4) [0x7e234a48e2e4]
+ 7  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(_ZN5torch3jit22ONNXShapeTypeInferenceEPNS0_4NodeERKSt3mapINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEN3c106IValueESt4lessIS9_ESaISt4pairIKS9_SB_EEEi+0x1241) [0x7e234a492b21]
+ 8  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xca5d3d) [0x7e234a6b6d3d]
+ 9  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0xca9db3) [0x7e234a6badb3]
+10  /usr/local/lib/python3.12/dist-packages/torch/lib/libtorch_python.so(+0x3db476) [0x7e2349dec476]
+11  python() [0x581a6f]
+12  python(_PyObject_MakeTpCall+0x75) [0x5492f5]
+13  python(_PyEval_EvalFrameDefault+0xadf) [0x5d68bf]
+14  python(PyEval_EvalCode+0x15b) [0x5d4dab]
+15  python() [0x5d2bac]
+16  python() [0x5818ed]
+17  python(PyObject_Vectorcall+0x35) [0x549cf5]
+18  python(_PyEval_EvalFrameDefault+0xadf) [0x5d68bf]
+19  python() [0x6bc192]
+20  python(Py_RunMain+0x232) [0x6bbdc2]
+21  python(Py_BytesMain+0x2d) [0x6bba2d]
+22  /usr/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca) [0x7e23568621ca]
+23  /usr/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b) [0x7e235686228b]
+24  python(_start+0x25) [0x656a35]
+=================================
