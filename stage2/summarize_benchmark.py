@@ -35,6 +35,7 @@ def summarize(path, expected_ids, prefix_images):
         ids = ids[:prefix_images]
     network = [sample["network_ms"] for sample in samples]
     e2e = [latency for sample in samples for latency in sample["e2e_ms"]]
+    batch_e2e = [sample["e2e_ms"][-1] for sample in samples]
     if not all(math.isfinite(value) and value > 0 for value in [*network, *e2e, loop_seconds]):
         raise ValueError(f"{path}: invalid timing")
     report = {
@@ -47,6 +48,8 @@ def summarize(path, expected_ids, prefix_images):
         "network_p95_ms": percentile(network, 0.95),
         "e2e_p50_ms": percentile(e2e, 0.5),
         "e2e_p95_ms": percentile(e2e, 0.95),
+        "batch_e2e_p50_ms": percentile(batch_e2e, 0.5),
+        "batch_e2e_p95_ms": percentile(batch_e2e, 0.95),
         "images_per_s": len(ids) / loop_seconds,
     }
     if prefix_images is None:

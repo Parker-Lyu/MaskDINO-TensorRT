@@ -120,7 +120,7 @@ python3 stage2/summarize_benchmark.py --prefix-images 496 \
 ## 指标口径
 
 - **网络 GPU 延迟**用 CUDA events 计量 backbone 和分割 head，按批统计 P50/P95。
-- **端到端延迟**从该批的内存 JPEG 开始处理，到每张图的 CPU panoptic map 和 segment metadata 就绪，按图统计 P50/P95。负载使用预先分好的离线批次，计时覆盖解码、前处理、H2D、推理、后处理和 D2H。
+- **端到端延迟**从该批的内存 JPEG 开始处理，到最后一张图的 CPU panoptic map 和 segment metadata 就绪，按批统计 P50/P95。汇总 JSON 的 `batch_e2e_*` 是批次指标，`e2e_*` 保留单请求指标。负载使用预先分好的离线批次，计时覆盖解码、前处理、H2D、推理、后处理和 D2H。
 - **离线端到端吞吐**用完成图数除以整轮墙钟秒数，包含循环内的 CPU 调度开销。预读和预热在测量前完成。满批对照使用第 496 张完成后的累计墙钟。
 - **峰值显存**使用预热后重置的 PyTorch CUDA allocator peak allocated 和 peak reserved，覆盖整轮。
 - 结果表取各指标的三轮中位数。逐轮最小值、最大值及原始样本保存在结果目录。
@@ -130,6 +130,6 @@ python3 stage2/summarize_benchmark.py --prefix-images 496 \
 - **数值验证。** 12 组探测均完成。32 张的 segment metadata 在各组相同。B4 相对 B1 的最坏逐图 ID map 像素差在 640 和 800 为 0，在 1024 为 0.000326%，因此全量统一采用 B4。800 和 1024 的 B4 逐 query mask logit 最大绝对差分别为 52.93 和 152.44。该比较未做 query 重配对，差异原因待定位。B1 复跑的 logits、ID map 和 metadata 逐项一致。 [逐图记录与 B1 复跑](results/probe/)
 - **全量 PQ。** 三档各有 5,000 个唯一预测 ID，与真值完全匹配。640、800、1024 的 PQ 分别为 49.9662、52.0120、53.1862。 [评估日志与指标 JSON](results/evaluate/)
 - **800 与 1024 的性能对照。** 12 轮均完成 500 张，无 OOM 或回退。1024/B1 的端到端 P95 为 51.93 ms，800/B1 为 37.85 ms。结合 1024 的 1.1742 PQ 优势，选择 1024 作为保留精度的部署基线。 [逐轮统计与原始数据](results/benchmark/)
-- **1024 的 B2 与 B8 补测。** 六轮均完成 500 张，无 OOM 或回退。前 496 张的满批吞吐分别为 21.33 和 22.57 图/s，端到端 P95 分别为 96.85 和 359.13 ms。B8 尾批的网络时间为 138.90–141.55 ms，最后一张 CPU 输出于批开始后 183.28–186.11 ms 就绪。 [500 张汇总](results/batch-sweep/summary-500.json) · [496 张满批汇总](results/batch-sweep/summary-496.json) · [批次明细与日志](results/batch-sweep/)
+- **1024 的 B2 与 B8 补测。** 六轮均完成 500 张，无 OOM 或回退。前 496 张的满批吞吐分别为 21.33 和 22.57 图/s，批次端到端 P95 分别为 97.83 和 365.06 ms。B8 尾批的网络时间为 138.90–141.55 ms，最后一张 CPU 输出于批开始后 183.28–186.11 ms 就绪。 [500 张汇总](results/batch-sweep/summary-500.json) · [496 张满批汇总](results/batch-sweep/summary-496.json) · [批次明细与日志](results/batch-sweep/)
 
 完整运行目录保存在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-stage2/stage2/runs/`。仓库归档指标、批次明细和评估日志，原始预测 JSON 和 B1 大体积张量参考保存在运行主机。
