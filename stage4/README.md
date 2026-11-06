@@ -123,3 +123,17 @@ RTX 4090 上从 `12b93d6` 采集同一顺序的 32 张图，预热 20 次。原�
 | `CPU / wait for D2H copies` | 0.055 |
 
 [按阶段同步的原始报告](results/trace-native-stage-waits/trace.nsys-rep) · [分阶段统计](results/trace-native-stage-waits/trace-summary.json)
+
+### 常规异步流水线的 GPU 分阶段统计
+
+在 RTX 4090 上从 `deea1d2` 重采原生链路，复用同一 engine、同一顺序的 32 张图和 20 次预热。使用常规 `native trace` 模式，每张图仅在交付输出时同步一次。NVTX 阶段名为 `TensorRT inference`、`postprocess` 和 `D2H`。
+
+Nsight 自带的 `nvtx_gpu_proj_sum` 按 CUDA 提交调用将 NVTX 阶段关联到 GPU 工作，从该阶段第一条 GPU 操作开始到最后一条结束计算投影跨度，包含操作之间的空隙。下表读取其 `Proj Med` 与 `Proj Avg` 列。查看实际 GPU 操作时，在 GUI 展开 GPU stream 的 kernel 和 memory 轨道。
+
+| 阶段 | GPU 投影跨度中位数（ms/图） | GPU 投影跨度均值（ms/图） |
+| --- | ---: | ---: |
+| TensorRT inference | 20.264 | 20.692 |
+| postprocess | 0.083 | 0.116 |
+| D2H | 0.050 | 0.045 |
+
+[Nsight 原始报告](results/trace-native-gpu-projection/trace.nsys-rep) · [Nsight GPU Projection 统计](results/trace-native-gpu-projection/nsys-gpu-projection.txt) · [按 GPU 活动归属的汇总](results/trace-native-gpu-projection/trace-summary.json)

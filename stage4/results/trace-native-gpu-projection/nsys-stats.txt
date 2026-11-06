@@ -1,0 +1,761 @@
+Processing [/run-output/trace.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/nvtx_sum.py]...
+
+ ** NVTX Range Summary (nvtx_sum):
+
+ Time (%)  Total Time (ns)  Instances   Avg (ns)    Med (ns)   Min (ns)  Max (ns)  StdDev (ns)   Style                                                   Range
+ --------  ---------------  ---------  ----------  ----------  --------  --------  -----------  --------  ----------------------------------------------------------------------------------------------------
+     41.9        636149483         32  19879671.3  19461326.0  17807855  21196939    1088783.5  PushPop   :CPU / wait for output (network + postprocess + copies)
+      2.3         34586909         32   1080840.9   1138374.0    138540   2545840     643882.8  PushPop   :decode
+      2.1         32576664         32   1018020.8    986985.5    974460   1358215      89854.5  PushPop   :TensorRT inference
+      2.1         32547743         32   1017117.0    986370.5    973909   1354590      89365.7  PushPop   TensorRT:ExecutionContext::enqueueV3
+      1.6         24736214          1  24736214.0  24736214.0  24736214  24736214          0.0  PushPop   :image 39670
+      1.6         23696883          1  23696883.0  23696883.0  23696883  23696883          0.0  PushPop   :image 571598
+      1.6         23692029          1  23692029.0  23692029.0  23692029  23692029          0.0  PushPop   :image 435081
+      1.6         23666282          1  23666282.0  23666282.0  23666282  23666282          0.0  PushPop   :image 470924
+      1.6         23661113          1  23661113.0  23661113.0  23661113  23661113          0.0  PushPop   :image 285788
+      1.5         23502715          1  23502715.0  23502715.0  23502715  23502715          0.0  PushPop   :image 14888
+      1.5         23328406          1  23328406.0  23328406.0  23328406  23328406          0.0  PushPop   :image 58636
+      1.5         23198162          1  23198162.0  23198162.0  23198162  23198162          0.0  PushPop   :image 49091
+      1.5         23142697          1  23142697.0  23142697.0  23142697  23142697          0.0  PushPop   :image 303566
+      1.5         23101606          1  23101606.0  23101606.0  23101606  23101606          0.0  PushPop   :image 36494
+      1.5         23047265          1  23047265.0  23047265.0  23047265  23047265          0.0  PushPop   :image 42888
+      1.5         23032898          1  23032898.0  23032898.0  23032898  23032898          0.0  PushPop   :image 31296
+      1.5         22985959          1  22985959.0  22985959.0  22985959  22985959          0.0  PushPop   :image 22623
+      1.5         22762352          1  22762352.0  22762352.0  22762352  22762352          0.0  PushPop   :image 25593
+      1.5         22653559        544     41642.6     45134.5      1642    122279      24050.7  StartEnd  myelin-exec:myelinGraphExecute
+      1.5         22517691          1  22517691.0  22517691.0  22517691  22517691          0.0  PushPop   :image 302882
+      1.5         22405546          1  22405546.0  22405546.0  22405546  22405546          0.0  PushPop   :image 41488
+      1.5         22308381          1  22308381.0  22308381.0  22308381  22308381          0.0  PushPop   :image 562229
+      1.5         22192861          1  22192861.0  22192861.0  22192861  22192861          0.0  PushPop   :image 562197
+      1.4         21916117          1  21916117.0  21916117.0  21916117  21916117          0.0  PushPop   :image 547854
+      1.4         21673146          1  21673146.0  21673146.0  21673146  21673146          0.0  PushPop   :image 562243
+      1.4         20991941          1  20991941.0  20991941.0  20991941  20991941          0.0  PushPop   :image 342971
+      1.4         20972928          1  20972928.0  20972928.0  20972928  20972928          0.0  PushPop   :image 42102
+      1.4         20861200          1  20861200.0  20861200.0  20861200  20861200          0.0  PushPop   :image 485237
+      1.4         20754004          1  20754004.0  20754004.0  20754004  20754004          0.0  PushPop   :image 452515
+      1.4         20713032          1  20713032.0  20713032.0  20713032  20713032          0.0  PushPop   :image 298251
+      1.4         20695996          1  20695996.0  20695996.0  20695996  20695996          0.0  PushPop   :image 511760
+      1.4         20690256          1  20690256.0  20690256.0  20690256  20690256          0.0  PushPop   :image 449661
+      1.4         20573795          1  20573795.0  20573795.0  20573795  20573795          0.0  PushPop   :image 205333
+      1.3         19789219          1  19789219.0  19789219.0  19789219  19789219          0.0  PushPop   :image 536343
+      1.3         19779633          1  19779633.0  19779633.0  19779633  19779633          0.0  PushPop   :image 107339
+      1.3         19600422          1  19600422.0  19600422.0  19600422  19600422          0.0  PushPop   :image 456394
+      1.3         19387289          1  19387289.0  19387289.0  19387289  19387289          0.0  PushPop   :image 149770
+      0.2          2920671         32     91271.0     88760.0     87383    128526       7724.3  PushPop   TensorRT:{ForeignNode[tmp_refittable_weight_2 + ONNXTRT_ShapeShuffle_2023.../sem_seg_head/predictor…
+      0.2          2911314         32     90978.6     88926.0     87216    112447       5724.7  PushPop   TensorRT:{ForeignNode[ONNXTRT_Broadcast_8336.../Cast_2]}
+      0.2          2295451         32     71732.8     68882.0     66185    111801       9474.0  PushPop   TensorRT:{ForeignNode[/sem_seg_head/pe_layer/Constant_3_output_0 + /sem_seg_head/transformer/Flatte…
+      0.1          1854705         32     57959.5     53627.5     52418    165250      19832.2  PushPop   TensorRT:{ForeignNode[/sem_seg_head/predictor/decoder/layers.8/cross_attn/Cast.../sem_seg_head/pred…
+      0.1          1756800         32     54900.0     53443.0     52225     70046       4470.7  PushPop   TensorRT:{ForeignNode[/sem_seg_head/predictor/decoder/layers.7/cross_attn/Cast.../sem_seg_head/pred…
+      0.1          1619867         32     50620.8     49473.5     48134     68322       4060.4  PushPop   TensorRT:{ForeignNode[/sem_seg_head/predictor/decoder/layers.1/cross_attn/Cast.../sem_seg_head/pred…
+      0.1          1610839         32     50338.7     48737.5     47664     67749       4639.3  PushPop   TensorRT:{ForeignNode[/sem_seg_head/predictor/decoder/layers.6/cross_attn/Cast.../sem_seg_head/pred…
+      0.1          1600108         32     50003.4     48845.0     47889     65119       3596.3  PushPop   TensorRT:{ForeignNode[/sem_seg_head/predictor/decoder/layers.5/cross_attn/Cast.../sem_seg_head/pred…
+      0.1          1590681         32     49708.8     48825.5     47539     62771       3087.6  PushPop   TensorRT:{ForeignNode[/sem_seg_head/predictor/decoder/layers.3/cross_attn/Cast.../sem_seg_head/pred…
+      0.1          1588078         32     49627.4     48543.0     47603     69080       4370.1  PushPop   TensorRT:{ForeignNode[/sem_seg_head/predictor/decoder/layers.4/cross_attn/Cast.../sem_seg_head/pred…
+      0.1          1587565         32     49611.4     48538.0     48053     66321       3616.3  PushPop   TensorRT:{ForeignNode[/sem_seg_head/predictor/decoder/layers.2/cross_attn/Cast.../sem_seg_head/pred…
+      0.0           676682         32     21146.3     20618.5     19779     31628       2128.6  PushPop   TensorRT:{ForeignNode[/sem_seg_head/transformer/encoder/layers.1/self_attn/Cast.../sem_seg_head/tra…
+      0.0           651008         32     20344.0     19686.5     19157     28146       1916.2  PushPop   TensorRT:{ForeignNode[/sem_seg_head/transformer/encoder/layers.2/self_attn/Cast.../sem_seg_head/tra…
+      0.0           647625         32     20238.3     19447.5     18970     27844       1950.4  PushPop   TensorRT:{ForeignNode[/sem_seg_head/transformer/encoder/layers.3/self_attn/Cast.../sem_seg_head/tra…
+      0.0           642781         32     20086.9     19340.5     19047     29279       2257.3  PushPop   TensorRT:{ForeignNode[/sem_seg_head/transformer/encoder/layers.5/self_attn/Cast.../sem_seg_head/tra…
+      0.0           640998         32     20031.2     19484.0     19011     26487       1635.0  PushPop   TensorRT:{ForeignNode[/sem_seg_head/transformer/encoder/layers.4/self_attn/Cast.../sem_seg_head/tra…
+      0.0           573313         32     17916.0     11601.0      8340     92996      20395.4  PushPop   :preprocess
+      0.0           316102         32      9878.2      9469.5      9031     14472       1209.6  PushPop   :postprocess
+      0.0           302029        544       555.2       530.5       108      3558        330.5  StartEnd  myelin-exec:myelinGraphLoad
+      0.0           225352        544       414.3       382.0       187      1648        149.2  StartEnd  myelin-exec:myelinGraphUnload
+      0.0           205461         32      6420.7      5290.0      4179     23402       3739.8  PushPop   :preprocess_gpu
+      0.0           200266         32      6258.3      5396.5      4621     23790       3333.4  PushPop   :H2D
+      0.0           148763        544       273.5        93.0        68     96823       4147.2  StartEnd  myelin-exec:myelinTensorSetOutputMemoryBatch
+      0.0           143158         32      4473.7      4151.5      4026      7327        681.0  PushPop   TensorRT:PWN(/sem_seg_head/Add_1)
+      0.0           139471         32      4358.5      3934.0      3576      8887       1133.7  PushPop   :D2H
+      0.0           137046         32      4282.7      2202.5      2091     68615      11739.5  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.5/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0           131199         32      4100.0      3266.5      2837     14903       2597.5  PushPop   TensorRT:/backbone/stem/conv1/Conv + /backbone/stem/Relu
+      0.0           117299         32      3665.6      3381.5      3154      7944        940.2  PushPop   TensorRT:/backbone/res5/res5.1/conv1/Conv + /backbone/res5/res5.1/Relu
+      0.0           116659         32      3645.6      3459.0      3107      6776        655.8  PushPop   TensorRT:Reformatting CopyNode for Output Tensor 0 to /backbone/res3/res3.3/conv3/Conv + /backbone/…
+      0.0           108996         32      3406.1      3138.0      2735      7712        991.6  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.0/self_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0           104298         32      3259.3      2871.5      2510     11243       1515.1  PushPop   TensorRT:/sem_seg_head/input_proj.0/input_proj.0.0/Conv
+      0.0           102380         32      3199.4      3117.5      2875      5299        405.7  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.4/cross_attn/Constant_24_output_0
+      0.0           100086         32      3127.7      2919.5      2833      3938        362.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_3/linear2/MatMul_myl125_5
+      0.0            96426         32      3013.3      2957.0      2860      3850        209.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_7/linear2/MatMul_myl146_8
+      0.0            96344         32      3010.8      2984.0      2858      3602        130.5  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_0/linear2/MatMul_myl113_5
+      0.0            96281         32      3008.8      2955.0      2881      4594        293.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_1/linear2/MatMul_myl117_5
+      0.0            94882         32      2965.1      2919.0      2846      3576        169.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_8/linear2/MatMul_myl151_3
+      0.0            94701         32      2959.4      2927.5      2829      3467        133.8  PushPop   TensorRT:/sem_seg_head/input_proj.2/input_proj.2.0/Conv
+      0.0            94099         32      2940.6      2886.0      2786      3545        174.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_5/linear2/MatMul_myl133_5
+      0.0            94088         32      2940.3      2907.5      2845      3347        117.5  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_6/linear2/MatMul_myl139_8
+      0.0            93808         32      2931.5      2894.0      2808      3432        114.7  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_2/linear2/MatMul_myl121_5
+      0.0            93695         32      2928.0      2899.0      2830      3464        116.7  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_4/linear2/MatMul_myl129_5
+      0.0            89385         32      2793.3      2762.5      2550      3255        133.6  PushPop   TensorRT:/backbone/res5/res5.2/conv1/Conv + /backbone/res5/res5.2/Relu
+      0.0            89029         32      2782.2      2725.0      2464      3628        234.8  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.1/conv2/Conv + /backbone/r…
+      0.0            86653         32      2707.9      2560.5      2387      4689        482.5  PushPop   TensorRT:/backbone/res2/res2.0/conv1/Conv + /backbone/res2/res2.0/Relu
+      0.0            85605         32      2675.2      2515.0      2327      4723        561.9  PushPop   TensorRT:/sem_seg_head/adapter_1/Conv
+      0.0            85233         32      2663.5      2588.0      2427      4420        339.7  PushPop   TensorRT:/backbone/res4/res4.0/shortcut/Conv
+      0.0            84104         32      2628.3      2346.5      2105      7749       1066.0  PushPop   TensorRT:/backbone/res2/res2.0/conv3/Conv
+      0.0            83529        544       153.5       139.0       101       786         52.6  StartEnd  myelin-exec:myelinTensorGetInputMemoryBatch
+      0.0            81037        544       149.0       138.0        88      1612         76.4  StartEnd  myelin-exec:myelinTensorGetOutputMemoryBatch
+      0.0            80153         32      2504.8      2452.5      2338      3517        227.7  PushPop   TensorRT:/backbone/res3/res3.0/conv3/Conv + /backbone/res3/res3.0/Add + /backbone/res3/res3.0/Relu_2
+      0.0            80101         32      2503.2      2380.5      2161      4234        428.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_0/MatMul_myl109_38
+      0.0            79957         32      2498.7      2324.5      2091      5183        614.2  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_0/self_attn/attention_weights/MatMul+/sem_seg_…
+      0.0            78747         32      2460.8      2385.0      2242      3433        271.6  PushPop   TensorRT:/sem_seg_head/layer_1/Conv
+      0.0            78306         32      2447.1      2390.5      2274      3400        216.7  PushPop   TensorRT:/backbone/res5/res5.0/conv2/Conv + /backbone/res5/res5.0/Relu_1
+      0.0            77225         32      2413.3      2404.5      2233      2620         98.1  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.1/conv3/Conv + /backbone/r…
+      0.0            76741         32      2398.2      2204.0      2118      8085       1039.9  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.2/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            75146         32      2348.3      2188.0      2089      3122        325.4  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.4/self_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            74914         32      2341.1      2324.0      2213      2887        119.9  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.1/self_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            74710         32      2334.7      2314.5      2208      3014        136.6  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.4/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            73955         32      2311.1      2162.5      2100      6788        818.4  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res5/res5.2/conv3/Conv + /backbone/r…
+      0.0            73947         32      2310.8      2284.0      2218      2677         92.4  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.0/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            72881         32      2277.5      2273.0      2184      2397         60.4  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.2/conv2/Conv + /backbone/r…
+      0.0            72122         32      2253.8      2025.5      1916      2998        380.3  PushPop   TensorRT:/backbone/res3/res3.0/shortcut/Conv
+      0.0            71816         32      2244.3      2168.0      2051      3722        295.2  PushPop   TensorRT:/backbone/res2/res2.1/conv1/Conv + /backbone/res2/res2.1/Relu
+      0.0            71753         32      2242.3      2227.0      2163      2544         72.5  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.1/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            71695         32      2240.5      2031.5      1954      5124        638.0  PushPop   TensorRT:/sem_seg_head/Resize
+      0.0            71624         32      2238.3      2222.5      2117      2444         75.5  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res5/res5.1/conv2/Conv + /backbone/r…
+      0.0            71435         32      2232.3      2166.0      1994      3528        281.2  PushPop   TensorRT:/backbone/res2/res2.0/shortcut/Conv + /backbone/res2/res2.0/Add + /backbone/res2/res2.0/Re…
+      0.0            71235         32      2226.1      2181.0      2111      2818        150.8  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.2/self_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            71173         32      2224.2      2221.0      2127      2397         57.4  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to {ForeignNode[/sem_seg_head/pe_layer/Constant_3…
+      0.0            71159         32      2223.7      2219.5      2150      2409         51.6  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res5/res5.2/conv2/Conv + /backbone/r…
+      0.0            71084         32      2221.4      1962.0      1688      5086        707.1  PushPop   TensorRT:/backbone/stem/MaxPool
+      0.0            71063         32      2220.7      2207.0      2120      2356         61.4  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.3/conv2/Conv + /backbone/r…
+      0.0            71023         32      2219.5      2196.5      2114      2736        111.9  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.6/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            70646         32      2207.7      2196.0      2130      2332         50.6  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.2/conv3/Conv + /backbone/r…
+      0.0            70615         32      2206.7      2193.0      2075      2413         79.4  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.5/self_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            70570         32      2205.3      2203.5      2096      2376         57.3  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.3/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            70389         32      2199.7      2072.5      2015      5614        625.8  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 2 to {ForeignNode[/sem_seg_head/pe_layer/Constant_3…
+      0.0            70270         32      2195.9      2175.0      2092      2533         88.1  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.3/conv3/Conv + /backbone/r…
+      0.0            70251         32      2195.3      2129.5      1972      3269        254.8  PushPop   TensorRT:/backbone/res2/res2.0/conv2/Conv + /backbone/res2/res2.0/Relu_1
+      0.0            70207         32      2194.0      2155.5      2061      3372        221.6  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.4/conv3/Conv + /backbone/r…
+      0.0            70098         32      2190.6      2177.0      2104      2441         63.5  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.3/self_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            69984         32      2187.0      2166.0      2057      2543        101.8  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.8/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            69902         32      2184.4      2180.5      2082      2323         51.3  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.5/conv3/Conv + /backbone/r…
+      0.0            69816         32      2181.8      1962.0      1852      3007        404.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_5/cross_attn/value_proj/MatMul_myl129_0
+      0.0            69741         32      2179.4      2170.0      2090      2413         70.3  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res5/res5.1/conv3/Conv + /backbone/r…
+      0.0            69584         32      2174.5      2152.5      2059      2398         70.2  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.4/conv2/Conv + /backbone/r…
+      0.0            69388         32      2168.4      2154.5      2064      2382         71.5  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.7/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+      0.0            69253         32      2164.2      2133.0      2032      2635        131.9  PushPop   TensorRT:/backbone/res3/res3.0/conv1/Conv + /backbone/res3/res3.0/Relu
+      0.0            68872         32      2152.3      2050.5      1971      4582        453.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_8/cross_attn/output_proj/MatMul_myl151_0
+      0.0            68815         32      2150.5      2133.5      2096      2349         58.4  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.5/conv2/Conv + /backbone/r…
+      0.0            68202         32      2131.3      2122.5      2008      2377         78.9  PushPop   TensorRT:/backbone/res3/res3.1/conv3/Conv + /backbone/res3/res3.1/Add + /backbone/res3/res3.1/Relu_2
+      0.0            67581         32      2111.9      2007.5      1895      3505        338.9  PushPop   TensorRT:/backbone/res4/res4.0/conv2/Conv + /backbone/res4/res4.0/Relu_1
+      0.0            67562         32      2111.3      1886.5      1770      6010        856.0  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_5/self_attn/output_proj/MatMul_myl109_1
+      0.0            67521         32      2110.0      2099.5      2026      2367         63.7  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 1 to {ForeignNode[/sem_seg_head/pe_layer/Constant_3…
+      0.0            67489         32      2109.0      2030.5      1905      3806        334.9  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_0/self_attn/output_proj/MatMul_myl89_0
+      0.0            66863         32      2089.5      1828.5      1717      3907        509.5  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_2/self_attn/MatMul_3_myl117_15
+      0.0            66812         32      2087.9      1256.5      1192     26838       4519.1  PushPop   myelin-exec:__myl_SumReshCastDiv_myl85_35
+      0.0            66694         32      2084.2      2092.0      1861      2349        106.4  PushPop   TensorRT:/backbone/res4/res4.0/conv1/Conv + /backbone/res4/res4.0/Relu
+      0.0            66469         32      2077.2      1889.5      1809      5822        726.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_6/cross_attn/value_proj/MatMul_myl133_0
+      0.0            66423         32      2075.7      2060.5      1970      2281         66.1  PushPop   TensorRT:/backbone/res3/res3.2/conv3/Conv + /backbone/res3/res3.2/Add + /backbone/res3/res3.2/Relu_2
+      0.0            66252         32      2070.4      2026.5      1941      2615        147.6  PushPop   TensorRT:/sem_seg_head/mask_features/Conv
+      0.0            66125         32      2066.4      2057.5      2010      2198         42.6  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 3 to {ForeignNode[/sem_seg_head/pe_layer/Constant_3…
+      0.0            66011         32      2062.8      1732.0      1619      6186        832.4  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_7/self_attn/MatMul_2_myl139_20
+      0.0            65706         32      2053.3      2037.0      1931      2329         77.8  PushPop   TensorRT:/backbone/res2/res2.2/conv1/Conv + /backbone/res2/res2.2/Relu
+      0.0            65618         32      2050.6      1754.5      1648      4195        636.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_0/linear1/MatMul_myl113_4
+      0.0            65556         32      2048.6      2006.0      1920      2571        127.9  PushPop   TensorRT:/backbone/res3/res3.3/conv3/Conv + /backbone/res3/res3.3/Add + /backbone/res3/res3.3/Relu_2
+      0.0            65417         32      2044.3      1952.5      1842      3699        365.5  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_1/self_attn/output_proj/MatMul_myl93_0
+      0.0            64940         32      2029.4      1998.5      1949      2288         81.5  PushPop   TensorRT:/backbone/res3/res3.1/conv1/Conv + /backbone/res3/res3.1/Relu
+      0.0            64663         32      2020.7      1976.5      1886      2786        180.3  PushPop   TensorRT:/sem_seg_head/input_proj.3/input_proj.3.0/Conv
+      0.0            64358         32      2011.2      1975.5      1867      2659        158.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_0/self_attn/MatMul_4_myl109_45
+      0.0            64337         32      2010.5      1938.5      1716      3331        322.2  PushPop   myelin-exec:__myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_myl85_21
+      0.0            64217         32      2006.8      1940.5      1843      3100        233.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_7/cross_attn/output_proj/MatMul_myl146_5
+      0.0            64138         32      2004.3      1934.0      1813      4341        430.7  PushPop   TensorRT:/backbone/res4/res4.1/conv2/Conv + /backbone/res4/res4.1/Relu_1
+      0.0            64025         32      2000.8      1942.0      1821      3090        243.3  PushPop   TensorRT:/backbone/res5/res5.0/shortcut/Conv
+      0.0            63986         32      1999.6      1725.0      1655      4630        641.4  PushPop   myelin-exec:/sem_seg_head/predictor/enc_output/MatMul_myl109_20
+      0.0            63961         32      1998.8      1755.0      1638      3286        436.9  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_2/linear2/MatMul_myl97_3
+      0.0            63797         32      1993.7      1778.5      1693      2902        369.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_8/self_attn/MatMul_1+/sem_seg_head/predictor/dec…
+      0.0            63748         32      1992.1      1743.0      1687      3882        481.6  PushPop   myelin-exec:/sem_seg_head/predictor/mask_embed/layers_1/MatMul_myl151_8
+      0.0            63666         32      1989.6      1961.5      1905      2249         82.0  PushPop   TensorRT:/backbone/res3/res3.2/conv1/Conv + /backbone/res3/res3.2/Relu
+      0.0            63561         32      1986.3      1931.5      1815      2809        206.8  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_3/self_attn/output_proj/MatMul_myl101_0
+      0.0            63334         32      1979.2      1942.5      1764      2914        200.4  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_2/self_attn/output_proj/MatMul_myl97_0
+      0.0            63305         32      1978.3      1879.0      1822      3267        295.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_8/cross_attn/value_proj/MatMul_myl146_0
+      0.0            63088         32      1971.5      1929.0      1826      2840        195.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_1/cross_attn/value_proj/MatMul_myl113_0
+      0.0            63084         32      1971.4      1805.0      1638      3844        451.5  PushPop   myelin-exec:__myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_myl139_2
+      0.0            63056         32      1970.5      1765.5      1685      2617        360.7  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_5/linear2/MatMul_myl109_4
+      0.0            63025         32      1969.5      1894.0      1790      3884        364.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_5/cross_attn/output_proj/MatMul_myl133_2
+      0.0            62966         32      1967.7      1926.0      1841      2636        165.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_2/cross_attn/value_proj/MatMul_myl117_0
+      0.0            62871         32      1964.7      1945.5      1799      2311        105.2  PushPop   TensorRT:/backbone/res2/res2.1/conv2/Conv + /backbone/res2/res2.1/Relu_1
+      0.0            62771         32      1961.6      1936.0      1850      2304         98.2  PushPop   TensorRT:/backbone/res2/res2.1/conv3/Conv + /backbone/res2/res2.1/Add + /backbone/res2/res2.1/Relu_2
+      0.0            62770         32      1961.6      1927.5      1834      2648        168.8  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_4/self_attn/output_proj/MatMul_myl105_0
+      0.0            62604         32      1956.4      1863.5      1738      3636        336.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_1/MatMul_myl109_39
+      0.0            62568         32      1955.3      1898.0      1786      2856        228.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_3/cross_attn/value_proj/MatMul_myl121_0
+      0.0            62045         32      1938.9      1907.0      1821      2251        107.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_4/cross_attn/output_proj/MatMul_myl129_2
+      0.0            62000         32      1937.5      1909.5      1840      2242         91.7  PushPop   TensorRT:/backbone/res3/res3.3/conv1/Conv + /backbone/res3/res3.3/Relu
+      0.0            61782         32      1930.7      1875.5      1794      2891        221.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_4/cross_attn/value_proj/MatMul_myl125_0
+      0.0            61770         32      1930.3      1731.0      1666      2636        363.1  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_0_8/MatMul_myl151_24
+      0.0            61720         32      1928.8      1920.0      1835      2087         57.0  PushPop   TensorRT:/backbone/res4/res4.2/conv2/Conv + /backbone/res4/res4.2/Relu_1
+      0.0            61682         32      1927.6      1725.5      1647      2719        357.2  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_0_4/MatMul_myl151_40
+      0.0            61582         32      1924.4      1888.5      1812      2289        110.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_6/cross_attn/output_proj/MatMul_myl139_5
+      0.0            61527         32      1922.7      1899.5      1817      2252         99.9  PushPop   TensorRT:/backbone/res5/res5.1/conv2/Conv + /backbone/res5/res5.1/Relu_1
+      0.0            61476         32      1921.1      1902.5      1837      2264         92.4  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_0/cross_attn/output_proj/MatMul_myl113_2
+      0.0            61289         32      1915.3      1814.5      1737      2736        255.0  PushPop   myelin-exec:/sem_seg_head/predictor/Einsum_myl151_10
+      0.0            61194         32      1912.3      1730.0      1636      2597        348.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_1/self_attn/Gemm_myl113_20
+      0.0            61190         32      1912.2      1875.0      1761      2956        208.5  PushPop   TensorRT:/backbone/res4/res4.0/conv3/Conv + /backbone/res4/res4.0/Add + /backbone/res4/res4.0/Relu_2
+      0.0            61165         32      1911.4      1729.0      1641      2619        349.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_0_6/MatMul_myl133_11
+      0.0            61139         32      1910.6      1862.5      1778      3279        262.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_0/self_attn/MatMul_2_myl109_44
+      0.0            61118         32      1909.9      1834.0      1755      2793        226.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_7/cross_attn/value_proj/MatMul_myl139_3
+      0.0            61033         32      1907.3      1873.5      1801      2475        129.7  PushPop   TensorRT:/backbone/res3/res3.0/conv2/Conv + /backbone/res3/res3.0/Relu_1
+      0.0            60934         32      1904.2      1868.5      1785      2410        132.4  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_1/cross_attn/output_proj/MatMul_myl117_2
+      0.0            60902         32      1903.2      1824.0      1725      3266        295.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_1/self_attn/MatMul_3_myl113_15
+      0.0            60874         32      1902.3      1778.5      1666      3015        336.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_6/self_attn/MatMul_3_myl133_15
+      0.0            60847         32      1901.5      1833.0      1724      3179        265.7  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_0/self_attn/MatMul_3_myl109_42
+      0.0            60801         32      1900.0      1710.5      1627      2856        359.3  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_2/self_attn/value_proj/MatMul_myl93_8
+      0.0            60797         32      1899.9      1854.5      1743      2771        185.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_0/self_attn/MatMul_1+/sem_seg_head/predictor/dec…
+      0.0            60686         32      1896.4      1877.0      1798      2173         96.4  PushPop   TensorRT:/backbone/res2/res2.2/conv3/Conv + /backbone/res2/res2.2/Add + /backbone/res2/res2.2/Relu_2
+      0.0            60668         32      1895.9      1675.0      1569      3498        433.5  PushPop   TensorRT:/backbone/res5/res5.2/conv3/Conv + /backbone/res5/res5.2/Add + /backbone/res5/res5.2/Relu_2
+      0.0            60617         32      1894.3      1880.5      1791      2165         84.1  PushPop   TensorRT:/backbone/res3/res3.1/conv2/Conv + /backbone/res3/res3.1/Relu_1
+      0.0            60577         32      1893.0      1816.5      1735      2634        211.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_8/linear1/MatMul_myl151_2
+      0.0            60545         32      1892.0      1845.0      1763      2720        179.9  PushPop   TensorRT:/backbone/res2/res2.2/conv2/Conv + /backbone/res2/res2.2/Relu_1
+      0.0            60363         32      1886.3      1650.0      1552      4012        540.4  PushPop   TensorRT:/backbone/res4/res4.3/conv1/Conv + /backbone/res4/res4.3/Relu
+      0.0            60290         32      1884.1      1861.5      1770      2198        101.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_2/cross_attn/output_proj/MatMul_myl121_2
+      0.0            60226         32      1882.1      1866.0      1786      2158         80.2  PushPop   TensorRT:/backbone/res4/res4.3/conv2/Conv + /backbone/res4/res4.3/Relu_1
+      0.0            60193         32      1881.0      1796.0      1728      2902        264.4  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_8/self_attn/MatMul_3_myl146_18
+      0.0            60153         32      1879.8      1697.0      1635      6635        878.6  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_4/linear2/MatMul_myl105_3
+      0.0            59940         32      1873.1      1805.0      1728      3906        377.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_0/self_attn/Gemm_myl109_47
+      0.0            59910         32      1872.2      1834.5      1741      2417        138.9  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_0/self_attn/value_proj/MatMul_myl85_39
+      0.0            59847         32      1870.2      1807.5      1734      2666        215.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_3/self_attn/MatMul_3_myl121_15
+      0.0            59838         32      1869.9      1828.5      1772      2513        144.0  PushPop   TensorRT:/backbone/res5/res5.2/conv2/Conv + /backbone/res5/res5.2/Relu_1
+      0.0            59771         32      1867.8      1801.5      1705      2878        231.5  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_4/self_attn/MatMul_1+/sem_seg_head/predictor/dec…
+      0.0            59765         32      1867.7      1814.0      1734      2472        168.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_5/self_attn/MatMul_1+/sem_seg_head/predictor/dec…
+      0.0            59743         32      1867.0      1758.5      1564      3287        333.1  PushPop   myelin-exec:__myl_Move_myl85_0
+      0.0            59561         32      1861.3      1833.5      1770      2179         90.9  PushPop   TensorRT:/backbone/res4/res4.4/conv2/Conv + /backbone/res4/res4.4/Relu_1
+      0.0            59554         32      1861.1      1783.5      1693      2691        222.5  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_0_5/MatMul_myl151_44
+      0.0            59390         32      1855.9      1787.0      1714      2685        217.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_4/self_attn/MatMul_3_myl125_15
+      0.0            59345         32      1854.5      1794.0      1710      2654        193.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_6/self_attn/MatMul_1+/sem_seg_head/predictor/dec…
+      0.0            59154         32      1848.6      1653.0      1536      2710        393.1  PushPop   TensorRT:/sem_seg_head/input_proj.1/input_proj.1.0/Conv
+      0.0            58964         32      1842.6      1816.5      1730      2176         94.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_3/cross_attn/output_proj/MatMul_myl125_2
+      0.0            58905         32      1840.8      1824.0      1743      2239         89.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_0/cross_attn/attention_weights/MatMul+/sem_seg_h…
+      0.0            58894         32      1840.4      1793.0      1707      2647        190.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_1/self_attn/MatMul_1+/sem_seg_head/predictor/dec…
+      0.0            58868         32      1839.6      1793.5      1720      2560        168.7  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_3/self_attn/MatMul_1+/sem_seg_head/predictor/dec…
+      0.0            58853         32      1839.2      1785.0      1695      3126        244.7  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_1/self_attn/MatMul_4_myl113_18
+      0.0            58803         32      1837.6      1828.5      1774      2056         54.7  PushPop   TensorRT:/backbone/res4/res4.5/conv2/Conv + /backbone/res4/res4.5/Relu_1
+      0.0            58614         32      1831.7      1820.5      1759      2109         68.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_0/MatMul_myl113_7
+      0.0            58610         32      1831.6      1772.0      1700      2610        198.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_7/self_attn/MatMul_3_myl139_18
+      0.0            58304         32      1822.0      1790.0      1675      2732        198.9  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_0/linear2/MatMul_myl89_3
+      0.0            58284         32      1821.4      1729.5      1608      3696        360.0  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_0_1/MatMul_myl151_28
+      0.0            58272         32      1821.0      1757.5      1681      2490        184.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_5/self_attn/MatMul_3_myl129_15
+      0.0            58264         32      1820.8      1719.0      1668      3841        391.1  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_0/MatMul_myl109_25
+      0.0            58154         32      1817.3      1726.0      1642      3539        342.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_0_5/MatMul_myl129_11
+      0.0            58072         32      1814.8      1801.5      1731      1983         54.2  PushPop   TensorRT:/backbone/res3/res3.2/conv2/Conv + /backbone/res3/res3.2/Relu_1
+      0.0            58062         32      1814.4      1773.0      1695      2398        145.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_7/self_attn/MatMul_1+/sem_seg_head/predictor/dec…
+      0.0            57865         32      1808.3      1759.0      1694      2277        141.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_7/linear1/MatMul_myl146_7
+      0.0            57842         32      1807.6      1776.0      1707      2376        135.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_4/self_attn/MatMul_4_myl125_18
+      0.0            57838         32      1807.4      1773.5      1714      2269        107.0  PushPop   TensorRT:/backbone/res3/res3.3/conv2/Conv + /backbone/res3/res3.3/Relu_1
+      0.0            57713         32      1803.5      1728.5      1639      3795        375.0  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_2_9/MatMul_myl151_14
+      0.0            57697         32      1803.0      1743.5      1665      2825        218.3  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_0_9/MatMul_myl151_12
+      0.0            57671         32      1802.2      1778.5      1727      2232         93.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_3/self_attn/MatMul_4_myl121_18
+      0.0            57668         32      1802.1      1777.0      1687      2141         97.8  PushPop   myelin-exec:/sem_seg_head/predictor/class_embed_1/MatMul_myl151_5
+      0.0            57545         32      1798.3      1779.5      1692      2210         96.7  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_1/cross_attn/attention_weights/MatMul+/sem_seg_h…
+      0.0            57488         32      1796.5      1753.0      1658      2905        210.5  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_1/MatMul_myl117_7
+      0.0            57410         32      1794.1      1773.5      1676      2313        123.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_2/self_attn/MatMul_1+/sem_seg_head/predictor/dec…
+      0.0            57372         32      1792.9      1773.5      1698      2190        108.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_7/MatMul_myl146_10
+      0.0            57324         32      1791.4      1745.0      1685      2785        188.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_8/cross_attn/attention_weights/MatMul+/sem_seg_h…
+      0.0            57276         32      1789.9      1752.0      1666      2276        131.4  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_6/self_attn/MatMul_4_myl133_18
+      0.0            57250         32      1789.1      1754.0      1647      2239        119.7  PushPop   myelin-exec:/sem_seg_head/predictor/mask_embed/layers_0/MatMul_myl151_7
+      0.0            57190         32      1787.2      1711.5      1605      3900        387.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_2/MatMul_myl121_8
+      0.0            57177         32      1786.8      1767.5      1691      2071         80.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_3/cross_attn/attention_weights/MatMul+/sem_seg_h…
+      0.0            57136         32      1785.5      1748.0      1650      2300        146.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_5/self_attn/MatMul_2_myl129_17
+      0.0            57104         32      1784.5      1740.0      1664      2498        157.0  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_2/MatMul_myl109_27
+      0.0            57101         32      1784.4      1759.5      1666      2090         85.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_6/MatMul_myl139_10
+      0.0            57095         32      1784.2      1606.0      1473      2489        355.7  PushPop   myelin-exec:__myl_Cums_myl85_1
+      0.0            57083         32      1783.8      1748.5      1697      2654        163.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_2/cross_attn/attention_weights/MatMul+/sem_seg_h…
+      0.0            57082         32      1783.8      1760.0      1667      2489        142.7  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_0/linear1/MatMul_myl89_2
+      0.0            57040         32      1782.5      1741.5      1662      2711        197.6  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_0_3/MatMul_myl151_36
+      0.0            56998         32      1781.2      1774.5      1692      1988         69.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_5/cross_attn/attention_weights/MatMul+/sem_seg_h…
+      0.0            56987         32      1780.8      1740.5      1679      2404        164.7  PushPop   myelin-exec:/sem_seg_head/predictor/class_embed/MatMul_myl109_22
+      0.0            56983         32      1780.7      1702.5      1592      3649        363.4  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_1_7/MatMul_myl139_15
+      0.0            56958         32      1779.9      1755.0      1668      2322        120.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_4/MatMul_myl129_7
+      0.0            56917         32      1778.7      1728.0      1617      2635        190.6  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_0_7/MatMul_myl151_20
+      0.0            56732         32      1772.9      1581.0      1481      4037        557.1  PushPop   myelin-exec:__myl_SigmReshReshMaxMinSubMaxMaxMinMinDivLogReshMaxMinSubMaxAddSigmReshMaxMinMinDivLog…
+      0.0            56724         32      1772.6      1734.0      1603      2635        175.7  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_0_4/MatMul_myl125_11
+      0.0            56666         32      1770.8      1744.0      1660      2158         90.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_2/self_attn/MatMul_4_myl117_18
+      0.0            56649         32      1770.3      1758.0      1656      2090         80.7  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_4/cross_attn/attention_weights/MatMul+/sem_seg_h…
+      0.0            56630         32      1769.7      1749.0      1673      1991         70.7  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_7/self_attn/MatMul_4_myl139_21
+      0.0            56628         32      1769.6      1737.5      1694      2345        122.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_0/cross_attn/value_proj/MatMul_myl109_18
+      0.0            56583         32      1768.2      1741.0      1677      2171        101.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_1/self_attn/MatMul_2_myl113_17
+      0.0            56563         32      1767.6      1754.0      1694      2137         79.5  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_5/self_attn/MatMul_4_myl129_18
+      0.0            56557         32      1767.4      1729.0      1632      2276        128.2  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_1_9/MatMul_myl151_13
+      0.0            56553         32      1767.3      1737.0      1674      2147        101.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_1/MatMul_myl113_8
+      0.0            56523         32      1766.3      1745.5      1666      2022         74.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_2/MatMul_myl121_7
+      0.0            56464         32      1764.5      1758.0      1674      2043         71.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_8/self_attn/MatMul_4_myl146_21
+      0.0            56457         32      1764.3      1742.5      1652      2131         96.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_0_8/MatMul_myl146_14
+      0.0            56430         32      1763.4      1714.5      1630      2615        188.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_5/linear1/MatMul_myl133_4
+      0.0            56383         32      1762.0      1754.0      1668      1932         57.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_7/cross_attn/attention_weights/MatMul+/sem_seg_h…
+      0.0            56371         32      1761.6      1702.0      1599      3636        347.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_1_1/MatMul_myl113_12
+      0.0            56338         32      1760.6      1741.0      1626      2141        110.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_8/self_attn/MatMul_2_myl146_20
+      0.0            56323         32      1760.1      1736.5      1644      2124         92.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_3/MatMul_myl125_7
+      0.0            56274         32      1758.6      1737.0      1650      2359        132.5  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_3/linear1/MatMul_myl125_4
+      0.0            56263         32      1758.2      1709.5      1625      2584        206.8  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_1/linear2/MatMul_myl93_3
+      0.0            56249         32      1757.8      1733.0      1659      2175        101.5  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_6/MatMul_myl139_11
+      0.0            56208         32      1756.5      1703.0      1589      2496        165.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_7/MatMul_myl146_12
+      0.0            56140         32      1754.4      1742.5      1669      1980         66.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_6/cross_attn/attention_weights/MatMul+/sem_seg_h…
+      0.0            56129         32      1754.0      1731.0      1658      2066         89.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_5/MatMul_myl133_7
+      0.0            56108         32      1753.4      1706.5      1649      2283        149.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_8/self_attn/Gemm_myl146_23
+      0.0            56022         32      1750.7      1687.0      1635      3167        270.9  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_3/self_attn/value_proj/MatMul_myl97_8
+      0.0            56003         32      1750.1      1720.0      1651      2071         98.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_6/linear1/MatMul_myl139_7
+      0.0            55991         32      1749.7      1727.5      1665      2091         91.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_1/MatMul_myl117_8
+      0.0            55965         32      1748.9      1703.5      1628      2684        189.3  PushPop   TensorRT:/backbone/res4/res4.1/conv1/Conv + /backbone/res4/res4.1/Relu
+      0.0            55935         32      1748.0      1717.0      1662      2230        103.4  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_3/self_attn/MatMul_2_myl121_17
+      0.0            55906         32      1747.1      1712.0      1637      2236        123.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_7/MatMul_myl146_11
+      0.0            55813         32      1744.2      1721.5      1644      2176        123.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_3/self_attn/Gemm_myl121_20
+      0.0            55765         32      1742.7      1722.0      1630      2098         90.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_0_7/MatMul_myl139_14
+      0.0            55724         32      1741.4      1712.5      1635      1973         86.1  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_0_6/MatMul_myl151_16
+      0.0            55684         32      1740.1      1704.5      1649      2096         99.7  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_0_2/MatMul_myl151_32
+      0.0            55676         32      1739.9      1730.0      1627      1980         73.4  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_6/self_attn/MatMul_2_myl133_17
+      0.0            55654         32      1739.2      1721.5      1632      2004         76.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_7/self_attn/Gemm_myl139_23
+      0.0            55635         32      1738.6      1698.5      1629      2535        163.6  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_1/self_attn/value_proj/MatMul_myl89_8
+      0.0            55596         32      1737.4      1827.0      1277      1937        196.7  PushPop   myelin-exec:__myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_myl151_43
+      0.0            55557         32      1736.2      1709.0      1607      2372        138.1  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_2/self_attn/attention_weights/MatMul+/sem_seg_…
+      0.0            55551         32      1736.0      1716.0      1661      2162         90.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_2/self_attn/MatMul_2_myl117_17
+      0.0            55533         32      1735.4      1714.0      1647      2152         89.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_5/self_attn/Gemm_myl129_20
+      0.0            55532         32      1735.4      1725.5      1632      2223        103.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_4/self_attn/MatMul_2_myl125_17
+      0.0            55524         32      1735.1      1698.0      1640      2031         97.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_4/linear1/MatMul_myl129_4
+      0.0            55473         32      1733.5      1716.5      1652      1991         67.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_2/linear1/MatMul_myl121_4
+      0.0            55460         32      1733.1      1697.0      1588      2598        173.6  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_1_8/MatMul_myl151_25
+      0.0            55460         32      1733.1      1694.0      1610      2288        139.0  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_3/linear1/MatMul_myl101_2
+      0.0            55445         32      1732.7      1719.0      1651      1941         63.5  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_0_2/MatMul_myl117_11
+      0.0            55441         32      1732.5      1701.0      1630      2192        105.4  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_6/self_attn/Gemm_myl133_20
+      0.0            55419         32      1731.8      1732.5      1580      2080         98.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_0_3/MatMul_myl121_11
+      0.0            55416         32      1731.8      1717.0      1633      2027         86.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_4/self_attn/Gemm_myl125_20
+      0.0            55368         32      1730.3      1692.0      1614      2111        112.8  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_2/linear1/MatMul_myl97_2
+      0.0            55357         32      1729.9      1675.0      1596      2539        186.1  PushPop   TensorRT:/backbone/res4/res4.2/conv3/Conv + /backbone/res4/res4.2/Add + /backbone/res4/res4.2/Relu_2
+      0.0            55312         32      1728.5      1717.0      1627      2027         81.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_1_4/MatMul_myl125_12
+      0.0            55305         32      1728.3      1700.0      1631      2366        131.7  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_1/self_attn/attention_weights/MatMul+/sem_seg_…
+      0.0            55303         32      1728.2      1690.5      1641      2164        108.7  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_4/self_attn/value_proj/MatMul_myl101_8
+      0.0            55298         32      1728.1      1696.5      1660      2340        119.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_1/linear1/MatMul_myl117_4
+      0.0            55295         32      1728.0      1719.0      1637      1929         55.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_0_1/MatMul_myl113_11
+      0.0            55290         32      1727.8      1715.5      1615      2003         81.0  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/layers_2/self_attn/Gemm_myl117_20
+      0.0            55277         32      1727.4      1699.0      1624      2173        120.7  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_5/linear1/MatMul_myl109_3
+      0.0            55246         32      1726.4      1683.5      1605      2705        192.5  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_1_4/MatMul_myl151_41
+      0.0            55147         32      1723.3      1665.0      1569      2636        225.4  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_3/linear2/MatMul_myl101_3
+      0.0            55111         32      1722.2      1705.5      1586      2096        102.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_5/MatMul_myl133_8
+      0.0            55102         32      1721.9      1709.5      1609      2065         94.4  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_1_5/MatMul_myl151_45
+      0.0            55089         32      1721.5      1699.0      1616      2006         78.4  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_1/linear1/MatMul_myl93_2
+      0.0            55067         32      1720.8      1693.0      1624      2198        106.5  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_1_5/MatMul_myl129_12
+      0.0            55050         32      1720.3      1706.0      1637      1945         60.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_2/MatMul_myl113_9
+      0.0            55044         32      1720.1      1690.5      1645      2086         96.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_1_3/MatMul_myl121_12
+      0.0            55016         32      1719.3      1672.5      1586      2957        232.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_6/MatMul_myl139_12
+      0.0            54964         32      1717.6      1694.0      1621      2028         88.8  PushPop   TensorRT:/backbone/res4/res4.1/conv3/Conv + /backbone/res4/res4.1/Add + /backbone/res4/res4.1/Relu_2
+      0.0            54934         32      1716.7      1681.0      1586      2506        168.0  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_4/self_attn/attention_weights/MatMul+/sem_seg_…
+      0.0            54930         32      1716.6      1696.0      1619      2158        100.7  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_4/linear1/MatMul_myl105_2
+      0.0            54894         32      1715.4      1710.0      1627      1823         45.5  PushPop   myelin-exec:/sem_seg_head/predictor/mask_embed/layers_2/MatMul_myl151_9
+      0.0            54893         32      1715.4      1698.0      1633      1991         73.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_3/MatMul_myl125_8
+      0.0            54867         32      1714.6      1672.5      1580      2510        164.9  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_2_4/MatMul_myl151_42
+      0.0            54831         32      1713.5      1694.5      1617      1941         78.6  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_1_8/MatMul_myl146_15
+      0.0            54763         32      1711.3      1701.5      1614      1915         66.8  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_1_6/MatMul_myl133_12
+      0.0            54759         32      1711.2      1672.5      1632      2287        116.0  PushPop   TensorRT:/backbone/res4/res4.4/conv3/Conv + /backbone/res4/res4.4/Add + /backbone/res4/res4.4/Relu_2
+      0.0            54738         32      1710.6      1696.5      1616      1898         59.7  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_4/MatMul_myl129_8
+      0.0            54696         32      1709.3      1703.5      1596      2011         70.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/ref_point_head/layers_1_2/MatMul_myl117_12
+      0.0            54630         32      1707.2      1686.5      1598      1946         82.3  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_2_6/MatMul_myl151_18
+      0.0            54561         32      1705.0      1670.5      1632      2208        123.5  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_5/self_attn/value_proj/MatMul_myl105_8
+      0.0            54484         32      1702.6      1692.5      1597      1927         76.0  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_1_7/MatMul_myl151_21
+      0.0            54472         32      1702.3      1680.5      1590      2173        103.0  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_5/self_attn/attention_weights/MatMul+/sem_seg_…
+      0.0            54471         32      1702.2      1684.5      1583      2002         86.9  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_2_8/MatMul_myl151_26
+      0.0            54441         32      1701.3      1658.5      1586      2442        153.6  PushPop   TensorRT:/backbone/res4/res4.5/conv3/Conv + /backbone/res4/res4.5/Add + /backbone/res4/res4.5/Relu_2
+      0.0            54419         32      1700.6      1686.5      1622      1903         58.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_4/MatMul_myl129_9
+      0.0            54306         32      1697.1      1679.5      1565      2149         99.4  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_1_3/MatMul_myl151_37
+      0.0            54276         32      1696.1      1677.5      1614      1960         75.3  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_1_6/MatMul_myl151_17
+      0.0            54248         32      1695.3      1686.0      1626      1830         49.3  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_2/MatMul_myl121_9
+      0.0            54236         32      1694.9      1655.0      1610      2243        133.7  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_2_5/MatMul_myl151_46
+      0.0            54182         32      1693.2      1667.5      1617      1999         83.3  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_1_2/MatMul_myl151_33
+      0.0            54166         32      1692.7      1646.5      1556      2406        158.7  PushPop   myelin-exec:__myl_ReshMulReshReshReshReshReshReshReshMulMulMulMulMulMulDivMulReshMulDivMulReshDivMu…
+      0.0            54158         32      1692.4      1680.0      1627      1956         60.9  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_5/MatMul_myl133_9
+      0.0            54150         32      1692.2      1672.0      1592      2081        100.1  PushPop   myelin-exec:/sem_seg_head/transformer/encoder/layers_3/self_attn/attention_weights/MatMul+/sem_seg_…
+      0.0            54108         32      1690.9      1682.5      1579      1995         75.1  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_1_1/MatMul_myl151_29
+      0.0            54076         32      1689.9      1672.5      1603      2021         79.7  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_2_7/MatMul_myl151_22
+      0.0            54064         32      1689.5      1490.5      1382      2401        365.5  PushPop   myelin-exec:__myl_Gnor_myl85_17
+      0.0            54033         32      1688.5      1672.0      1598      1916         59.1  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_1/MatMul_myl117_9
+      0.0            53988         32      1687.1      1673.0      1589      2026         82.2  PushPop   myelin-exec:/sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_3/MatMul_myl125_9
+      0.0            53942         32      1685.7      1670.0      1598      1996         77.4  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_2_3/MatMul_myl151_38
+      0.0            53880         32      1683.8      1671.0      1594      2131         99.9  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_2_2/MatMul_myl151_34
+      0.0            53721         32      1678.8      1670.0      1584      2033         82.2  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_2_1/MatMul_myl151_30
+      0.0            53615         32      1675.5      1658.5      1575      2063         88.5  PushPop   myelin-exec:/sem_seg_head/predictor/bbox_embed_0/layers_1/MatMul_myl109_26
+      0.0            53509         32      1672.2      1647.0      1608      2039         80.9  PushPop   TensorRT:/backbone/res4/res4.3/conv3/Conv + /backbone/res4/res4.3/Add + /backbone/res4/res4.3/Relu_2
+      0.0            53478         32      1671.2      1641.0      1573      2035         95.3  PushPop   TensorRT:/backbone/res5/res5.1/conv3/Conv + /backbone/res5/res5.1/Add + /backbone/res5/res5.1/Relu_2
+      0.0            53431         32      1669.7      1643.5      1578      1962         89.8  PushPop   TensorRT:/backbone/res5/res5.0/conv3/Conv + /backbone/res5/res5.0/Add + /backbone/res5/res5.0/Relu_2
+      0.0            53140         32      1660.6      1645.0      1558      1936         80.5  PushPop   TensorRT:/backbone/res4/res4.2/conv1/Conv + /backbone/res4/res4.2/Relu
+      0.0            53125         32      1660.2      1473.5      1403      2354        334.7  PushPop   myelin-exec:__myl_MaxMinSubMaxMaxMinMinDivLogAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlic…
+      0.0            52893         32      1652.9      1627.5      1569      1924         73.2  PushPop   TensorRT:/backbone/res4/res4.4/conv1/Conv + /backbone/res4/res4.4/Relu
+      0.0            52640         32      1645.0      1422.5      1344      3427        459.1  PushPop   myelin-exec:__myl_MaxrSubExpSumDivMul_myl129_16
+      0.0            52602         32      1643.8      1602.0      1546      2157        124.1  PushPop   TensorRT:/backbone/res5/res5.0/conv1/Conv + /backbone/res5/res5.0/Relu
+      0.0            52558         32      1642.4      1398.5      1312      3611        483.8  PushPop   myelin-exec:__myl_Sele_myl146_1
+      0.0            52488         32      1640.3      1575.0      1490      2918        258.1  PushPop   myelin-exec:__myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_myl85_25
+      0.0            52456         32      1639.3      1613.5      1521      2161        110.1  PushPop   TensorRT:/backbone/res4/res4.5/conv1/Conv + /backbone/res4/res4.5/Relu
+      0.0            52224         32      1632.0      1607.0      1473      2106        129.0  PushPop   myelin-exec:__myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddReluMeanMean_myl146_4
+      0.0            52209         32      1631.5      1438.5      1348      2291        352.0  PushPop   myelin-exec:__myl_ReshMulMulMulAdd_myl109_52
+      0.0            51978        544        95.5        92.0        68       178         17.9  StartEnd  myelin-exec:myelinTensorSetInputMemoryBatch
+      0.0            51674         32      1614.8      1593.5      1483      2282        152.6  PushPop   myelin-exec:__myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicC…
+      0.0            51250         32      1601.6      1451.5      1375      4836        617.8  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl97_1
+      0.0            51138         32      1598.1      1395.0      1325      4767        749.7  PushPop   myelin-exec:__myl_Cums_myl85_6
+      0.0            50926         32      1591.4      1574.0      1480      2125        112.2  PushPop   myelin-exec:__myl_LogSeleSeleCastReshCastReplAddGathReshSigmCastReshMulReshSlicSlicSlicReshSlicResh…
+      0.0            50729         32      1585.3      1413.5      1327      2277        334.2  PushPop   myelin-exec:__myl_Sele_myl139_4
+      0.0            50458         32      1576.8      1551.5      1450      2238        147.0  PushPop   myelin-exec:__myl_MaxMinSubMaxMaxMinMinDivLogAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlic…
+      0.0            50384         32      1574.5      1378.0      1308      2259        343.5  PushPop   myelin-exec:__myl_Sele_myl105_9
+      0.0            50162         32      1567.6      1524.5      1433      2404        173.0  PushPop   myelin-exec:__myl_MulMulMulMulConcReshConcReshConcReshConcReshConcSubDivLtGtrAndNotCastSlicSlicAddS…
+      0.0            50092         32      1565.4      1359.0      1275      2425        373.6  PushPop   myelin-exec:__myl_ReshConcConcResh_myl109_36
+      0.0            50081         32      1565.0      1524.0      1443      2330        170.6  PushPop   myelin-exec:__myl_SlicAddDivMulMulReshMulSlicCosReshSlicSinReshConcResh_myl85_14
+      0.0            49984         32      1562.0      1396.0      1280      2261        325.8  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl125_21
+      0.0            49673         32      1552.3      1527.5      1448      1966         95.8  PushPop   myelin-exec:__myl_Add_myl141_0
+      0.0            49328         32      1541.5      1319.0      1238      5689        831.0  PushPop   myelin-exec:__myl_ReshReshConcResh_myl109_30
+      0.0            49271         32      1539.7      1507.5      1411      2238        145.3  PushPop   myelin-exec:__myl_MaxMinSubMaxMaxMinMinDivLogAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlic…
+      0.0            49200         32      1537.5      1495.5      1428      1949        121.6  PushPop   myelin-exec:__myl_MaxMinSubMaxMaxMinMinDivLogAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlic…
+      0.0            49149         32      1535.9      1517.5      1428      1966        103.9  PushPop   myelin-exec:__myl_ConcReshAddAddAddAddConcTranConcAdd_myl85_28
+      0.0            48651         32      1520.3      1483.0      1412      2115        159.8  PushPop   myelin-exec:__myl_Move_myl109_0
+      0.0            48638         32      1519.9      1503.0      1395      1880         90.2  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl89_1
+      0.0            48454         32      1514.2      1487.0      1428      2070        122.6  PushPop   myelin-exec:__myl_Tran_myl85_18
+      0.0            48374         32      1511.7      1433.5      1364      3462        367.6  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl129_3
+      0.0            48296         32      1509.3      1473.5      1409      2073        147.4  PushPop   myelin-exec:__myl_MaxMinSubMaxMaxMinMinDivLogAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlic…
+      0.0            48231         32      1507.2      1452.5      1387      2236        173.8  PushPop   myelin-exec:__myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAddMeanSubMulMeanAddSqrtDivMulMulAddMeanSubM…
+      0.0            48157         32      1504.9      1460.0      1381      2306        171.0  PushPop   myelin-exec:__myl_Sele_myl117_1
+      0.0            48089         32      1502.8      1373.5      1294      5174        672.7  PushPop   myelin-exec:__myl_Add_myl125_22
+      0.0            47720         32      1491.3      1459.5      1367      2040        141.6  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl93_1
+      0.0            47701         32      1490.7      1461.5      1428      1801         83.5  PushPop   myelin-exec:__myl_Move_myl139_0
+      0.0            47627         32      1488.3      1471.5      1384      1929        108.1  PushPop   myelin-exec:__myl_ReshMulMulMulAdd_myl113_25
+      0.0            47614         32      1487.9      1441.0      1343      2728        237.6  PushPop   myelin-exec:__myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicC…
+      0.0            47563         32      1486.3      1430.5      1360      1966        161.3  PushPop   myelin-exec:__myl_MaxMinSubMaxMaxMinMinDivLogAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlic…
+      0.0            47462         32      1483.2      1407.0      1350      2500        252.1  PushPop   myelin-exec:__myl_Sele_myl133_1
+      0.0            47403         32      1481.3      1457.0      1352      2175        151.2  PushPop   myelin-exec:__myl_Cums_myl85_2
+      0.0            47326         32      1478.9      1452.5      1391      2033        135.1  PushPop   myelin-exec:__myl_Topk_myl109_24
+      0.0            47294         32      1477.9      1387.0      1299      3579        406.4  PushPop   myelin-exec:__myl_ReshCastDivReshConcResh_myl109_35
+      0.0            47241         32      1476.3      1429.5      1371      2657        228.7  PushPop   myelin-exec:__myl_AddSqrtDivMulMulAddSlicSlicSlicSlicTran_myl109_6
+      0.0            47224         32      1475.8      1431.0      1369      2099        149.9  PushPop   myelin-exec:__myl_MaxMinSubMaxMaxMinMinDivLogAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlic…
+      0.0            47216         32      1475.5      1390.0      1332      3600        395.8  PushPop   myelin-exec:__myl_Sele_myl129_1
+      0.0            47191         32      1474.7      1427.0      1351      2267        173.1  PushPop   myelin-exec:__myl_Add_myl129_13
+      0.0            47106         32      1472.1      1425.0      1366      2469        200.7  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl89_4
+      0.0            47085         32      1471.4      1392.0      1307      3109        314.1  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl133_24
+      0.0            47080         32      1471.3      1409.0      1339      2760        250.8  PushPop   myelin-exec:__myl_Add_myl125_13
+      0.0            47066         32      1470.8      1432.5      1368      2110        153.7  PushPop   myelin-exec:__myl_ReshTran_myl85_4
+      0.0            47043         32      1470.1      1444.5      1401      1790         84.9  PushPop   myelin-exec:__myl_MaxMinSubMaxMaxMinMinDivLogAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlic…
+      0.0            47009         32      1469.0      1448.5      1349      1915        118.0  PushPop   myelin-exec:__myl_Tran_myl85_22
+      0.0            46926         32      1466.4      1416.0      1324      2742        243.7  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl105_1
+      0.0            46806         32      1462.7      1418.0      1345      2173        155.3  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl146_24
+      0.0            46778         32      1461.8      1427.0      1376      1922        101.8  PushPop   myelin-exec:__myl_Gnor_myl85_27
+      0.0            46741         32      1460.7      1375.5      1310      3073        315.8  PushPop   myelin-exec:__myl_ReshMulAdd_myl105_7
+      0.0            46728         32      1460.3      1415.0      1351      2171        147.9  PushPop   myelin-exec:__myl_ReshConcReshReshConcReshReshReshConcReshReshReshConcReshConcReshSlicReshSlicSlicR…
+      0.0            46725         32      1460.2      1376.5      1288      3733        425.6  PushPop   myelin-exec:__myl_MaxrSubExpSumDivMul_myl109_43
+      0.0            46572         32      1455.4      1437.0      1367      1898         99.0  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl101_1
+      0.0            46542         32      1454.4      1434.0      1365      1755         86.4  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl121_3
+      0.0            46510         32      1453.4      1387.5      1332      2554        232.9  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl133_3
+      0.0            46508         32      1453.4      1413.0      1362      1803        106.2  PushPop   myelin-exec:__myl_Tran_myl146_22
+      0.0            46385         32      1449.5      1383.0      1327      2970        286.1  PushPop   myelin-exec:__myl_ReshMulMulMulAdd_myl139_28
+      0.0            46348         32      1448.4      1419.5      1350      2191        148.2  PushPop   myelin-exec:__myl_ReshTran_myl85_8
+      0.0            46334         32      1447.9      1287.0      1214      2160        323.0  PushPop   myelin-exec:__myl_SumReshCastDiv_myl85_33
+      0.0            46289         32      1446.5      1418.0      1331      2026        118.4  PushPop   myelin-exec:__myl_ReshMulAdd_myl89_7
+      0.0            46284         32      1446.4      1414.0      1340      1845        118.9  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl151_1
+      0.0            46140         32      1441.9      1419.0      1357      2000        118.5  PushPop   myelin-exec:__myl_AddReshMeanSubMulMeanAddSqrtDivMulMulAdd_myl109_48
+      0.0            46138         32      1441.8      1426.5      1348      1726         83.2  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl129_21
+      0.0            46131         32      1441.6      1396.5      1333      2073        156.9  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl117_24
+      0.0            46087         32      1440.2      1415.5      1312      1875        123.8  PushPop   myelin-exec:__myl_Sele_myl125_1
+      0.0            46035         32      1438.6      1404.0      1337      1961        114.2  PushPop   myelin-exec:__myl_ReplGathReshAdd_myl109_40
+      0.0            46031         32      1438.5      1411.5      1320      2120        136.4  PushPop   myelin-exec:__myl_Add_myl113_13
+      0.0            46028         32      1438.4      1390.5      1319      2158        171.9  PushPop   myelin-exec:__myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicC…
+      0.0            46016         32      1438.0      1401.5      1337      1977        145.3  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl113_21
+      0.0            45943         32      1435.7      1409.5      1328      2050        127.7  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl101_4
+      0.0            45931         32      1435.3      1407.5      1355      1874        106.9  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl121_21
+      0.0            45864         32      1433.3      1387.0      1290      2775        253.8  PushPop   myelin-exec:__myl_Cums_myl85_9
+      0.0            45856         32      1433.0      1369.0      1287      2227        210.8  PushPop   myelin-exec:__myl_Cums_myl85_5
+      0.0            45835         32      1432.3      1408.5      1314      2059        129.0  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl93_4
+      0.0            45816         32      1431.8      1393.0      1341      2247        167.4  PushPop   myelin-exec:__myl_AddMeanSubMulMean_myl109_5
+      0.0            45773         32      1430.4      1406.5      1354      1780         97.3  PushPop   myelin-exec:__myl_ReshMulMulMulAdd_myl129_25
+      0.0            45750         32      1429.7      1390.5      1293      1806        112.5  PushPop   myelin-exec:__myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_myl151_15
+      0.0            45737         32      1429.3      1412.0      1331      1869        105.2  PushPop   myelin-exec:__myl_Sele_myl113_1
+      0.0            45707         32      1428.3      1400.0      1338      1745         92.4  PushPop   myelin-exec:__myl_Cast_myl151_11
+      0.0            45682         32      1427.6      1344.5      1296      3480        381.0  PushPop   myelin-exec:__myl_SumReshCastDiv_myl109_28
+      0.0            45653         32      1426.7      1413.0      1329      1705         76.3  PushPop   myelin-exec:__myl_Sele_myl85_40
+      0.0            45619         32      1425.6      1392.0      1304      2075        144.8  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl113_3
+      0.0            45602         32      1425.1      1393.5      1333      1758        100.0  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl133_21
+      0.0            45572         32      1424.1      1363.5      1302      2446        206.1  PushPop   myelin-exec:__myl_Add_myl146_25
+      0.0            45552         32      1423.5      1409.0      1338      1636         66.9  PushPop   myelin-exec:__myl_ReshMulMulMulAdd_myl146_28
+      0.0            45548         32      1423.4      1394.0      1318      1741         96.7  PushPop   myelin-exec:__myl_Tran_myl139_22
+      0.0            45499         32      1421.8      1385.5      1328      2066        144.2  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl113_24
+      0.0            45446         32      1420.2      1392.5      1328      1769         96.1  PushPop   myelin-exec:__myl_Add_myl139_25
+      0.0            45385         32      1418.3      1399.5      1316      1868        106.3  PushPop   myelin-exec:__myl_Tran_myl117_19
+      0.0            45362         32      1417.6      1364.0      1294      1987        165.7  PushPop   myelin-exec:__myl_Add_myl133_22
+      0.0            45323         32      1416.3      1385.0      1318      1834        111.0  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl146_6
+      0.0            45287         32      1415.2      1375.5      1301      2065        169.9  PushPop   myelin-exec:__myl_MaxrSubExpSumDivMul_myl113_16
+      0.0            45287         32      1415.2      1378.0      1326      2132        145.2  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl121_24
+      0.0            45277         32      1414.9      1393.5      1329      1834         92.6  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl93_6
+      0.0            45266         32      1414.6      1403.0      1327      1740         92.1  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl125_24
+      0.0            45235         32      1413.6      1370.0      1307      2551        213.5  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl129_24
+      0.0            45221         32      1413.2      1359.5      1299      2165        161.4  PushPop   myelin-exec:__myl_Add_myl139_16
+      0.0            45200         32      1412.5      1385.5      1305      1833        109.5  PushPop   myelin-exec:__myl_Add_myl133_13
+      0.0            45185         32      1412.0      1397.0      1339      1854        100.2  PushPop   myelin-exec:__myl_MeanSubMulMeanAddSqrtDivMulMulAdd_myl109_21
+      0.0            45183         32      1412.0      1375.5      1290      2034        143.2  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl139_24
+      0.0            45109         32      1409.7      1367.5      1310      1989        126.1  PushPop   myelin-exec:__myl_SumReshCastDiv_myl85_30
+      0.0            45082         32      1408.8      1388.5      1332      1751         86.4  PushPop   myelin-exec:__myl_ReshMulMulMulAdd_myl133_25
+      0.0            45068         32      1408.4      1381.0      1321      1840         94.5  PushPop   myelin-exec:__myl_Add_myl121_13
+      0.0            45051         32      1407.8      1340.0      1281      2121        190.5  PushPop   myelin-exec:__myl_Cast_myl151_6
+      0.0            45051         32      1407.8      1384.0      1306      1864        102.5  PushPop   myelin-exec:__myl_Move_myl85_19
+      0.0            45031         32      1407.2      1374.5      1317      1924        118.2  PushPop   myelin-exec:__myl_Sele_myl89_9
+      0.0            44998         32      1406.2      1379.5      1301      1824        109.2  PushPop   myelin-exec:__myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl133_6
+      0.0            44960         32      1405.0      1394.0      1271      1712         75.9  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl97_4
+      0.0            44958         32      1404.9      1388.5      1315      1794         91.2  PushPop   myelin-exec:__myl_ReshMulAdd_myl93_7
+      0.0            44956         32      1404.9      1378.5      1304      1848        119.0  PushPop   myelin-exec:__myl_Tran_myl113_19
+      0.0            44930         32      1404.1      1378.0      1300      1722         99.0  PushPop   myelin-exec:__myl_Add_myl146_16
+      0.0            44915         32      1403.6      1386.0      1315      1858         93.8  PushPop   myelin-exec:__myl_Add_myl117_13
+      0.0            44901         32      1403.2      1372.0      1312      1857        113.0  PushPop   myelin-exec:__myl_Tran_myl129_19
+      0.0            44887         32      1402.7      1373.5      1280      1922        129.0  PushPop   myelin-exec:__myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl146_9
+      0.0            44876         32      1402.4      1383.0      1316      1863         92.0  PushPop   myelin-exec:__myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl113_6
+      0.0            44866         32      1402.1      1384.5      1310      1649         73.0  PushPop   myelin-exec:__myl_Sele_myl121_1
+      0.0            44849         32      1401.5      1374.5      1322      1812        104.9  PushPop   myelin-exec:__myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl121_6
+      0.0            44846         32      1401.4      1366.5      1288      1789        103.1  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl125_3
+      0.0            44831         32      1401.0      1283.5      1232      4771        616.2  PushPop   myelin-exec:__myl_ConcReshCastDiv_myl109_14
+      0.0            44806         32      1400.2      1391.5      1319      1641         66.6  PushPop   myelin-exec:__myl_Move_myl146_2
+      0.0            44781         32      1399.4      1362.0      1286      1812        108.2  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl105_4
+      0.0            44765         32      1398.9      1376.5      1306      1856        100.3  PushPop   myelin-exec:__myl_ReshMulAdd_myl97_7
+      0.0            44759         32      1398.7      1375.0      1288      2002        127.5  PushPop   myelin-exec:__myl_Tran_myl109_46
+      0.0            44756         32      1398.6      1369.5      1301      2023        127.7  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl117_3
+      0.0            44748         32      1398.4      1369.5      1289      1959        138.5  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl101_6
+      0.0            44739         32      1398.1      1361.5      1307      2101        143.9  PushPop   myelin-exec:__myl_Cums_myl85_10
+      0.0            44734         32      1397.9      1387.0      1300      1820         97.6  PushPop   myelin-exec:__myl_Tran_myl125_19
+      0.0            44718         32      1397.4      1367.5      1297      1760        109.8  PushPop   myelin-exec:__myl_MaxrSubExpSumDivMul_myl146_19
+      0.0            44706         32      1397.1      1354.5      1314      2192        156.0  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl146_27
+      0.0            44703         32      1397.0      1365.5      1286      2051        136.9  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl109_51
+      0.0            44660         32      1395.6      1370.5      1322      1721         88.7  PushPop   myelin-exec:__myl_ReshTran_myl85_12
+      0.0            44560         32      1392.5      1365.0      1286      2287        174.5  PushPop   myelin-exec:__myl_Cums_myl85_15
+      0.0            44559         32      1392.5      1361.5      1293      1952        133.9  PushPop   myelin-exec:__myl_MaxrSubExpSumDivMul_myl121_16
+      0.0            44523         32      1391.3      1355.5      1287      2005        138.9  PushPop   myelin-exec:__myl_Tran_myl85_26
+      0.0            44482         32      1390.1      1365.0      1270      1941        126.4  PushPop   myelin-exec:__myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl117_6
+      0.0            44481         32      1390.0      1364.5      1300      1652         84.1  PushPop   myelin-exec:__myl_Tran_myl133_19
+      0.0            44468         32      1389.6      1375.5      1327      1550         50.6  PushPop   myelin-exec:__myl_Tran_myl121_19
+      0.0            44455         32      1389.2      1371.5      1270      1650         76.1  PushPop   myelin-exec:__myl_ReshMulAdd_myl101_7
+      0.0            44452         32      1389.1      1368.5      1290      1808         98.9  PushPop   myelin-exec:__myl_Sele_myl101_9
+      0.0            44432         32      1388.5      1360.0      1294      1974        120.6  PushPop   myelin-exec:__myl_Add_myl113_22
+      0.0            44394         32      1387.3      1348.5      1275      2117        181.4  PushPop   myelin-exec:__myl_SumReshCastDiv_myl85_32
+      0.0            44375         32      1386.7      1363.0      1298      1665         84.3  PushPop   myelin-exec:__myl_ReshMulMulMulAdd_myl121_25
+      0.0            44373         32      1386.7      1365.0      1314      1675         77.2  PushPop   myelin-exec:__myl_ReshMulMulMulAdd_myl117_25
+      0.0            44363         32      1386.3      1352.5      1292      1859        121.4  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl139_6
+      0.0            44334         32      1385.4      1357.5      1273      1766         99.6  PushPop   myelin-exec:__myl_ReshMulMulMulAdd_myl125_25
+      0.0            44332         32      1385.4      1376.0      1307      1647         68.4  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl117_21
+      0.0            44285         32      1383.9      1361.0      1283      1911        108.7  PushPop   myelin-exec:__myl_Add_myl109_49
+      0.0            44275         32      1383.6      1372.5      1288      1673         77.3  PushPop   myelin-exec:__myl_Add_myl129_22
+      0.0            44258         32      1383.1      1372.0      1265      1868        102.7  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl89_6
+      0.0            44220         32      1381.9      1316.5      1236      3303        353.7  PushPop   myelin-exec:__myl_Move_myl146_3
+      0.0            44171         32      1380.3      1342.5      1284      1963        131.8  PushPop   myelin-exec:__myl_SumReshCastDiv_myl85_31
+      0.0            44115         32      1378.6      1343.5      1297      1955        134.2  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl85_38
+      0.0            44095         32      1378.0      1355.0      1305      1723         82.6  PushPop   myelin-exec:__myl_Add_myl117_22
+      0.0            44049         32      1376.5      1360.0      1292      1657         73.4  PushPop   myelin-exec:__myl_Add_myl121_22
+      0.0            44028         32      1375.9      1358.0      1282      1809        104.7  PushPop   myelin-exec:__myl_Sele_myl93_9
+      0.0            44000         32      1375.0      1348.0      1292      1907        116.2  PushPop   myelin-exec:__myl_SlicAddDivMulMulReshMulSlicCosReshSlicSinReshConcResh_myl85_16
+      0.0            43930         32      1372.8      1348.0      1270      1770        109.6  PushPop   myelin-exec:__myl_MaxrSubExpSumDivMul_myl125_16
+      0.0            43924         32      1372.6      1347.0      1302      1803        108.7  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl139_27
+      0.0            43839         32      1370.0      1351.0      1273      1702         90.1  PushPop   myelin-exec:__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl109_2
+      0.0            43834         32      1369.8      1338.5      1282      1912        128.8  PushPop   myelin-exec:__myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl139_9
+      0.0            43809         32      1369.0      1336.0      1267      2057        143.3  PushPop   myelin-exec:__myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_myl151_27
+      0.0            43807         32      1369.0      1340.0      1278      1941        131.3  PushPop   myelin-exec:__myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl125_6
+      0.0            43784         32      1368.3      1313.0      1238      2289        225.6  PushPop   myelin-exec:__myl_Sum_myl109_13
+      0.0            43675         32      1364.8      1331.5      1270      1740        107.6  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl105_6
+      0.0            43617         32      1363.0      1354.0      1318      1504         40.0  PushPop   myelin-exec:__myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_myl151_19
+      0.0            43562         32      1361.3      1348.5      1290      1622         66.0  PushPop   myelin-exec:__myl_Sele_myl109_19
+      0.0            43512         32      1359.8      1327.0      1269      1937        123.7  PushPop   myelin-exec:__myl_Sum_myl109_15
+      0.0            43469         32      1358.4      1341.0      1272      1729         90.6  PushPop   myelin-exec:__myl_MaxrSubExpSumDivMul_myl117_16
+      0.0            43454         32      1357.9      1343.0      1284      1710         85.1  PushPop   myelin-exec:__myl_ReshMaxrSubExpSumDiv_myl97_6
+      0.0            43405         32      1356.4      1322.5      1279      2037        141.3  PushPop   myelin-exec:__myl_Cums_myl85_13
+      0.0            43341         32      1354.4      1334.0      1264      1585         74.2  PushPop   myelin-exec:__myl_MaxrSubExpSumDivMul_myl133_16
+      0.0            43304         32      1353.3      1332.0      1272      1741         90.5  PushPop   myelin-exec:__myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl129_6
+      0.0            43256         32      1351.8      1341.0      1287      1574         57.1  PushPop   myelin-exec:__myl_Sele_myl97_9
+      0.0            43100         32      1346.9      1323.5      1284      1835         96.0  PushPop   myelin-exec:__myl_Sum_myl109_10
+      0.0            43011         32      1344.1      1330.5      1296      1527         49.1  PushPop   myelin-exec:__myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_myl151_23
+      0.0            42981         32      1343.2      1305.5      1266      2123        151.2  PushPop   myelin-exec:__myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_myl151_35
+      0.0            42929         32      1341.5      1309.5      1245      1681         87.7  PushPop   myelin-exec:__myl_MaxrSubExpSumDivMul_myl139_19
+      0.0            42884         32      1340.1      1317.0      1265      1820         99.3  PushPop   myelin-exec:__myl_MaxrResh_myl109_23
+      0.0            42832         32      1338.5      1313.5      1256      1879        112.8  PushPop   myelin-exec:__myl_Sum_myl109_7
+      0.0            42749         32      1335.9      1320.0      1263      1835         96.9  PushPop   myelin-exec:__myl_ConcReshCastDiv_myl109_9
+      0.0            42742         32      1335.7      1314.5      1247      1840        104.9  PushPop   myelin-exec:__myl_ReshCastDivReshConc_myl109_34
+      0.0            42182         32      1318.2      1314.5      1248      1472         42.7  PushPop   myelin-exec:__myl_Move_myl139_1
+      0.0            42164         32      1317.6      1282.0      1219      1893        121.8  PushPop   myelin-exec:__myl_SumReshCastDiv_myl109_31
+      0.0            42026         32      1313.3      1300.0      1245      1544         51.4  PushPop   myelin-exec:__myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_myl151_31
+      0.0            41962         32      1311.3      1279.0      1221      1755        101.7  PushPop   myelin-exec:__myl_SumReshCastDiv_myl85_34
+      0.0            41719         32      1303.7      1304.0      1255      1352         27.2  PushPop   myelin-exec:__myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_myl151_39
+      0.0            41636         32      1301.1      1270.0      1211      2076        146.3  PushPop   myelin-exec:__myl_Move_myl85_20
+      0.0            41580         32      1299.4      1287.5      1241      1518         54.7  PushPop   myelin-exec:__myl_Move_myl85_23
+      0.0            41159         32      1286.2      1287.5      1233      1325         24.7  PushPop   myelin-exec:__myl_ReshReshConcResh_myl109_33
+      0.0            41111         32      1284.7      1281.0      1243      1336         25.7  PushPop   myelin-exec:__myl_ConcReshCastDiv_myl109_12
+      0.0            40972         32      1280.4      1271.0      1228      1421         43.9  PushPop   myelin-exec:__myl_SumReshCastDiv_myl109_29
+      0.0            40894         32      1277.9      1264.0      1229      1536         55.9  PushPop   myelin-exec:__myl_ConcReshCastDiv_myl109_16
+      0.0            40655         32      1270.5      1261.0      1230      1421         34.9  PushPop   myelin-exec:__myl_Sum_myl109_8
+      0.0            40624         32      1269.5      1263.5      1218      1372         40.1  PushPop   myelin-exec:__myl_SumReshCastDiv_myl109_32
+      0.0            40532         32      1266.6      1255.0      1215      1362         35.1  PushPop   myelin-exec:__myl_Sum_myl109_11
+      0.0            40332         32      1260.4      1251.0      1203      1414         43.1  PushPop   myelin-exec:__myl_Move_myl85_24
+      0.0            25842         32       807.6       795.5       737       942         44.8  PushPop   TensorRT:/sem_seg_head/Cast_2
+      0.0            12184         32       380.8       180.0       154      1309        390.1  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.0/shortcut/Conv
+      0.0             9097         32       284.3       112.0        92      1000        332.7  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.8/cross_attn/Constant_24_output_0
+      0.0             8970         32       280.3        80.0        66      2060        438.4  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.1/self_attn/Constant_17_output_0
+      0.0             7117         32       222.4       212.5       159       464         55.7  PushPop   TensorRT:/sem_seg_head/Cast_4
+      0.0             7101         32       221.9       210.0       149       396         51.6  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res5/res5.0/conv3/Conv + /backbone/r…
+      0.0             6845         32       213.9       212.0       178       282         24.2  PushPop   TensorRT:/sem_seg_head/Cast_1
+      0.0             6445         32       201.4       202.0       145       257         25.5  PushPop   TensorRT:/sem_seg_head/Cast
+      0.0             6183         32       193.2       181.0       161       300         34.3  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res5/res5.0/conv2/Conv + /backbone/r…
+      0.0             5066         32       158.3       151.5       127       240         24.6  PushPop   TensorRT:Reformatting CopyNode for Input Tensor 0 to /backbone/res4/res4.0/conv1/Conv + /backbone/r…
+      0.0             4827         32       150.8       140.5       108       354         46.0  PushPop   TensorRT:/sem_seg_head/Cast_3
+      0.0             3981         32       124.4       119.0       109       168         14.8  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.6/cross_attn/Constant_23_output_0
+      0.0             3848         32       120.3       118.5       107       139          7.4  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.7/cross_attn/Constant_23_output_0
+      0.0             3733         32       116.7       113.0        96       193         21.1  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.0/self_attn/Constant_9_output_0
+      0.0             3694         32       115.4       113.0       101       149         11.0  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.8/cross_attn/Constant_23_output_0
+      0.0             3406         32       106.4       103.5        92       132         10.4  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.6/cross_attn/Constant_24_output_0
+      0.0             3371         32       105.3       103.5        83       138         14.7  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.5/cross_attn/Constant_24_output_0
+      0.0             3297         32       103.0        99.0        81       223         24.9  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.1/self_attn/Constant_16_output_0
+      0.0             3202         32       100.1       102.0        68       132         15.3  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.1/cross_attn/Constant_24_output_0
+      0.0             3166         32        98.9        94.0        84       133         12.9  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.3/cross_attn/Constant_24_output_0
+      0.0             3131         32        97.8        97.0        85       119          7.9  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.7/cross_attn/Constant_24_output_0
+      0.0             3111         32        97.2        97.5        72       129         12.7  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.0/cross_attn/Constant_45_output_0
+      0.0             3020         32        94.4        91.5        72       146         12.9  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.2/cross_attn/Constant_24_output_0
+      0.0             2977         32        93.0        91.5        72       199         22.9  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.4/cross_attn/Constant_23_output_0
+      0.0             2936         32        91.8        87.0        70       141         16.8  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.3/cross_attn/Constant_23_output_0
+      0.0             2911         32        91.0        92.0        73       126         11.8  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.0/self_attn/Constant_10_output_0
+      0.0             2897         32        90.5        91.0        79       107          8.5  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.2/cross_attn/Constant_23_output_0
+      0.0             2880         32        90.0        86.5        71       185         21.7  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.1/cross_attn/Constant_23_output_0
+      0.0             2839         32        88.7        83.0        70       138         17.3  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.5/cross_attn/Constant_23_output_0
+      0.0             2830         32        88.4        88.5        73       119         10.1  PushPop   TensorRT:/sem_seg_head/predictor/decoder/layers.0/cross_attn/Constant_44_output_0
+      0.0             2754         32        86.1        88.0        69       106         10.7  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.3/self_attn/Constant_16_output_0
+      0.0             2720         32        85.0        84.0        71       131         13.2  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.2/self_attn/Constant_16_output_0
+      0.0             2692         32        84.1        85.5        70       108          9.7  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.4/self_attn/Constant_16_output_0
+      0.0             2653         32        82.9        80.0        72       109         10.6  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.5/self_attn/Constant_16_output_0
+      0.0             2578         32        80.6        75.5        68       109         10.8  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.4/self_attn/Constant_17_output_0
+      0.0             2559         32        80.0        80.0        69        96          8.0  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.3/self_attn/Constant_17_output_0
+      0.0             2533         32        79.2        76.0        68       100          9.2  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.5/self_attn/Constant_17_output_0
+      0.0             2447         32        76.5        73.5        67        97          7.7  PushPop   TensorRT:/sem_seg_head/transformer/encoder/layers.2/self_attn/Constant_17_output_0
+
+Processing [/run-output/trace.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/cuda_gpu_kern_sum.py]...
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     32.3        211324843       2144   98565.7   61707.0     12700    581020     144974.2  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize128x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_ex…
+     15.1         98976497        192  515502.6  517410.0    451144    582396      59925.1  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize64x128x8_stage3_warpsize1x4x1_ffma_aligna4_alignc4_ex…
+      8.5         55990381        448  124978.5   63050.5     59468    929510     219927.5  trt_ampere_scudnn_winograd_128x128_ldg1_ldg4_relu_tile148t_nt_v1
+      7.9         51921603        480  108170.0   14219.0      6397    263016     121331.4  void ms_deformable_im2col_gpu_kernel<float>(int, const T1 *, const int *, const int *, const T1 *, …
+      3.4         22517050       3488    6455.6    6270.0      5310     10748       1192.4  trt_ampere_sgemm_32x32_sliced1x4_relu_nn_v1
+      2.2         14724250        160   92026.6   92097.0     90434     93824        640.4  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_0x1c023f86bc3010935b289f45ce2f4bf5
+      2.2         14421226         96  150221.1  143184.0    139665    168040      11518.9  sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize64x64x8_stage3_warpsize1x4x1_…
+      2.0         13072683         64  204260.7  186049.0    181731    248141      26197.7  sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize64x256x8_stage3_warpsize1x4x1…
+      1.9         12615078        224   56317.3   57644.5     45329     85220      10087.7  trt_ampere_scudnn_128x128_relu_interior_nn_v1
+      1.8         11826507        224   52796.9   46800.0     45616     74791       8227.9  sm80_xmma_gemm_f32f32_f32f32_f32_tn_n_tilesize256x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_ex…
+      1.5          9760841         32  305026.3  305129.0    303034    306329        929.0  sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nhwckrsc_nhwc_tilesize32x32x8_stage3_warpsize1x2x1_…
+      1.4          9214051        416   22149.2   22233.0     21209     23000        399.9  __myl_Sele_0x4d171d8ba4151025a28dea7ec5358b70
+      1.2          8184793         96   85258.3   62651.0     60363    135442      33031.8  trt_ampere_scudnn_128x64_relu_medium_nn_v1
+      1.2          7701562         32  240673.8  218134.5    213944    286719      31020.4  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize64x256x8_stage3_warpsize1x4x1_ffma_aligna4_alignc4_ex…
+      1.1          7362789        192   38347.9   38323.0     37171     39571        464.2  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_0x69b1bcc07c5a3d6848cb7d4609f7cf14
+      1.0          6819145         32  213098.3  213080.0    212249    214360        433.6  __myl_Add_0x940d01f802112b4a8a954775bfc1e673
+      1.0          6319500         64   98742.2   97183.5     83587    127381      14821.5  sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize256x128x8_stage3_warpsize4x2x…
+      0.8          5424026         64   84750.4   80437.0     72583    110426      12811.9  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize128x256x8_stage3_warpsize2x4x1_ffma_aligna4_alignc4_e…
+      0.7          4908073         32  153377.3  153468.5    150861    155948       1505.3  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddReluMeanMean_0x3a79822cf3edfd92b751b85060b2d61b
+      0.7          4572791         32  142899.7  142815.5    141744    145359        845.8  __myl_Cast_0xdab1def168ca131ed2fae42f6df033a6
+      0.7          4401812         32  137556.6  138161.0    132372    142640       2537.6  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_0x0d5f0cb57e50a4c8ac9dc651e6db72f9
+      0.6          3744916         32  117028.6  106876.0    105085    144943      16022.0  sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nhwckrsc_nhwc_tilesize128x64x8_stage3_warpsize2x2x1…
+      0.6          3720795         32  116274.8  116185.0    115641    117240        424.1  trt_ampere_scudnn_128x32_sliced1x4_ldg4_relu_exp_small_nhwc_tn_v1
+      0.6          3639289         32  113727.8  113705.5    111931    115321        768.3  __myl_ConcReshAddAddAddAddConcTranConcAdd_0x68421914016c86695526f2548772984c
+      0.5          3348248         32  104632.8  103101.0    101278    121655       5063.1  sm70_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nhwckrsc_nhwc_tilesize256x128x8_stage1_warpsize2x4x…
+      0.5          3254777         32  101711.8   99199.0     98015    122775       6904.8  sm70_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize64x128x8_stage1_warpsize1x4x1…
+      0.5          3195342         32   99854.4   92512.5     91201    117433      11149.5  sm70_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nhwckrsc_nhwc_tilesize64x128x8_stage1_warpsize1x4x1…
+      0.5          3157652         32   98676.6   98319.0     96895    104892       1906.5  sm70_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize128x256x8_stage1_warpsize2x4x…
+      0.5          3034690         32   94834.1   94848.0     94176     95520        333.7  ResizeBilinearKernel
+      0.5          3018800        160   18867.5   18825.5     17722     20506        516.7  __myl_ReshMulAdd_0xe3c97e1449762c810e3801b4bea2cb52
+      0.4          2642697         32   82584.3   82580.5     81988     83332        322.5  __myl_Topk_0xa5605ed269478a56fd15f36adafd6aa5
+      0.4          2501131        288    8684.5    8669.0      8285      9053        160.3  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize32x32x8_stage3_warpsize1x2x1_ffma_aligna4_alignc4_exe…
+      0.4          2483386         32   77605.8   78054.0     75686     79237        949.1  __myl_MulMulMulMulConcReshConcReshConcReshConcReshConcSubDivLtGtrAndNotCastSlicSlicAddSlicAddSlicEt…
+      0.3          1909849         32   59682.8   58636.0     56205     67529       3301.9  <unnamed>::select(const float *, Candidates *)
+      0.3          1892165         32   59130.2   59708.0     57389     60268        891.8  __myl_AddSqrtDivMulMulAddSlicSlicSlicSlicTran_0x34611518ed215f0e41d0e5220453c7d7
+      0.3          1874152        192    9761.2    8669.0      8509     16026       2521.0  __myl_ReshMaxrSubExpSumDiv_0x7c3125fa47f2ca08096ee3cf27017793
+      0.3          1824760         32   57023.8   56973.0     56652     57485        239.5  sm50_xmma_pooling_tiled_FP32NCHW_kMAX_tP4_tQ56_tR3_tS3_tU2_tV2_tUnroll6_tThreads1017_execute_kernel…
+      0.3          1738325        288    6035.9    6046.0      5982      6110         28.1  trt_ampere_sgemm_32x32_sliced1x4_nn_v1
+      0.3          1722616        352    4893.8    3199.0      1471     21145       5446.6  void cuInt8::nhwcToNchwKernel<float>(int, int, int, int, int, int, int, int, const T1 *, T1 *)
+      0.2          1588944        288    5517.2    5470.0      5279      6270        192.7  sm80_xmma_gemm_f32f32_f32f32_f32_tn_n_tilesize128x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_ex…
+      0.2          1570508         32   49078.4   49087.5     48496     49903        365.5  __myl_AddMeanSubMulMean_0x025f4ca49787b4538ebb677ed276237a
+      0.2          1527869        256    5968.2    3263.0      2239     28406       7881.8  void cuInt8::nchwToNhwcKernel<float>(int, int, int, int, int, int, int, int, bool, const T1 *, T1 *)
+      0.2          1416233         64   22128.6   22201.0     21336     22745        370.1  __myl_Sele_0x89e7edf7a0862528df73ea038936ee47
+      0.2          1416170        320    4425.5    4510.0      3646      4670        255.7  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize128x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_ex…
+      0.2          1345944         32   42060.8   42050.0     41202     42674        434.0  __myl_ReshMulReshReshReshReshReshReshReshMulMulMulMulMulMulDivMulReshMulDivMulReshDivMulReshConcEtc…
+      0.2          1311497         32   40984.3   13292.0      4734    233841      61789.5  <unnamed>::assign(const float *, const Candidates *, Geometry, Areas *, int *)
+      0.1           940836         32   29401.1   29382.0     28790     30230        342.5  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_0x3d1525bff04de2abc642324646bfe5f5
+      0.1           832456        288    2890.5    2879.0      2751      3199         59.8  __myl_MaxrSubExpSumDivMul_0xe7d314cc73dbf705f429f8278ab30c57
+      0.1           772030        256    3015.7    3007.0      2879      3231         39.0  __myl_MaxMinSubMaxMaxMinMinDivLogAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlicReshSlicEtc_…
+      0.1           675839        288    2346.7    2239.0      1951      3135        313.5  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_0x1b4cba22286e2bc3bc358f310bd1ba63
+      0.1           665440         32   20795.0   20665.0     20154     23928        644.9  trt_ampere_scudnn_128x64_relu_interior_nn_v1
+      0.1           562146        256    2195.9    2207.0      1919      2623        159.8  __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_0x5afe4fc1ea842fe495738634eb6dd1b9
+      0.1           520244        256    2032.2    2015.0      1951      2272         56.5  __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_0xbba13127518873c1aedd3df464d30812
+      0.1           508654        256    1986.9    1983.0      1919      2175         38.7  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_0x2be116d8c7c9a56632c3e59ebe6687dd
+      0.1           505460         32   15795.6   15770.5     15514     16282        192.0  sm80_xmma_gemm_f32f32_f32f32_f32_tn_n_tilesize64x32x8_stage3_warpsize1x2x1_ffma_aligna4_alignc4_exe…
+      0.1           490906         32   15340.8   15323.0     15162     15579        134.1  __myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicCosReshSlicEt…
+      0.1           464037         32   14501.2   14555.0     13979     15131        260.6  __myl_MeanSubMulMeanAddSqrtDivMulMulAdd_0x78b5df5060c6da43934d15616107d398
+      0.1           385656        288    1339.1    1343.0      1311      1376         18.1  __myl_ReshMaxrSubExpSumDiv_0xd42ce15eb36c9ae10e85030c45d4ac23
+      0.1           354310         32   11072.2   10796.0      8701     14043       1343.0  <unnamed>::vertical(const unsigned char *, float *, int, int, const AxisTap *, const int *)
+      0.1           345251        288    1198.8    1184.0      1151      1248         18.7  __myl_Tran_0x812a618d2f6da6e0d008691c870cb2b7
+      0.1           342462        288    1189.1    1184.0      1151      1216         17.4  __myl_ReshMulMulMulAdd_0x0a4ad64d5567a82adf971cf4217c8a69
+      0.1           340110         32   10628.4   10636.0     10269     11068        200.8  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_0xbefbfdbf9d03dd03f62a25f00cbc0c1e
+      0.0           316404         32    9887.6    9916.5      9628     10396        188.0  __myl_ReshTran_0xeab65e6188de62e1c31edc9f23f07772
+      0.0           309466         32    9670.8    9661.0      9277     10589        318.5  __myl_Tran_0x275bee6cee9dd082459e8ebe308bc27b
+      0.0           301340        256    1177.1    1183.0      1119      1216         18.5  __myl_Add_0xb520ec1367a9a8abc1b0585ae1501df2
+      0.0           299922        256    1171.6    1183.0      1119      1216         18.2  __myl_Add_0xb5db0d26a65616db48625423728ba098
+      0.0           298686         32    9333.9    5054.5      2239     37715      10105.7  <unnamed>::merge(const Candidates *, const Areas *, const int *, int *, Segments *)
+      0.0           244492        256     955.0     864.0       799      1279        144.0  __myl_Move_0x95a493ea3af58b211507cdaf271866a7
+      0.0           195425         32    6107.0    6494.0      3295      9277       2074.2  <unnamed>::horizontal(const unsigned char *, unsigned char *, int, int, int, const AxisTap *, const…
+      0.0           157484         32    4921.4    4926.0      4831      5054         59.1  __myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicCosReshSlicEt…
+      0.0           151468        128    1183.3    1167.5      1087      1376         80.8  __myl_SumReshCastDiv_0x4be92063cf915fa26b03ba258a568721
+      0.0           148972        128    1163.8    1152.0      1055      1311         75.2  __myl_SumReshCastDiv_0xbd5fa6e91353a71d211ede2dd7082efe
+      0.0           136017        128    1062.6    1024.0       960      1279         68.5  __myl_ConcReshCastDiv_0x440604ef4110ef39c3ad9811f3111c32
+      0.0           129299         32    4040.6    4030.5      3967      4159         50.4  __myl_MaxrResh_0x8ff05b749f5f064440a0aa01feeba189
+      0.0           128341         32    4010.7    3999.0      3966      4191         43.5  __myl_Gnor_0x265b56107d3dfed0b5dec91026756d2c
+      0.0           122740         32    3835.6    3854.5      3391      4126        172.0  __myl_Gnor_0xa89eabc9e2f46c8ca7a3fda00d50cfa5
+      0.0           111291         32    3477.8    3487.0      3359      3615         57.2  __myl_LogSeleSeleCastReshCastReplAddGathReshSigmCastReshMulReshSlicSlicSlicReshSlicReshSlicReshEtc_…
+      0.0           107101         32    3346.9    3327.0      3295      3519         60.2  __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAddMeanSubMulMeanAddSqrtDivMulMulAddMeanSubMulMeanAddEtc…
+      0.0           106331         32    3322.8    3326.0      3135      3455         76.5  __myl_ReshTran_0xfbde1f484df2bb0730f3e90bc109e0a2
+      0.0           106109         32    3315.9    3326.5      3199      3423         62.2  __myl_Tran_0x7eb0b6817030cbacd3eacdc84d9a0c44
+      0.0           105852         32    3307.9    3295.0      3071      3839        142.4  __myl_Cums_0x5faed3b52240d03bbde1f17643dfffe0
+      0.0            95744         32    2992.0    2975.0      2783      3263        145.4  __myl_Cums_0x4098ee89a3ed4b839f6d711ff69add09
+      0.0            89571         64    1399.5    1455.5      1151      1727        193.6  __myl_Move_0x12bcb080460d8b1af3eda0781e464f28
+      0.0            86884         32    2715.1    2719.0      2687      2752         19.5  __myl_Cums_0x4b9f6ae070975bd27cbee76c2d13136e
+      0.0            82496         32    2578.0    2591.0      2527      2623         22.8  __myl_Cums_0x656478ceb0f4ba43aee7871725e02362
+      0.0            81319         32    2541.2    2528.0      2463      2719         53.3  __myl_Cums_0xb117410a2fbcb73e085c21a12d9ecc1e
+      0.0            80262         32    2508.2    2495.0      2431      2655         48.7  __myl_Cums_0xa88d54ce828420e16eb8f9374d765ddd
+      0.0            80227         32    2507.1    2511.0      2463      2528         22.6  __myl_Cums_0xdcfcdb491e6795d1d87b889e17a000fe
+      0.0            79491         32    2484.1    2495.0      2399      2623         49.2  __myl_Cums_0x339e2ed92d38713254a00174360b97a5
+      0.0            79273         64    1238.6    1231.5      1056      1536        151.9  __myl_Sum_0x9c6fb500ad96596701457c1a6961b216
+      0.0            75366         32    2355.2    2351.5      2303      2432         34.3  __myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicCosReshSlicEt…
+      0.0            73639         64    1150.6    1151.5      1055      1344         75.9  __myl_Sum_0x6cd8ace3d26f42ff87be506a991fe058
+      0.0            69225         64    1081.6    1087.0      1024      1184         32.7  __myl_ReshReshConcResh_0x4567aa46411d5789b8dc0e71fe3225df
+      0.0            63271         32    1977.2    1952.0      1919      2112         46.3  __myl_AddReshMeanSubMulMeanAddSqrtDivMulMulAdd_0x08041994db5556d30ffd7ba07127e568
+      0.0            62667         32    1958.3    1920.0      1247      2751        424.2  <unnamed>::write_map(const int *, const int *, int *, int)
+      0.0            50160         32    1567.5    1567.5      1535      1600         23.0  __myl_SlicAddDivMulMulReshMulSlicCosReshSlicSinReshConcResh_0x3c178819de5de2fbe6ed0c40d8942812
+      0.0            49810         32    1556.6    1567.0      1535      1600         19.2  __myl_SlicAddDivMulMulReshMulSlicCosReshSlicSinReshConcResh_0xf81a5a9623eb964ac2092fe92e3b961f
+      0.0            49006         32    1531.4    1535.0      1503      1568         22.7  __myl_ReshTran_0x4b23fb620f98d88aa80700e5d2384c95
+      0.0            48686         32    1521.4    1535.0      1471      1567         21.4  __myl_Tran_0x675c5b14e8f1c6eac8a424e620918de3
+      0.0            48561         32    1517.5    1504.0      1471      1727         55.1  __myl_SumReshCastDiv_0x3942aee9aa3d749b01c95b9b46765905
+      0.0            42291         32    1321.6    1312.0      1279      1471         35.7  __myl_ReplGathReshAdd_0x16eeaadf6c789c216fe62cbc1329586e
+      0.0            40531         32    1266.6    1248.0      1216      1344         30.2  __myl_SigmReshReshMaxMinSubMaxMaxMinMinDivLogReshMaxMinSubMaxAddSigmReshMaxMinMinDivLogReshMaxMinEt…
+      0.0            39761         32    1242.5    1247.0      1215      1280         23.2  __myl_ReshConcReshReshConcReshReshReshConcReshReshReshConcReshConcReshSlicReshSlicSlicReshSlicEtc_0…
+      0.0            39535         32    1235.5    1247.0      1215      1280         17.9  __myl_SumReshCastDiv_0x337ced8131415f53e24d7070a671d1e1
+      0.0            38994         32    1218.6    1216.0      1184      1248         16.9  __myl_Sum_0x8234a129835a46f8fdf36364925c0aca
+      0.0            38931         32    1216.6    1216.0      1183      1312         25.0  __myl_Sum_0x397734e8d2aa0b1c3aefbaa3a29c13c1
+      0.0            38004         32    1187.6    1184.0      1151      1216         13.4  __myl_ReshConcConcResh_0x57080af8eef9cf9438f622e78048bc77
+      0.0            37876         32    1183.6    1184.0      1151      1215         19.7  __myl_Add_0x4d43b02a695d24f368e46f15469e2ad9
+      0.0            35219         32    1100.6    1088.0      1087      1120         16.1  __myl_ReshCastDivReshConc_0xe994978827e072aee30b5e1c905f1a7f
+      0.0            35125         32    1097.7    1088.0      1056      1151         18.9  __myl_ReshCastDivReshConcResh_0xe4b93ac1bcce979d7fb0f9dd93c6bad4
+      0.0            32659         32    1020.6    1023.0       992      1056         14.8  __myl_Cast_0x8bb5fe6e70479e945639245316d1e0a9
+
+Processing [/run-output/trace.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/cuda_api_sum.py]...
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)   Min (ns)  Max (ns)  StdDev (ns)              Name
+ --------  ---------------  ---------  ----------  ----------  --------  --------  -----------  ----------------------------
+     96.5        636139754         32  19879367.3  19461058.5  17807382  21196716    1088827.4  cudaStreamSynchronize
+      1.2          8193493       6560      1249.0      1212.0      1046     26700        360.1  cuLaunchKernel
+      1.2          7983817       5888      1355.9      1297.0      1153     17196        400.1  cudaLaunchKernel
+      0.8          5112946       4160      1229.1      1198.0      1079      5867        164.9  cuLaunchKernelEx
+      0.1           415214         12     34601.2      3759.0      2599    362551     103314.4  cudaHostAlloc
+      0.0           313981        160      1962.4      1566.5      1130     16710       1454.4  cudaMemcpyAsync
+      0.0           238575         19     12556.6      2588.0      1414     71367      21706.5  cudaMalloc
+      0.0           150466         96      1567.4      1535.0       889      5736        680.3  cudaMemsetAsync
+      0.0           121092         19      6373.3      2024.0      1528     26126       8920.7  cudaFree
+      0.0            84683        544       155.7       136.0       113      3706        171.5  cudaStreamIsCapturing_v10000
+      0.0            61204         12      5100.3      2719.5      2249     28649       7447.2  cudaFreeHost
+      0.0            58843       1280        46.0        41.0        33       714         26.9  cuKernelGetName
+      0.0             1619          1      1619.0      1619.0      1619      1619          0.0  cuProfilerStart
+
+Processing [/run-output/trace.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]...
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation
+ --------  ---------------  -----  --------  --------  --------  --------  -----------  ----------------------------
+     51.1          1370332     64   21411.4    3295.5       991     77702      25668.7  [CUDA memcpy Device-to-Host]
+     46.1          1237021     96   12885.6    2415.0      1631     66313      17932.6  [CUDA memcpy Host-to-Device]
+      2.8            73987     96     770.7     768.0       704       992         46.6  [CUDA memset]
