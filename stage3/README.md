@@ -129,3 +129,15 @@ python3 stage3/summarize.py stage3/runs/{pt-pq,fp32-pq}/result.json \
   stage3/runs/perf-{pytorch,fp32}-r{1,2,3}/result.json > stage3/results/summary.json
 python3 stage3/plot.py stage3/results
 ```
+
+#### 带明确 CPU 阶段名的重采报告
+
+从 `de2e61f` 重采两组 FP32，沿用同一份 32 张清单、20 次预热和同一 TensorRT engine。Nsight Systems 的 NVTX Range Summary 现在将两段标成 `CPU / network call (GPU may continue after return)` 和 `CPU / postprocess (includes CUDA waits)`。前者覆盖主机调用，后者覆盖主机后处理代码及其同步等待。查看单张图时，可把 NVTX、CUDA API 和 CUDA stream 轨道同时展开。上方时间线和统计表对应原始验收采集。
+
+- [PyTorch FP32 新版原始报告](results/trace-pytorch-nvtx/trace.nsys-rep) · [统计目录](results/trace-pytorch-nvtx/)
+- [TensorRT FP32 新版原始报告](results/trace-fp32-nvtx/trace.nsys-rep) · [统计目录](results/trace-fp32-nvtx/)
+
+```bash
+bash stage3/run.sh "$data" trace-pytorch-nvtx trace --backend pytorch
+bash stage3/run.sh "$data" trace-fp32-nvtx trace --backend fp32 --engine "$runs/build-fp32/network.engine"
+```
