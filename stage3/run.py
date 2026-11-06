@@ -80,12 +80,13 @@ def run():
     engine_hash = None
     if args.backend != "pytorch":
         from stage3.trt_backend import Engine
+        if args.mode != "align":
+            # The panoptic method reads sem_seg_head.num_classes.
+            model.backbone.cpu()
+            model.sem_seg_head.cpu()
+            torch.cuda.empty_cache()
         network = Engine(args.engine)
         engine_hash = digest(args.engine)
-        # Postprocessing uses model methods and normalization buffers only.
-        if args.mode != "align":
-            del model.backbone, model.sem_seg_head
-            torch.cuda.empty_cache()
     report = {
         "mode": args.mode, "backend": args.backend, "size": SIZE, "batch": 1, "slots": 1,
         "torch": torch.__version__, "cuda": torch.version.cuda, "tf32": False,
