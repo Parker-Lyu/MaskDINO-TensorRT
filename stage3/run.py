@@ -44,11 +44,14 @@ def run():
     parser.add_argument("--cpu-constants", action="store_true")
     parser.add_argument("--mixed-scope", choices=("all", "backbone", "mask-projection"), default="all")
     parser.add_argument("--process-memory", action="store_true")
+    parser.add_argument("--batch", type=int, choices=(1, 2, 4, 8), default=1)
     args = parser.parse_args()
+    if args.batch != 1 and args.mode not in ("export", "build"):
+        parser.error("--batch is supported for export and build")
     if args.mode in ("build", "plugin-test"):
         from stage3 import trt_backend
         if args.mode == "build":
-            trt_backend.build(args.onnx, args.backend)
+            trt_backend.build(args.onnx, args.backend, args.batch)
         else:
             from stage3.plugin_test import validate
             validate()
@@ -75,7 +78,7 @@ def run():
     (OUTPUT / "resolved-config.yaml").write_text(cfg.dump())
     if args.mode == "export":
         from stage3.trt_backend import export
-        image, _ = prepare_batch(model, [read(ids[0])], SIZE)
+        image, _ = prepare_batch(model, [read(image_id) for image_id in ids[:args.batch]], SIZE)
         export(model, image, args.backend, args.cpu_constants, args.mixed_scope)
         return
     network = None
