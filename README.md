@@ -17,12 +17,25 @@
 
 [Stage 1 复现步骤](stage1/README.md) · [验收 tag `stage1-official-pytorch`](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/stage1-official-pytorch) · [环境、数据与权重](docs/experiment-environment.md)
 
+## Stage 2 · 方形输入 PyTorch 评估
+
+在 RTX 4090 上以 FP32、B4 分别评估三档方形输入，每档覆盖完整的 COCO 2017 val。
+
+| 输入 | PQ | PQ Things | PQ Stuff | 相对 Stage 1 ΔPQ |
+| --- | ---: | ---: | ---: | ---: |
+| 640×640 | 49.9662 | 54.8245 | 42.6330 | −2.9905 |
+| 800×800 | 52.0120 | 57.3157 | 44.0065 | −0.9447 |
+| 1024×1024 | **53.1862** | 59.0272 | 44.3697 | +0.2295 |
+
+[Stage 2 复现与结果](stage2/README.md) · [固定 500 张性能样本](stage2/sample.json)
+
 ## 仓库结构
 
 | 目录 | 内容 |
 | --- | --- |
 | [maskdino/](maskdino/) | 固定上游源码版本、PyTorch 环境和 CUDA 扩展兼容补丁 |
 | [stage1/](stage1/) | 官方评估入口、复现命令和结果 |
+| [stage2/](stage2/) | 方形 PyTorch 推理、全量 PQ 和性能样本 |
 | [docs/](docs/) | 环境、数据及权重说明 |
 
 构建镜像时会检出指定版本的官方 MaskDINO 源码。

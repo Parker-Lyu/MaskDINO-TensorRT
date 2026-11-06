@@ -1,0 +1,29 @@
+{
+  "mode": "evaluate",
+  "size": 800,
+  "batch": 4,
+  "images": 5000,
+  "precision": "FP32",
+  "autocast": false,
+  "matmul_tf32": false,
+  "cudnn_tf32": false,
+  "torch": "2.10.0a0+b558c986e8.nv25.11",
+  "cuda": "13.0",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "fallback_enabled": false,
+  "loop_seconds": 172.8100893009996,
+  "peak_allocated_bytes": 2549263360,
+  "peak_reserved_bytes": 7121928192,
+  "scores": {
+    "PQ": 52.01200952220961,
+    "SQ": 83.11883619537316,
+    "RQ": 61.798181487236135,
+    "PQ_th": 57.31568635939299,
+    "SQ_th": 84.22209116708706,
+    "RQ_th": 67.57724285268142,
+    "PQ_st": 44.006459579291366,
+    "SQ_st": 81.45354567203141,
+    "RQ_st": 53.07506999222444
+  },
+  "unique_prediction_ids": 5000
+}

@@ -1,0 +1,17 @@
+{
+  "mode": "probe",
+  "size": 1024,
+  "batch": 1,
+  "images": 32,
+  "precision": "FP32",
+  "autocast": false,
+  "matmul_tf32": false,
+  "cudnn_tf32": false,
+  "torch": "2.10.0a0+b558c986e8.nv25.11",
+  "cuda": "13.0",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "fallback_enabled": false,
+  "loop_seconds": 2.5594156999995903,
+  "peak_allocated_bytes": 2690377728,
+  "peak_reserved_bytes": 3422552064
+}

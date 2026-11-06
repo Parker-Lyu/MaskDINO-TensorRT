@@ -1,0 +1,23 @@
+{
+    "640": {
+        "images": 32,
+        "class_logits_differ": 0,
+        "mask_logits_differ": 0,
+        "maps_differ": 0,
+        "metadata_differ": 0
+    },
+    "800": {
+        "images": 32,
+        "class_logits_differ": 0,
+        "mask_logits_differ": 0,
+        "maps_differ": 0,
+        "metadata_differ": 0
+    },
+    "1024": {
+        "images": 32,
+        "class_logits_differ": 0,
+        "mask_logits_differ": 0,
+        "maps_differ": 0,
+        "metadata_differ": 0
+    }
+}
