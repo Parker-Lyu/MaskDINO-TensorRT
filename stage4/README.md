@@ -39,7 +39,7 @@ bash stage4/run.sh "$data" "$engine" native-pq native evaluate
 
 python3 stage4/summarize.py stage4/results
 python3 stage3/trace_plot.py stage4/runs/{trace-reference,trace-native}/trace.sqlite \
-  stage4/results/nsight-timeline.svg --labels 'TensorRT + Python' 'TensorRT + C++'
+  stage4/results/nsight-timeline.svg --labels 'TensorRT + Python' 'TensorRT + C++' --split-legacy-output
 ```
 
 图表命令读取归档目录中的 `result.json` 和采集目录中的 SQLite。原生编译目标为 sm_89。检查和评估工具使用同一个 Stage 1 开发镜像。独立调用原生可执行文件可使用脚本生成的 COCO thing 清单和 TSV 图像清单，参数见 [原生入口](main.cu)。运行时依赖以 [动态链接记录](results/native-align-fixed/runtime-libraries.txt) 为准。
@@ -85,6 +85,8 @@ python3 stage3/trace_plot.py stage4/runs/{trace-reference,trace-native}/trace.sq
 | 请求区间无记录 CUDA GPU 活动的时间占比 | 24.0% | 6.9% |
 | GPU 最终 D2H 活动均值（ms/图） | 0.045 | 0.044 |
 
-原生后处理直接读取 TensorRT 输出，仅计算通过筛选的 query，融合两次插值与像素分配，GPU 上生成最终的 ID 图与 metadata。CPU 一次性提交后处理和 D2H，并在最终 D2H 等待整条 stream。因此原生 D2H 的 CPU 区间中位数为 20.53 ms，而归到 D2H 的实际 GPU 活动平均为 0.044 ms/图。这里的主机等待包含尚在运行的网络和后处理。 [Python 聚合](results/trace-reference/trace-summary.json) · [C++ 聚合](results/trace-native/trace-summary.json)
+原生后处理直接读取 TensorRT 输出，仅计算通过筛选的 query，融合两次插值与像素分配，GPU 上生成最终的 ID 图与 metadata。CPU 一次性提交后处理和 D2H，并在最终 D2H 等待整条 stream。原始 trace 把最终拷贝与同步包在同一个 D2H NVTX 区间内。上图使用 SQLite 的 CUDA API 事件把原生链路拆开显示。32 张中，两次 `cudaMemcpyAsync` 的 CPU 提交时间合计中位数为 **0.004 ms/图**，`cudaStreamSynchronize` 的 CPU 等待时间中位数为 **20.53 ms/图**，GPU 实际执行最终 D2H 拷贝平均为 **0.044 ms/图**。图中第一张的 17.12 ms 等待与 16.69 ms 的 GPU 网络活动重叠。 [Python 聚合](results/trace-reference/trace-summary.json) · [C++ 聚合](results/trace-native/trace-summary.json)
 
 [Nsight 原始报告 · Python](results/trace-reference/trace.nsys-rep) · [Nsight 原始报告 · C++](results/trace-native/trace.nsys-rep)
+
+后续原生采集会在 GUI 的 NVTX 轨直接标记 `CPU / submit D2H copies` 与 `CPU / wait for output (network + postprocess + copies)`。使用新采集绘图时省略 `--split-legacy-output`。
