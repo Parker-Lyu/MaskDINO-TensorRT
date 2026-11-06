@@ -76,6 +76,8 @@ TensorRT FP32 使网络 P95 降低 **42.3%**、端到端 P95 降低 **32.2%**、
 
 ![Nsight Systems 采集的同图 FP32 时间线](stage3/results/nsight-fp32-timeline.svg)
 
+Nsight Systems 原始报告 · [TensorRT FP32（GPU 分阶段）](stage3/results/trace-fp32-gpu-projection/trace.nsys-rep) · [PyTorch FP32](stage3/results/trace-pytorch-nvtx/trace.nsys-rep)
+
 [Stage 3 复现步骤、原始结果与 Nsight 分析](stage3/README.md) · 验收 tag `stage3-fp32-accepted`
 
 ## Stage 4 · C++/CUDA 单请求流水线
@@ -91,6 +93,8 @@ TensorRT FP32 使网络 P95 降低 **42.3%**、端到端 P95 降低 **32.2%**、
 在 RTX 4090 上按同一顺序各跑 500 张、三轮。相对 Python/TensorRT，原生链路的端到端 P95 降低 **32.8%**，吞吐增加 **39.8%**，同口径 NVML 进程显存采样峰值降低 **75.1%**。32 张对齐的类别图、segment IoU 和 metadata 均与 Stage 3 一致。完整 COCO val2017 覆盖 5,000 张，PQ / PQ_th / PQ_st 为 **53.186256 / 59.027261 / 44.369645**，三项与 Stage 3 的差异均小于 0.000001 点。
 
 ![Stage 1–4 COCO PQ 与 1024 B1 性能对照](stage4/results/comparison.svg)
+
+Nsight Systems 原始报告 · [C++/CUDA + TensorRT FP32（GPU 分阶段）](stage4/results/trace-native-gpu-projection/trace.nsys-rep)
 
 [Stage 4 复现、逐轮数据与 Nsight 报告](stage4/README.md) · 验收 tag `stage4-native-fp32-accepted`
 
