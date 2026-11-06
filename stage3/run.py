@@ -31,6 +31,11 @@ def digest(path):
 
 @torch.inference_mode()
 def main():
+    with torch.cuda.stream(torch.cuda.Stream()):
+        run()
+
+
+def run():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=("export", "build", "plugin-test", "align", "evaluate", "benchmark", "trace"))
     parser.add_argument("--backend", choices=("pytorch", "fp32", "mixed"), default="pytorch")
@@ -84,7 +89,7 @@ def main():
     report = {
         "mode": args.mode, "backend": args.backend, "size": SIZE, "batch": 1, "slots": 1,
         "torch": torch.__version__, "cuda": torch.version.cuda, "tf32": False,
-        "sample_sha256": digest(SAMPLE), "config_sha256": digest(OUTPUT / "resolved-config.yaml"),
+        "cuda_stream": "dedicated non-default stream", "sample_sha256": digest(SAMPLE), "config_sha256": digest(OUTPUT / "resolved-config.yaml"),
         "engine_sha256": engine_hash, "images": len(ids), "failures": 0,
     }
     if args.mode == "align":
@@ -110,6 +115,7 @@ def main():
     samples = []
     if trace:
         torch.cuda.cudart().cudaProfilerStart()
+    offset = 0
     try:
         with memory:
             start = time.perf_counter()
@@ -129,7 +135,7 @@ def main():
             report["loop_seconds"] = time.perf_counter() - start
     except Exception:
         report["failures"] += 1
-        report["completed_images"] = offset - 1
+        report["completed_images"] = max(0, offset - 1)
         dump("result.json", report)
         raise
     finally:
