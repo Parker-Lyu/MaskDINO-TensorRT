@@ -76,6 +76,8 @@ TensorRT FP32 使网络 P95 降低 **42.3%**、端到端 P95 降低 **32.2%**、
 
 ![Nsight Systems 采集的同图 FP32 时间线](stage3/results/nsight-fp32-timeline.svg)
 
+Nsight Systems 原始报告 · [TensorRT FP32（GPU 分阶段）](stage3/results/trace-fp32-gpu-projection/trace.nsys-rep) · [PyTorch FP32](stage3/results/trace-pytorch-nvtx/trace.nsys-rep)
+
 [Stage 3 复现步骤、原始结果与 Nsight 分析](stage3/README.md) · 验收 tag `stage3-fp32-accepted`
 
 ## 仓库结构
