@@ -1,0 +1,17 @@
+Evaluator commit: ec0f13dd3002b5b1abc4c621bc39ac5c7e6798dc
+Native inference commit: 22dc649ccd95199860b708f444c9a90c023d9188
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Command: python -u -m stage4.protocol report evaluate /run-output /network.engine
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+{'mode': 'evaluate', 'backend': 'native', 'images': 5000, 'failures': 0, 'size': 1024, 'batch': 1, 'slots': 1, 'precision': 'fp32', 'tf32': False, 'engine_sha256': '96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a', 'loop_seconds': 115.52869443, 'cuda_stream': 'dedicated non-default stream', 'scores': {'PQ': np.float64(53.18625613183556), 'SQ': np.float64(83.3183345367338), 'RQ': 63.035356690195286, 'PQ_th': np.float64(59.0272607753488), 'SQ_th': np.float64(84.61961972002214), 'RQ_th': 69.2969488814856, 'PQ_st': np.float64(44.369645349174014), 'SQ_st': np.float64(81.35413048648714), 'RQ_st': 53.58389677881357}, 'unique_prediction_ids': 5000, 'delta_vs_stage3': {'PQ': np.float64(-2.0946933432242076e-07), 'PQ_th': np.float64(-2.3429018369824917e-07), 'PQ_st': np.float64(-1.7200394353267257e-07)}, 'passed': True}

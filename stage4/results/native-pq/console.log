@@ -1,0 +1,72 @@
+Project commit: 22dc649ccd95199860b708f444c9a90c023d9188
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Command: /home/parker/datasets/coco2017-panoptic-val /home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/build-fp32/network.engine native-pq native evaluate
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/build-fp32/network.engine: OK
+/home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth: OK
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a  /home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/build-fp32/network.engine
+3e3d04a930ad42e14e97bc68d0e5844eefde702aa3d0a2324e603e5e9b5d0d37  /home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+	linux-vdso.so.1 (0x000079b5dc18d000)
+	libnvinfer.so.10 => /usr/lib/x86_64-linux-gnu/libnvinfer.so.10 (0x000079b5b53d2000)
+	libnvinfer_plugin.so.10 => /usr/lib/x86_64-linux-gnu/libnvinfer_plugin.so.10 (0x000079b5b271f000)
+	libjpeg.so.8 => /usr/lib/x86_64-linux-gnu/libjpeg.so.8 (0x000079b5b269c000)
+	libnvidia-ml.so.1 => /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 (0x000079b5b1400000)
+	libstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x000079b5b1182000)
+	libm.so.6 => /usr/lib/x86_64-linux-gnu/libm.so.6 (0x000079b5b25b1000)
+	libgcc_s.so.1 => /usr/lib/x86_64-linux-gnu/libgcc_s.so.1 (0x000079b5b2583000)
+	libc.so.6 => /usr/lib/x86_64-linux-gnu/libc.so.6 (0x000079b5b0f70000)
+	/lib64/ld-linux-x86-64.so.2 (0x000079b5dc18f000)
+	libdl.so.2 => /usr/lib/x86_64-linux-gnu/libdl.so.2 (0x000079b5b257e000)
+	libpthread.so.0 => /usr/lib/x86_64-linux-gnu/libpthread.so.0 (0x000079b5b2579000)
+	librt.so.1 => /usr/lib/x86_64-linux-gnu/librt.so.1 (0x000079b5b2574000)
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+Completed 5000 images in 115.529 s
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/project/stage4/protocol.py", line 177, in <module>
+    main()
+  File "/project/stage4/protocol.py", line 159, in main
+    report.update(evaluate(args.output, annotation, images))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/project/stage4/protocol.py", line 123, in evaluate
+    evaluator.process([image], [native_prediction(output, image)])
+  File "/opt/maskdino/third_party/detectron2/detectron2/evaluation/panoptic_evaluation.py", line 107, in process
+    "image_id": input["image_id"],
+                ~~~~~^^^^^^^^^^^^
+KeyError: 'image_id'

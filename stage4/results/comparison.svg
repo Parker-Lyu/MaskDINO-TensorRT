@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="564" viewBox="0 0 1060 564">
+<rect width="1060" height="564" rx="16" fill="#f3f6fa"/>
+<g font-family="system-ui, sans-serif" fill="#172b43">
+<text x="30" y="38" font-size="24" font-weight="700">MaskDINO R50 panoptic · RTX 4090</text>
+<text x="30" y="62" font-size="13" font-weight="400">Performance · 1024×1024 · batch 1 · single slot · median of 3 rounds</text>
+<rect x="24" y="82" width="500" height="218" rx="10" fill="white"/>
+<text x="42" y="112" font-size="17" font-weight="650">COCO val2017 PQ</text>
+<text x="42" y="144" font-size="12" font-weight="400">Stage 1 official</text>
+<rect x="179" y="132" width="229.01" height="15" rx="3" fill="#788a9e"/>
+<text x="422" y="144" font-size="12" font-weight="550">52.9567</text>
+<text x="42" y="174" font-size="12" font-weight="400">Stage 2 B4</text>
+<rect x="179" y="162" width="230.00" height="15" rx="3" fill="#788a9e"/>
+<text x="422" y="174" font-size="12" font-weight="550">53.1862</text>
+<text x="42" y="204" font-size="12" font-weight="400">PyTorch FP32</text>
+<rect x="179" y="192" width="230.00" height="15" rx="3" fill="#457caa"/>
+<text x="422" y="204" font-size="12" font-weight="550">53.1863</text>
+<text x="42" y="234" font-size="12" font-weight="400">TensorRT + Python</text>
+<rect x="179" y="222" width="230.00" height="15" rx="3" fill="#168477"/>
+<text x="422" y="234" font-size="12" font-weight="550">53.1863</text>
+<text x="42" y="264" font-size="12" font-weight="400">TensorRT + C++</text>
+<rect x="179" y="252" width="230.00" height="15" rx="3" fill="#a85b36"/>
+<text x="422" y="264" font-size="12" font-weight="550">53.1863</text>
+<rect x="536" y="82" width="500" height="218" rx="10" fill="white"/>
+<text x="554" y="112" font-size="17" font-weight="650">End-to-end P95</text>
+<text x="554" y="144" font-size="12" font-weight="400">PyTorch FP32</text>
+<rect x="691" y="132" width="230.00" height="15" rx="3" fill="#457caa"/>
+<text x="934" y="144" font-size="12" font-weight="550">51.86 ms</text>
+<text x="554" y="174" font-size="12" font-weight="400">TensorRT + Python</text>
+<rect x="691" y="162" width="155.94" height="15" rx="3" fill="#168477"/>
+<text x="934" y="174" font-size="12" font-weight="550">35.16 ms</text>
+<text x="554" y="204" font-size="12" font-weight="400">TensorRT + C++</text>
+<rect x="691" y="192" width="104.80" height="15" rx="3" fill="#a85b36"/>
+<text x="934" y="204" font-size="12" font-weight="550">23.63 ms</text>
+<rect x="24" y="318" width="500" height="218" rx="10" fill="white"/>
+<text x="42" y="348" font-size="17" font-weight="650">Offline throughput</text>
+<text x="42" y="380" font-size="12" font-weight="400">PyTorch FP32</text>
+<rect x="179" y="368" width="107.65" height="15" rx="3" fill="#457caa"/>
+<text x="422" y="380" font-size="12" font-weight="550">20.43 img/s</text>
+<text x="42" y="410" font-size="12" font-weight="400">TensorRT + Python</text>
+<rect x="179" y="398" width="164.49" height="15" rx="3" fill="#168477"/>
+<text x="422" y="410" font-size="12" font-weight="550">31.21 img/s</text>
+<text x="42" y="440" font-size="12" font-weight="400">TensorRT + C++</text>
+<rect x="179" y="428" width="230.00" height="15" rx="3" fill="#a85b36"/>
+<text x="422" y="440" font-size="12" font-weight="550">43.65 img/s</text>
+<rect x="536" y="318" width="500" height="218" rx="10" fill="white"/>
+<text x="554" y="348" font-size="17" font-weight="650">Peak process VRAM</text>
+<text x="554" y="380" font-size="12" font-weight="400">PyTorch FP32</text>
+<rect x="691" y="368" width="230.00" height="15" rx="3" fill="#457caa"/>
+<text x="934" y="380" font-size="12" font-weight="550">5.19 GiB</text>
+<text x="554" y="410" font-size="12" font-weight="400">TensorRT + Python</text>
+<rect x="691" y="398" width="220.99" height="15" rx="3" fill="#168477"/>
+<text x="934" y="410" font-size="12" font-weight="550">4.98 GiB</text>
+<text x="554" y="440" font-size="12" font-weight="400">TensorRT + C++</text>
+<rect x="691" y="428" width="55.10" height="15" rx="3" fill="#a85b36"/>
+<text x="934" y="440" font-size="12" font-weight="550">1.24 GiB</text>
+</g></svg>
