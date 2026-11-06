@@ -1,0 +1,18 @@
+{
+  "mode": "trace",
+  "backend": "fp32",
+  "size": 1024,
+  "batch": 1,
+  "slots": 1,
+  "torch": "2.10.0a0+b558c986e8.nv25.11",
+  "cuda": "13.0",
+  "tf32": false,
+  "cuda_stream": "dedicated non-default stream",
+  "sample_sha256": "270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5",
+  "config_sha256": "89f9b1e0497cf6adf27d4e8231865f76dfefe01d71dec77537768848fde2c7ff",
+  "engine_sha256": "96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a",
+  "images": 32,
+  "failures": 0,
+  "warmup": 20,
+  "loop_seconds": 1.0358782680013974
+}

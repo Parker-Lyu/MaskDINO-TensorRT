@@ -1,0 +1,20 @@
+Project commit: b4c5eb3fdd7d6f7d767cd9b98dca898eefe9e8a7
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Command: repro-constants --cpu-constants
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth: OK
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+3e3d04a930ad42e14e97bc68d0e5844eefde702aa3d0a2324e603e5e9b5d0d37  /home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+BEFORE_SLICE
+AFTER_SLICE graph(%mask : Bool(*, *, strides=[8500, 1], requires_grad=0, device=cpu)):
+  %1 : Long(1, strides=[1], device=cpu) = onnx::Constant[value={100}]()
+  %2 : Long(1, strides=[1], device=cpu) = onnx::Constant[value={500}]()
+  %3 : Long(1, strides=[1], device=cpu) = onnx::Constant[value={1}]()
+  %4 : Long(1, strides=[1], device=cpu) = onnx::Constant[value={1}]()
+  %5 : Bool(*, *, device=cpu) = onnx::Slice(%mask, %1, %2, %3, %4)
+  return (%5)
+ {'cuda_constant_attributes_moved_to_cpu': 2}

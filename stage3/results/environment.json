@@ -1,0 +1,22 @@
+{
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "driver": "595.84",
+  "docker_image": "sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e",
+  "maskdino": "3831d8514a3728535ace8d4ecc7d28044c42dd14",
+  "torch": "2.10.0a0+b558c986e8.nv25.11",
+  "cuda": "13.0",
+  "torchvision": "0.25.0a0+7a13ad0f",
+  "detectron2": "0.6",
+  "onnx": "1.18.0",
+  "tensorrt": "10.14.1.48",
+  "scipy": "1.16.3",
+  "nvidia-ml-py": "13.580.82",
+  "nsight_systems": "2025.5.1.121-255136380782v0",
+  "sha256": {
+    "checkpoint": "3e3d04a930ad42e14e97bc68d0e5844eefde702aa3d0a2324e603e5e9b5d0d37",
+    "panoptic_val2017.json": "454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a",
+    "stage2/sample.json": "270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5",
+    "val2017_5000_file_hash_manifest": "4139c13607c7470210971b49a57f8c476537ec68110819fee22553673fa7ef1b",
+    "panoptic_val2017_5000_file_hash_manifest": "f5360de9388ee1674c567d49f28a7c890a06dd8ab8fde8c649eabe3f24082295"
+  }
+}

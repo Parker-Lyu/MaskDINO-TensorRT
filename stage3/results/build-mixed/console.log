@@ -1,0 +1,79 @@
+Project commit: 2f236c022a10ef92ed560feba2053d82bbb48417
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Command: build --backend mixed --onnx /project/stage3/runs/export-mixed-rerun/network.onnx
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth: OK
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+3e3d04a930ad42e14e97bc68d0e5844eefde702aa3d0a2324e603e5e9b5d0d37  /home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+[11/06/2026-08:46:42] [TRT] [I] [MemUsageChange] Init CUDA: CPU +0, GPU +0, now: CPU 195, GPU 522 (MiB)
+[11/06/2026-08:46:42] [TRT] [I] ----------------------------------------------------------------
+[11/06/2026-08:46:42] [TRT] [I] Input filename:   /project/stage3/runs/export-mixed-rerun/network.onnx
+[11/06/2026-08:46:42] [TRT] [I] ONNX IR version:  0.0.8
+[11/06/2026-08:46:42] [TRT] [I] Opset version:    17
+[11/06/2026-08:46:42] [TRT] [I] Producer name:    pytorch
+[11/06/2026-08:46:42] [TRT] [I] Producer version: 2.10.0
+[11/06/2026-08:46:42] [TRT] [I] Domain:           
+[11/06/2026-08:46:42] [TRT] [I] Model version:    0
+[11/06/2026-08:46:42] [TRT] [I] Doc string:       
+[11/06/2026-08:46:42] [TRT] [I] ----------------------------------------------------------------
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[11/06/2026-08:46:42] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[11/06/2026-08:46:42] [TRT] [I] [MemUsageChange] Init builder kernel library: CPU +202, GPU +4, now: CPU 796, GPU 526 (MiB)
+[11/06/2026-08:46:42] [TRT] [I] Local timing cache in use. Profiling results in this builder pass will not be stored.
+[11/06/2026-08:46:43] [TRT] [I] Compiler backend is used during engine build.
+[11/06/2026-08:47:26] [TRT] [I] [GraphReduction] The approximate region cut reduction algorithm is called.
+[11/06/2026-08:47:26] [TRT] [I] Detected 1 inputs and 3 output network tensors.
+[11/06/2026-08:47:27] [TRT] [I] Total Host Persistent Memory: 353216 bytes
+[11/06/2026-08:47:27] [TRT] [I] Total Device Persistent Memory: 0 bytes
+[11/06/2026-08:47:27] [TRT] [I] Max Scratch Memory: 222822400 bytes
+[11/06/2026-08:47:27] [TRT] [I] [BlockAssignment] Started assigning block shifts. This will take 776 steps to complete.
+[11/06/2026-08:47:27] [TRT] [I] [BlockAssignment] Algorithm ShiftNTopDown took 94.3276ms to assign 30 blocks to 776 nodes requiring 483407872 bytes.
+[11/06/2026-08:47:27] [TRT] [I] Total Activation Memory: 483407872 bytes
+[11/06/2026-08:47:27] [TRT] [I] Total Weights Memory: 163289728 bytes
+[11/06/2026-08:47:27] [TRT] [I] Compiler backend is used during engine execution.
+[11/06/2026-08:47:27] [TRT] [I] Engine generation completed in 45.2342 seconds.
+[11/06/2026-08:47:28] [TRT] [I] [MemUsageStats] Peak memory usage of TRT CPU/GPU memory allocators: CPU 18 MiB, GPU 833 MiB
