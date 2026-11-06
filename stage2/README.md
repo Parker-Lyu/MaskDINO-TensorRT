@@ -93,9 +93,9 @@ done
 python3 stage2/summarize_benchmark.py stage2/runs/stage2-perf-20261106-r*/benchmark/*/result.json
 ```
 
-网络 GPU 延迟是 backbone 和分割 head 的 CUDA event 时间，按 batch 统计。端到端延迟从该批内存 JPEG 开始解码，到每张图的 CPU panoptic map 和 segment metadata 就绪，按图统计，包含该批的前处理、H2D、网络、GPU 后处理和 D2H。此处使用预先分好的离线 batch。吞吐用 500 张除以测量循环墙钟时间。峰值显存统计 PyTorch CUDA allocator 的 allocated 与 reserved 范围，预热后重置峰值。
+网络 GPU 延迟是 backbone 和分割 head 的 CUDA event 时间，按 batch 统计。端到端延迟从该批内存 JPEG 开始解码，到每张图的 CPU panoptic map 和 segment metadata 就绪，按图统计，包含该批的前处理、H2D、网络、GPU 后处理和 D2H。此处使用预先分好的离线 batch。每轮离线端到端吞吐等于 500 张完成图像除以整轮测量循环的墙钟秒数，包含循环内的 CPU 调度开销。JPEG 预读和预热在测量窗口之前完成。表中吞吐取三轮各自吞吐的中位数，P50/P95 只用于延迟。峰值显存统计 PyTorch CUDA allocator 的 allocated 与 reserved 范围，预热后重置峰值。
 
-| 输入 | Batch | 网络 GPU P50/P95（ms/batch） | 端到端 P50/P95（ms/图） | 吞吐（图/s） | 峰值 allocated / reserved（GiB） |
+| 输入 | Batch | 网络 GPU P50/P95（ms/batch） | 端到端 P50/P95（ms/图） | 离线端到端吞吐（图/s） | 峰值 allocated / reserved（GiB） |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | 800×800 | 1 | 26.49 / 26.77 | 35.02 / 37.85 | 28.35 | 2.07 / 3.92 |
 | 800×800 | 4 | 87.61 / 88.14 | 115.40 / 124.74 | 32.72 | 2.37 / 4.83 |
@@ -105,3 +105,35 @@ python3 stage2/summarize_benchmark.py stage2/runs/stage2-perf-20261106-r*/benchm
 表中每项为三轮中位数，范围与逐轮统计见 [汇总 JSON](results/benchmark/summary.json)。12 轮各完成 500 张，顺序均与清单一致，未发生 OOM 或回退。[原始延迟和日志](results/benchmark/)
 
 1024 相对 800 获得 1.1742 PQ，B1 端到端 P95 增加 14.08 ms，吞吐由 28.35 降到 20.38 图/s。1024 从 B1 到 B4 的离线吞吐提高约 7%，单请求 P95 增至约 3.6 倍。若没有更紧的延迟预算，后续可用 1024/B1 作为优先优化的配置，1024/B4 作为离线吞吐对照。
+
+## 1024 补测 B2 与 B8
+
+使用同一 500 张清单、FP32 设置、镜像和 RTX 4090。每个配置预热 20 个 batch，三轮在独立容器运行。运行提交 `1f96771` 增加了批末墙钟记录，推理路径沿用 B1/B4 的实现。
+
+```bash
+round=0
+for order in '2 8' '8 2' '2 8'; do
+  round=$((round + 1))
+  export MASKDINO_RUN_ID="stage2-batch-20261106-r$round"
+  for batch in $order; do
+    bash stage2/run.sh "$data" benchmark 1024 "$batch"
+  done
+done
+python3 stage2/summarize_benchmark.py stage2/runs/stage2-batch-20261106-r*/benchmark/*/result.json
+python3 stage2/summarize_benchmark.py --prefix-images 496 stage2/runs/stage2-batch-20261106-r*/benchmark/*/result.json
+```
+
+500 张结果沿用 B1/B4 的整轮口径。B8 有 62 个满批和一个 4 张尾批。另对 B2 和 B8 用相同顺序的前 496 张汇总满批指标，吞吐以完成第 496 张时的累计墙钟为分母。显存峰值取整轮。
+
+下表统一使用 500 张整轮口径和三轮中位数。B1、B4 沿用前次正式测试。
+
+| Batch | 网络 GPU P50/P95（ms/batch） | 端到端 P50/P95（ms/图） | 离线端到端吞吐（图/s） | 峰值 allocated / reserved（GiB） |
+| ---: | ---: | ---: | ---: | ---: |
+| 1 | 37.77 / 37.88 | 48.79 / 51.93 | 20.38 | 2.58 / 4.71 |
+| 2 | 71.22 / 71.44 | 90.97 / 96.85 | 21.33 | 2.74 / 5.59 |
+| 4 | 138.83 / 139.37 | 174.92 / 186.41 | 21.82 | 3.06 / 4.91 |
+| 8 | 264.16 / 274.32 | 335.36 / 359.10 | 22.56 | 5.06 / 7.25 |
+
+B2 和 B8 共六轮均完成 500 张，无 OOM 或 CPU 回退。前 496 张的满批吞吐分别为 21.33 和 22.57 图/s，端到端 P95 分别为 96.85 和 359.13 ms。B8 四图尾批的网络时间为 138.90–141.55 ms，最后一张 CPU 输出于批开始后 183.28–186.11 ms 就绪。结果含逐轮范围及原始批次时间。[500 张汇总](results/batch-sweep/summary-500.json) · [496 张满批汇总](results/batch-sweep/summary-496.json) · [原始数据和日志](results/batch-sweep/)
+
+1024/B8 相对 B1 提高约 10.7% 离线吞吐，端到端 P95 增至约 6.9 倍。Stage 3 使用 1024/B1 作为优先优化配置。

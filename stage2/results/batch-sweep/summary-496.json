@@ -1,0 +1,140 @@
+[
+  {
+    "size": 1024,
+    "batch": 2,
+    "rounds": [
+      {
+        "file": "stage2/results/batch-sweep/stage2-batch-20261106-r1/benchmark/1024-2/result.json",
+        "size": 1024,
+        "batch": 2,
+        "images": 496,
+        "warmup_batches": 20,
+        "network_p50_ms": 71.11515426635742,
+        "network_p95_ms": 71.38778800964356,
+        "e2e_p50_ms": 90.86195300005784,
+        "e2e_p95_ms": 96.92841524974938,
+        "images_per_s": 21.330514467771078
+      },
+      {
+        "file": "stage2/results/batch-sweep/stage2-batch-20261106-r2/benchmark/1024-2/result.json",
+        "size": 1024,
+        "batch": 2,
+        "images": 496,
+        "warmup_batches": 20,
+        "network_p50_ms": 71.2273941040039,
+        "network_p95_ms": 71.49408493041992,
+        "e2e_p50_ms": 90.97119649959495,
+        "e2e_p95_ms": 96.85115399861388,
+        "images_per_s": 21.330695485033345
+      },
+      {
+        "file": "stage2/results/batch-sweep/stage2-batch-20261106-r3/benchmark/1024-2/result.json",
+        "size": 1024,
+        "batch": 2,
+        "images": 496,
+        "warmup_batches": 20,
+        "network_p50_ms": 71.22329711914062,
+        "network_p95_ms": 71.44412307739258,
+        "e2e_p50_ms": 90.98565349995624,
+        "e2e_p95_ms": 96.7388535000282,
+        "images_per_s": 21.31584451079148
+      }
+    ],
+    "statistics": {
+      "network_p50_ms": {
+        "median": 71.22329711914062,
+        "min": 71.11515426635742,
+        "max": 71.2273941040039
+      },
+      "network_p95_ms": {
+        "median": 71.44412307739258,
+        "min": 71.38778800964356,
+        "max": 71.49408493041992
+      },
+      "e2e_p50_ms": {
+        "median": 90.97119649959495,
+        "min": 90.86195300005784,
+        "max": 90.98565349995624
+      },
+      "e2e_p95_ms": {
+        "median": 96.85115399861388,
+        "min": 96.7388535000282,
+        "max": 96.92841524974938
+      },
+      "images_per_s": {
+        "median": 21.330514467771078,
+        "min": 21.31584451079148,
+        "max": 21.330695485033345
+      }
+    }
+  },
+  {
+    "size": 1024,
+    "batch": 8,
+    "rounds": [
+      {
+        "file": "stage2/results/batch-sweep/stage2-batch-20261106-r1/benchmark/1024-8/result.json",
+        "size": 1024,
+        "batch": 8,
+        "images": 496,
+        "warmup_batches": 20,
+        "network_p50_ms": 264.87696838378906,
+        "network_p95_ms": 275.3331634521484,
+        "e2e_p50_ms": 337.4506254986045,
+        "e2e_p95_ms": 360.02412299967546,
+        "images_per_s": 22.474449622326485
+      },
+      {
+        "file": "stage2/results/batch-sweep/stage2-batch-20261106-r2/benchmark/1024-8/result.json",
+        "size": 1024,
+        "batch": 8,
+        "images": 496,
+        "warmup_batches": 20,
+        "network_p50_ms": 264.20838928222656,
+        "network_p95_ms": 273.9260452270508,
+        "e2e_p50_ms": 335.2404140005092,
+        "e2e_p95_ms": 357.9733060014405,
+        "images_per_s": 22.598150105462945
+      },
+      {
+        "file": "stage2/results/batch-sweep/stage2-batch-20261106-r3/benchmark/1024-8/result.json",
+        "size": 1024,
+        "batch": 8,
+        "images": 496,
+        "warmup_batches": 20,
+        "network_p50_ms": 263.1465301513672,
+        "network_p95_ms": 274.3285400390625,
+        "e2e_p50_ms": 335.40871150034945,
+        "e2e_p95_ms": 359.1333370004577,
+        "images_per_s": 22.5726302356967
+      }
+    ],
+    "statistics": {
+      "network_p50_ms": {
+        "median": 264.20838928222656,
+        "min": 263.1465301513672,
+        "max": 264.87696838378906
+      },
+      "network_p95_ms": {
+        "median": 274.3285400390625,
+        "min": 273.9260452270508,
+        "max": 275.3331634521484
+      },
+      "e2e_p50_ms": {
+        "median": 335.40871150034945,
+        "min": 335.2404140005092,
+        "max": 337.4506254986045
+      },
+      "e2e_p95_ms": {
+        "median": 359.1333370004577,
+        "min": 357.9733060014405,
+        "max": 360.02412299967546
+      },
+      "images_per_s": {
+        "median": 22.5726302356967,
+        "min": 22.474449622326485,
+        "max": 22.598150105462945
+      }
+    }
+  }
+]

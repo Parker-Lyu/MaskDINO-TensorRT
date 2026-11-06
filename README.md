@@ -27,7 +27,11 @@
 | 800×800 | 52.0120 | 57.3157 | 44.0065 | −0.9447 |
 | 1024×1024 | **53.1862** | 59.0272 | 44.3697 | +0.2295 |
 
-[Stage 2 复现与结果](stage2/README.md) · [固定 500 张性能样本](stage2/sample.json)
+1024×1024 作为 TensorRT 优化主线。PyTorch B1 的离线端到端 P95 为 51.93 ms，吞吐为 20.38 图/s。B8 的吞吐增至 22.56 图/s，P95 为 359.10 ms。性能数据使用同一份 500 张清单，图中为三轮中位数。
+
+![Stage 1 与 Stage 2 的 COCO PQ，以及 1024 方形输入的离线吞吐与延迟](stage2/results/comparison.svg)
+
+[Stage 2 复现与结果](stage2/README.md) · [固定 500 张性能样本](stage2/sample.json) · 验收 tag `stage2-pytorch-square`
 
 ## 仓库结构
 
