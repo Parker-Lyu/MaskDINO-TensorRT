@@ -1,0 +1,122 @@
+Project commit: ecf9e25c5858052cbf4ff6491af4582ad0504125
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Phase: online 1s1 1s2 1s3 2s1 2s2 --rates 10.9 21.9 32.8 39.4 43.8 48.2 --seconds 10
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/build-fp32/network.engine: OK
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a  /home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/build-fp32/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+55b94d690ea5dc254f9d139ce6ca5e4fd4784fe2095ef3aefda5be080b754a3c  stage3/runs/build-b4/network.engine
+ab810cd08d4523d22e5c6589c4288b97fa08367242574a495aff9d63f0e790ab  stage3/runs/build-b2/network.engine
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-10.9-47-b1s1-0ms 1 1 online /output/poisson-10.9-47.arrivals 0 64
+Completed 112/112 images in 10.1062 s
+poisson-10.9-47-b1s1-0ms P99 103.00021300000117 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-10.9-47-b1s2-0ms 1 2 online /output/poisson-10.9-47.arrivals 0 64
+Completed 112/112 images in 10.1017 s
+poisson-10.9-47-b1s2-0ms P99 97.19647099999929 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-10.9-47-b1s3-0ms 1 3 online /output/poisson-10.9-47.arrivals 0 64
+Completed 112/112 images in 10.1011 s
+poisson-10.9-47-b1s3-0ms P99 95.0891730000003 rejected 0 sustained False
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-10.9-47-b2s1-0ms 2 1 online /output/poisson-10.9-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 112/112 images in 10.1056 s
+poisson-10.9-47-b2s1-0ms P99 103.79555400000027 rejected 0 sustained True
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-10.9-47-b2s2-0ms 2 2 online /output/poisson-10.9-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 112/112 images in 10.1031 s
+poisson-10.9-47-b2s2-0ms P99 107.50927300000149 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-21.9-47-b1s1-0ms 1 1 online /output/poisson-21.9-47.arrivals 0 64
+Completed 214/214 images in 10.0564 s
+poisson-21.9-47-b1s1-0ms P99 124.42400499999985 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-21.9-47-b1s2-0ms 1 2 online /output/poisson-21.9-47.arrivals 0 64
+Completed 214/214 images in 10.0567 s
+poisson-21.9-47-b1s2-0ms P99 116.8576350000003 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-21.9-47-b1s3-0ms 1 3 online /output/poisson-21.9-47.arrivals 0 64
+Completed 214/214 images in 10.057 s
+poisson-21.9-47-b1s3-0ms P99 116.98967799999991 rejected 0 sustained True
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-21.9-47-b2s1-0ms 2 1 online /output/poisson-21.9-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 214/214 images in 10.0565 s
+poisson-21.9-47-b2s1-0ms P99 124.06549599999926 rejected 0 sustained True
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-21.9-47-b2s2-0ms 2 2 online /output/poisson-21.9-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 214/214 images in 10.0565 s
+poisson-21.9-47-b2s2-0ms P99 132.28118899999936 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-32.8-47-b1s1-0ms 1 1 online /output/poisson-32.8-47.arrivals 0 64
+Completed 334/334 images in 10.1189 s
+poisson-32.8-47-b1s1-0ms P99 180.97316499999988 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-32.8-47-b1s2-0ms 1 2 online /output/poisson-32.8-47.arrivals 0 64
+Completed 334/334 images in 10.113 s
+poisson-32.8-47-b1s2-0ms P99 139.59407199999987 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-32.8-47-b1s3-0ms 1 3 online /output/poisson-32.8-47.arrivals 0 64
+Completed 334/334 images in 10.1111 s
+poisson-32.8-47-b1s3-0ms P99 151.55561099999977 rejected 0 sustained True
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-32.8-47-b2s1-0ms 2 1 online /output/poisson-32.8-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 334/334 images in 10.1187 s
+poisson-32.8-47-b2s1-0ms P99 174.5671250000005 rejected 0 sustained True
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-32.8-47-b2s2-0ms 2 2 online /output/poisson-32.8-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 334/334 images in 10.1131 s
+poisson-32.8-47-b2s2-0ms P99 160.87867700000015 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-39.4-47-b1s1-0ms 1 1 online /output/poisson-39.4-47.arrivals 0 64
+Completed 394/394 images in 10.1982 s
+poisson-39.4-47-b1s1-0ms P99 230.96249500000022 rejected 0 sustained False
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-39.4-47-b1s2-0ms 1 2 online /output/poisson-39.4-47.arrivals 0 64
+Completed 394/394 images in 10.1805 s
+poisson-39.4-47-b1s2-0ms P99 171.49423900000056 rejected 0 sustained False
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-39.4-47-b1s3-0ms 1 3 online /output/poisson-39.4-47.arrivals 0 64
+Completed 394/394 images in 10.1779 s
+poisson-39.4-47-b1s3-0ms P99 179.18009200000006 rejected 0 sustained False
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-39.4-47-b2s1-0ms 2 1 online /output/poisson-39.4-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 394/394 images in 10.2018 s
+poisson-39.4-47-b2s1-0ms P99 209.4618230000001 rejected 0 sustained False
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-39.4-47-b2s2-0ms 2 2 online /output/poisson-39.4-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 394/394 images in 10.1801 s
+poisson-39.4-47-b2s2-0ms P99 196.51641000000018 rejected 0 sustained False
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-43.8-47-b1s1-0ms 1 1 online /output/poisson-43.8-47.arrivals 0 64
+Completed 432/432 images in 10.2406 s
+poisson-43.8-47-b1s1-0ms P99 417.81920399999944 rejected 0 sustained False
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-43.8-47-b1s2-0ms 1 2 online /output/poisson-43.8-47.arrivals 0 64
+Completed 432/432 images in 10.17 s
+poisson-43.8-47-b1s2-0ms P99 202.73145299999987 rejected 0 sustained False
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-43.8-47-b1s3-0ms 1 3 online /output/poisson-43.8-47.arrivals 0 64
+Completed 432/432 images in 10.1755 s
+poisson-43.8-47-b1s3-0ms P99 192.17950099999962 rejected 0 sustained False
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-43.8-47-b2s1-0ms 2 1 online /output/poisson-43.8-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 432/432 images in 10.2132 s
+poisson-43.8-47-b2s1-0ms P99 309.95332000000053 rejected 0 sustained False
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-43.8-47-b2s2-0ms 2 2 online /output/poisson-43.8-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 432/432 images in 10.1739 s
+poisson-43.8-47-b2s2-0ms P99 223.59967799999959 rejected 0 sustained False
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-48.2-47-b1s1-0ms 1 1 online /output/poisson-48.2-47.arrivals 0 64
+Completed 478/478 images in 11.0176 s
+poisson-48.2-47-b1s1-0ms P99 963.1039380000002 rejected 0 sustained False
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-48.2-47-b1s2-0ms 1 2 online /output/poisson-48.2-47.arrivals 0 64
+Completed 478/478 images in 10.19 s
+poisson-48.2-47-b1s2-0ms P99 225.67255400000022 rejected 0 sustained False
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-48.2-47-b1s3-0ms 1 3 online /output/poisson-48.2-47.arrivals 0 64
+Completed 478/478 images in 10.129 s
+poisson-48.2-47-b1s3-0ms P99 229.10481100000015 rejected 0 sustained False
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-48.2-47-b2s1-0ms 2 1 online /output/poisson-48.2-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 478/478 images in 10.4476 s
+poisson-48.2-47-b2s1-0ms P99 514.5939959999996 rejected 0 sustained False
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/poisson-48.2-47-b2s2-0ms 2 2 online /output/poisson-48.2-47.arrivals 0 64
+TensorRT: WARNING The logger passed into createInferRuntime differs from one already registered for an existing builder, runtime, or refitter. So the current new logger is ignored, and TensorRT will use the existing one which is returned by nvinfer1::getLogger() instead.
+Completed 478/478 images in 10.201 s
+poisson-48.2-47-b2s2-0ms P99 254.17748200000005 rejected 0 sustained False
