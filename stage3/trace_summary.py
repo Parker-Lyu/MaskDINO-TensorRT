@@ -6,12 +6,17 @@ from pathlib import Path
 import sqlite3
 from statistics import median
 
-STAGES = {"decode", "preprocess", "preprocess_gpu", "H2D", "network", "postprocess", "D2H"}
+STAGES = {"decode", "preprocess", "preprocess_gpu", "H2D", "network", "postprocess", "D2H", "output_wait"}
 TRACE_LABELS = {
     "network": "CPU / network call (GPU may continue after return)",
     "postprocess": "CPU / postprocess (includes CUDA waits)",
 }
 STAGE_BY_LABEL = {label: stage for stage, label in TRACE_LABELS.items()}
+STAGE_BY_LABEL.update({
+    "CPU / submit CUDA postprocess": "postprocess",
+    "CPU / submit D2H copies": "D2H",
+    "CPU / wait for output (network + postprocess + copies)": "output_wait",
+})
 ACTIVITIES = ("KERNEL", "MEMCPY", "MEMSET")
 
 

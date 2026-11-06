@@ -59,13 +59,10 @@ void Pipeline::run(const unsigned char* jpeg, size_t length, int height, int wid
     }
     if (timing) check(cudaEventRecord(end_.value, stream));
     {
-        Range range("CPU / postprocess (includes CUDA waits)");
+        Range range("CPU / submit CUDA postprocess");
         postprocess_.run(logits_.get(), masks_.get(), things_.get(), geometry, stream);
     }
-    {
-        Range range("D2H");
-        postprocess_.download(geometry, stream);
-    }
+    postprocess_.download(geometry, stream);
 }
 
 float Pipeline::network_ms() {
