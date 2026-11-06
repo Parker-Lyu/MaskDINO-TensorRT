@@ -38,8 +38,9 @@ bash stage4/run.sh "$data" "$engine" trace-native native trace
 bash stage4/run.sh "$data" "$engine" native-pq native evaluate
 
 python3 stage4/summarize.py stage4/results
-python3 stage3/trace_plot.py stage4/runs/{trace-reference,trace-native}/trace.sqlite \
-  stage4/results/nsight-timeline.svg --labels 'TensorRT + Python' 'TensorRT + C++' --split-legacy-output
+python3 stage3/trace_plot.py stage3/runs/{trace-pytorch-rerun,trace-fp32}/trace.sqlite \
+  stage4/results/nsight-timeline.svg --native stage4/runs/trace-native/trace.sqlite \
+  --labels 'PyTorch FP32' 'Stage 3 TensorRT FP32 + Python' --split-legacy-output --show-cpu-sync
 ```
 
 图表命令读取归档目录中的 `result.json` 和采集目录中的 SQLite。原生编译目标为 sm_89。检查和评估工具使用同一个 Stage 1 开发镜像。独立调用原生可执行文件可使用脚本生成的 COCO thing 清单和 TSV 图像清单，参数见 [原生入口](main.cu)。运行时依赖以 [动态链接记录](results/native-align-fixed/runtime-libraries.txt) 为准。
@@ -73,9 +74,11 @@ python3 stage3/trace_plot.py stage4/runs/{trace-reference,trace-native}/trace.sq
 
 ## Nsight Systems
 
-两份 trace 分别采集同一份 32 张 COCO 清单，沿用相同的预热。NVTX 标记解码、CPU 前处理、H2D、GPU 前处理、网络、后处理和 D2H。CPU NVTX 区间显示提交与等待，GPU 活动通过 CUDA correlation ID 按提交阶段归类。
+下图把 [Stage 3 的两份 FP32 基线](../stage3/README.md#nsight-systems-基线)与 Stage 4 原生链路的正式 trace 放在同一横轴上。三份采集使用同一份 32 张 COCO 清单和 20 次预热，图中展示预热后的第一张图 149770。第一行按 NVTX 阶段着色，红色覆盖 CUDA 同步 API 区间，第二行单独展示这些调用。GPU 活动通过 CUDA correlation ID 按提交阶段归类。绘图前按 Stage 3 的复现命令准备前两份 SQLite，并对 `stage4/runs/trace-native/trace.nsys-rep` 执行同样的 SQLite 导出。
 
-![同一 COCO 图像的 Stage 3 和 Stage 4 CPU、GPU 时间线](results/nsight-timeline.svg)
+![同一 COCO 图像的 PyTorch FP32、Stage 3 TensorRT FP32 与 Stage 4 C++/CUDA 时间线](results/nsight-timeline.svg)
+
+下表使用 Stage 4 正式实验采集的 Python 参考链路和原生链路，每条链路统计 32 张图。
 
 | 32 张 trace 指标 | Python + TensorRT | C++/CUDA + TensorRT |
 | --- | ---: | ---: |

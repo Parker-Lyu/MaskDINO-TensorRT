@@ -94,6 +94,10 @@ Nsight Systems 原始报告 · [TensorRT FP32（GPU 分阶段）](stage3/results
 
 ![Stage 1–4 COCO PQ 与 1024 B1 性能对照](stage4/results/comparison.svg)
 
+下图对比同一张 COCO 图像的三路 Nsight Systems 时间线。CPU 轨道上的红色表示 CUDA 同步调用，GPU 轨道上的绿色表示后处理活动。
+
+![PyTorch FP32、Stage 3 TensorRT FP32 和 Stage 4 C++/CUDA 的同图时间线](stage4/results/nsight-timeline.svg)
+
 Nsight Systems 原始报告 · [C++/CUDA + TensorRT FP32（GPU 分阶段）](stage4/results/trace-native-gpu-projection/trace.nsys-rep)
 
 [Stage 4 复现、逐轮数据与 Nsight 报告](stage4/README.md) · 验收 tag `stage4-native-fp32-accepted`

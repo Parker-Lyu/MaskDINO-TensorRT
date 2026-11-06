@@ -97,9 +97,9 @@ TensorRT FP32 的三项 PQ 指标均通过验收，与 PyTorch B1 的差值各�
 
 ![Nsight Systems FP32 时间线](results/nsight-fp32-timeline.svg)
 
-图由 Nsight Systems 导出的 SQLite 原始事件绘制，展示两组预热后的同一张 COCO 图 149770，横轴共用毫秒尺度。CPU NVTX 展示主机代码区间，CPU sync API 单独展示同步调用的墙钟区间。GPU 活动用 CUDA correlation ID 关联到提交它的 NVTX 阶段，灰色表示未归属的事件。三条轨道可在同一时刻重叠，图中数值不能相加得到端到端时间。
+图由 Nsight Systems 导出的 SQLite 原始事件绘制，展示两组预热后的同一张 COCO 图 149770，横轴共用毫秒尺度。第一行按 NVTX 阶段着色，红色覆盖记录到的 CUDA 同步 API 区间。第二行单独展示同一批同步调用。GPU 活动用 CUDA correlation ID 关联到提交它的 NVTX 阶段，灰色表示未归属的事件。三条轨道可在同一时刻重叠，图中数值不能相加得到端到端时间。
 
-TensorRT 在该图的 CPU 后处理区间为 20.60 ms，其中有 17.25 ms 与此前由网络提交的 GPU 活动重叠。由后处理提交的 GPU 活动为 2.38 ms。PyTorch 的对应数值为 2.99 ms、0.00 ms、2.36 ms。下表统计全部 32 张。
+TensorRT 在该图的 CPU 后处理 NVTX 区间为 20.60 ms，其中 CUDA 同步 API 占 19.82 ms。整个区间与此前由网络提交的 GPU 活动重叠 17.25 ms，由后处理提交的 GPU 活动为 2.38 ms。PyTorch 的对应数值为 2.99 ms、2.29 ms、0.00 ms 和 2.36 ms。第一行的绿色只表示后处理 NVTX 区间中未被已记录的 CUDA 同步调用覆盖的墙钟时间。下表统计全部 32 张。
 
 | 独立 trace 指标 | PyTorch FP32 | TensorRT FP32 |
 | --- | ---: | ---: |
@@ -124,7 +124,7 @@ for id in trace-pytorch-rerun trace-fp32; do
   python3 stage3/trace_summary.py "$capture/trace.sqlite"
 done
 python3 stage3/trace_plot.py stage3/runs/{trace-pytorch-rerun,trace-fp32}/trace.sqlite \
-  stage3/results/nsight-fp32-timeline.svg
+  stage3/results/nsight-fp32-timeline.svg --show-cpu-sync
 python3 stage3/summarize.py stage3/runs/{pt-pq,fp32-pq}/result.json \
   stage3/runs/perf-{pytorch,fp32}-r{1,2,3}/result.json > stage3/results/summary.json
 python3 stage3/plot.py stage3/results
