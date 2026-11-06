@@ -49,7 +49,9 @@
 | 1024×1024 | 4 | 138.83 / 139.37 | 174.92 / 186.41 | 21.82 | 3.06 / 4.91 |
 | 1024×1024 | 8 | 264.16 / 274.32 | 335.36 / 359.10 | 22.56 | 5.06 / 7.25 |
 
-![Stage 1 与 Stage 2 的 COCO PQ，以及 1024 方形输入的离线吞吐与延迟](stage2/results/comparison.svg)
+![Stage 1 与 Stage 2 的 COCO PQ，以及 1024 方形输入的离线吞吐与批次端到端 P95](stage2/results/comparison.svg)
+
+右图按批统计端到端 P95，每批从内存 JPEG 开始处理，计到最后一张图的 CPU 输出就绪。表中的端到端延迟按单请求统计。
 
 [Stage 2 复现步骤、运行版本与原始结果](stage2/README.md) · 验收 tag `stage2-pytorch-square`
 
