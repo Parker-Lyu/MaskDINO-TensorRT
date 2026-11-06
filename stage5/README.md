@@ -1,9 +1,9 @@
 # Stage 5 · 多 slot 与 batch 联合优化
 
-固定 RTX 4090、MaskDINO R50 panoptic、1024×1024、TensorRT FP32、关闭 TF32、相同权重和 Stage 4 C++/CUDA 前后处理。每个请求对应一张内存 JPEG，输出原图尺寸 CPU panoptic map 和 segment metadata。比较两种运行目标：
+固定 RTX 4090、MaskDINO R50 panoptic、1024×1024、TensorRT FP32、关闭 TF32、相同权重和 Stage 4 C++/CUDA 前后处理。每个请求对应一张内存 JPEG，输出原图尺寸 CPU panoptic map 和 segment metadata。比较两种运行目标。
 
-- 在线：在给定 P99、失败率和显存预算下，找到可持续的最大请求率。轻载先测 B1/S1 的响应速度，再看增加 slot 或小 batch 是否扩大达标负载区间。
-- 离线：在显存与正确性约束内最大化稳态吞吐，并报告固定任务集的总完成时间。B1 多 slot、较大 batch 单 slot 和二者组合都参与比较。
+- **在线**在给定 P99、失败率和显存预算下，找到可持续的最大请求率。轻载先测 B1/S1 的响应速度，再看增加 slot 或小 batch 是否扩大达标负载区间。
+- **离线**在显存与正确性约束内最大化稳态吞吐，并报告固定任务集的总完成时间。B1 多 slot、较大 batch 单 slot 和二者组合都参与比较。
 
 ## 复现入口
 
@@ -29,7 +29,7 @@ bash stage5/run.sh "$data" "$previous" "$engine" screen-r1 screen 1s1 1s2 1s3 1s
 
 ## 5.1 · 建立对照与多 slot 生命周期
 
-Stage 4 已验收的 B1/S1 为参照：网络 P50/P95 21.56/21.81 ms，端到端 P50/P95 22.92/23.63 ms，43.65 图/s，进程采样峰值 1.24 GiB。Stage 2 的 B2/B4/B8 是 PyTorch 数据，仅用于确定探索范围。Stage 5 要补齐原生 TensorRT batch 实测。 [Stage 4 结果](../stage4/README.md#rtx-4090-性能) · [Stage 2 结果](../stage2/README.md)
+Stage 4 已验收的 B1/S1 提供参照。网络 P50/P95 21.56/21.81 ms，端到端 P50/P95 22.92/23.63 ms，43.65 图/s，进程采样峰值 1.24 GiB。Stage 2 的 B2/B4/B8 是 PyTorch 数据，仅用于确定探索范围。Stage 5 要补齐原生 TensorRT batch 实测。 [Stage 4 结果](../stage4/README.md#rtx-4090-性能) · [Stage 2 结果](../stage2/README.md)
 
 1. 保留 Stage 4 原生 B1/S1 入口，用相同 engine、500 张清单、预热与计时口径，在 Stage 5 正式轮次同机重跑。再跑新调度器的 B1/S1，单列调度与结果交付开销，供后续横向比较。
 2. 第一版采用一个 slot 对应一个长期运行的 worker。每个 slot 有独立的 CUDA stream、TensorRT execution context、可写 I/O、前后处理 scratch 和 pinned staging buffers。同一 batch 规格共享已反序列化的 engine。worker 等本 slot 最终 D2H 完成，将 map 和 metadata 交付给拥有其生命周期的 CPU 结果对象，随后归还 slot。主调度器可继续接收请求，其他 slot 可继续提交。固定 worker 模型后再比较 slot 数。
@@ -110,6 +110,23 @@ B8/S2 联合补测为 **52.67 图/s**、逐图 P95 **339.09 ms**、进程峰值 
 
 - 任务持续可取，使用相同任务序列和同一 CPU 结果消费方式。固定任务集的总完成时间从开始派发到最后一张 CPU 结果就绪，包含填充与排空。另报稳态墙钟窗口内完成图数除以时长，并记录窗口边界。
 - 500 张用于初筛。对吞吐、显存有取舍的候选和 B1/S1，用相同长任务集各测三轮，每轮至少持续 5 分钟。记录总完成时间、稳态图/s、逐图端到端延迟、进程显存峰值及失败数。记下用于循环的清单和次序，逐批回收 CPU 结果，避免无界结果积压引入额外的主机内存占用和吞吐干扰。
+
+### 离线长测结果
+
+在 `c8d4796` 上，将同一份 500 张清单重复 35 次。每配置三轮，每轮 17,500 张，轮换运行顺序。稳态吞吐取总完成时间的中间 90% 窗口。表中为三轮中位数。
+
+| 配置 | 稳态吞吐（图/s） | 总完成时间（s） | 逐图 P95（ms） | 进程显存峰值（GiB） | 三轮失败 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| B1/S1 | 43.74 | 400.18 | 23.68 | 1.24 | 0 / 52,500 |
+| B1/S3 | 53.22 | 328.78 | 58.31 | 2.34 | 0 / 52,500 |
+
+离线选 **B1/S3**。相对 B1/S1，稳态吞吐提高 **21.7%**，固定任务总完成时间缩短 **17.8%**。 [逐轮结果](results/offline/summary.json) · [原始逐请求记录校验](results/offline/raw.sha256)
+
+```bash
+bash stage5/run.sh "$data" "$previous" "$engine" offline-r1 offline 1s1 1s3 --repeats 35
+bash stage5/run.sh "$data" "$previous" "$engine" pq-r1 pq 1s1 1s2 1s3
+bash stage5/run.sh "$data" "$previous" "$engine" trace-r1 trace 1s1 1s3 2s2
+```
 
 ### 独立 Nsight 采集
 
