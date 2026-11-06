@@ -60,7 +60,7 @@ def duration_ms(intervals):
     return sum(right - left for left, right in intervals) / 1e6
 
 
-def plot(pytorch, tensorrt, output):
+def plot(pytorch, tensorrt, output, labels=("PyTorch FP32", "TensorRT FP32")):
     request, *pt = capture(pytorch, None)
     _, *trt = capture(tensorrt, request)
     tick_ns = 5_000_000
@@ -89,7 +89,7 @@ def plot(pytorch, tensorrt, output):
     text(1087, 363, "ms")
 
     for index, (title, (start, end, host, sync, gpu)) in enumerate(
-        (("PyTorch FP32", pt), ("TensorRT FP32", trt))
+        zip(labels, (pt, trt))
     ):
         y = 78 + index * 134
         text(24, y + 12, f"{title} · {(end - start) / 1e6:.2f} ms request", 16)
@@ -111,8 +111,8 @@ def plot(pytorch, tensorrt, output):
              f"  ·  overlaps {overlap:.2f} ms of network GPU activity"
              f"  ·  postprocess GPU activity {duration_ms(gpu['postprocess']):.2f} ms")
 
-    labels = {**COLORS, "sync API": SYNC}
-    for index, (name, color) in enumerate(labels.items()):
+    legend = {**COLORS, "sync API": SYNC}
+    for index, (name, color) in enumerate(legend.items()):
         left = 24 + 118 * index
         svg.append(f'<rect x="{left}" y="389" width="12" height="12" rx="2" fill="{color}"/>')
         text(left + 17, 400, name)
@@ -126,5 +126,6 @@ if __name__ == "__main__":
     parser.add_argument("pytorch", type=Path)
     parser.add_argument("tensorrt", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--labels", nargs=2, default=("PyTorch FP32", "TensorRT FP32"))
     args = parser.parse_args()
-    plot(args.pytorch, args.tensorrt, args.output)
+    plot(args.pytorch, args.tensorrt, args.output, args.labels)

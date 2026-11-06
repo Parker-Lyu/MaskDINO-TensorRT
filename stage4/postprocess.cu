@@ -23,7 +23,9 @@ __global__ void select(const float* logits, Candidates* candidates) {
     }
     labels[query] = label;
     scores[query] = 0;
-    if (label != classes - 1 && best > 0.25f) {
+    // With SEMANTIC_CE_LOSS=false the 133 outputs are all COCO categories.
+    // The reference's no-object sentinel (num_classes) has no output column.
+    if (best > 0.25f) {
         float sum = 0;
         const float center = best / 0.06f;
         for (int c = 0; c < classes; ++c)

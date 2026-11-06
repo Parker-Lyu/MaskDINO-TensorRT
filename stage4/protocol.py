@@ -91,9 +91,12 @@ def align(output, engine, images):
             isolated_metrics, _ = panoptic_metrics(reference, isolated)
             actual = native_prediction(output, image)
             metrics, diff = panoptic_metrics(reference, actual)
-            iou = min((match["iou"] for match in metrics["same_category_matches"]), default=1)
-            passed = (metrics["category_agreement"] >= limits["category_agreement"]
-                      and not any(metrics["unmatched_segments"]) and iou >= limits["segment_iou"])
+            passed = all(
+                result["category_agreement"] >= limits["category_agreement"]
+                and not any(result["unmatched_segments"])
+                and min((match["iou"] for match in result["same_category_matches"]), default=1) >= limits["segment_iou"]
+                for result in (metrics, isolated_metrics)
+            )
             observations.append(dict(image_id=image["id"], passed=passed, panoptic=metrics,
                                      same_tensor_panoptic=isolated_metrics))
             print(image["id"], metrics["category_agreement"], isolated_metrics["category_agreement"], flush=True)

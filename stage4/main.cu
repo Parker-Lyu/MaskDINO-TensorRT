@@ -124,7 +124,7 @@ void run(int argc, char** argv) {
     std::ifstream categories(argv[2]);
     int category;
     while (categories >> category) {
-        if (category < 0 || category >= classes - 1) throw std::runtime_error("Invalid thing category");
+        if (category < 0 || category >= classes) throw std::runtime_error("Invalid thing category");
         things[category] = 1;
     }
     if (!categories.eof() || std::count(things.begin(), things.end(), 1) != 80)
