@@ -10,12 +10,12 @@
 
 | 来源 | PQ | PQ Things | PQ Stuff |
 | --- | ---: | ---: | ---: |
-| [RTX 4090 实测](stage1/results/official-r50-20261106.log) | **52.9567** | 58.9645 | 43.8884 |
+| [RTX 4090 实测](stage1/results/official-r50-20261106-6eb01c1.log) | **52.9567** | 58.9645 | 43.8884 |
 | [MaskDINO 官方 Model Zoo](https://github.com/IDEA-Research/MaskDINO/blob/3831d8514a3728535ace8d4ecc7d28044c42dd14/README.md#coco-panoptic-segmentation) | 53.0 | — | — |
 
 实测 PQ 按官方表格的一位小数精度为 **53.0**，预测覆盖全部 5,000 个真值图像 ID。
 
-[Stage 1 复现步骤](stage1/README.md) · [环境、数据与权重](docs/experiment-environment.md)
+[Stage 1 复现步骤](stage1/README.md) · [验收 tag `stage1-official-pytorch`](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/stage1-official-pytorch) · [环境、数据与权重](docs/experiment-environment.md)
 
 ## 仓库结构
 

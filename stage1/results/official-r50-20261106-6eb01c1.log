@@ -1,0 +1,18 @@
+Run: stage1/runs/official-r50-20261106-6eb01c1
+Project commit: 6eb01c17745e10756558464f3f85b35e76bbca09
+Container image ID: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+NVIDIA GeForce RTX 4090, 595.84
+PyTorch 2.10.0a0+b558c986e8.nv25.11 CUDA 13.0
+Dataset: COCO 2017 panoptic val
+Panoptic annotation SHA-256: 454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a
+Instance annotation SHA-256: e8c7f7908f1d7278341fae127d0da654f102f11bd7b21d8aeefa635b8c810b6f
+R50 panoptic checkpoint SHA-256: 3e3d04a930ad42e14e97bc68d0e5844eefde702aa3d0a2324e603e5e9b5d0d37
+Input: short edge 800, max long edge 1333
+Inference: official PyTorch FP32, batch 1, panoptic/instance/semantic outputs
+Exit code: 0
+Coverage: 5000 unique panoptic predictions match all 5000 ground-truth image IDs
+[11/06 05:40:43 d2.evaluation.evaluator]: Total inference time: 0:09:08.110021 (0.109732 s / iter per device, on 1 devices)
+[11/06 05:41:00 d2.evaluation.testing]: copypaste: Task: panoptic_seg
+[11/06 05:41:00 d2.evaluation.testing]: copypaste: PQ,SQ,RQ,PQ_th,SQ_th,RQ_th,PQ_st,SQ_st,RQ_st
+[11/06 05:41:00 d2.evaluation.testing]: copypaste: 52.9567,83.6866,62.5607,58.9645,84.9649,69.0480,43.8884,81.7570,52.7685

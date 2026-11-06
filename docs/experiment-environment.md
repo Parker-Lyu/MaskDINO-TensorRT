@@ -43,7 +43,7 @@ output directory.
 
 ## Stage 1 reference environment
 
-The values below describe the recorded 2026-11-06 run. Check current versions
+The values below describe the recorded 2026-11-06 rerun. Check current versions
 before reproducing it.
 
 | Item | Recorded value |
@@ -51,13 +51,14 @@ before reproducing it.
 | NVIDIA driver | `595.84` |
 | PyTorch | `2.10.0a0+b558c986e8.nv25.11` |
 | PyTorch CUDA version | `13.0` |
-| Local Docker image ID | `sha256:9758beb33f78b9f983819d835179405de9a7cefd0ea6691726d3bb5a5a8eec4d` |
+| Local Docker image ID | `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e` |
 | MaskDINO commit | `3831d8514a3728535ace8d4ecc7d28044c42dd14` |
 
 Use [Stage 1 reproduction instructions](../stage1/README.md) for the command,
 [the launcher](../stage1/run.sh) for the exact mounts and checks, and
-[the recorded output](../stage1/results/official-r50-20261106.log) for the measured result.
-The image ID identifies the historical run environment. For a fresh run, build the
+[the recorded output](../stage1/results/official-r50-20261106-6eb01c1.log) for the measured result.
+The image ID identifies the rerun environment. The original run used image ID
+`sha256:9758beb33f78b9f983819d835179405de9a7cefd0ea6691726d3bb5a5a8eec4d`. For a fresh run, build the
 [Stage 1 image](../maskdino/Dockerfile) as shown in the reproduction instructions.
 
 Before launching, run `nvidia-smi` and `docker image inspect <image>` on the

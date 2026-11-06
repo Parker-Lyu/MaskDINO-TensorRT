@@ -22,4 +22,6 @@ bash stage1/run.sh \
 
 ## 结果
 
-2026-11-06 在 RTX 4090 上评估完整的 5,000 张 COCO 2017 val 图片，PQ 为 **52.9567**，PQ Things 为 **58.9645**，PQ Stuff 为 **43.8884**。[评估日志摘录和覆盖校验](results/official-r50-20261106.log)
+2026-11-06 从项目提交 `6eb01c17745e10756558464f3f85b35e76bbca09` 在 RTX 4090 上重跑官方评估，预测覆盖 COCO 2017 val 全部 5,000 张图。PQ 为 **52.9567**，PQ Things 为 **58.9645**，PQ Stuff 为 **43.8884**，与原始评估一致。
+
+[重跑日志摘录和覆盖校验](results/official-r50-20261106-6eb01c1.log) · [原始评估日志摘录](results/official-r50-20261106.log)
