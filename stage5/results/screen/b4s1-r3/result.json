@@ -1,0 +1,40 @@
+{
+  "completed": 500,
+  "rejected": 0,
+  "makespan_seconds": 10.456614696,
+  "makespan_images_per_second": 47.816622734628105,
+  "sampled_peak_process_used_bytes": 3084910592,
+  "network_ms_per_batch": {
+    "p50": 77.7308197021,
+    "p95": 80.0204772949
+  },
+  "latency_ms": {
+    "p50": 83.49067800000012,
+    "p95": 86.56385799999953,
+    "p99": 88.58661799999993
+  },
+  "queue_including_batch_wait_ms": {
+    "p50": 0.0,
+    "p95": 0.0,
+    "p99": 0.0
+  },
+  "batch_wait_ms": {
+    "p50": 0.0,
+    "p95": 0.0,
+    "p99": 0.0
+  },
+  "queue_excluding_batch_wait_ms": {
+    "p50": 0.0,
+    "p95": 0.0,
+    "p99": 0.0
+  },
+  "batch_dispatch_histogram": {
+    "4": 125
+  },
+  "queue_depth_max_at_arrival": 0,
+  "steady_images_per_second": 47.604104411363096,
+  "steady_window_ms": [
+    522.8307348000001,
+    9933.7839612
+  ]
+}

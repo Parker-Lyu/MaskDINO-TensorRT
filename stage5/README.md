@@ -1,9 +1,31 @@
 # Stage 5 · 多 slot 与 batch 联合优化
 
-状态：实验计划。固定 RTX 4090、MaskDINO R50 panoptic、1024×1024、TensorRT FP32、关闭 TF32、相同权重和 Stage 4 C++/CUDA 前后处理。每个请求对应一张内存 JPEG，输出原图尺寸 CPU panoptic map 和 segment metadata。比较两种运行目标：
+固定 RTX 4090、MaskDINO R50 panoptic、1024×1024、TensorRT FP32、关闭 TF32、相同权重和 Stage 4 C++/CUDA 前后处理。每个请求对应一张内存 JPEG，输出原图尺寸 CPU panoptic map 和 segment metadata。比较两种运行目标：
 
 - 在线：在给定 P99、失败率和显存预算下，找到可持续的最大请求率。轻载先测 B1/S1 的响应速度，再看增加 slot 或小 batch 是否扩大达标负载区间。
 - 离线：在显存与正确性约束内最大化稳态吞吐，并报告固定任务集的总完成时间。B1 多 slot、较大 batch 单 slot 和二者组合都参与比较。
+
+## 复现入口
+
+在 RTX 4090 上使用干净 checkout。沿用 [Stage 3 参考镜像](../stage3/results/environment.json)、COCO 数据、原始权重、固定 B1 engine 和 [Stage 4 正式运行目录](../stage4/README.md#复现)。`previous` 需要包含 `perf-native-r1` 和 `native-align-fixed` 的 manifest、原生基准程序与逐图预测。
+
+```bash
+export MASKDINO_IMAGE=maskdino:stage1
+export MASKDINO_CHECKPOINT=/path/to/maskdino_r50_panoptic.pth
+data=/path/to/coco2017-panoptic-val
+engine=/path/to/stage3/runs/build-fp32/network.engine
+previous=/path/to/stage4/runs
+
+for b in 2 4; do
+  bash stage3/run.sh "$data" "export-b$b" export --backend fp32 --cpu-constants --batch "$b"
+  bash stage3/run.sh "$data" "build-b$b" build --backend fp32 \
+    --onnx "/project/stage3/runs/export-b$b/network.onnx" --batch "$b"
+done
+bash stage5/run.sh "$data" "$previous" "$engine" check-r1 check 1s1 1s2 1s4 2s1 2s2 4s1 4s2
+bash stage5/run.sh "$data" "$previous" "$engine" screen-r1 screen 1s1 1s2 1s3 1s4 2s1 4s1 2s2 4s2
+```
+
+每个运行 ID 只能使用一次。所有计时模式的 500 张 JPEG 在计时前预载，COCO 评估独立运行。在线 `--shapes` 可选 `uniform`、`poisson` 和 `burst`，固定 `--rates`、`--seconds`、`--seeds` 后可回放相同的到达序列。配置写为 `1s3` 或 `2s2`。在线 B2 用 `--delays` 指定最大凑批等待（ms）。
 
 ## 5.1 · 建立对照与多 slot 生命周期
 
@@ -28,6 +50,27 @@ B 表示固定 engine batch 大小，S 表示 slot 数。在线另外标明最�
 | D · 场景复测 | 在线保留 B1/S1、B1 多 slot 和有希望的 B2 候选。离线保留吞吐与显存的有效候选 | 按各自负载完成验证，保留并报告无增益、失败或 OOM 的配置及原因 |
 
 正式筛选沿用同一份 500 张内存 JPEG，候选轮换顺序测三轮。Stage 4 对照沿用 20 次单图预热，新配置每个 slot 和常用 engine 路径预热 20 批，记录实际数量。计时前让 GPU 进入稳定状态，报告逐轮数据与中位数。CUDA events 记录每次网络 enqueue 的 GPU P50/P95，单位 ms/batch。墙钟记录逐图端到端 P50/P95，筛选及离线的逐图延迟从所在 batch 被派发到 slot 开始，到该图 CPU 结果就绪。固定输入顺序、镜像、CPU worker 策略和资源采样方法，记录线程数随 slot 变化。若怀疑收益来自 CPU 解码并行，用单独的阶段计时和 trace 区分 CPU 并行与 GPU 重叠。
+
+### 500 张离线筛选
+
+RTX 4090 上由 `ecf9e25` 运行。表中为三轮中位数，每轮 500 张、零失败。Stage 5 延迟从 batch 派发算到该图 CPU 结果就绪。多 slot 行同时有多个 batch 在运行。
+
+| 配置 | 吞吐（图/s） | 逐图 P95（ms） | 进程显存峰值（GiB） |
+| --- | ---: | ---: | ---: |
+| B1/S1 | 43.67 | 23.74 | 1.24 |
+| B1/S2 | 50.89 | 41.93 | 1.79 |
+| B1/S3 | 53.36 | 58.54 | 2.34 |
+| B1/S4 | 53.08 | 77.74 | 2.90 |
+| B2/S1 | 46.58 | 44.33 | 1.79 |
+| B4/S1 | 47.82 | 86.40 | 2.87 |
+| B2/S2 | 52.51 | 79.75 | 2.88 |
+| B4/S2 | 52.55 | 191.00 | 5.06 |
+
+同轮 Stage 4 原生程序的吞吐中位数是 43.77 图/s。新调度器 B1/S1 是 43.67 图/s。B1/S3 相比新调度器基准吞吐提高 22.2%，并以更低的显存取得略高于两组联合配置的吞吐。B4/S1 相比 B2/S1 仍有 2.7% 的收益，因此补测 B8。 [逐轮数据](results/screen/summary.json) · [运行记录](results/screen/console.log)
+
+![Stage 5 三轮离线筛选](results/screen.svg)
+
+原生逐图验收中 B1/S1、B1/S2、B1/S4、B2/S1、B2/S2、B4/S1、B4/S2 均通过 32/32。B2/S2 超时回退测试也通过 32/32，实际发车 11 个 B2 批和 10 个 B1 批。 [验收记录](results/check/console.log)
 
 ## 5.3 · 在线容量与离线稳态
 

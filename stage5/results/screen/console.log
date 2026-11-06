@@ -1,0 +1,79 @@
+Project commit: ecf9e25c5858052cbf4ff6491af4582ad0504125
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Phase: screen 1s1 1s2 1s3 1s4 2s1 4s1 2s2 4s2
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/build-fp32/network.engine: OK
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a  /home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/build-fp32/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+55b94d690ea5dc254f9d139ce6ca5e4fd4784fe2095ef3aefda5be080b754a3c  stage3/runs/build-b4/network.engine
+ab810cd08d4523d22e5c6589c4288b97fa08367242574a495aff9d63f0e790ab  stage3/runs/build-b2/network.engine
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s1-r1 1 1 benchmark 1 0 64
+Completed 500/500 images in 11.4912 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s2-r1 1 2 benchmark 1 0 64
+Completed 500/500 images in 9.88284 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s3-r1 1 3 benchmark 1 0 64
+Completed 500/500 images in 9.34552 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s4-r1 1 4 benchmark 1 0 64
+Completed 500/500 images in 9.43191 s
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b2s1-r1 2 1 benchmark 1 0 64
+Completed 500/500 images in 10.7341 s
+Run /output/maskdino-slots /project/stage3/runs/build-b4/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b4s1-r1 4 1 benchmark 1 0 64
+Completed 500/500 images in 10.4488 s
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b2s2-r1 2 2 benchmark 1 0 64
+Completed 500/500 images in 9.44208 s
+Run /output/maskdino-slots /project/stage3/runs/build-b4/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b4s2-r1 4 2 benchmark 1 0 64
+Completed 500/500 images in 9.50301 s
+Completed 500 images in 11.427 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s2-r2 1 2 benchmark 1 0 64
+Completed 500/500 images in 9.82498 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s3-r2 1 3 benchmark 1 0 64
+Completed 500/500 images in 9.38515 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s4-r2 1 4 benchmark 1 0 64
+Completed 500/500 images in 9.41058 s
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b2s1-r2 2 1 benchmark 1 0 64
+Completed 500/500 images in 10.7448 s
+Run /output/maskdino-slots /project/stage3/runs/build-b4/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b4s1-r2 4 1 benchmark 1 0 64
+Completed 500/500 images in 10.4745 s
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b2s2-r2 2 2 benchmark 1 0 64
+Completed 500/500 images in 9.60718 s
+Run /output/maskdino-slots /project/stage3/runs/build-b4/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b4s2-r2 4 2 benchmark 1 0 64
+Completed 500/500 images in 9.54051 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s1-r2 1 1 benchmark 1 0 64
+Completed 500/500 images in 11.4488 s
+Completed 500 images in 11.4222 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s3-r3 1 3 benchmark 1 0 64
+Completed 500/500 images in 9.37052 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s4-r3 1 4 benchmark 1 0 64
+Completed 500/500 images in 9.42047 s
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b2s1-r3 2 1 benchmark 1 0 64
+Completed 500/500 images in 10.7075 s
+Run /output/maskdino-slots /project/stage3/runs/build-b4/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b4s1-r3 4 1 benchmark 1 0 64
+Completed 500/500 images in 10.4566 s
+Run /output/maskdino-slots /project/stage3/runs/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b2s2-r3 2 2 benchmark 1 0 64
+Completed 500/500 images in 9.52128 s
+Run /output/maskdino-slots /project/stage3/runs/build-b4/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b4s2-r3 4 2 benchmark 1 0 64
+Completed 500/500 images in 9.51561 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s1-r3 1 1 benchmark 1 0 64
+Completed 500/500 images in 11.4469 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s2-r3 1 2 benchmark 1 0 64
+Completed 500/500 images in 9.55523 s
+Completed 500 images in 11.4133 s
+b1s1 [43.51164511117158, 43.67259712905483, 43.68013507849046] median 43.67259712905483
+b1s2 [50.59276783709601, 50.89066996109902, 52.327365452456526] median 50.89066996109902
+b1s3 [53.50159722052594, 53.27564537343776, 53.3588435390484] median 53.3588435390484
+b1s4 [53.01151952204397, 53.131663476027924, 53.07592848081181] median 53.07592848081181
+b2s1 [46.580461275849764, 46.534113983015466, 46.6963095001254] median 46.580461275849764
+b4s1 [47.852399123307755, 47.73480966967133, 47.816622734628105] median 47.816622734628105
+b2s2 [52.95441159905561, 52.044422754364554, 52.513928334329385] median 52.513928334329385
+b4s2 [52.61489171354234, 52.40809223994288, 52.54522596814224] median 52.54522596814224
