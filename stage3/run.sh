@@ -41,7 +41,7 @@ mkdir "$output"
             if [[ "$1" == trace ]]; then
                 shift
                 exec nsys profile --trace=cuda,nvtx,osrt --sample=none --cpuctxsw=none \
-                    --capture-range=cudaProfilerApi --output=/run-output/trace \
+                    --capture-range=cudaProfilerApi --capture-range-end=stop --output=/run-output/trace \
                     python -u -m stage3.run trace "$@"
             fi
             if [[ "$1" == repro-constants ]]; then
