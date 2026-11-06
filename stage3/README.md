@@ -110,7 +110,7 @@ TensorRT FP32 的三项 PQ 指标均通过验收，与 PyTorch B1 的差值各�
 
 TensorRT 异步提交网络，GPU 网络执行延续到后处理的 NVTX 区间，后处理主机区间中位数 24.00 ms 包含这段等待。两组后处理自身的 GPU 活动均约 4.3 ms/图。CPU 解码和前处理平均合计约 5.4 ms/图，其间无该进程的 CUDA GPU 活动。后处理每图约 81 次 stream 同步，源代码中的 GPU 布尔筛选和逐 segment 的 `.item()` 是可检查的同步点。 [PyTorch 聚合](results/trace-pytorch-rerun/trace-summary.json) · [TensorRT 聚合](results/trace-fp32/trace-summary.json)
 
-原始 `.nsys-rep` 和 SQLite 位于 4090 对应运行目录，仓库内保存报告哈希、`nsys stats` 和逐阶段聚合。
+仓库保存两份可直接在 Nsight Systems 2025.5.1 或更新版本中打开的原始报告。每份包含同一清单的全部 32 张图，采集目录同时保存报告哈希、`nsys stats` 和逐阶段聚合。SQLite 导出位于 4090 对应运行目录。 [PyTorch FP32 原始报告](results/trace-pytorch-rerun/trace.nsys-rep) · [TensorRT FP32 原始报告](results/trace-fp32/trace.nsys-rep)
 
 ```bash
 bash stage3/run.sh "$data" trace-pytorch-rerun trace --backend pytorch
