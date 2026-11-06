@@ -18,12 +18,13 @@ NetworkEngine::NetworkEngine(const std::string& engine_path) {
     std::vector<char> plan(size_t(input.tellg()));
     input.seekg(0);
     if (!input.read(plan.data(), plan.size())) throw std::runtime_error("Cannot read engine " + engine_path);
-    if (!initLibNvInferPlugins(&logger_, "")) throw std::runtime_error("TensorRT plugin initialization failed");
-    runtime_.reset(createInferRuntime(logger_));
+    static Logger logger;
+    if (!initLibNvInferPlugins(&logger, "")) throw std::runtime_error("TensorRT plugin initialization failed");
+    runtime_.reset(createInferRuntime(logger));
     if (!runtime_) throw std::runtime_error("TensorRT runtime creation failed");
     engine_.reset(runtime_->deserializeCudaEngine(plan.data(), plan.size()));
     if (!engine_ || engine_->getNbIOTensors() != 4 || engine_->getNbAuxStreams() != 0)
-        throw std::runtime_error("Expected the Stage 3 FP32 engine with four tensors and no auxiliary streams");
+        throw std::runtime_error("Expected an FP32 engine with four tensors and no auxiliary streams");
 }
 
 Pipeline::Pipeline(const std::string& engine_path, const int* things)

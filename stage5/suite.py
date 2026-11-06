@@ -71,6 +71,17 @@ def check(configs):
         print(name(config), sum(row["passed"] for row in result["per_image"]), "/", result["images"])
         if not result["passed"]:
             raise RuntimeError(f"{name(config)} correctness gate failed")
+    if (4, 2) in configs:
+        output = OUTPUT / "tail"
+        manifest = OUTPUT / "tail-manifest.tsv"
+        lines = (ALIGN / "manifest.tsv").read_text().splitlines()[:-1]
+        manifest.write_text("\n".join(lines) + "\n")
+        native(output, 4, 2, "predict", manifest, 1)
+        result = alignment(output, ALIGN, {int(line.split()[0]) for line in lines})
+        (output / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
+        report = summarize(output)
+        assert result["passed"] and report["batch_dispatch_histogram"] == {4: 7, 1: 3}
+        print("Offline tail:", report["batch_dispatch_histogram"])
     if (2, 2) in configs:
         output = OUTPUT / "mixed"
         trace = OUTPUT / "mixed-arrivals.txt"

@@ -26,7 +26,6 @@ public:
 
 class NetworkEngine {
     friend class Pipeline;
-    Logger logger_;
     std::unique_ptr<nvinfer1::IRuntime> runtime_;
     std::unique_ptr<nvinfer1::ICudaEngine> engine_;
 public:

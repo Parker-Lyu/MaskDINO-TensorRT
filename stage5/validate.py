@@ -7,8 +7,11 @@ from stage3.alignment import LIMITS, panoptic_metrics
 from stage4.protocol import evaluate, load_requests, native_prediction
 
 
-def alignment(output, reference):
+def alignment(output, reference, image_ids=None):
     _, images = load_requests("align")
+    if image_ids is not None:
+        images = [image for image in images if image["id"] in image_ids]
+        assert len(images) == len(image_ids)
     rows = []
     limits = LIMITS["fp32"]
     for image in images:
