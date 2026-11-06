@@ -18,16 +18,24 @@ SHAPES = {
 
 
 class Network(torch.nn.Module):
-    def __init__(self, model):
+    def __init__(self, model, precision, mixed_scope):
         super().__init__()
         self.model = model
+        self.precision = precision
+        self.mixed_scope = mixed_scope
 
     def forward(self, image):
-        outputs = pytorch_network(self.model, image)
+        if self.precision == "mixed" and self.mixed_scope == "backbone":
+            with torch.autocast("cuda", dtype=torch.float16, cache_enabled=False):
+                features = self.model.backbone(image)
+            outputs, _ = self.model.sem_seg_head({name: value.float() for name, value in features.items()})
+        else:
+            with torch.autocast("cuda", dtype=torch.float16, enabled=self.precision == "mixed", cache_enabled=False):
+                outputs = pytorch_network(self.model, image)
         return tuple(outputs[f"pred_{name}"].float() for name in ("logits", "masks", "boxes"))
 
 
-def export(model, image, precision, cpu_constants):
+def export(model, image, precision, cpu_constants, mixed_scope):
     import onnx
     from torch.onnx._internal.torchscript_exporter import jit_utils
     from stage3 import export_compat, plugin
@@ -38,11 +46,10 @@ def export(model, image, precision, cpu_constants):
     plugin.install()
     destination = OUTPUT / "network.onnx"
     try:
-        with torch.autocast("cuda", dtype=torch.float16, enabled=precision == "mixed", cache_enabled=False):
-            torch.onnx.export(
-                Network(model).eval(), image, str(destination), opset_version=17, dynamo=False,
-                input_names=["image"], output_names=["logits", "masks", "boxes"],
-            )
+        torch.onnx.export(
+            Network(model, precision, mixed_scope).eval(), image, str(destination), opset_version=17, dynamo=False,
+            input_names=["image"], output_names=["logits", "masks", "boxes"],
+        )
     finally:
         jit_utils.GraphContext.op = original
     graph = onnx.load(destination)
@@ -56,6 +63,7 @@ def export(model, image, precision, cpu_constants):
     dump("export.json", {
         "onnx": onnx.__version__, "torch": torch.__version__, "precision": precision,
         "opset": 17, "dynamo": False, "sha256": digest(destination),
+        "mixed_scope": mixed_scope if precision == "mixed" else None,
         "operators": dict(Counter(f"{node.domain}::{node.op_type}" for node in graph.graph.node)),
         "plugin_count": len(nodes), "plugin_version": "2", **counts,
     })

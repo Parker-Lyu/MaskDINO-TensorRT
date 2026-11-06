@@ -42,6 +42,7 @@ def run():
     parser.add_argument("--onnx", type=Path)
     parser.add_argument("--engine", type=Path)
     parser.add_argument("--cpu-constants", action="store_true")
+    parser.add_argument("--mixed-scope", choices=("all", "backbone"), default="all")
     args = parser.parse_args()
     if args.mode in ("build", "plugin-test"):
         from stage3 import trt_backend
@@ -74,7 +75,7 @@ def run():
     if args.mode == "export":
         from stage3.trt_backend import export
         image, _ = prepare_batch(model, [read(ids[0])], SIZE)
-        export(model, image, args.backend, args.cpu_constants)
+        export(model, image, args.backend, args.cpu_constants, args.mixed_scope)
         return
     network = None
     engine_hash = None
