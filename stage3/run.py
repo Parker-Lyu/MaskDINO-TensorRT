@@ -43,6 +43,7 @@ def run():
     parser.add_argument("--engine", type=Path)
     parser.add_argument("--cpu-constants", action="store_true")
     parser.add_argument("--mixed-scope", choices=("all", "backbone", "mask-projection"), default="all")
+    parser.add_argument("--process-memory", action="store_true")
     args = parser.parse_args()
     if args.mode in ("build", "plugin-test"):
         from stage3 import trt_backend
@@ -117,8 +118,9 @@ def run():
             run_batch(model, [records[ids[0]]], [cached[ids[0]]], SIZE, network=network)
         report["warmup"] = 20
 
-    from stage3.memory import GpuMemory
-    memory = GpuMemory() if benchmark else nullcontext()
+    from stage3.memory import GpuMemory, ProcessGpuMemory
+    memory_type = ProcessGpuMemory if args.process_memory else GpuMemory
+    memory = memory_type() if benchmark else nullcontext()
     samples = []
     if trace:
         torch.cuda.cudart().cudaProfilerStart()
