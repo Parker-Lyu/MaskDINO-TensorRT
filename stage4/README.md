@@ -104,3 +104,22 @@ python3 stage3/trace_plot.py stage4/runs/{trace-reference,trace-native}/trace.sq
 [Nsight 原始报告](results/trace-native-split/trace.nsys-rep) · [分阶段统计](results/trace-native-split/trace-summary.json) · [对照时间线](results/trace-native-split/timeline.svg)
 
 SQLite 位于 4090 的 `/home/parker/Code/MaskDINO-TensorRT-stage4-nvtx/stage4/runs/trace-native-split/trace.sqlite`。
+
+### 按阶段同步的诊断采集
+
+`trace-stage-waits` 在 GPU 前处理、网络、后处理和 D2H 提交之后分别同步同一条 stream。前处理独立等待，使后续网络等待只覆盖网络的剩余执行。此模式改变主机提交时序，阶段等待是 CPU 侧区间，正式性能对照使用常规流水线。
+
+```bash
+bash stage4/run.sh "$data" "$engine" trace-native-stage-waits native trace-stage-waits
+```
+
+RTX 4090 上从 `12b93d6` 采集同一顺序的 32 张图，预热 20 次。原始报告的 NVTX 轨中每个标签出现 32 次，每个区间各含一次 `cudaStreamSynchronize`。
+
+| Nsight GUI 的 NVTX 标签 | CPU 等待中位数（ms/图） |
+| --- | ---: |
+| `CPU / wait for preprocess` | 0.061 |
+| `CPU / wait for network` | 20.334 |
+| `CPU / wait for postprocess` | 0.078 |
+| `CPU / wait for D2H copies` | 0.055 |
+
+[按阶段同步的原始报告](results/trace-native-stage-waits/trace.nsys-rep) · [分阶段统计](results/trace-native-stage-waits/trace-summary.json)
