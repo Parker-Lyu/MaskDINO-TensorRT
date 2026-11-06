@@ -100,3 +100,5 @@ Nsight 自带的 `nvtx_gpu_proj_sum` 按 CUDA 提交调用将 NVTX 阶段关联�
 | D2H | 0.050 | 0.045 |
 
 [Nsight 原始报告](results/trace-native-gpu-projection/trace.nsys-rep) · [Nsight GPU Projection 统计](results/trace-native-gpu-projection/nsys-gpu-projection.txt) · [按 GPU 活动归属的汇总](results/trace-native-gpu-projection/trace-summary.json)
+
+Stage 4 当前版本归档上述一份原始报告。用于同口径对比的 Python/TensorRT 原始采集归档于 [Stage 3 GPU 分阶段报告](../stage3/results/trace-fp32-gpu-projection/trace.nsys-rep)。
