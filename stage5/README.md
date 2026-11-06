@@ -106,6 +106,15 @@ B8/S2 联合补测为 **52.67 图/s**、逐图 P95 **339.09 ms**、进程峰值 
 补扫 5–20 请求/s 后，选 B1/S1 与 B1/S2 进入在线长测。B2 在 15 请求/s、凑批上限 0/1/2/5 ms 的回放中，最佳 P99 为 **64.95 ms**，同序列 B1/S1 为 **62.91 ms**。25 请求/s 匀速到达时，B1/S1 的 375 请求短测 P99 为 **24.73 ms**。54、58 请求/s 泊松粗扫中，B1/S3、B2/S2 均出现排队累积。 [低速回放](results/pilot-low/summary.jsonl) · [凑批扫描](results/pilot-delay/summary.jsonl) · [匀速回放](results/pilot-uniform/summary.jsonl) · [过载回放](results/pilot-ceiling/summary.jsonl)
 
 
+#### 已验证的匀速轻载
+
+B1/S1 在 25 请求/s 匀速到达下重启进程跑三轮，每轮 420 秒，均完成 10,499 个请求。三轮零拒绝，队列通过稳态检查。P99 分别为 24.55、24.57、24.41 ms。该实测点满足 30 ms P99 预算。 [逐轮结果](results/formal-online-uniform-25-1s1/summary.jsonl)
+
+```bash
+bash stage5/run.sh "$data" "$previous" "$engine" formal-online-uniform-25-1s1 online 1s1 \
+  --rates 25 --shapes uniform --seconds 420 --seeds 311 449 593
+```
+
 ### 离线
 
 - 任务持续可取，使用相同任务序列和同一 CPU 结果消费方式。固定任务集的总完成时间从开始派发到最后一张 CPU 结果就绪，包含填充与排空。另报稳态墙钟窗口内完成图数除以时长，并记录窗口边界。
