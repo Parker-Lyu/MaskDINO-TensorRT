@@ -30,9 +30,31 @@ class Network(torch.nn.Module):
                 features = self.model.backbone(image)
             outputs, _ = self.model.sem_seg_head({name: value.float() for name, value in features.items()})
         else:
-            with torch.autocast("cuda", dtype=torch.float16, enabled=self.precision == "mixed", cache_enabled=False):
+            with torch.autocast("cuda", dtype=torch.float16, enabled=self.precision == "mixed" and self.mixed_scope == "all", cache_enabled=False):
                 outputs = pytorch_network(self.model, image)
         return tuple(outputs[f"pred_{name}"].float() for name in ("logits", "masks", "boxes"))
+
+
+def half_mask_projection(model):
+    """Use FP16 only for the final mask dot product, retaining FP32 graph I/O."""
+    from onnx import TensorProto, helper
+
+    graph = model.graph
+    projections = [node for node in graph.node if node.op_type == "Einsum" and "masks" in node.output]
+    assert len(projections) == 1, "Expected the final mask projection to write masks directly"
+    projection = projections[0]
+    nodes = []
+    for index, name in enumerate(projection.input):
+        cast = f"stage3_mask_projection_input_{index}"
+        nodes.append(helper.make_node("Cast", [name], [cast], to=TensorProto.FLOAT16))
+    output = "stage3_mask_projection_output"
+    nodes.append(helper.make_node("Einsum", [node.output[0] for node in nodes], [output],
+                                  name=projection.name, equation="bqc,bchw->bqhw"))
+    nodes.append(helper.make_node("Cast", [output], ["masks"], to=TensorProto.FLOAT))
+    index = list(graph.node).index(projection)
+    del graph.node[index]
+    for offset, node in enumerate(nodes):
+        graph.node.insert(index + offset, node)
 
 
 def export(model, image, precision, cpu_constants, mixed_scope):
@@ -53,6 +75,9 @@ def export(model, image, precision, cpu_constants, mixed_scope):
     finally:
         jit_utils.GraphContext.op = original
     graph = onnx.load(destination)
+    if precision == "mixed" and mixed_scope == "mask-projection":
+        half_mask_projection(graph)
+        onnx.save(graph, destination)
     onnx.checker.check_model(graph)
     nodes = [node for node in graph.graph.node if node.op_type == PLUGIN]
     assert len(nodes) == 15

@@ -42,7 +42,7 @@ def run():
     parser.add_argument("--onnx", type=Path)
     parser.add_argument("--engine", type=Path)
     parser.add_argument("--cpu-constants", action="store_true")
-    parser.add_argument("--mixed-scope", choices=("all", "backbone"), default="all")
+    parser.add_argument("--mixed-scope", choices=("all", "backbone", "mask-projection"), default="all")
     args = parser.parse_args()
     if args.mode in ("build", "plugin-test"):
         from stage3 import trt_backend
