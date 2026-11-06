@@ -1,4 +1,4 @@
-Processing [/output/b1s1.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/nvtx_gpu_proj_sum.py]... 
+Processing [/output/b1s1.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/nvtx_gpu_proj_sum.py]...
 
  ** NVTX GPU Projection Summary (nvtx_gpu_proj_sum):
 
@@ -532,152 +532,151 @@ Processing [/output/b1s1.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-20
  myelin-exec:__myl_Move_myl85_20                                                                       PushPop                  26990                  45827               32          843.4          832.0            831            864              15.9             32          1.0            4.0            0.0
  myelin-exec:__myl_Move_myl85_23                                                                       PushPop                  26964                  48359               32          842.6          832.0            831            864              15.3             32          1.0            4.0            0.0
 
-Processing [/output/b1s1.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+Processing [/output/b1s1.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/cuda_gpu_kern_sum.py]...
 
  ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
 
- Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name
  --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
      32.0        208452617       2144   97226.0   61677.5     12728    580408     142586.2  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize128x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_ex…
      15.1         98214005        192  511531.3  458524.5    453280    582103      61156.4  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize64x128x8_stage3_warpsize1x4x1_ffma_aligna4_alignc4_ex…
-      8.6         56151575        448  125338.3   63803.5     59422    932338     220582.8  trt_ampere_scudnn_winograd_128x128_ldg1_ldg4_relu_tile148t_nt_v1                                    
+      8.6         56151575        448  125338.3   63803.5     59422    932338     220582.8  trt_ampere_scudnn_winograd_128x128_ldg1_ldg4_relu_tile148t_nt_v1
       8.0         52012483        480  108359.3   14456.0      6396    263499     121498.3  void ms_deformable_im2col_gpu_kernel<float>(int, const T1 *, const int *, const int *, const T1 *, …
-      3.5         22504439       3488    6452.0    6268.0      5341     10426       1183.3  trt_ampere_sgemm_32x32_sliced1x4_relu_nn_v1                                                         
-      2.3         14720322        160   92002.0   91964.0     89933     93387        600.8  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_0x1c023f86bc3010935b289f45ce2f4bf5                    
+      3.5         22504439       3488    6452.0    6268.0      5341     10426       1183.3  trt_ampere_sgemm_32x32_sliced1x4_relu_nn_v1
+      2.3         14720322        160   92002.0   91964.0     89933     93387        600.8  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_0x1c023f86bc3010935b289f45ce2f4bf5
       2.2         14424712         96  150257.4  143087.0    139793    168257      11627.7  sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize64x64x8_stage3_warpsize1x4x1_…
       2.0         12999016         64  203109.6  185671.0    182616    248979      27197.0  sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize64x256x8_stage3_warpsize1x4x1…
-      1.9         12702257        224   56706.5   57951.0     45734     85136       9898.4  trt_ampere_scudnn_128x128_relu_interior_nn_v1                                                       
+      1.9         12702257        224   56706.5   57951.0     45734     85136       9898.4  trt_ampere_scudnn_128x128_relu_interior_nn_v1
       1.8         11909227        224   53166.2   46949.5     45319     75158       8456.8  sm80_xmma_gemm_f32f32_f32f32_f32_tn_n_tilesize256x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_ex…
       1.5          9774542         32  305454.4  305411.0    303540    307059        905.2  sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nhwckrsc_nhwc_tilesize32x32x8_stage3_warpsize1x2x1_…
-      1.4          9236485        416   22203.1   22275.5     21268     23443        358.1  __myl_Sele_0x4d171d8ba4151025a28dea7ec5358b70                                                       
-      1.3          8192397         96   85337.5   62589.0     60286    136563      33121.9  trt_ampere_scudnn_128x64_relu_medium_nn_v1                                                          
+      1.4          9236485        416   22203.1   22275.5     21268     23443        358.1  __myl_Sele_0x4d171d8ba4151025a28dea7ec5358b70
+      1.3          8192397         96   85337.5   62589.0     60286    136563      33121.9  trt_ampere_scudnn_128x64_relu_medium_nn_v1
       1.2          7691233         32  240351.0  218068.5    214119    286462      30159.8  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize64x256x8_stage3_warpsize1x4x1_ffma_aligna4_alignc4_ex…
-      1.1          7361397        192   38340.6   38315.0     37322     39561        483.9  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_0x69b1bcc07c5a3d6848cb7d4609f7cf14                       
-      1.0          6822895         32  213215.5  213176.0    212392    214759        505.6  __myl_Add_0x940d01f802112b4a8a954775bfc1e673                                                        
+      1.1          7361397        192   38340.6   38315.0     37322     39561        483.9  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_0x69b1bcc07c5a3d6848cb7d4609f7cf14
+      1.0          6822895         32  213215.5  213176.0    212392    214759        505.6  __myl_Add_0x940d01f802112b4a8a954775bfc1e673
       1.0          6380074         64   99688.7   97673.0     83473    132693      15792.4  sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize256x128x8_stage3_warpsize4x2x…
       0.8          5492422         64   85819.1   80642.0     73079    110146      13542.8  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize128x256x8_stage3_warpsize2x4x1_ffma_aligna4_alignc4_e…
-      0.8          4913703         32  153553.2  153689.5    148141    156743       1769.9  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddReluMeanMean_0x3a79822cf3edfd92b751b85060b2d61b   
-      0.7          4561934         32  142560.4  142591.5    141552    144334        734.9  __myl_Cast_0xdab1def168ca131ed2fae42f6df033a6                                                       
-      0.7          4374235         32  136694.8  136243.0    132917    141712       2302.4  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_0x0d5f0cb57e50a4c8ac9dc651e6db72f9       
+      0.8          4913703         32  153553.2  153689.5    148141    156743       1769.9  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddReluMeanMean_0x3a79822cf3edfd92b751b85060b2d61b
+      0.7          4561934         32  142560.4  142591.5    141552    144334        734.9  __myl_Cast_0xdab1def168ca131ed2fae42f6df033a6
+      0.7          4374235         32  136694.8  136243.0    132917    141712       2302.4  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_0x0d5f0cb57e50a4c8ac9dc651e6db72f9
       0.6          3768689         32  117771.5  107027.5    105700    145486      16834.4  sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nhwckrsc_nhwc_tilesize128x64x8_stage3_warpsize2x2x1…
-      0.6          3730915         32  116591.1  116462.5    115775    119420        745.9  trt_ampere_scudnn_128x32_sliced1x4_ldg4_relu_exp_small_nhwc_tn_v1                                   
-      0.6          3638741         32  113710.7  113695.0    112257    114815        608.2  __myl_ConcReshAddAddAddAddConcTranConcAdd_0x68421914016c86695526f2548772984c                        
+      0.6          3730915         32  116591.1  116462.5    115775    119420        745.9  trt_ampere_scudnn_128x32_sliced1x4_ldg4_relu_exp_small_nhwc_tn_v1
+      0.6          3638741         32  113710.7  113695.0    112257    114815        608.2  __myl_ConcReshAddAddAddAddConcTranConcAdd_0x68421914016c86695526f2548772984c
       0.5          3392002         32  106000.1  103269.5    101606    124378       6621.5  sm70_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nhwckrsc_nhwc_tilesize256x128x8_stage1_warpsize2x4x…
       0.5          3310034         32  103438.6   99735.5     98569    126649       8233.9  sm70_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize64x128x8_stage1_warpsize1x4x1…
       0.5          3234073         32  101064.8   93067.5     91533    117469      11857.8  sm70_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nhwckrsc_nhwc_tilesize64x128x8_stage1_warpsize1x4x1…
       0.5          3175613         32   99237.9   98553.0     97129    105317       2124.8  sm70_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize128x256x8_stage1_warpsize2x4x…
-      0.5          3033965         32   94811.4   94842.5     94315     95370        247.3  ResizeBilinearKernel                                                                                
-      0.5          3008690        160   18804.3   18773.0     17878     20692        489.5  __myl_ReshMulAdd_0xe3c97e1449762c810e3801b4bea2cb52                                                 
-      0.4          2641709         32   82553.4   82545.5     82002     83281        289.2  __myl_Topk_0xa5605ed269478a56fd15f36adafd6aa5                                                       
+      0.5          3033965         32   94811.4   94842.5     94315     95370        247.3  ResizeBilinearKernel
+      0.5          3008690        160   18804.3   18773.0     17878     20692        489.5  __myl_ReshMulAdd_0xe3c97e1449762c810e3801b4bea2cb52
+      0.4          2641709         32   82553.4   82545.5     82002     83281        289.2  __myl_Topk_0xa5605ed269478a56fd15f36adafd6aa5
       0.4          2514031        288    8729.3    8731.0      8347      9179        166.6  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize32x32x8_stage3_warpsize1x2x1_ffma_aligna4_alignc4_exe…
       0.4          2488196         32   77756.1   78132.0     75957     79091        977.9  __myl_MulMulMulMulConcReshConcReshConcReshConcReshConcSubDivLtGtrAndNotCastSlicSlicAddSlicAddSlicEt…
-      0.3          1911591         32   59737.2   58510.5     55553     67258       3192.6  <unnamed>::select(const float *, Candidates *)                                                      
-      0.3          1896049         32   59251.5   59742.0     57824     59966        797.7  __myl_AddSqrtDivMulMulAddSlicSlicSlicSlicTran_0x34611518ed215f0e41d0e5220453c7d7                    
-      0.3          1882707        192    9805.8    8699.0      8507     16247       2576.4  __myl_ReshMaxrSubExpSumDiv_0x7c3125fa47f2ca08096ee3cf27017793                                       
+      0.3          1911591         32   59737.2   58510.5     55553     67258       3192.6  <unnamed>::select(const float *, Candidates *)
+      0.3          1896049         32   59251.5   59742.0     57824     59966        797.7  __myl_AddSqrtDivMulMulAddSlicSlicSlicSlicTran_0x34611518ed215f0e41d0e5220453c7d7
+      0.3          1882707        192    9805.8    8699.0      8507     16247       2576.4  __myl_ReshMaxrSubExpSumDiv_0x7c3125fa47f2ca08096ee3cf27017793
       0.3          1828638         32   57144.9   57152.0     56544     57568        226.0  sm50_xmma_pooling_tiled_FP32NCHW_kMAX_tP4_tQ56_tR3_tS3_tU2_tV2_tUnroll6_tThreads1017_execute_kernel…
-      0.3          1740062        288    6041.9    6044.0      5980      6141         32.7  trt_ampere_sgemm_32x32_sliced1x4_nn_v1                                                              
-      0.3          1728744        352    4911.2    3198.0      1471     21140       5451.2  void cuInt8::nhwcToNchwKernel<float>(int, int, int, int, int, int, int, int, const T1 *, T1 *)      
+      0.3          1740062        288    6041.9    6044.0      5980      6141         32.7  trt_ampere_sgemm_32x32_sliced1x4_nn_v1
+      0.3          1728744        352    4911.2    3198.0      1471     21140       5451.2  void cuInt8::nhwcToNchwKernel<float>(int, int, int, int, int, int, int, int, const T1 *, T1 *)
       0.2          1591507        288    5526.1    5469.0      5277      6204        193.7  sm80_xmma_gemm_f32f32_f32f32_f32_tn_n_tilesize128x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_ex…
-      0.2          1573956         32   49186.1   49188.0     48325     50211        488.1  __myl_AddMeanSubMulMean_0x025f4ca49787b4538ebb677ed276237a                                          
+      0.2          1573956         32   49186.1   49188.0     48325     50211        488.1  __myl_AddMeanSubMulMean_0x025f4ca49787b4538ebb677ed276237a
       0.2          1534375        256    5993.7    3263.0      2206     28305       7945.1  void cuInt8::nchwToNhwcKernel<float>(int, int, int, int, int, int, int, int, bool, const T1 *, T1 *)
-      0.2          1420001         64   22187.5   22291.5     21492     22867        362.8  __myl_Sele_0x89e7edf7a0862528df73ea038936ee47                                                       
+      0.2          1420001         64   22187.5   22291.5     21492     22867        362.8  __myl_Sele_0x89e7edf7a0862528df73ea038936ee47
       0.2          1416983        320    4428.1    4510.0      3614      4733        256.7  sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize128x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_ex…
       0.2          1347397         32   42106.2   42136.0     41449     42600        295.5  __myl_ReshMulReshReshReshReshReshReshReshMulMulMulMulMulMulDivMulReshMulDivMulReshDivMulReshConcEtc…
-      0.2          1319573         32   41236.7   13225.0      4701    235291      62068.5  <unnamed>::assign(const float *, const Candidates *, Geometry, Areas *, int *)                      
-      0.1           946505         32   29578.3   29487.5     28783     30735        467.5  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_0x3d1525bff04de2abc642324646bfe5f5       
-      0.1           833742        288    2894.9    2879.0      2750      3134         59.4  __myl_MaxrSubExpSumDivMul_0xe7d314cc73dbf705f429f8278ab30c57                                        
+      0.2          1319573         32   41236.7   13225.0      4701    235291      62068.5  <unnamed>::assign(const float *, const Candidates *, Geometry, Areas *, int *)
+      0.1           946505         32   29578.3   29487.5     28783     30735        467.5  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_0x3d1525bff04de2abc642324646bfe5f5
+      0.1           833742        288    2894.9    2879.0      2750      3134         59.4  __myl_MaxrSubExpSumDivMul_0xe7d314cc73dbf705f429f8278ab30c57
       0.1           772995        256    3019.5    3007.0      2942      3166         32.6  __myl_MaxMinSubMaxMaxMinMinDivLogAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlicReshSlicEtc_…
-      0.1           679707        288    2360.1    2239.0      1951      3198        315.4  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_0x1b4cba22286e2bc3bc358f310bd1ba63                       
-      0.1           670663         32   20958.2   20820.5     20117     23891        796.6  trt_ampere_scudnn_128x64_relu_interior_nn_v1                                                        
-      0.1           561745        256    2194.3    2207.0      1919      2622        158.3  __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_0x5afe4fc1ea842fe495738634eb6dd1b9                      
-      0.1           520342        256    2032.6    2015.0      1950      2239         55.3  __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_0xbba13127518873c1aedd3df464d30812                   
-      0.1           509378        256    1989.8    1983.0      1919      2143         40.0  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_0x2be116d8c7c9a56632c3e59ebe6687dd                       
+      0.1           679707        288    2360.1    2239.0      1951      3198        315.4  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_0x1b4cba22286e2bc3bc358f310bd1ba63
+      0.1           670663         32   20958.2   20820.5     20117     23891        796.6  trt_ampere_scudnn_128x64_relu_interior_nn_v1
+      0.1           561745        256    2194.3    2207.0      1919      2622        158.3  __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAdd_0x5afe4fc1ea842fe495738634eb6dd1b9
+      0.1           520342        256    2032.6    2015.0      1950      2239         55.3  __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_0xbba13127518873c1aedd3df464d30812
+      0.1           509378        256    1989.8    1983.0      1919      2143         40.0  __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_0x2be116d8c7c9a56632c3e59ebe6687dd
       0.1           505699         32   15803.1   15831.0     15447     16055        170.2  sm80_xmma_gemm_f32f32_f32f32_f32_tn_n_tilesize64x32x8_stage3_warpsize1x2x1_ffma_aligna4_alignc4_exe…
       0.1           492615         32   15394.2   15448.0     15159     15736        160.9  __myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicCosReshSlicEt…
-      0.1           464667         32   14520.8   14616.0     14009     15031        249.4  __myl_MeanSubMulMeanAddSqrtDivMulMulAdd_0x78b5df5060c6da43934d15616107d398                          
-      0.1           386477        288    1341.9    1343.0      1311      1376         16.0  __myl_ReshMaxrSubExpSumDiv_0xd42ce15eb36c9ae10e85030c45d4ac23                                       
-      0.1           355508         32   11109.6   10889.5      8827     13496       1365.1  <unnamed>::vertical(const unsigned char *, float *, int, int, const AxisTap *, const int *)         
-      0.1           346101        288    1201.7    1215.0      1152      1248         17.8  __myl_Tran_0x812a618d2f6da6e0d008691c870cb2b7                                                       
-      0.1           343135        288    1191.4    1184.0      1151      1216         16.9  __myl_ReshMulMulMulAdd_0x0a4ad64d5567a82adf971cf4217c8a69                                           
-      0.1           340513         32   10641.0   10650.0     10330     11034        167.6  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_0xbefbfdbf9d03dd03f62a25f00cbc0c1e       
-      0.0           316394         32    9887.3    9946.0      9594     10203        163.2  __myl_ReshTran_0xeab65e6188de62e1c31edc9f23f07772                                                   
-      0.0           309714         32    9678.6    9643.0      9306     10426        246.6  __myl_Tran_0x275bee6cee9dd082459e8ebe308bc27b                                                       
-      0.0           301632        256    1178.3    1183.0      1151      1216         17.5  __myl_Add_0xb520ec1367a9a8abc1b0585ae1501df2                                                        
-      0.0           300320        256    1173.1    1183.0      1151      1216         16.9  __myl_Add_0xb5db0d26a65616db48625423728ba098                                                        
-      0.0           299478         32    9358.7    5069.0      2206     37899      10124.7  <unnamed>::merge(const Candidates *, const Areas *, const int *, int *, Segments *)                 
-      0.0           244242        256     954.1     864.0       831      1312        144.4  __myl_Move_0x95a493ea3af58b211507cdaf271866a7                                                       
+      0.1           464667         32   14520.8   14616.0     14009     15031        249.4  __myl_MeanSubMulMeanAddSqrtDivMulMulAdd_0x78b5df5060c6da43934d15616107d398
+      0.1           386477        288    1341.9    1343.0      1311      1376         16.0  __myl_ReshMaxrSubExpSumDiv_0xd42ce15eb36c9ae10e85030c45d4ac23
+      0.1           355508         32   11109.6   10889.5      8827     13496       1365.1  <unnamed>::vertical(const unsigned char *, float *, int, int, const AxisTap *, const int *)
+      0.1           346101        288    1201.7    1215.0      1152      1248         17.8  __myl_Tran_0x812a618d2f6da6e0d008691c870cb2b7
+      0.1           343135        288    1191.4    1184.0      1151      1216         16.9  __myl_ReshMulMulMulAdd_0x0a4ad64d5567a82adf971cf4217c8a69
+      0.1           340513         32   10641.0   10650.0     10330     11034        167.6  __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_0xbefbfdbf9d03dd03f62a25f00cbc0c1e
+      0.0           316394         32    9887.3    9946.0      9594     10203        163.2  __myl_ReshTran_0xeab65e6188de62e1c31edc9f23f07772
+      0.0           309714         32    9678.6    9643.0      9306     10426        246.6  __myl_Tran_0x275bee6cee9dd082459e8ebe308bc27b
+      0.0           301632        256    1178.3    1183.0      1151      1216         17.5  __myl_Add_0xb520ec1367a9a8abc1b0585ae1501df2
+      0.0           300320        256    1173.1    1183.0      1151      1216         16.9  __myl_Add_0xb5db0d26a65616db48625423728ba098
+      0.0           299478         32    9358.7    5069.0      2206     37899      10124.7  <unnamed>::merge(const Candidates *, const Areas *, const int *, int *, Segments *)
+      0.0           244242        256     954.1     864.0       831      1312        144.4  __myl_Move_0x95a493ea3af58b211507cdaf271866a7
       0.0           196051         32    6126.6    6476.5      3262      9339       2080.1  <unnamed>::horizontal(const unsigned char *, unsigned char *, int, int, int, const AxisTap *, const…
       0.0           157895         32    4934.2    4941.5      4829      5053         62.0  __myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicCosReshSlicEt…
-      0.0           150850        128    1178.5    1167.5      1055      1343         79.8  __myl_SumReshCastDiv_0x4be92063cf915fa26b03ba258a568721                                             
-      0.0           149350        128    1166.8    1167.5      1055      1407         81.2  __myl_SumReshCastDiv_0xbd5fa6e91353a71d211ede2dd7082efe                                             
-      0.0           136214        128    1064.2    1024.0       991      1152         62.1  __myl_ConcReshCastDiv_0x440604ef4110ef39c3ad9811f3111c32                                            
-      0.0           129814         32    4056.7    4061.5      3966      4349         68.4  __myl_MaxrResh_0x8ff05b749f5f064440a0aa01feeba189                                                   
-      0.0           128691         32    4021.6    4029.0      3965      4125         29.2  __myl_Gnor_0x265b56107d3dfed0b5dec91026756d2c                                                       
-      0.0           123382         32    3855.7    3870.0      3390      4253        170.4  __myl_Gnor_0xa89eabc9e2f46c8ca7a3fda00d50cfa5                                                       
+      0.0           150850        128    1178.5    1167.5      1055      1343         79.8  __myl_SumReshCastDiv_0x4be92063cf915fa26b03ba258a568721
+      0.0           149350        128    1166.8    1167.5      1055      1407         81.2  __myl_SumReshCastDiv_0xbd5fa6e91353a71d211ede2dd7082efe
+      0.0           136214        128    1064.2    1024.0       991      1152         62.1  __myl_ConcReshCastDiv_0x440604ef4110ef39c3ad9811f3111c32
+      0.0           129814         32    4056.7    4061.5      3966      4349         68.4  __myl_MaxrResh_0x8ff05b749f5f064440a0aa01feeba189
+      0.0           128691         32    4021.6    4029.0      3965      4125         29.2  __myl_Gnor_0x265b56107d3dfed0b5dec91026756d2c
+      0.0           123382         32    3855.7    3870.0      3390      4253        170.4  __myl_Gnor_0xa89eabc9e2f46c8ca7a3fda00d50cfa5
       0.0           110788         32    3462.1    3454.0      3358      3550         57.4  __myl_LogSeleSeleCastReshCastReplAddGathReshSigmCastReshMulReshSlicSlicSlicReshSlicReshSlicReshEtc_…
       0.0           106467         32    3327.1    3294.5      3262      3550         57.7  __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAddMeanSubMulMeanAddSqrtDivMulMulAddMeanSubMulMeanAddEtc…
-      0.0           106244         32    3320.1    3326.0      3166      3454         68.7  __myl_ReshTran_0xfbde1f484df2bb0730f3e90bc109e0a2                                                   
-      0.0           106082         32    3315.1    3294.5      3166      3550         90.0  __myl_Cums_0x5faed3b52240d03bbde1f17643dfffe0                                                       
-      0.0           105672         32    3302.3    3294.5      3198      3422         64.5  __myl_Tran_0x7eb0b6817030cbacd3eacdc84d9a0c44                                                       
-      0.0            95114         32    2972.3    2942.0      2783      3135        102.9  __myl_Cums_0x4098ee89a3ed4b839f6d711ff69add09                                                       
-      0.0            88434         64    1381.8    1359.5      1152      1695        187.9  __myl_Move_0x12bcb080460d8b1af3eda0781e464f28                                                       
-      0.0            86830         32    2713.4    2718.0      2686      2750         21.4  __myl_Cums_0x4b9f6ae070975bd27cbee76c2d13136e                                                       
-      0.0            82481         32    2577.5    2590.0      2526      2623         21.2  __myl_Cums_0x656478ceb0f4ba43aee7871725e02362                                                       
-      0.0            81007         32    2531.5    2527.0      2462      2590         25.9  __myl_Cums_0xb117410a2fbcb73e085c21a12d9ecc1e                                                       
-      0.0            80273         32    2508.5    2495.0      2462      2655         49.5  __myl_Cums_0xa88d54ce828420e16eb8f9374d765ddd                                                       
-      0.0            80175         32    2505.5    2495.0      2463      2527         17.5  __myl_Cums_0xdcfcdb491e6795d1d87b889e17a000fe                                                       
-      0.0            79321         64    1239.4    1231.5      1055      1535        160.8  __myl_Sum_0x9c6fb500ad96596701457c1a6961b216                                                        
-      0.0            79318         32    2478.7    2478.5      2399      2623         45.3  __myl_Cums_0x339e2ed92d38713254a00174360b97a5                                                       
+      0.0           106244         32    3320.1    3326.0      3166      3454         68.7  __myl_ReshTran_0xfbde1f484df2bb0730f3e90bc109e0a2
+      0.0           106082         32    3315.1    3294.5      3166      3550         90.0  __myl_Cums_0x5faed3b52240d03bbde1f17643dfffe0
+      0.0           105672         32    3302.3    3294.5      3198      3422         64.5  __myl_Tran_0x7eb0b6817030cbacd3eacdc84d9a0c44
+      0.0            95114         32    2972.3    2942.0      2783      3135        102.9  __myl_Cums_0x4098ee89a3ed4b839f6d711ff69add09
+      0.0            88434         64    1381.8    1359.5      1152      1695        187.9  __myl_Move_0x12bcb080460d8b1af3eda0781e464f28
+      0.0            86830         32    2713.4    2718.0      2686      2750         21.4  __myl_Cums_0x4b9f6ae070975bd27cbee76c2d13136e
+      0.0            82481         32    2577.5    2590.0      2526      2623         21.2  __myl_Cums_0x656478ceb0f4ba43aee7871725e02362
+      0.0            81007         32    2531.5    2527.0      2462      2590         25.9  __myl_Cums_0xb117410a2fbcb73e085c21a12d9ecc1e
+      0.0            80273         32    2508.5    2495.0      2462      2655         49.5  __myl_Cums_0xa88d54ce828420e16eb8f9374d765ddd
+      0.0            80175         32    2505.5    2495.0      2463      2527         17.5  __myl_Cums_0xdcfcdb491e6795d1d87b889e17a000fe
+      0.0            79321         64    1239.4    1231.5      1055      1535        160.8  __myl_Sum_0x9c6fb500ad96596701457c1a6961b216
+      0.0            79318         32    2478.7    2478.5      2399      2623         45.3  __myl_Cums_0x339e2ed92d38713254a00174360b97a5
       0.0            75283         32    2352.6    2366.0      2302      2399         26.9  __myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicCosReshSlicEt…
-      0.0            73879         64    1154.4    1151.0      1055      1375         81.3  __myl_Sum_0x6cd8ace3d26f42ff87be506a991fe058                                                        
-      0.0            69296         64    1082.8    1087.0      1023      1151         25.4  __myl_ReshReshConcResh_0x4567aa46411d5789b8dc0e71fe3225df                                           
-      0.0            63292         32    1977.9    1983.0      1919      2079         30.5  __myl_AddReshMeanSubMulMeanAddSqrtDivMulMulAdd_0x08041994db5556d30ffd7ba07127e568                   
-      0.0            62363         32    1948.8    1919.0      1247      2750        423.2  <unnamed>::write_map(const int *, const int *, int *, int)                                          
-      0.0            50179         32    1568.1    1567.0      1535      1600         19.1  __myl_SlicAddDivMulMulReshMulSlicCosReshSlicSinReshConcResh_0x3c178819de5de2fbe6ed0c40d8942812      
-      0.0            49793         32    1556.0    1567.0      1535      1599         17.5  __myl_SlicAddDivMulMulReshMulSlicCosReshSlicSinReshConcResh_0xf81a5a9623eb964ac2092fe92e3b961f      
-      0.0            49153         32    1536.0    1535.0      1503      1568         22.3  __myl_ReshTran_0x4b23fb620f98d88aa80700e5d2384c95                                                   
-      0.0            48898         32    1528.1    1535.0      1471      1567         25.4  __myl_Tran_0x675c5b14e8f1c6eac8a424e620918de3                                                       
-      0.0            48068         32    1502.1    1503.0      1471      1663         36.8  __myl_SumReshCastDiv_0x3942aee9aa3d749b01c95b9b46765905                                             
-      0.0            42505         32    1328.3    1312.0      1279      1472         34.5  __myl_ReplGathReshAdd_0x16eeaadf6c789c216fe62cbc1329586e                                            
+      0.0            73879         64    1154.4    1151.0      1055      1375         81.3  __myl_Sum_0x6cd8ace3d26f42ff87be506a991fe058
+      0.0            69296         64    1082.8    1087.0      1023      1151         25.4  __myl_ReshReshConcResh_0x4567aa46411d5789b8dc0e71fe3225df
+      0.0            63292         32    1977.9    1983.0      1919      2079         30.5  __myl_AddReshMeanSubMulMeanAddSqrtDivMulMulAdd_0x08041994db5556d30ffd7ba07127e568
+      0.0            62363         32    1948.8    1919.0      1247      2750        423.2  <unnamed>::write_map(const int *, const int *, int *, int)
+      0.0            50179         32    1568.1    1567.0      1535      1600         19.1  __myl_SlicAddDivMulMulReshMulSlicCosReshSlicSinReshConcResh_0x3c178819de5de2fbe6ed0c40d8942812
+      0.0            49793         32    1556.0    1567.0      1535      1599         17.5  __myl_SlicAddDivMulMulReshMulSlicCosReshSlicSinReshConcResh_0xf81a5a9623eb964ac2092fe92e3b961f
+      0.0            49153         32    1536.0    1535.0      1503      1568         22.3  __myl_ReshTran_0x4b23fb620f98d88aa80700e5d2384c95
+      0.0            48898         32    1528.1    1535.0      1471      1567         25.4  __myl_Tran_0x675c5b14e8f1c6eac8a424e620918de3
+      0.0            48068         32    1502.1    1503.0      1471      1663         36.8  __myl_SumReshCastDiv_0x3942aee9aa3d749b01c95b9b46765905
+      0.0            42505         32    1328.3    1312.0      1279      1472         34.5  __myl_ReplGathReshAdd_0x16eeaadf6c789c216fe62cbc1329586e
       0.0            40616         32    1269.3    1279.0      1216      1344         26.3  __myl_SigmReshReshMaxMinSubMaxMaxMinMinDivLogReshMaxMinSubMaxAddSigmReshMaxMinMinDivLogReshMaxMinEt…
       0.0            40296         32    1259.3    1247.0      1215      1439         40.4  __myl_ReshConcReshReshConcReshReshReshConcReshReshReshConcReshConcReshSlicReshSlicSlicReshSlicEtc_0…
-      0.0            39629         32    1238.4    1247.0      1215      1280         20.3  __myl_SumReshCastDiv_0x337ced8131415f53e24d7070a671d1e1                                             
-      0.0            39080         32    1221.3    1215.0      1183      1375         34.8  __myl_Sum_0x8234a129835a46f8fdf36364925c0aca                                                        
-      0.0            38922         32    1216.3    1215.0      1184      1247         12.6  __myl_Sum_0x397734e8d2aa0b1c3aefbaa3a29c13c1                                                        
-      0.0            38188         32    1193.4    1184.0      1151      1216         22.2  __myl_Add_0x4d43b02a695d24f368e46f15469e2ad9                                                        
-      0.0            37993         32    1187.3    1183.0      1151      1216         15.7  __myl_ReshConcConcResh_0x57080af8eef9cf9438f622e78048bc77                                           
-      0.0            35305         32    1103.3    1103.5      1087      1120         16.2  __myl_ReshCastDivReshConcResh_0xe4b93ac1bcce979d7fb0f9dd93c6bad4                                    
-      0.0            35177         32    1099.3    1087.5      1087      1120         15.9  __myl_ReshCastDivReshConc_0xe994978827e072aee30b5e1c905f1a7f                                        
-      0.0            32749         32    1023.4    1023.0       991      1056         16.3  __myl_Cast_0x8bb5fe6e70479e945639245316d1e0a9                                                       
+      0.0            39629         32    1238.4    1247.0      1215      1280         20.3  __myl_SumReshCastDiv_0x337ced8131415f53e24d7070a671d1e1
+      0.0            39080         32    1221.3    1215.0      1183      1375         34.8  __myl_Sum_0x8234a129835a46f8fdf36364925c0aca
+      0.0            38922         32    1216.3    1215.0      1184      1247         12.6  __myl_Sum_0x397734e8d2aa0b1c3aefbaa3a29c13c1
+      0.0            38188         32    1193.4    1184.0      1151      1216         22.2  __myl_Add_0x4d43b02a695d24f368e46f15469e2ad9
+      0.0            37993         32    1187.3    1183.0      1151      1216         15.7  __myl_ReshConcConcResh_0x57080af8eef9cf9438f622e78048bc77
+      0.0            35305         32    1103.3    1103.5      1087      1120         16.2  __myl_ReshCastDivReshConcResh_0xe4b93ac1bcce979d7fb0f9dd93c6bad4
+      0.0            35177         32    1099.3    1087.5      1087      1120         15.9  __myl_ReshCastDivReshConc_0xe994978827e072aee30b5e1c905f1a7f
+      0.0            32749         32    1023.4    1023.0       991      1056         16.3  __myl_Cast_0x8bb5fe6e70479e945639245316d1e0a9
 
-Processing [/output/b1s1.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/cuda_api_sum.py]... 
+Processing [/output/b1s1.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/cuda_api_sum.py]...
 
  ** CUDA API Summary (cuda_api_sum):
 
- Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)   Min (ns)  Max (ns)  StdDev (ns)              Name            
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)   Min (ns)  Max (ns)  StdDev (ns)              Name
  --------  ---------------  ---------  ----------  ----------  --------  --------  -----------  ----------------------------
-     96.1        629409042         32  19669032.6  19165982.5  15681057  21352673    1435690.5  cudaStreamSynchronize       
-      1.4          9024294       5888      1532.7      1292.0      1161     22304        834.1  cudaLaunchKernel            
-      1.4          9015769       6560      1374.4      1192.0      1031      8482        676.5  cuLaunchKernel              
-      0.9          5726367       4160      1376.5      1181.0      1036      6129        673.4  cuLaunchKernelEx            
-      0.1           509406         12     42450.5      4780.0      3180    440246     125369.4  cudaHostAlloc               
-      0.1           344897        160      2155.6      1455.0      1069     21389       2075.2  cudaMemcpyAsync             
-      0.0           262478         19     13814.6      3113.0      1397     74392      22253.3  cudaMalloc                  
-      0.0           152271         96      1586.2      1518.5       850      7059        885.6  cudaMemsetAsync             
-      0.0           113781         19      5988.5      2940.0      1676     24996       7195.5  cudaFree                    
-      0.0           101281         64      1582.5      1250.5       966     10259       1285.0  cudaEventRecord             
+     96.1        629409042         32  19669032.6  19165982.5  15681057  21352673    1435690.5  cudaStreamSynchronize
+      1.4          9024294       5888      1532.7      1292.0      1161     22304        834.1  cudaLaunchKernel
+      1.4          9015769       6560      1374.4      1192.0      1031      8482        676.5  cuLaunchKernel
+      0.9          5726367       4160      1376.5      1181.0      1036      6129        673.4  cuLaunchKernelEx
+      0.1           509406         12     42450.5      4780.0      3180    440246     125369.4  cudaHostAlloc
+      0.1           344897        160      2155.6      1455.0      1069     21389       2075.2  cudaMemcpyAsync
+      0.0           262478         19     13814.6      3113.0      1397     74392      22253.3  cudaMalloc
+      0.0           152271         96      1586.2      1518.5       850      7059        885.6  cudaMemsetAsync
+      0.0           113781         19      5988.5      2940.0      1676     24996       7195.5  cudaFree
+      0.0           101281         64      1582.5      1250.5       966     10259       1285.0  cudaEventRecord
       0.0            94444        544       173.6       144.0       118       941         91.9  cudaStreamIsCapturing_v10000
-      0.0            62337       1280        48.7        39.0        33       648         31.0  cuKernelGetName             
-      0.0            46801         12      3900.1      3992.0      2377      6571       1278.2  cudaFreeHost                
-      0.0             1860          1      1860.0      1860.0      1860      1860          0.0  cuProfilerStart             
+      0.0            62337       1280        48.7        39.0        33       648         31.0  cuKernelGetName
+      0.0            46801         12      3900.1      3992.0      2377      6571       1278.2  cudaFreeHost
+      0.0             1860          1      1860.0      1860.0      1860      1860          0.0  cuProfilerStart
 
-Processing [/output/b1s1.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+Processing [/output/b1s1.sqlite] with [/usr/local/cuda-13.0/NsightSystems-cli-2025.5.1/target-linux-x64/reports/cuda_gpu_mem_time_sum.py]...
 
  ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
 
- Time (%)  Total Time (ns)  Count  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ Time (%)  Total Time (ns)  Count  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation
  --------  ---------------  -----  --------  --------  --------  --------  -----------  ----------------------------
      53.1          1485462     64   23210.3    3342.0       991     85040      28113.0  [CUDA memcpy Device-to-Host]
      44.2          1236259     96   12877.7    2383.0      1727     65690      17925.8  [CUDA memcpy Host-to-Device]
-      2.6            73784     96     768.6     767.0       703      1055         47.0  [CUDA memset]               
-
+      2.6            73784     96     768.6     767.0       703      1055         47.0  [CUDA memset]

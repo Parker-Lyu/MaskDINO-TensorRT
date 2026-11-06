@@ -34,7 +34,7 @@ Stage 4 已验收的 B1/S1 为参照：网络 P50/P95 21.56/21.81 ms，端到端
 1. 保留 Stage 4 原生 B1/S1 入口，用相同 engine、500 张清单、预热与计时口径，在 Stage 5 正式轮次同机重跑。再跑新调度器的 B1/S1，单列调度与结果交付开销，供后续横向比较。
 2. 第一版采用一个 slot 对应一个长期运行的 worker。每个 slot 有独立的 CUDA stream、TensorRT execution context、可写 I/O、前后处理 scratch 和 pinned staging buffers。同一 batch 规格共享已反序列化的 engine。worker 等本 slot 最终 D2H 完成，将 map 和 metadata 交付给拥有其生命周期的 CPU 结果对象，随后归还 slot。主调度器可继续接收请求，其他 slot 可继续提交。固定 worker 模型后再比较 slot 数。
 3. 多图 batch 单独生成固定形状 engine。B1/S* 复用 Stage 3 engine，B2/B4/B8 使用相同导出和构建策略，记录 engine hash 与构建参数。导出、插件与 I/O 首先验证 batch 维确实支持多图，前处理写入相应 NCHW 切片，后处理按每图的几何和输出索引恢复。不同 batch 的 engine 可能选择不同 tactics，实验归因到整套 batch 配置。
-4. 在线只在 B2 进入候选时实现有界凑批。采用 FIFO，空闲 slot 在队头满两张或最老请求达到凑批截止时间时发车；超时单张走预热好的 B1 engine。slot 忙时，等待继续计入排队，凑批时限只约束人为等待。把 B1/B2 两套常驻 engine/context 的显存一起统计。离线尾批及全量评估余数也用固定形状小 batch 或 B1 处理，记录实际执行路径。
+4. 在线只在 B2 进入候选时实现有界凑批。采用 FIFO，空闲 slot 在队头满两张或最老请求达到凑批截止时间时发车。超时单张走预热好的 B1 engine。slot 忙时，等待继续计入排队，凑批时限只约束人为等待。把 B1/B2 两套常驻 engine/context 的显存一起统计。离线尾批及全量评估余数也用固定形状小 batch 或 B1 处理，记录实际执行路径。
 
 [Stage 4 原生运行时](../stage4/runtime.cu) · [NVIDIA TensorRT 跨请求多 stream 与 batch 指南](https://docs.nvidia.com/deeplearning/tensorrt/latest/performance/optimization.html)
 
@@ -122,6 +122,10 @@ B8/S2 联合补测为 **52.67 图/s**、逐图 P95 **339.09 ms**、进程峰值 
 | B2/S2 | 610.60 | 8.80 | 26.7% | 16 |
 
 B1/S3 与 B1/S1 均执行 16,608 条 kernel。B1/S3 的 kernel 窗口缩短，同时多个请求共享 GPU，单个请求的网络投影跨度中位数从约 19.95 ms 增到 53.22 ms。 [B1/S1 原始采集](results/trace/b1s1.nsys-rep) · [B1/S3 原始采集](results/trace/b1s3.nsys-rep) · [B2/S2 原始采集](results/trace/b2s2.nsys-rep)
+
+### 全量 COCO PQ
+
+B1/S1、B1/S2、B1/S3 各自覆盖 5,000 个唯一预测 ID。三组的 PQ / PQ_th / PQ_st 均为 **53.186256 / 59.027261 / 44.369645**，与 Stage 4 三项完全一致。正式评估提交为 `c8d4796`。 [B1/S1](results/pq/b1s1/validation.json) · [B1/S2](results/pq/b1s2/validation.json) · [B1/S3](results/pq/b1s3/validation.json)
 
 ## 5.4 · 正确性、归档与选型
 
