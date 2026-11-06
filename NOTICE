@@ -1,0 +1,11 @@
+MaskDINO-TensorRT
+Copyright 2026 MaskDINO-TensorRT contributors
+
+Upstream attribution:
+- MaskDINO: Copyright 2022 - present, IDEA.
+- Patched Deformable DETR CUDA sources: Copyright (c) 2020 SenseTime;
+  Copyright (c) Facebook, Inc. and its affiliates; modifications by Bowen Cheng.
+- Detectron2: Facebook/Meta and upstream contributors.
+- Panoptic API: Copyright (c) 2018, Alexander Kirillov.
+
+See the bundled third-party notices for license copies and source revisions.

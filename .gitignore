@@ -1,0 +1,7 @@
+/weights/
+/stage1/runs/
+/maskdino/third_party/
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/

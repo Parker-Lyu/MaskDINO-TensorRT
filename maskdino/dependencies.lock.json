@@ -1,0 +1,25 @@
+{
+  "image": "nvcr.io/nvidia/pytorch:25.11-py3",
+  "image_id": "sha256:417cbf33f87b5378849df37983552cd1f8bc8b62fe1ceabe004de816a55dff21",
+  "sources": {
+    "MaskDINO": {
+      "url": "https://github.com/IDEA-Research/MaskDINO.git",
+      "commit": "3831d8514a3728535ace8d4ecc7d28044c42dd14"
+    },
+    "detectron2": {
+      "url": "https://github.com/facebookresearch/detectron2.git",
+      "commit": "1e3e13bbf607b54f62205c4c33922521822fb298"
+    },
+    "panopticapi": {
+      "url": "https://github.com/cocodataset/panopticapi.git",
+      "commit": "7bb4655548f98f3fedc07bf37e9040a992b054b0"
+    }
+  },
+  "assets": [
+    {
+      "path": "weights/maskdino_r50_panoptic.pth",
+      "url": "https://github.com/IDEA-Research/detrex-storage/releases/download/maskdino-v0.1.0/maskdino_r50_50ep_300q_hid2048_3sd1_panoptic_pq53.0.pth",
+      "sha256": "3e3d04a930ad42e14e97bc68d0e5844eefde702aa3d0a2324e603e5e9b5d0d37"
+    }
+  ]
+}

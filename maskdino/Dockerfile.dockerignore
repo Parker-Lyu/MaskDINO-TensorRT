@@ -1,0 +1,6 @@
+.git
+.DS_Store
+**/__pycache__
+weights
+stage1/runs
+maskdino/third_party
