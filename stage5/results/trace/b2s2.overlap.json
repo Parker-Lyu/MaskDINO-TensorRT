@@ -1,0 +1,13 @@
+{
+  "kernel_count": 8688,
+  "kernel_streams": 2,
+  "kernel_window_ms": 610.602021,
+  "kernel_busy_ms": 601.806005,
+  "multiple_kernel_streams_ms": 160.930953,
+  "multiple_kernel_streams_share_of_busy": 0.2674133386223024,
+  "kernel_time_ms_by_active_streams": {
+    "0": 8.796016,
+    "1": 440.875052,
+    "2": 160.930953
+  }
+}

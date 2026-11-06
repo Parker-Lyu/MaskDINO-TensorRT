@@ -70,7 +70,12 @@ RTX 4090 上由 `ecf9e25` 运行。表中为三轮中位数，每轮 500 张、�
 
 ![Stage 5 三轮离线筛选](results/screen.svg)
 
+[Stage 4 与 Stage 5 同 500 张离线对照](results/comparison.svg)
+
 B8/S1 补测为 **48.76 图/s**、逐图 P95 **169.60 ms**、进程峰值 **5.82 GiB**。同轮 B4/S1 为 47.70 图/s，B1/S3 为 53.03 图/s。500 张末尾的 4 张使用 B1，B8/S1 的显存峰值包含常驻 B1 回退路径。B8/S1 和 B1/S3 各通过 32/32 对齐。 [补测数据](results/screen-b8/summary.json) · [验收记录](results/check-b8/console.log)
+
+B8/S2 联合补测为 **52.67 图/s**、逐图 P95 **339.09 ms**、进程峰值 **10.72 GiB**。同轮 B1/S3 为 **53.70 图/s**、P95 **57.51 ms**、峰值 **2.34 GiB**，因此选 B1/S3 进入离线长测。 [联合补测数据](results/screen-b8-joint/summary.json)
+
 
 
 原生逐图验收中 B1/S1、B1/S2、B1/S4、B2/S1、B2/S2、B4/S1、B4/S2 均通过 32/32。B2/S2 超时回退测试也通过 32/32，实际发车 11 个 B2 批和 10 个 B1 批。 [验收记录](results/check/console.log)
@@ -98,10 +103,25 @@ B8/S1 补测为 **48.76 图/s**、逐图 P95 **169.60 ms**、进程峰值 **5.82
 
 每点仅约 100–500 个请求。短测用于筛候选和确定长测范围。两组 B2 在这些同序列点上均落后于 B1/S2。 [泊松原始汇总](results/pilot-poisson/summary.jsonl) · [突发原始汇总](results/pilot-burst/summary.jsonl)
 
+补扫 5–20 请求/s 后，选 B1/S1 与 B1/S2 进入在线长测。B2 在 15 请求/s、凑批上限 0/1/2/5 ms 的回放中，最佳 P99 为 **64.95 ms**，同序列 B1/S1 为 **62.91 ms**。25 请求/s 匀速到达时，B1/S1 的 375 请求短测 P99 为 **24.73 ms**。54、58 请求/s 泊松粗扫中，B1/S3、B2/S2 均出现排队累积。 [低速回放](results/pilot-low/summary.jsonl) · [凑批扫描](results/pilot-delay/summary.jsonl) · [匀速回放](results/pilot-uniform/summary.jsonl) · [过载回放](results/pilot-ceiling/summary.jsonl)
+
+
 ### 离线
 
 - 任务持续可取，使用相同任务序列和同一 CPU 结果消费方式。固定任务集的总完成时间从开始派发到最后一张 CPU 结果就绪，包含填充与排空。另报稳态墙钟窗口内完成图数除以时长，并记录窗口边界。
 - 500 张用于初筛。对吞吐、显存有取舍的候选和 B1/S1，用相同长任务集各测三轮，每轮至少持续 5 分钟。记录总完成时间、稳态图/s、逐图端到端延迟、进程显存峰值及失败数。记下用于循环的清单和次序，逐批回收 CPU 结果，避免无界结果积压引入额外的主机内存占用和吞吐干扰。
+
+### 独立 Nsight 采集
+
+用 `c8d4796` 在 32 张对齐清单上采集，预热 20 批/slot。统计窗口从第一条 CUDA kernel 开始到最后一条结束。跨 stream 重叠统计以至少一个 kernel 活动的时间为分母。
+
+| 配置 | GPU kernel 活动窗口（ms） | 无 kernel 活动（ms） | 多 stream kernel 重叠 | `cudaStreamSynchronize` 次数 |
+| --- | ---: | ---: | ---: | ---: |
+| B1/S1 | 704.10 | 52.11 | 0.0% | 32 |
+| B1/S3 | 607.37 | 7.58 | 38.0% | 32 |
+| B2/S2 | 610.60 | 8.80 | 26.7% | 16 |
+
+B1/S3 与 B1/S1 均执行 16,608 条 kernel。B1/S3 的 kernel 窗口缩短，同时多个请求共享 GPU，单个请求的网络投影跨度中位数从约 19.95 ms 增到 53.22 ms。 [B1/S1 原始采集](results/trace/b1s1.nsys-rep) · [B1/S3 原始采集](results/trace/b1s3.nsys-rep) · [B2/S2 原始采集](results/trace/b2s2.nsys-rep)
 
 ## 5.4 · 正确性、归档与选型
 
