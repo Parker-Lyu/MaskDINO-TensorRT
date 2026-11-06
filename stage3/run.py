@@ -105,7 +105,12 @@ def run():
     benchmark = args.mode == "benchmark"
     trace = args.mode == "trace"
     cached = {i: read(i) for i in ids} if benchmark or trace else {}
-    region = torch.cuda.nvtx.range if trace else nullcontext
+    region = nullcontext
+    if trace:
+        from stage3.trace_summary import TRACE_LABELS
+
+        def region(name):
+            return torch.cuda.nvtx.range(TRACE_LABELS.get(name, name))
 
     if cached:
         for _ in range(20):

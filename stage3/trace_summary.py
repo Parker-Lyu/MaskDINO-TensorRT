@@ -7,6 +7,11 @@ import sqlite3
 from statistics import median
 
 STAGES = {"decode", "preprocess", "preprocess_gpu", "H2D", "network", "postprocess", "D2H"}
+TRACE_LABELS = {
+    "network": "CPU / network call (GPU may continue after return)",
+    "postprocess": "CPU / postprocess (includes CUDA waits)",
+}
+STAGE_BY_LABEL = {label: stage for stage, label in TRACE_LABELS.items()}
 ACTIVITIES = ("KERNEL", "MEMCPY", "MEMSET")
 
 
@@ -54,6 +59,7 @@ def summarize(path):
 
     stages = defaultdict(list)
     for label, start, end in ranges:
+        label = STAGE_BY_LABEL.get(label, label)
         if label in STAGES:
             stages[label].append((start, end))
     stages["request"] = requests

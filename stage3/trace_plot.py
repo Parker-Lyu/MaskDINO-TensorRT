@@ -1,15 +1,18 @@
-"""Render a matched request from two Nsight Systems SQLite exports."""
+"""Render CPU ranges, synchronization calls and attributed GPU work for a matched request."""
 import argparse
+from collections import defaultdict
+from html import escape
 from pathlib import Path
 import sqlite3
 
-from trace_summary import ACTIVITIES, STAGES, union
+from trace_summary import ACTIVITIES, STAGES, STAGE_BY_LABEL, union
 
 COLORS = {
     "decode": "#f2ae55", "preprocess": "#e27757", "H2D": "#935dc1",
     "preprocess_gpu": "#b48ad6", "network": "#3d83c3",
-    "postprocess": "#2f9f80", "D2H": "#a47732",
+    "postprocess": "#2f9f80", "D2H": "#a47732", "unattributed": "#8894a0",
 }
+SYNC = "#b83d50"
 
 
 def capture(path, request):
@@ -22,61 +25,98 @@ def capture(path, request):
         if request is None:
             request = next(label for label, _, _ in ranges if label and label.startswith("image "))
         start, end = next((left, right) for label, left, right in ranges if label == request)
+        stages = [(STAGE_BY_LABEL.get(label, label), left, right) for label, left, right in ranges]
+        host = [(label, left, right) for label, left, right in stages
+                if label in STAGES and start <= left < right <= end]
         tables = {name for (name,) in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-        intervals = [
-            (max(start, left), min(end, right))
-            for kind in ACTIVITIES if (table := f"CUPTI_ACTIVITY_KIND_{kind}") in tables
-            for left, right in db.execute(f"SELECT start, end FROM {table} WHERE start < ? AND end > ?", (end, start))
+        api = [
+            row
+            for kind in ("RUNTIME", "DRIVER")
+            if (table := f"CUPTI_ACTIVITY_KIND_{kind}") in tables
+            for row in db.execute(f"""
+                SELECT s.value, a.start, a.end, a.correlationId FROM {table} a
+                JOIN StringIds s ON a.nameId = s.id WHERE a.start >= ? AND a.start < ?
+            """, (start, end))
         ]
-    host = [(label, left - start, right - start) for label, left, right in ranges
-            if label in STAGES and start <= left < right <= end]
-    assert host and intervals
-    return request, end - start, host, [(left - start, right - start) for left, right in union(intervals)]
+        correlation = {
+            event_id: next((label for label, left, right in host if left <= submitted < right), "unattributed")
+            for _, submitted, _, event_id in api
+        }
+        gpu = defaultdict(list)
+        for kind in ACTIVITIES:
+            table = f"CUPTI_ACTIVITY_KIND_{kind}"
+            if table in tables:
+                for left, right, event_id in db.execute(
+                    f"SELECT start, end, correlationId FROM {table} WHERE start < ? AND end > ?", (end, start)
+                ):
+                    gpu[correlation.get(event_id, "unattributed")].append((max(start, left), min(end, right)))
+
+    assert host and gpu
+    sync = union((left, min(end, right)) for name, left, right, _ in api if "Synchronize" in name)
+    return request, start, end, host, sync, {name: union(intervals) for name, intervals in gpu.items()}
+
+
+def duration_ms(intervals):
+    return sum(right - left for left, right in intervals) / 1e6
 
 
 def plot(pytorch, tensorrt, output):
     request, *pt = capture(pytorch, None)
     _, *trt = capture(tensorrt, request)
     tick_ns = 5_000_000
-    limit = ((max(pt[0], trt[0]) + tick_ns - 1) // tick_ns) * tick_ns
-    origin, width = 155, 875
+    span = max(end - start for start, end, *_ in (pt, trt))
+    limit = ((span + tick_ns - 1) // tick_ns) * tick_ns
+    origin, width = 177, 900
 
-    def x(value):
-        return origin + width * value / limit
+    def x(offset):
+        return origin + width * offset / limit
 
-    svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="345" viewBox="0 0 1080 345">',
-           '<rect width="1080" height="345" rx="14" fill="#f5f8fb"/>',
+    svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="449" viewBox="0 0 1120 449">',
+           '<rect width="1120" height="449" rx="14" fill="#f5f8fb"/>',
            '<g font-family="system-ui,sans-serif" fill="#182d43">']
 
     def text(x_pos, y, label, size=13):
-        svg.append(f'<text x="{x_pos}" y="{y}" font-size="{size}">{label}</text>')
+        svg.append(f'<text x="{x_pos}" y="{y}" font-size="{size}">{escape(label)}</text>')
 
     def band(left, right, y, color):
-        svg.append(f'<rect x="{x(left):.3f}" y="{y}" width="{x(right)-x(left):.3f}" height="17" fill="{color}"/>')
+        svg.append(f'<rect x="{x(left):.3f}" y="{y}" width="{x(right)-x(left):.3f}" height="15" fill="{color}"/>')
 
-    text(24, 34, "Nsight Systems · same COCO request · 1024×1024 / B1 / single slot", 23)
-    text(24, 57, f"COCO {request} · first request after warm-up · each timeline starts at its own request boundary")
+    text(24, 34, "Nsight Systems · CPU waiting vs. GPU execution", 23)
+    text(24, 57, f"COCO {request} · first request after warm-up · 1024×1024 / B1 / one slot")
     for tick in range(0, limit + 1, tick_ns):
-        svg.append(f'<path d="M{x(tick):.3f} 100V272" stroke="#dce4ec"/>')
-        text(x(tick) - 5, 292, f"{tick / 1e6:g}")
-    text(1039, 292, "ms")
+        svg.append(f'<path d="M{x(tick):.3f} 100V341" stroke="#dce4ec"/>')
+        text(x(tick) - 5, 363, f"{tick / 1e6:g}")
+    text(1087, 363, "ms")
 
-    for index, (title, (duration, host, gpu)) in enumerate((("PyTorch FP32", pt), ("TensorRT FP32", trt))):
-        y = 82 + index * 100
-        text(24, y + 12, f"{title} · {duration / 1e6:.2f} ms", 16)
-        text(24, y + 38, "Host NVTX")
-        text(24, y + 63, "GPU activity")
-        band(0, duration, y + 24, "#e7edf3")
-        band(0, duration, y + 49, "#e7edf3")
+    for index, (title, (start, end, host, sync, gpu)) in enumerate(
+        (("PyTorch FP32", pt), ("TensorRT FP32", trt))
+    ):
+        y = 78 + index * 134
+        text(24, y + 12, f"{title} · {(end - start) / 1e6:.2f} ms request", 16)
+        for offset, label in ((24, "CPU NVTX"), (46, "CPU sync API"), (68, "GPU by submit stage")):
+            text(24, y + offset + 12, label)
+            band(0, end - start, y + offset, "#e7edf3")
         for name, left, right in host:
-            band(left, right, y + 24, COLORS[name])
-        for left, right in gpu:
-            band(left, right, y + 49, "#213d59")
+            band(left - start, right - start, y + 24, COLORS[name])
+        for left, right in sync:
+            band(left - start, right - start, y + 46, SYNC)
+        for name, intervals in gpu.items():
+            for left, right in intervals:
+                band(left - start, right - start, y + 68, COLORS[name])
+        post_left, post_right = next((left, right) for name, left, right in host if name == "postprocess")
+        overlap = duration_ms((max(left, post_left), min(right, post_right))
+                              for left, right in gpu["network"] if left < post_right and right > post_left)
+        text(origin, y + 108,
+             f"CPU postprocess {(post_right - post_left) / 1e6:.2f} ms"
+             f"  ·  overlaps {overlap:.2f} ms of network GPU activity"
+             f"  ·  postprocess GPU activity {duration_ms(gpu['postprocess']):.2f} ms")
 
-    for index, name in enumerate(COLORS):
-        left = 24 + 145 * index
-        svg.append(f'<rect x="{left}" y="313" width="12" height="12" rx="2" fill="{COLORS[name]}"/>')
-        text(left + 19, 324, name)
+    labels = {**COLORS, "sync API": SYNC}
+    for index, (name, color) in enumerate(labels.items()):
+        left = 24 + 118 * index
+        svg.append(f'<rect x="{left}" y="389" width="12" height="12" rx="2" fill="{color}"/>')
+        text(left + 17, 400, name)
+    text(24, 428, "GPU colors follow CUDA API correlation IDs. CPU sync time overlaps GPU execution.")
     svg.append("</g></svg>")
     output.write_text("\n".join(svg) + "\n")
 
