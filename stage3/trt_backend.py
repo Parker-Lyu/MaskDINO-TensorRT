@@ -40,20 +40,19 @@ def half_mask_projection(model):
     from onnx import TensorProto, helper
 
     graph = model.graph
-    projections = [node for node in graph.node if node.op_type == "Einsum" and "masks" in node.output]
-    assert len(projections) == 1, "Expected the final mask projection to write masks directly"
-    projection = projections[0]
-    nodes = []
-    for index, name in enumerate(projection.input):
-        cast = f"stage3_mask_projection_input_{index}"
-        nodes.append(helper.make_node("Cast", [name], [cast], to=TensorProto.FLOAT16))
-    output = "stage3_mask_projection_output"
-    nodes.append(helper.make_node("Einsum", [node.output[0] for node in nodes], [output],
-                                  name=projection.name, equation="bqc,bchw->bqhw"))
-    nodes.append(helper.make_node("Cast", [output], ["masks"], to=TensorProto.FLOAT))
+    producers = {output: node for node in graph.node for output in node.output}
+    cast = producers["masks"]
+    assert cast.op_type == "Cast" and any(attr.name == "to" and attr.i == TensorProto.FLOAT for attr in cast.attribute)
+    projection = producers[cast.input[0]]
+    assert projection.op_type == "Einsum"
+    assert sum(cast.input[0] in node.input for node in graph.node) == 1
     index = list(graph.node).index(projection)
-    del graph.node[index]
-    for offset, node in enumerate(nodes):
+    input_casts = []
+    for offset, name in enumerate(projection.input):
+        output = f"stage3_mask_projection_input_{offset}"
+        input_casts.append(helper.make_node("Cast", [name], [output], to=TensorProto.FLOAT16))
+        projection.input[offset] = output
+    for offset, node in enumerate(input_casts):
         graph.node.insert(index + offset, node)
 
 
