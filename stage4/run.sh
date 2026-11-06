@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if (( $# != 5 )); then
-    echo "Usage: bash stage4/run.sh DATASET ENGINE RUN_ID native|reference|pytorch check|align|evaluate|benchmark|trace" >&2
+    echo "Usage: bash stage4/run.sh DATASET ENGINE RUN_ID native|reference|pytorch check|align|evaluate|benchmark|trace|trace-stage-waits" >&2
     exit 2
 fi
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
@@ -13,7 +13,7 @@ backend=$4
 mode=$5
 [[ "$id" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]]
 case "$backend:$mode" in
-    native:check|native:align|native:evaluate|native:benchmark|native:trace|reference:benchmark|reference:trace|pytorch:benchmark) ;;
+    native:check|native:align|native:evaluate|native:benchmark|native:trace|native:trace-stage-waits|reference:benchmark|reference:trace|pytorch:benchmark) ;;
     *) echo "Unsupported backend and mode" >&2; exit 2 ;;
 esac
 cd "$root"
@@ -43,6 +43,8 @@ mkdir "$output"
         --entrypoint bash "$image" -ec '
             backend=$1
             mode=$2
+            native_mode=$mode
+            if [[ "$mode" == trace-stage-waits ]]; then mode=trace; fi
             echo "MaskDINO commit: $(git -c safe.directory="$PWD" rev-parse HEAD)"
             [[ "$(git -c safe.directory="$PWD" rev-parse HEAD)" == 3831d8514a3728535ace8d4ecc7d28044c42dd14 ]]
             export PYTHONPATH="/project:$PWD${PYTHONPATH:+:$PYTHONPATH}"
@@ -64,7 +66,6 @@ mkdir "$output"
                     exit
                 fi
                 python -m stage4.protocol manifest "$mode" "$output" /network.engine
-                native_mode=$mode
                 if [[ "$mode" == align || "$mode" == evaluate ]]; then native_mode=predict; fi
                 args=("$output/maskdino-native" /network.engine "$output/things.txt" "$output/manifest.tsv" "$native_mode" "$output")
                 if [[ "$mode" == trace ]]; then "${profile[@]}" "${args[@]}"; else "${args[@]}"; fi

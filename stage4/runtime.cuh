@@ -36,7 +36,7 @@ class Pipeline {
     Postprocess postprocess_;
 public:
     Pipeline(const std::string& engine_path, const int* things);
-    void run(const unsigned char* jpeg, size_t length, int height, int width, bool timing);
+    void run(const unsigned char* jpeg, size_t length, int height, int width, bool timing, bool stage_waits);
     float network_ms();
     const int* map() { return postprocess_.map(); }
     const Segments& segments() { return postprocess_.segments(); }

@@ -129,7 +129,7 @@ void Postprocess::run(const float* logits, const float* masks, const int* things
     check(cudaGetLastError());
 }
 
-void Postprocess::download(Geometry geometry, cudaStream_t stream) {
+void Postprocess::download(Geometry geometry, cudaStream_t stream, bool stage_waits) {
     {
         Range range("CPU / submit D2H copies");
         check(cudaMemcpyAsync(host_map_.get(), map_.get(), size_t(geometry.height) * geometry.width * sizeof(int),
@@ -137,7 +137,8 @@ void Postprocess::download(Geometry geometry, cudaStream_t stream) {
         check(cudaMemcpyAsync(host_segments_.get(), segments_.get(), sizeof(Segments), cudaMemcpyDeviceToHost, stream));
     }
     {
-        Range range("CPU / wait for output (network + postprocess + copies)");
+        Range range(stage_waits ? "CPU / wait for D2H copies"
+                                : "CPU / wait for output (network + postprocess + copies)");
         check(cudaStreamSynchronize(stream));
     }
 }

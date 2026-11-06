@@ -46,11 +46,15 @@ Pipeline::Pipeline(const std::string& engine_path, const int* things) {
     check(cudaMemcpy(things_.get(), things, classes * sizeof(int), cudaMemcpyHostToDevice));
 }
 
-void Pipeline::run(const unsigned char* jpeg, size_t length, int height, int width, bool timing) {
+void Pipeline::run(const unsigned char* jpeg, size_t length, int height, int width, bool timing, bool stage_waits) {
     const auto stream = stream_.value;
     const auto geometry = preprocess_.run(jpeg, length, image_.get(), stream);
     if (geometry.height != height || geometry.width != width)
         throw std::runtime_error("Decoded image dimensions disagree with the manifest");
+    if (stage_waits) {
+        Range range("CPU / wait for preprocess");
+        check(cudaStreamSynchronize(stream));
+    }
     postprocess_.reserve(size_t(height) * width);
     if (timing) check(cudaEventRecord(begin_.value, stream));
     {
@@ -58,11 +62,19 @@ void Pipeline::run(const unsigned char* jpeg, size_t length, int height, int wid
         if (!context_->enqueueV3(stream)) throw std::runtime_error("TensorRT enqueue failed");
     }
     if (timing) check(cudaEventRecord(end_.value, stream));
+    if (stage_waits) {
+        Range range("CPU / wait for network");
+        check(cudaStreamSynchronize(stream));
+    }
     {
         Range range("CPU / submit CUDA postprocess");
         postprocess_.run(logits_.get(), masks_.get(), things_.get(), geometry, stream);
     }
-    postprocess_.download(geometry, stream);
+    if (stage_waits) {
+        Range range("CPU / wait for postprocess");
+        check(cudaStreamSynchronize(stream));
+    }
+    postprocess_.download(geometry, stream, stage_waits);
 }
 
 float Pipeline::network_ms() {

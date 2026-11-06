@@ -75,8 +75,9 @@ def duration_ms(intervals):
 def plot(pytorch, tensorrt, output, labels=("PyTorch FP32", "TensorRT FP32"), split_legacy_output=False):
     request, *pt = capture(pytorch, None)
     _, *trt = capture(tensorrt, request, split_legacy_output)
-    split_output = any(name == "output_wait" for trace in (pt, trt) for name, _, _ in trace[2])
-    colors = {**COLORS, "output_wait": WAIT}
+    split_output = any(name.endswith("_wait") for trace in (pt, trt) for name, _, _ in trace[2])
+    colors = {**COLORS, **dict.fromkeys(("output_wait", "preprocess_wait", "network_wait",
+                                         "postprocess_wait", "d2h_wait"), WAIT)}
     tick_ns = 5_000_000
     span = max(end - start for start, end, *_ in (pt, trt))
     limit = ((span + tick_ns - 1) // tick_ns) * tick_ns
@@ -134,7 +135,7 @@ def plot(pytorch, tensorrt, output, labels=("PyTorch FP32", "TensorRT FP32"), sp
 
     legend = {**COLORS, "sync API": SYNC}
     if split_output:
-        legend["output wait"] = WAIT
+        legend["CPU wait"] = WAIT
     for index, (name, color) in enumerate(legend.items()):
         left = 24 + (106 if split_output else 118) * index
         svg.append(f'<rect x="{left}" y="389" width="12" height="12" rx="2" fill="{color}"/>')

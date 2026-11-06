@@ -115,9 +115,10 @@ void save_prediction(const fs::path& output, const Request& request, Pipeline& p
 
 void run(int argc, char** argv) {
     if (argc != 6)
-        throw std::runtime_error("Usage: maskdino-native ENGINE THINGS MANIFEST predict|benchmark|trace OUTPUT");
+        throw std::runtime_error("Usage: maskdino-native ENGINE THINGS MANIFEST predict|benchmark|trace|trace-stage-waits OUTPUT");
     const std::string mode = argv[4];
-    const bool benchmark = mode == "benchmark", trace = mode == "trace";
+    const bool stage_waits = mode == "trace-stage-waits";
+    const bool benchmark = mode == "benchmark", trace = mode == "trace" || stage_waits;
     if (!benchmark && !trace && mode != "predict") throw std::runtime_error("Unknown mode " + mode);
     const fs::path output = argv[5];
     std::array<int, classes> things{};
@@ -144,7 +145,7 @@ void run(int argc, char** argv) {
     if (benchmark || trace) {
         const auto& first = requests.front();
         for (int i = 0; i < 20; ++i)
-            pipeline.run(first.jpeg.data(), first.jpeg.size(), first.height, first.width, false);
+            pipeline.run(first.jpeg.data(), first.jpeg.size(), first.height, first.width, false, stage_waits);
     }
     auto memory = benchmark ? std::make_unique<ProcessMemory>() : nullptr;
     struct Sample { int id; float network_ms; double e2e_ms; };
@@ -159,7 +160,7 @@ void run(int argc, char** argv) {
         const auto before = Clock::now();
         {
             Range range(name.c_str());
-            pipeline.run(item.jpeg.data(), item.jpeg.size(), item.height, item.width, benchmark);
+            pipeline.run(item.jpeg.data(), item.jpeg.size(), item.height, item.width, benchmark, stage_waits);
         }
         const double ms = std::chrono::duration<double, std::milli>(Clock::now() - before).count();
         if (benchmark) samples.push_back({item.id, pipeline.network_ms(), ms});
