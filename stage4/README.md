@@ -87,43 +87,6 @@ python3 stage3/trace_plot.py stage4/runs/{trace-reference,trace-native}/trace.sq
 
 原生后处理直接读取 TensorRT 输出，仅计算通过筛选的 query，融合两次插值与像素分配，GPU 上生成最终的 ID 图与 metadata。CPU 一次性提交后处理和 D2H，并在最终 D2H 等待整条 stream。原始 trace 把最终拷贝与同步包在同一个 D2H NVTX 区间内。上图使用 SQLite 的 CUDA API 事件把原生链路拆开显示。32 张中，两次 `cudaMemcpyAsync` 的 CPU 提交时间合计中位数为 **0.004 ms/图**，`cudaStreamSynchronize` 的 CPU 等待时间中位数为 **20.53 ms/图**，GPU 实际执行最终 D2H 拷贝平均为 **0.044 ms/图**。图中第一张的 17.12 ms 等待与 16.69 ms 的 GPU 网络活动重叠。 [Python 聚合](results/trace-reference/trace-summary.json) · [C++ 聚合](results/trace-native/trace-summary.json)
 
-[Nsight 原始报告 · Python](results/trace-reference/trace.nsys-rep) · [Nsight 原始报告 · C++](results/trace-native/trace.nsys-rep)
-
-后续原生采集会在 GUI 的 NVTX 轨直接标记 `CPU / submit D2H copies` 与 `CPU / wait for output (network + postprocess + copies)`。使用新采集绘图时省略 `--split-legacy-output`。
-
-### 拆分输出区间的原生重采
-
-在 RTX 4090 上从 `eda5d1f` 重采原生 C++ 链路，复用原 engine、同一顺序的 32 张图与 20 次预热。新版 NVTX 将拷贝提交和 stream 等待分成两个区间。32 次 `cudaStreamSynchronize` 全部位于 `CPU / wait for output (network + postprocess + copies)`，GPU 轨记录了 64 次 D2H 拷贝，每张两次。
-
-| 新版采集 | 每张耗时 |
-| --- | ---: |
-| CPU 提交 D2H 拷贝的 NVTX 区间中位数 | 0.004 ms |
-| CPU 等待输出的 NVTX 区间中位数 | 19.60 ms |
-| GPU 执行 D2H 拷贝的平均耗时 | 0.044 ms |
-
-[Nsight 原始报告](results/trace-native-split/trace.nsys-rep) · [分阶段统计](results/trace-native-split/trace-summary.json) · [对照时间线](results/trace-native-split/timeline.svg)
-
-SQLite 位于 4090 的 `/home/parker/Code/MaskDINO-TensorRT-stage4-nvtx/stage4/runs/trace-native-split/trace.sqlite`。
-
-### 按阶段同步的诊断采集
-
-`trace-stage-waits` 在 GPU 前处理、网络、后处理和 D2H 提交之后分别同步同一条 stream。前处理独立等待，使后续网络等待只覆盖网络的剩余执行。此模式改变主机提交时序，阶段等待是 CPU 侧区间，正式性能对照使用常规流水线。
-
-```bash
-bash stage4/run.sh "$data" "$engine" trace-native-stage-waits native trace-stage-waits
-```
-
-RTX 4090 上从 `12b93d6` 采集同一顺序的 32 张图，预热 20 次。原始报告的 NVTX 轨中每个标签出现 32 次，每个区间各含一次 `cudaStreamSynchronize`。
-
-| Nsight GUI 的 NVTX 标签 | CPU 等待中位数（ms/图） |
-| --- | ---: |
-| `CPU / wait for preprocess` | 0.061 |
-| `CPU / wait for network` | 20.334 |
-| `CPU / wait for postprocess` | 0.078 |
-| `CPU / wait for D2H copies` | 0.055 |
-
-[按阶段同步的原始报告](results/trace-native-stage-waits/trace.nsys-rep) · [分阶段统计](results/trace-native-stage-waits/trace-summary.json)
-
 ### 常规异步流水线的 GPU 分阶段统计
 
 在 RTX 4090 上从 `deea1d2` 重采原生链路，复用同一 engine、同一顺序的 32 张图和 20 次预热。使用常规 `native trace` 模式，每张图仅在交付输出时同步一次。NVTX 阶段名为 `TensorRT inference`、`postprocess` 和 `D2H`。

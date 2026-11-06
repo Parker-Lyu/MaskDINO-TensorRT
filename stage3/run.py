@@ -110,8 +110,12 @@ def run():
     if trace:
         from stage3.trace_summary import TRACE_LABELS
 
+        labels = dict(TRACE_LABELS)
+        if args.backend == "fp32":
+            labels.update(network="TensorRT inference", postprocess="postprocess")
+
         def region(name):
-            return torch.cuda.nvtx.range(TRACE_LABELS.get(name, name))
+            return torch.cuda.nvtx.range(labels.get(name, name))
 
     if cached:
         for _ in range(20):
