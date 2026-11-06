@@ -1,0 +1,342 @@
+[
+  {
+    "size": 800,
+    "batch": 1,
+    "rounds": [
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r1/benchmark/800-1/result.json",
+        "size": 800,
+        "batch": 1,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 26.41993522644043,
+        "network_p95_ms": 26.813714504241943,
+        "e2e_p50_ms": 35.11949099993217,
+        "e2e_p95_ms": 37.9191243000605,
+        "images_per_s": 28.32871033586978,
+        "peak_allocated_gib": 2.0742149353027344,
+        "peak_reserved_gib": 3.91796875
+      },
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r2/benchmark/800-1/result.json",
+        "size": 800,
+        "batch": 1,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 26.485072135925293,
+        "network_p95_ms": 26.762325859069826,
+        "e2e_p50_ms": 34.966884000823484,
+        "e2e_p95_ms": 37.807680600053565,
+        "images_per_s": 28.399023197193802,
+        "peak_allocated_gib": 2.0742149353027344,
+        "peak_reserved_gib": 3.91796875
+      },
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r3/benchmark/800-1/result.json",
+        "size": 800,
+        "batch": 1,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 26.506256103515625,
+        "network_p95_ms": 26.771998977661134,
+        "e2e_p50_ms": 35.02035500059719,
+        "e2e_p95_ms": 37.84742129755614,
+        "images_per_s": 28.351759189829963,
+        "peak_allocated_gib": 2.0742149353027344,
+        "peak_reserved_gib": 3.91796875
+      }
+    ],
+    "statistics": {
+      "network_p50_ms": {
+        "median": 26.485072135925293,
+        "min": 26.41993522644043,
+        "max": 26.506256103515625
+      },
+      "network_p95_ms": {
+        "median": 26.771998977661134,
+        "min": 26.762325859069826,
+        "max": 26.813714504241943
+      },
+      "e2e_p50_ms": {
+        "median": 35.02035500059719,
+        "min": 34.966884000823484,
+        "max": 35.11949099993217
+      },
+      "e2e_p95_ms": {
+        "median": 37.84742129755614,
+        "min": 37.807680600053565,
+        "max": 37.9191243000605
+      },
+      "images_per_s": {
+        "median": 28.351759189829963,
+        "min": 28.32871033586978,
+        "max": 28.399023197193802
+      },
+      "peak_allocated_gib": {
+        "median": 2.0742149353027344,
+        "min": 2.0742149353027344,
+        "max": 2.0742149353027344
+      },
+      "peak_reserved_gib": {
+        "median": 3.91796875,
+        "min": 3.91796875,
+        "max": 3.91796875
+      }
+    }
+  },
+  {
+    "size": 800,
+    "batch": 4,
+    "rounds": [
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r1/benchmark/800-4/result.json",
+        "size": 800,
+        "batch": 4,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 87.54380798339844,
+        "network_p95_ms": 88.10209503173829,
+        "e2e_p50_ms": 115.15350149966253,
+        "e2e_p95_ms": 124.38019510063896,
+        "images_per_s": 32.75961845951667,
+        "peak_allocated_gib": 2.3694887161254883,
+        "peak_reserved_gib": 4.828125
+      },
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r2/benchmark/800-4/result.json",
+        "size": 800,
+        "batch": 4,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 87.61138916015625,
+        "network_p95_ms": 88.14303588867188,
+        "e2e_p50_ms": 115.4012135011726,
+        "e2e_p95_ms": 124.73919300155103,
+        "images_per_s": 32.71796335214535,
+        "peak_allocated_gib": 2.3694887161254883,
+        "peak_reserved_gib": 4.828125
+      },
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r3/benchmark/800-4/result.json",
+        "size": 800,
+        "batch": 4,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 87.69945526123047,
+        "network_p95_ms": 88.18223419189454,
+        "e2e_p50_ms": 115.59081500126922,
+        "e2e_p95_ms": 124.82187824789435,
+        "images_per_s": 32.68427096044172,
+        "peak_allocated_gib": 2.3694887161254883,
+        "peak_reserved_gib": 4.828125
+      }
+    ],
+    "statistics": {
+      "network_p50_ms": {
+        "median": 87.61138916015625,
+        "min": 87.54380798339844,
+        "max": 87.69945526123047
+      },
+      "network_p95_ms": {
+        "median": 88.14303588867188,
+        "min": 88.10209503173829,
+        "max": 88.18223419189454
+      },
+      "e2e_p50_ms": {
+        "median": 115.4012135011726,
+        "min": 115.15350149966253,
+        "max": 115.59081500126922
+      },
+      "e2e_p95_ms": {
+        "median": 124.73919300155103,
+        "min": 124.38019510063896,
+        "max": 124.82187824789435
+      },
+      "images_per_s": {
+        "median": 32.71796335214535,
+        "min": 32.68427096044172,
+        "max": 32.75961845951667
+      },
+      "peak_allocated_gib": {
+        "median": 2.3694887161254883,
+        "min": 2.3694887161254883,
+        "max": 2.3694887161254883
+      },
+      "peak_reserved_gib": {
+        "median": 4.828125,
+        "min": 4.828125,
+        "max": 4.828125
+      }
+    }
+  },
+  {
+    "size": 1024,
+    "batch": 1,
+    "rounds": [
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r1/benchmark/1024-1/result.json",
+        "size": 1024,
+        "batch": 1,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 37.70675277709961,
+        "network_p95_ms": 37.81739902496338,
+        "e2e_p50_ms": 48.75999399882858,
+        "e2e_p95_ms": 51.90289205038425,
+        "images_per_s": 20.406212176553478,
+        "peak_allocated_gib": 2.5755558013916016,
+        "peak_reserved_gib": 4.71484375
+      },
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r2/benchmark/1024-1/result.json",
+        "size": 1024,
+        "batch": 1,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 37.77115249633789,
+        "network_p95_ms": 37.87883529663086,
+        "e2e_p50_ms": 48.7923624987161,
+        "e2e_p95_ms": 51.929514450421266,
+        "images_per_s": 20.375556262618513,
+        "peak_allocated_gib": 2.5755558013916016,
+        "peak_reserved_gib": 4.71484375
+      },
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r3/benchmark/1024-1/result.json",
+        "size": 1024,
+        "batch": 1,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 37.78816032409668,
+        "network_p95_ms": 37.89936771392822,
+        "e2e_p50_ms": 48.849845999939134,
+        "e2e_p95_ms": 51.925332250721105,
+        "images_per_s": 20.37571370953254,
+        "peak_allocated_gib": 2.5755558013916016,
+        "peak_reserved_gib": 4.71484375
+      }
+    ],
+    "statistics": {
+      "network_p50_ms": {
+        "median": 37.77115249633789,
+        "min": 37.70675277709961,
+        "max": 37.78816032409668
+      },
+      "network_p95_ms": {
+        "median": 37.87883529663086,
+        "min": 37.81739902496338,
+        "max": 37.89936771392822
+      },
+      "e2e_p50_ms": {
+        "median": 48.7923624987161,
+        "min": 48.75999399882858,
+        "max": 48.849845999939134
+      },
+      "e2e_p95_ms": {
+        "median": 51.925332250721105,
+        "min": 51.90289205038425,
+        "max": 51.929514450421266
+      },
+      "images_per_s": {
+        "median": 20.37571370953254,
+        "min": 20.375556262618513,
+        "max": 20.406212176553478
+      },
+      "peak_allocated_gib": {
+        "median": 2.5755558013916016,
+        "min": 2.5755558013916016,
+        "max": 2.5755558013916016
+      },
+      "peak_reserved_gib": {
+        "median": 4.71484375,
+        "min": 4.71484375,
+        "max": 4.71484375
+      }
+    }
+  },
+  {
+    "size": 1024,
+    "batch": 4,
+    "rounds": [
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r1/benchmark/1024-4/result.json",
+        "size": 1024,
+        "batch": 4,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 138.45709228515625,
+        "network_p95_ms": 139.18698425292968,
+        "e2e_p50_ms": 174.69039500065264,
+        "e2e_p95_ms": 186.37575159809785,
+        "images_per_s": 21.82165602515213,
+        "peak_allocated_gib": 3.0552167892456055,
+        "peak_reserved_gib": 4.90625
+      },
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r2/benchmark/1024-4/result.json",
+        "size": 1024,
+        "batch": 4,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 138.82601928710938,
+        "network_p95_ms": 139.40149841308593,
+        "e2e_p50_ms": 174.92217799917853,
+        "e2e_p95_ms": 186.40690059801273,
+        "images_per_s": 21.82790135593942,
+        "peak_allocated_gib": 3.0552167892456055,
+        "peak_reserved_gib": 4.90625
+      },
+      {
+        "file": "stage2/results/benchmark/stage2-perf-20261106-r3/benchmark/1024-4/result.json",
+        "size": 1024,
+        "batch": 4,
+        "images": 500,
+        "warmup_batches": 20,
+        "network_p50_ms": 138.9240264892578,
+        "network_p95_ms": 139.37049560546876,
+        "e2e_p50_ms": 175.02293149846082,
+        "e2e_p95_ms": 186.45270015040296,
+        "images_per_s": 21.795905891621864,
+        "peak_allocated_gib": 3.0552167892456055,
+        "peak_reserved_gib": 4.90625
+      }
+    ],
+    "statistics": {
+      "network_p50_ms": {
+        "median": 138.82601928710938,
+        "min": 138.45709228515625,
+        "max": 138.9240264892578
+      },
+      "network_p95_ms": {
+        "median": 139.37049560546876,
+        "min": 139.18698425292968,
+        "max": 139.40149841308593
+      },
+      "e2e_p50_ms": {
+        "median": 174.92217799917853,
+        "min": 174.69039500065264,
+        "max": 175.02293149846082
+      },
+      "e2e_p95_ms": {
+        "median": 186.40690059801273,
+        "min": 186.37575159809785,
+        "max": 186.45270015040296
+      },
+      "images_per_s": {
+        "median": 21.82165602515213,
+        "min": 21.795905891621864,
+        "max": 21.82790135593942
+      },
+      "peak_allocated_gib": {
+        "median": 3.0552167892456055,
+        "min": 3.0552167892456055,
+        "max": 3.0552167892456055
+      },
+      "peak_reserved_gib": {
+        "median": 4.90625,
+        "min": 4.90625,
+        "max": 4.90625
+      }
+    }
+  }
+]

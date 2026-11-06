@@ -76,3 +76,32 @@ bash stage2/run.sh "$data" benchmark 800 4
 全量 B4 三组均完成。评估循环分别耗时 121.7、172.8、248.2 秒，peak allocated 分别为 1.98、2.37、3.06 GiB。预测 JSON 和完整运行目录保留在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-stage2/stage2/runs/7d8788b99327dd359b2cad29d8ae14141660d8da/evaluate/`。仓库归档每组控制台日志与原始指标 JSON。
 
 全量评估结束后复跑各尺寸 B1。32 张图的 class logits、mask logits、ID map 和 segment metadata 与首次 B1 逐项完全一致。[复跑对照结果](results/probe/b1-repeat.json)
+
+## 800 与 1024 性能对照
+
+复用全量 PQ 的运行提交 `7d8788b99327dd359b2cad29d8ae14141660d8da` 和容器。四组均使用 FP32、同一份 500 张 JPEG 清单和执行顺序。每轮各配置在独立容器中运行，预读 JPEG 后，用首批输入预热 20 个 batch，再测完整 500 张。三轮轮换配置执行顺序，以减少固定顺序与机器热状态的关联。B1 和 B4 均无尾批。
+
+```bash
+round=0
+for order in '800-1 1024-4 800-4 1024-1' '1024-1 800-4 1024-4 800-1' '800-4 1024-1 800-1 1024-4'; do
+  round=$((round + 1))
+  export MASKDINO_RUN_ID="stage2-perf-20261106-r$round"
+  for pair in $order; do
+    bash stage2/run.sh "$data" benchmark "${pair%-*}" "${pair#*-}"
+  done
+done
+python3 stage2/summarize_benchmark.py stage2/runs/stage2-perf-20261106-r*/benchmark/*/result.json
+```
+
+网络 GPU 延迟是 backbone 和分割 head 的 CUDA event 时间，按 batch 统计。端到端延迟从该批内存 JPEG 开始解码，到每张图的 CPU panoptic map 和 segment metadata 就绪，按图统计，包含该批的前处理、H2D、网络、GPU 后处理和 D2H。此处使用预先分好的离线 batch。吞吐用 500 张除以测量循环墙钟时间。峰值显存统计 PyTorch CUDA allocator 的 allocated 与 reserved 范围，预热后重置峰值。
+
+| 输入 | Batch | 网络 GPU P50/P95（ms/batch） | 端到端 P50/P95（ms/图） | 吞吐（图/s） | 峰值 allocated / reserved（GiB） |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 800×800 | 1 | 26.49 / 26.77 | 35.02 / 37.85 | 28.35 | 2.07 / 3.92 |
+| 800×800 | 4 | 87.61 / 88.14 | 115.40 / 124.74 | 32.72 | 2.37 / 4.83 |
+| 1024×1024 | 1 | 37.77 / 37.88 | 48.79 / 51.93 | 20.38 | 2.58 / 4.71 |
+| 1024×1024 | 4 | 138.83 / 139.37 | 174.92 / 186.41 | 21.82 | 3.06 / 4.91 |
+
+表中每项为三轮中位数，范围与逐轮统计见 [汇总 JSON](results/benchmark/summary.json)。12 轮各完成 500 张，顺序均与清单一致，未发生 OOM 或回退。[原始延迟和日志](results/benchmark/)
+
+1024 相对 800 获得 1.1742 PQ，B1 端到端 P95 增加 14.08 ms，吞吐由 28.35 降到 20.38 图/s。1024 从 B1 到 B4 的离线吞吐提高约 7%，单请求 P95 增至约 3.6 倍。若没有更紧的延迟预算，后续可用 1024/B1 作为优先优化的配置，1024/B4 作为离线吞吐对照。
