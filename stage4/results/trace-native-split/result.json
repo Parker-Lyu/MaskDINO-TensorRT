@@ -1,0 +1,14 @@
+{
+  "mode": "trace",
+  "backend": "native",
+  "images": 32,
+  "failures": 0,
+  "size": 1024,
+  "batch": 1,
+  "slots": 1,
+  "precision": "fp32",
+  "tf32": false,
+  "engine_sha256": "96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a",
+  "loop_seconds": 0.7006399,
+  "cuda_stream": "dedicated non-default stream"
+}

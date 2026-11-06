@@ -90,3 +90,17 @@ python3 stage3/trace_plot.py stage4/runs/{trace-reference,trace-native}/trace.sq
 [Nsight 原始报告 · Python](results/trace-reference/trace.nsys-rep) · [Nsight 原始报告 · C++](results/trace-native/trace.nsys-rep)
 
 后续原生采集会在 GUI 的 NVTX 轨直接标记 `CPU / submit D2H copies` 与 `CPU / wait for output (network + postprocess + copies)`。使用新采集绘图时省略 `--split-legacy-output`。
+
+### 拆分输出区间的原生重采
+
+在 RTX 4090 上从 `eda5d1f` 重采原生 C++ 链路，复用原 engine、同一顺序的 32 张图与 20 次预热。新版 NVTX 将拷贝提交和 stream 等待分成两个区间。32 次 `cudaStreamSynchronize` 全部位于 `CPU / wait for output (network + postprocess + copies)`，GPU 轨记录了 64 次 D2H 拷贝，每张两次。
+
+| 新版采集 | 每张耗时 |
+| --- | ---: |
+| CPU 提交 D2H 拷贝的 NVTX 区间中位数 | 0.004 ms |
+| CPU 等待输出的 NVTX 区间中位数 | 19.60 ms |
+| GPU 执行 D2H 拷贝的平均耗时 | 0.044 ms |
+
+[Nsight 原始报告](results/trace-native-split/trace.nsys-rep) · [分阶段统计](results/trace-native-split/trace-summary.json) · [对照时间线](results/trace-native-split/timeline.svg)
+
+SQLite 位于 4090 的 `/home/parker/Code/MaskDINO-TensorRT-stage4-nvtx/stage4/runs/trace-native-split/trace.sqlite`。
