@@ -166,8 +166,34 @@ B1/S1、B1/S2、B1/S3 各自覆盖 5,000 个唯一预测 ID。三组的 PQ / PQ_
 - 正式实验从干净提交在 RTX 4090 上运行。使用 Stage 4 NVML 进程显存采样口径（20 ms），注明观测峰值涵盖 engine、各 slot 与前后处理。记录提交、镜像、依赖、权重及数据校验、engine 构建参数、样本清单、运行次序、到达序列与原始请求事件。新增入口确定后，将实际复现命令和配置留在本目录，运行日志和逐请求数据保存在 `stage5/runs/<ID>/`，归档结果摘要和绘图数据至 `stage5/results/`。用独立 Nsight 采集对比基准、最佳多 slot 和最佳联合配置的 GPU 活动、跨请求重叠、CPU 提交和同步。
 - 发布按场景选型的表，附对照组和适用范围。在线按 P99 预算选通过请求率最高的配置，容量相近时比较 P99 和显存。离线按通过正确性与资源约束的最高稳态吞吐选配置，吞吐差异在轮次波动内时优先显存更低者。若优化收益低于轮次波动，保留基线作为该场景的选型。验收后在根 README 更新结果和同口径累计图，建议 tag 为 `stage5-batch-slots-accepted`。
 
-| 场景 | 最终配置项 | 随表报告 |
+## 场景选型
+
+以下为 RTX 4090、1024×1024、TensorRT FP32、内存 JPEG 到 CPU panoptic 结果的实测点。在线使用 64 项 FIFO，B1 无凑批等待。表中 P99 取三轮最差值。
+
+| 场景 | 选型 | 实测范围和证据 |
 | --- | --- | --- |
-| 低负载、优先响应 | batch / slot | 单请求及轻载 P95/P99、进程显存 |
-| 在线并发 | 最大 batch / slot / 凑批时限 | P99 预算、负载形态、最高通过请求率、实际 batch 分布、失败率、进程显存 |
-| 离线批量 | batch / slot | 稳态图/s、固定任务总完成时间、进程显存、失败数 |
+| 匀速、30 ms P99 | B1/S1 | 25 请求/s，最差 P99 24.57 ms，三轮各 10,499 个请求 |
+| 泊松、100 ms P99 | B1/S1 | 20 请求/s，最差 P99 83.06 ms。B1/S2 为 79.52 ms，两个配置均通过 |
+| 周期突发、100 ms P99 | B1/S2 | 平均 15 请求/s，最差 P99 92.46 ms。B1/S1 有一轮 100.007 ms，超过门槛 |
+| 泊松或周期突发、50 ms P99 | B1/S1 | 平均 5 请求/s，最差 P99 分别为 45.85 和 46.47 ms。B1/S2 也通过两组负载 |
+| 离线批量 | B1/S3 | 53.22 图/s，17,500 张总完成时间中位数 328.78 s，进程峰值 2.34 GiB |
+
+所有在线通过点的测量轮次均零拒绝，并通过队列稳态检查。泊松 20 请求/s 每轮有 10,496–10,661 个请求。缩短后的 15 请求/s 突发每轮有 2,677–2,746 个请求，5 请求/s 每轮有 850–921 个请求。20 请求/s 突发的首对结果均超过 100 ms。通过点给出了各到达模型下已经验证的范围，容量上界仍需更密集的负载扫描。 [原长测汇总](results/long-capacity.json) · [缩短验证汇总](results/compact-capacity.json)
+
+RTX 4090 上的 `/home/parker/Code/MaskDINO-TensorRT-stage5/stage5/runs/` 保留逐请求数据，归档目录中的 `raw.sha256` 可用于核对。重建的 Stage 4 原生入口也通过回归检查，32 张的 map 与 metadata 文件逐字节一致。 [Stage 4 回归记录](results/check-tail/stage4-regression.log)
+
+复跑配对验证时，每个种子使用独立运行目录。以下命令对应 `c8d4796` 上完成的缩短验证。
+
+```bash
+for seed in 311 449 593; do
+  bash stage5/run.sh "$data" "$previous" "$engine" "compact-burst-15-$seed" online 1s1 1s2 \
+    --rates 15 --shapes burst --seconds 180 --seeds "$seed"
+  for shape in poisson burst; do
+    bash stage5/run.sh "$data" "$previous" "$engine" "compact-$shape-5-$seed" online 1s1 1s2 \
+      --rates 5 --shapes "$shape" --seconds 180 --seeds "$seed"
+  done
+done
+python3 -m stage5.capacity --min-seconds 180 --min-requests 800 \
+  stage5/results/compact-{burst-15,poisson-5,burst-5}-*/summary.jsonl
+python3 stage5/plot.py stage5/results --finalist b1s3
+```

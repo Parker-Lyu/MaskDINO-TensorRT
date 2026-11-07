@@ -1,0 +1,27 @@
+Project commit: c8d4796868e13253752b04b8d7da1c9518721bcb
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Phase: online 1s1 1s2 --rates 15 --shapes burst --seconds 180 --seeds 311
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/build-fp32/network.engine: OK
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a  /home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/build-fp32/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+c389aa6c9016b5c70e5dc7a9dfbdc5b641f26152cd453e4d00b91dfa015e69d9  stage3/runs/build-b8/network.engine
+55b94d690ea5dc254f9d139ce6ca5e4fd4784fe2095ef3aefda5be080b754a3c  stage3/runs/build-b4/network.engine
+ab810cd08d4523d22e5c6589c4288b97fa08367242574a495aff9d63f0e790ab  stage3/runs/build-b2/network.engine
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/burst-15-311-b1s1-0ms 1 1 online /output/burst-15-311.arrivals 0 64
+Completed 2746/2746 images in 180.079 s
+burst-15-311-b1s1-0ms P99 91.38699599998654 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/burst-15-311-b1s2-0ms 1 2 online /output/burst-15-311.arrivals 0 64
+Completed 2746/2746 images in 180.08 s
+burst-15-311-b1s2-0ms P99 81.66455299999507 rejected 0 sustained True

@@ -5,10 +5,10 @@ import json
 from pathlib import Path
 
 
-def verified_points(rows):
+def verified_points(rows, min_seconds, min_requests):
     groups = defaultdict(dict)
     for row in rows:
-        if row["arrival_window_seconds"] < 300 or row["completed"] + row["rejected"] < 10000:
+        if row["arrival_window_seconds"] < min_seconds or row["completed"] + row["rejected"] < min_requests:
             continue
         key = (row["shape"], row["config"], row["delay_ms"], row["rate"])
         seed = row["seed"]
@@ -31,9 +31,9 @@ def verified_points(rows):
     return points
 
 
-def capacities(rows, budgets):
+def capacities(rows, budgets, min_seconds=300, min_requests=10000):
     report = []
-    for (shape, config, delay), points in verified_points(rows).items():
+    for (shape, config, delay), points in verified_points(rows, min_seconds, min_requests).items():
         for budget in budgets:
             passed = [point for point in points if point["sustained"] and point["max_p99_ms"] <= budget]
             highest = max(passed, key=lambda point: point["rate"], default=None)
@@ -52,6 +52,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("inputs", nargs="+", type=Path)
     parser.add_argument("--budgets", nargs="+", type=float, default=[30, 50, 100])
+    parser.add_argument("--min-seconds", type=float, default=300)
+    parser.add_argument("--min-requests", type=int, default=10000)
     args = parser.parse_args()
+    if args.min_seconds <= 0 or args.min_requests <= 0:
+        parser.error("Minimum duration and sample count must be positive")
     data = [json.loads(line) for path in args.inputs for line in path.read_text().splitlines()]
-    print(json.dumps(capacities(data, args.budgets), indent=2))
+    print(json.dumps(capacities(data, args.budgets, args.min_seconds, args.min_requests), indent=2))
