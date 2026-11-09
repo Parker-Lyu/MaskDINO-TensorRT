@@ -5,7 +5,7 @@ from torch.onnx import symbolic_helper
 from maskdino.modeling.pixel_decoder.ops.functions.ms_deform_attn_func import MSDeformAttnFunction
 
 
-def install():
+def install(batch=1):
     def symbolic(graph, value, shapes, starts, locations, weights, _step):
         result = graph.op(
             "trt::MultiscaleDeformableAttnPlugin_TRT",
@@ -13,7 +13,7 @@ def install():
             locations, weights, plugin_version_s="2", plugin_namespace_s="",
         )
         # Legacy autocast export can omit static shape metadata on Cast outputs.
-        batch, heads, channels = 1, 8, 32
+        heads, channels = 8, 32
         value_sizes = symbolic_helper._get_tensor_sizes(value)
         if value_sizes is not None:
             for index, expected in ((0, batch), (2, heads), (3, channels)):

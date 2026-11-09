@@ -42,7 +42,7 @@ class Postprocess {
 public:
     void reserve(size_t pixels);
     void run(const float* logits, const float* masks, const int* things, Geometry geometry, cudaStream_t stream);
-    void download(Geometry geometry, cudaStream_t stream, bool stage_waits = false);
+    void download(Geometry geometry, cudaStream_t stream, bool stage_waits = false, bool wait = true);
     const int* map() { return host_map_.get(); }
     const Segments& segments() { return *host_segments_.get(); }
 };

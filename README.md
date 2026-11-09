@@ -102,6 +102,16 @@ Nsight Systems 原始报告 · [C++/CUDA + TensorRT FP32（GPU 分阶段）](sta
 
 [Stage 4 复现、逐轮数据与 Nsight 报告](stage4/README.md) · 验收 tag `stage4-native-fp32-accepted`
 
+## Stage 5 · 多 slot 与 batch 联合优化
+
+固定 RTX 4090、1024×1024、TensorRT FP32。在每轮 17,500 张的离线长测中，**B1/S3** 达到 **53.22 图/s**，比 B1/S1 高 **21.7%**，进程峰值显存 **2.34 GiB**。B1/S1、B1/S2、B1/S3 各通过完整 COCO val2017，三项 PQ 与 Stage 4 一致。
+
+在线按到达模型选型。B1/S1 在 25 请求/s 匀速下通过 30 ms P99，在 20 请求/s 泊松下通过 100 ms P99。B1/S2 在 15 请求/s 周期突发下通过 100 ms P99。5 请求/s 的泊松和突发短轮验证中，B1/S1 和 B1/S2 均通过 50 ms P99。
+
+![Stage 4 与 Stage 5 同 500 张离线性能对照](stage5/results/comparison.svg)
+
+[Stage 5 复现、选型及测量范围](stage5/README.md) · 验收 tag `stage5-batch-slots-accepted`
+
 ## 仓库结构
 
 | 目录 | 内容 |
@@ -111,6 +121,7 @@ Nsight Systems 原始报告 · [C++/CUDA + TensorRT FP32（GPU 分阶段）](sta
 | [stage2/](stage2/) | 方形 PyTorch 推理、全量 PQ 和性能样本 |
 | [stage3/](stage3/) | 单 slot TensorRT FP32 验收与 Nsight 基线 |
 | [stage4/](stage4/) | 原生 TensorRT/CUDA 单请求流水线与全量评估 |
+| [stage5/](stage5/) | 多 slot、固定 batch 与在线回放 |
 | [docs/](docs/) | 环境、数据及权重说明 |
 
 构建镜像时会检出指定版本的官方 MaskDINO 源码。

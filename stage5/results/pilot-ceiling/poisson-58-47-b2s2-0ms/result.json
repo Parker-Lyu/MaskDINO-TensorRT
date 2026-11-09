@@ -1,0 +1,54 @@
+{
+  "completed": 565,
+  "rejected": 0,
+  "makespan_seconds": 11.112795697,
+  "makespan_images_per_second": 50.84229166136177,
+  "sampled_peak_process_used_bytes": 4515168256,
+  "network_ms_per_batch": {
+    "p50": 74.3823394775,
+    "p95": 77.715133667
+  },
+  "latency_ms": {
+    "p50": 721.2908449999995,
+    "p95": 1128.1073159999996,
+    "p99": 1196.051069000001
+  },
+  "queue_including_batch_wait_ms": {
+    "p50": 644.4225779999997,
+    "p95": 1050.1974259999988,
+    "p99": 1118.5112930000014
+  },
+  "batch_wait_ms": {
+    "p50": 0.0,
+    "p95": 0.0,
+    "p99": 0.0
+  },
+  "queue_excluding_batch_wait_ms": {
+    "p50": 644.4225779999997,
+    "p95": 1050.1974259999988,
+    "p99": 1118.5112930000014
+  },
+  "batch_dispatch_histogram": {
+    "1": 3,
+    "2": 281
+  },
+  "queue_depth_max_at_arrival": 57,
+  "arrival_window_seconds": 10.0,
+  "observed_arrivals_per_second": 56.5,
+  "completed_per_second_during_arrivals": 51.0,
+  "pending_at_window_edges": [
+    18,
+    24,
+    44,
+    53,
+    55
+  ],
+  "mean_pending_increase": 29.666666666666664,
+  "drain_ms": 1012.7956969999996,
+  "arrival_replay_lag_ms": {
+    "p50": 0.08887399999991885,
+    "p95": 0.10213600000042788,
+    "p99": 0.1252890000005209
+  },
+  "sustained": false
+}

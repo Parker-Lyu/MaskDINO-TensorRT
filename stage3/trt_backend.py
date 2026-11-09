@@ -64,7 +64,7 @@ def export(model, image, precision, cpu_constants, mixed_scope):
     assert precision in ("fp32", "mixed")
     original = jit_utils.GraphContext.op
     counts = export_compat.install() if cpu_constants else {}
-    plugin.install()
+    plugin.install(image.shape[0])
     destination = OUTPUT / "network.onnx"
     try:
         torch.onnx.export(
@@ -86,7 +86,7 @@ def export(model, image, precision, cpu_constants, mixed_scope):
         assert attrs == {"plugin_version": b"2", "plugin_namespace": b""}
     dump("export.json", {
         "onnx": onnx.__version__, "torch": torch.__version__, "precision": precision,
-        "opset": 17, "dynamo": False, "sha256": digest(destination),
+        "batch": image.shape[0], "opset": 17, "dynamo": False, "sha256": digest(destination),
         "mixed_scope": mixed_scope if precision == "mixed" else None,
         "operators": dict(Counter(f"{node.domain}::{node.op_type}" for node in graph.graph.node)),
         "plugin_count": len(nodes), "plugin_version": "2", **counts,
@@ -114,7 +114,7 @@ def make_plan(path, logger):
     return plan
 
 
-def build(path, precision):
+def build(path, precision, batch=1):
     import json
     import tensorrt as trt
 
@@ -123,14 +123,14 @@ def build(path, precision):
     plan = make_plan(path, trt.Logger(trt.Logger.INFO))
     destination = OUTPUT / "network.engine"
     destination.write_bytes(bytes(plan))
-    engine = Engine(destination)
+    engine = Engine(destination, batch)
     inspector = engine.engine.create_engine_inspector()
     inspector.execution_context = engine.context
     layers = inspector.get_engine_information(trt.LayerInformationFormat.JSON)
     (OUTPUT / "layers.json").write_text(layers)
     plugin_layers = [layer for layer in json.loads(layers)["Layers"] if "Plugin" in layer["LayerType"]]
     assert len(plugin_layers) == 15
-    output = engine(torch.zeros(SHAPES["image"], device="cuda"))
+    output = engine(torch.zeros(engine.shapes["image"], device="cuda"))
     assert all(torch.isfinite(tensor).all().item() for tensor in output.values())
     if precision == "fp32":
         assert all(tensor.dtype == torch.float32 for tensor in output.values())
@@ -140,14 +140,15 @@ def build(path, precision):
         "strongly_typed": True, "tf32": False, "max_aux_streams": 0, "workspace_bytes": 4 * 1024**3,
         "plugin_count": len(plugin_layers), "finite_smoke": True,
         "io": {name: {"shape": shape, "dtype": str(engine.engine.get_tensor_dtype(name))}
-               for name, shape in SHAPES.items()},
+               for name, shape in engine.shapes.items()},
     })
 
 
 class Engine:
     """Own one context and one set of output buffers for serial inference."""
 
-    def __init__(self, path):
+    def __init__(self, path, batch=1):
+        self.shapes = {name: (batch, *shape[1:]) for name, shape in SHAPES.items()}
         import tensorrt as trt
 
         self.logger = trt.Logger(trt.Logger.WARNING)
@@ -161,7 +162,7 @@ class Engine:
         assert names == SHAPES.keys()
         assert self.engine.get_tensor_dtype("image") == trt.float32
         self.outputs = {}
-        for name, shape in SHAPES.items():
+        for name, shape in self.shapes.items():
             assert tuple(self.context.get_tensor_shape(name)) == shape
             mode = trt.TensorIOMode.INPUT if name == "image" else trt.TensorIOMode.OUTPUT
             assert self.engine.get_tensor_mode(name) == mode
@@ -173,7 +174,7 @@ class Engine:
 
     def __call__(self, image):
         assert image.is_cuda and image.is_contiguous() and image.dtype == torch.float32
-        assert tuple(image.shape) == SHAPES["image"]
+        assert tuple(image.shape) == self.shapes["image"]
         assert self.context.set_tensor_address("image", image.data_ptr())
         if not self.context.execute_async_v3(torch.cuda.current_stream().cuda_stream):
             raise RuntimeError("TensorRT execution failed")
