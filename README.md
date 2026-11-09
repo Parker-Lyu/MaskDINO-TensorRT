@@ -108,15 +108,49 @@ Nsight Systems 原始报告 · [C++/CUDA + TensorRT FP32（GPU 分阶段）](sta
 
 ![B1/S1 和 B1/S3 的 GPU stream 时间线](stage5/results/nsight-slot-overlap.svg)
 
-每轮 17,500 张的离线长测中，**B1/S3** 的稳态吞吐为 **53.22 图/s（+21.7%）**。相比 B1/S1，逐图 P95 从 **23.68** 升至 **58.31 ms**，进程峰值显存从 **1.24** 升至 **2.34 GiB**。B1/S1、B1/S2、B1/S3 各通过完整 COCO val2017，三项 PQ 与 Stage 4 一致。
+B1/S3 图中前三个请求的首条网络 kernel 在 **0.06–4.08 ms** 启动，末条在 **53.22–55.73 ms** 结束。三个请求的首末区间有 **49.15 ms** 的交集，三条 stream 实际同时执行网络 kernel 的时间合计 **9.28 ms**。该图展示饱和离线负载下的开头 60 ms。
 
-![Stage 4 与 Stage 5 同 500 张离线性能对照](stage5/results/comparison.svg)
+![同一份 500 张清单上的 PyTorch、TensorRT 单 slot 与 B1/S1–S4 筛选结果](stage5/results/comparison.svg)
+
+500 张筛选测了 **B1/S1–S4**。S4 的吞吐与 S3 接近，逐图 P95 和显存继续上升。B1 的 Nsight 报告覆盖 S1 和 S3。更大的 B8 是 [Stage 6 的 batch 配置](stage6/README.md#batch-与-slot-配置筛选)。
+
+每轮 17,500 张的离线长测中，**B1/S3** 的稳态吞吐为 **53.22 图/s（+21.7%）**。相比 B1/S1，逐图 P95 从 **23.68** 升至 **58.31 ms**，进程峰值显存从 **1.24** 升至 **2.34 GiB**。B1/S1、B1/S2、B1/S3 各通过完整 COCO val2017，三项 PQ 与 Stage 4 一致。
 
 [Stage 5 生命周期、复现与 Nsight 原始报告](stage5/README.md)
 
 ## Stage 6 · Batch × Slot 与负载选型
 
-在相同输入和输出口径下，对比 B1 多 slot、B2/B4/B8 单 slot 和联合配置。已有实测中，离线选择 **B1/S3**。在线随到达模型选型，**B1/S1** 在 25 请求/s 匀速下通过 30 ms P99，在 20 请求/s 泊松下通过 100 ms P99。**B1/S2** 在 15 请求/s 周期突发下通过 100 ms P99。上述速率是已验证的实测点。
+Stage 5 固定 B1，验证了多个 slot 的并发收益。Stage 6 进一步比较**在单个 slot 内增大 batch，能否超过 B1 多 slot，或者在两者组合后继续提高吞吐**。离线关心固定任务集的完成时间、稳态吞吐和显存。在线关心请求陆续到达时，批处理收益能否抵消排队和凑批对 P99 的影响。
+
+固定 RTX 4090、1024×1024、TensorRT FP32（关闭 TF32）、权重和 C++/CUDA 前后处理。所有配置都从内存 JPEG 生成 CPU panoptic map 和 segment metadata。B 表示 engine 的固定 batch 大小，S 表示并发 slot 数。B2/B4/B8 分别构建 engine，因而 batch 对照包含对应 engine 的 tactic 选择。
+
+### 离线筛选与长测
+
+用同一份预载的 500 张 JPEG 跑三轮，轮换配置顺序。图中为三轮中位数，逐图 P95 从 batch 派发到该图的 CPU 结果就绪。
+
+1. **固定 S1 扫 batch。** B1/S1、B2/S1、B4/S1 的吞吐分别为 **43.67、46.58、47.82 图/s**。B4 相比 B2 还有 **2.7%** 的收益，因此补测 B8/S1。同轮 B4/S1 到 B8/S1 只从 **47.70** 升到 **48.76 图/s**，逐图 P95 从 **86.46** 升到 **169.60 ms**，峰值显存从 **2.87** 升到 **5.82 GiB**。 [初筛数据](stage6/results/screen/summary.json) · [B8/S1 补测](stage6/results/screen-b8/summary.json)
+2. **固定 batch 增加到 S2，再和 B1 多 slot 对照。** 先测 B2/S2 和 B4/S2，用各自的 S1 判断多 slot 是否仍有增益，再与同轮 B1/S3 比较。两组联合配置分别达到 **52.51、52.55 图/s**，B1/S3 为 **53.36 图/s**，且逐图 P95 和显存均更低。进一步补测 B8/S2，同轮 B1/S3 仍以 **53.70 vs 52.67 图/s**、**2.34 vs 10.72 GiB** 领先。 [联合初筛](stage6/results/screen/summary.json) · [B8/S2 补测](stage6/results/screen-b8-joint/summary.json)
+
+![Stage 6 的 500 张离线初筛，含 B1 多 slot、单 slot 增大 batch 与联合配置](stage6/results/screen.svg)
+
+另用同一份 32 张清单采集 Nsight Systems。B2/S2 和 B1/S3 的首末 GPU kernel 窗口分别为 **610.60、607.37 ms**，整条流水线的跨 stream kernel 重叠比例分别为 **26.7%、38.0%**。正确性检查覆盖逐图输出、尾批和在线超时回退。 [联合配置 Nsight](stage6/README.md#联合配置的-nsight-采集) · [正确性记录](stage6/README.md#正确性)
+
+**离线选 B1/S3。** 在每轮 17,500 张、各三轮的长测中，B1/S3 相比 B1/S1 的稳态吞吐从 **43.74 提高到 53.22 图/s（+21.7%）**，总完成时间从 **400.18 缩短到 328.78 s（−17.8%）**，两组各完成 52,500 张、零失败。最终使用的 B1/S1、S2、S3 均通过全量 COCO 2017 panoptic 验证，三项 PQ 与 Stage 4 一致。 [离线长测](stage5/README.md#离线长测) · [全量 PQ](stage5/README.md#正确性)
+
+### 在线回放与选型
+
+以预生成的匀速、泊松和周期突发序列做开放环路回放，同一负载点复用请求序列。使用 64 项 FIFO，逐请求 P99 从计划到达计到 CPU 结果就绪，包含排队和凑批等待。在线选 B2 作为最小的多图候选，在 S1、S2 下扫 **0、1、2、5 ms** 的最大凑批等待。等待到期仍只有一张时，回退到预热的 B1 engine。
+
+粗扫用于筛掉尾延迟较差的配置。以 **15 请求/s 的泊松回放**为例，B2 的最佳 P99 为 **64.95 ms**（B2/S1、1 ms 等待上限），同序列 B1/S1 为 **62.91 ms**。结合泊松和突发的其余粗扫点，保留 **B1/S1 与 B1/S2** 做正式点验证。 [在线粗扫与凑批扫描](stage6/README.md#在线粗扫)
+
+| 到达负载 | P99 预算 | 三轮最差 P99 | 选型与依据 |
+| --- | ---: | --- | --- |
+| 匀速 25 请求/s | 30 ms | S1 **24.57 ms** | **B1/S1** 通过，每轮 10,499 个请求 |
+| 泊松 20 请求/s | 100 ms | S1 **83.06 ms**，S2 **79.52 ms** | 两组均通过，选显存更低的 **B1/S1** |
+| 周期突发，平均 15 请求/s | 100 ms | S1 **100.007 ms**，S2 **92.46 ms** | **B1/S2** 通过，S1 有一轮越过预算 |
+| 泊松或周期突发，平均 5 请求/s | 50 ms | S1 **45.85 / 46.47 ms**，S2 **44.48 / 45.00 ms** | 两组均通过，选 **B1/S1** |
+
+在线通过点均零拒绝，队列通过稳态检查。匀速和 20 请求/s 泊松每轮超过 10,000 个请求，15 请求/s 突发及 5 请求/s 两档采用每轮 180 秒的缩短验证。以上为已验证的负载点，容量上界仍需更密集的负载扫描。 [在线长测数据](stage6/results/long-capacity.json) · [缩短验证数据](stage6/results/compact-capacity.json)
 
 [Stage 6 batch 筛选、在线回放与选型](stage6/README.md) · [Stage 5 和 6 拆分前的历史验收 tag `stage5-batch-slots-accepted`](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/stage5-batch-slots-accepted)
 

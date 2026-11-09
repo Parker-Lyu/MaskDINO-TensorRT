@@ -58,15 +58,18 @@ def plot(results, finalist=None, comparison=None):
                 if row["config"] == finalist:
                     groups[finalist].append(row)
     assert len(groups[finalist]) == 3
+    configs = sorted((config for config in groups if config.startswith("b1s")), key=lambda config: int(config[3:]))
+    if finalist not in configs:
+        configs.append(finalist)
     stage4 = results.resolve().parents[1] / "stage4/results/summary.json"
     previous = json.loads(stage4.read_text())["performance"]
     cumulative = []
     for (_, _, metric), name, scale in zip(PANELS, ("images_per_second", "e2e_ms_p95",
                                                    "sampled_peak_process_used_bytes"), (1, 1, 2**30)):
         cumulative.append([previous[key][name]["median"] / scale for key in ("pytorch", "reference", "native")]
-                          + [median(metric(row) for row in groups[config]) for config in ("b1s1", finalist)])
-    formatted = finalist.upper().replace("S", "/S")
-    labels = ["PyTorch", "TRT + Python", "Stage 4 C++", "Stage 5 B1/S1", f"Stage 5 {formatted}"]
+                          + [median(metric(row) for row in groups[config]) for config in configs])
+    labels = ["PyTorch", "TRT + Python", "Stage 4 C++"]
+    labels += [f"Stage 5 {config.upper().replace('S', '/S')}" for config in configs]
     draw(comparison or results / "comparison.svg", "MaskDINO R50 panoptic · offline comparison",
          subtitle, labels, cumulative, 127)
 
