@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="415" viewBox="0 0 1080 415">
 <rect width="1080" height="415" rx="16" fill="#f3f6fa"/>
 <g font-family="system-ui,sans-serif" fill="#172b43">
-<text x="28" y="37" font-size="23" font-weight="700">MaskDINO R50 panoptic · Stage 5 offline screening</text>
+<text x="28" y="37" font-size="23" font-weight="700">MaskDINO R50 panoptic · Stage 6 offline screening</text>
 <text x="28" y="60" font-size="13" font-weight="400">RTX 4090 · 1024 × 1024 · TensorRT FP32 · same 500 JPEGs · median of 3 rounds</text>
 <rect x="24" y="78" width="337" height="319" rx="10" fill="white"/>
 <text x="40" y="107" font-size="16" font-weight="650">Throughput</text>

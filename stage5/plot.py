@@ -42,13 +42,13 @@ def draw(path, title, subtitle, labels, columns, label_width):
     path.write_text("\n".join(svg) + "\n")
 
 
-def plot(results, finalist=None):
+def plot(results, finalist=None, comparison=None):
     groups = defaultdict(list)
     for row in json.loads((results / "screen/summary.json").read_text()):
         groups[row["config"]].append(row)
     columns = [[median(metric(row) for row in rows) for rows in groups.values()] for _, _, metric in PANELS]
     subtitle = "RTX 4090 · 1024 × 1024 · FP32 · same 500 JPEGs · median of 3 rounds"
-    draw(results / "screen.svg", "MaskDINO R50 panoptic · Stage 5 offline screening",
+    draw(results / "screen.svg", "MaskDINO R50 panoptic · Stage 6 offline screening",
          subtitle.replace("FP32", "TensorRT FP32"), [name.upper() for name in groups], columns, 76)
     if finalist is None:
         return
@@ -67,12 +67,14 @@ def plot(results, finalist=None):
                           + [median(metric(row) for row in groups[config]) for config in ("b1s1", finalist)])
     formatted = finalist.upper().replace("S", "/S")
     labels = ["PyTorch", "TRT + Python", "Stage 4 C++", "Stage 5 B1/S1", f"Stage 5 {formatted}"]
-    draw(results / "comparison.svg", "MaskDINO R50 panoptic · offline comparison", subtitle, labels, cumulative, 127)
+    draw(comparison or results / "comparison.svg", "MaskDINO R50 panoptic · offline comparison",
+         subtitle, labels, cumulative, 127)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("results", type=Path)
     parser.add_argument("--finalist")
+    parser.add_argument("--comparison", type=Path, help="Output path for the cumulative comparison")
     args = parser.parse_args()
-    plot(args.results, args.finalist)
+    plot(args.results, args.finalist, args.comparison)

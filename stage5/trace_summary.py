@@ -6,6 +6,21 @@ from pathlib import Path
 import sqlite3
 
 
+def activity_spans(intervals):
+    events = sorted((timestamp, stream, direction)
+                    for begin, end, stream in intervals
+                    for timestamp, direction in ((begin, 1), (end, -1)))
+    stream_counts = Counter()
+    previous = events[0][0]
+    for timestamp, stream, direction in events:
+        if timestamp > previous:
+            yield previous, timestamp, len(stream_counts)
+        stream_counts[stream] += direction
+        if stream_counts[stream] == 0:
+            del stream_counts[stream]
+        previous = timestamp
+
+
 def kernel_overlap(path):
     with sqlite3.connect(f"{path.as_uri()}?mode=ro", uri=True) as connection:
         intervals = connection.execute(
@@ -13,19 +28,10 @@ def kernel_overlap(path):
         ).fetchall()
     if not intervals:
         raise ValueError("No kernels in the trace")
-    events = sorted((timestamp, stream, direction)
-                    for begin, end, stream in intervals
-                    for timestamp, direction in ((begin, 1), (end, -1)))
-    stream_counts = Counter()
     duration = Counter()
-    previous = events[0][0]
-    for timestamp, stream, direction in events:
-        duration[len(stream_counts)] += timestamp - previous
-        stream_counts[stream] += direction
-        if stream_counts[stream] == 0:
-            del stream_counts[stream]
-        previous = timestamp
-    span = events[-1][0] - events[0][0]
+    for start, end, count in activity_spans(intervals):
+        duration[count] += end - start
+    span = sum(duration.values())
     busy = span - duration[0]
     overlap = sum(value for count, value in duration.items() if count > 1)
     return {

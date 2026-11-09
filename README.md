@@ -102,15 +102,23 @@ Nsight Systems 原始报告 · [C++/CUDA + TensorRT FP32（GPU 分阶段）](sta
 
 [Stage 4 复现、逐轮数据与 Nsight 报告](stage4/README.md) · 验收 tag `stage4-native-fp32-accepted`
 
-## Stage 5 · 多 slot 与 batch 联合优化
+## Stage 5 · B1 多 slot 并发推理
 
-固定 RTX 4090、1024×1024、TensorRT FP32。在每轮 17,500 张的离线长测中，**B1/S3** 达到 **53.22 图/s**，比 B1/S1 高 **21.7%**，进程峰值显存 **2.34 GiB**。B1/S1、B1/S2、B1/S3 各通过完整 COCO val2017，三项 PQ 与 Stage 4 一致。
+复用 Stage 4 的 B1 engine 和 C++/CUDA 前后处理。每个 slot 独立持有 execution context、CUDA stream 和可写缓冲区。同一 B1 engine 下，Nsight Systems 显示 B1/S3 有 **37.32% 的 TensorRT kernel 活跃时间**存在跨 stream 重叠。
 
-在线按到达模型选型。B1/S1 在 25 请求/s 匀速下通过 30 ms P99，在 20 请求/s 泊松下通过 100 ms P99。B1/S2 在 15 请求/s 周期突发下通过 100 ms P99。5 请求/s 的泊松和突发短轮验证中，B1/S1 和 B1/S2 均通过 50 ms P99。
+![B1/S1 和 B1/S3 的 GPU stream 时间线](stage5/results/nsight-slot-overlap.svg)
+
+每轮 17,500 张的离线长测中，**B1/S3** 的稳态吞吐为 **53.22 图/s（+21.7%）**。相比 B1/S1，逐图 P95 从 **23.68** 升至 **58.31 ms**，进程峰值显存从 **1.24** 升至 **2.34 GiB**。B1/S1、B1/S2、B1/S3 各通过完整 COCO val2017，三项 PQ 与 Stage 4 一致。
 
 ![Stage 4 与 Stage 5 同 500 张离线性能对照](stage5/results/comparison.svg)
 
-[Stage 5 复现、选型及测量范围](stage5/README.md) · 验收 tag `stage5-batch-slots-accepted`
+[Stage 5 生命周期、复现与 Nsight 原始报告](stage5/README.md)
+
+## Stage 6 · Batch × Slot 与负载选型
+
+在相同输入和输出口径下，对比 B1 多 slot、B2/B4/B8 单 slot 和联合配置。已有实测中，离线选择 **B1/S3**。在线随到达模型选型，**B1/S1** 在 25 请求/s 匀速下通过 30 ms P99，在 20 请求/s 泊松下通过 100 ms P99。**B1/S2** 在 15 请求/s 周期突发下通过 100 ms P99。上述速率是已验证的实测点。
+
+[Stage 6 batch 筛选、在线回放与选型](stage6/README.md) · [Stage 5 和 6 拆分前的历史验收 tag `stage5-batch-slots-accepted`](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/stage5-batch-slots-accepted)
 
 ## 仓库结构
 
@@ -121,7 +129,8 @@ Nsight Systems 原始报告 · [C++/CUDA + TensorRT FP32（GPU 分阶段）](sta
 | [stage2/](stage2/) | 方形 PyTorch 推理、全量 PQ 和性能样本 |
 | [stage3/](stage3/) | 单 slot TensorRT FP32 验收与 Nsight 基线 |
 | [stage4/](stage4/) | 原生 TensorRT/CUDA 单请求流水线与全量评估 |
-| [stage5/](stage5/) | 多 slot、固定 batch 与在线回放 |
+| [stage5/](stage5/) | B1 多 slot、Nsight 时间线及两阶段共用的调度器 |
+| [stage6/](stage6/) | 固定 batch、联合配置、在线回放与选型 |
 | [docs/](docs/) | 环境、数据及权重说明 |
 
 构建镜像时会检出指定版本的官方 MaskDINO 源码。
