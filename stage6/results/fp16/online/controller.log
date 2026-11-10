@@ -1,4 +1,0 @@
-Controller started 2026-11-10T11:12:59Z, test cutoff 2026-11-10T12:10:10Z
-Starting fp16-stage6-formal-uniform-55-1s1-311 at 2026-11-10T11:12:59Z
-uniform seed=311 P99=17.110 ms completed=16499 rejected=0 sustained=True pass=True
-Starting fp16-stage6-formal-poisson-30-1s2-311 at 2026-11-10T11:18:08Z

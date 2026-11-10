@@ -191,7 +191,7 @@ def main():
         autocast_pair["performance"]["mixed"],
     )
     screen_paths = (
-        "stage6/results/screen/summary.json",
+        "stage5/results/screen/summary.json",
         "stage5/results/precision/on/screen/summary.json",
         "stage5/results/precision/autocast-on/screen/summary.json",
     )

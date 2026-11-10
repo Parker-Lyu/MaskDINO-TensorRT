@@ -10,13 +10,7 @@
 - 每种后端用相同顺序跑 Stage 2 的 500 张性能清单，每轮预热 20 次，共三轮。内存 JPEG 到 CPU panoptic map 与 metadata 就绪为端到端边界。GPU 网络时间用 CUDA events。整卡 NVML 20 ms 采样涵盖 TensorRT 内存及桌面占用，记录观测峰值。
 - Nsight Systems 单独采集，NVTX 覆盖解码、前处理、H2D、GPU 归一化、网络、后处理、D2H。
 
-## FP16 混合 engine 逐层 profiling
-
-RTX 4090 的 B1/S1 逐层实测中，最贵的单层为 FPN 3×3 卷积（0.903 ms），encoder FFN 的 12 个 GEMM 合计 3.675 ms。FPN 单层 A/B 中，使用共享 timing cache 控制重建差异，B1/S1 端到端 P95 从 16.27 降至 15.85 ms，B1/S2 的稳态吞吐从 74.21 提高到 76.33 图/s。 [热点定位](layer-profile.md) · [FPN A/B 与全量验收](fpn-half-ab.md)
-
-## Encoder 六层 FFN FP16 实验
-
-在已验收 FPN B1 engine 上，将六层的 `linear1` 和 `linear2` 都切到 FP16。B1/S1 端到端 P95 为 13.90 ms，B1/S2 稳态吞吐为 89.22 图/s。两种 slot 的 COCO PQ 均为 53.1856，逐图均为 26/32。保留为实验配置。 [实测、精度差异和复现](ffn-full-half.md)
+已验收混合精度 B1 engine 的逐层 profiling 和后续网络优化见 [Stage 6](../stage6/README.md)。
 
 ## 复现入口
 
