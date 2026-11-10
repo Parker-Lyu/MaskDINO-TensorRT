@@ -1,4 +1,4 @@
-# Stage 1 · MaskDINO R50 官方评估
+# Stage 1 · 复现原始模型精度
 
 使用官方 MaskDINO 提交 `3831d8514a3728535ace8d4ecc7d28044c42dd14`、R50 50 epoch panoptic 配置和对应权重。输入短边缩放到 800、长边上限 1333，保留官方配置的 panoptic、instance 和 semantic 三个输出分支。
 

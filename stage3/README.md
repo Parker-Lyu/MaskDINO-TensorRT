@@ -1,4 +1,4 @@
-# Stage 3 · TensorRT 单请求网络后端
+# Stage 3 · 将网络转换为 TensorRT
 
 固定 MaskDINO R50 panoptic、1024×1024、batch=1、单 slot。前处理、归一化、panoptic 后处理和 COCO evaluator 共用 Stage 2 实现。PyTorch FP32 与 TensorRT 均关闭 TF32。
 

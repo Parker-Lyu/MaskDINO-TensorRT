@@ -1,4 +1,4 @@
-# Stage 5 · B1 多 slot 并发推理
+# Stage 5 · 用多 CUDA stream 实现异步并发
 
 固定 RTX 4090、MaskDINO R50 panoptic、1024×1024、TensorRT FP32、关闭 TF32，复用 Stage 4 的 B1 engine 和 C++/CUDA 前后处理。每个请求处理一张内存 JPEG，交付原图尺寸的 CPU panoptic map 和 segment metadata。固定 batch 为 1，只扫 slot 数。批大小与在线负载的比较见 [Stage 6](../stage6/README.md)。
 

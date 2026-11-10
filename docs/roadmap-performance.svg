@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="240" viewBox="0 0 760 240" role="img" aria-labelledby="title">
+  <title id="title">技术路线性能摘要</title>
+  <g fill="#f3f6fa">
+    <rect x="0" y="0" width="372" height="240" rx="12"/>
+    <rect x="388" y="0" width="372" height="240" rx="12"/>
+  </g>
+  <g font-family="system-ui, sans-serif" fill="#172b43">
+    <g font-size="18" font-weight="700">
+      <text x="22" y="33">端到端 P95（ms）</text>
+      <text x="410" y="33">离线吞吐（图/s）</text>
+    </g>
+    <path d="M22 190H350 M410 190H738" stroke="#93a5b8"/>
+    <g text-anchor="middle" font-size="14">
+      <g fill="#405e8b">
+        <rect x="52" y="70.56" width="52" height="119.44"/>
+        <rect x="160" y="109.09" width="52" height="80.91"/>
+        <rect x="268" y="135.65" width="52" height="54.35"/>
+      </g>
+      <g fill="#168477">
+        <rect x="416" y="143.13" width="52" height="46.87"/>
+        <rect x="504" y="118.29" width="52" height="71.71"/>
+        <rect x="592" y="89.60" width="52" height="100.40"/>
+        <rect x="680" y="67.27" width="52" height="122.73"/>
+      </g>
+      <g font-weight="700">
+        <text x="78" y="62">51.93</text>
+        <text x="186" y="101">35.18</text>
+        <text x="294" y="127">23.63</text>
+        <text x="442" y="135">20.38</text>
+        <text x="530" y="110">31.18</text>
+        <text x="618" y="81">43.65</text>
+        <text x="706" y="59">53.36</text>
+      </g>
+      <text x="78" y="215">Stage 2</text>
+      <text x="186" y="215">Stage 3</text>
+      <text x="294" y="215">Stage 4</text>
+      <text x="442" y="215">Stage 2</text>
+      <text x="530" y="215">Stage 3</text>
+      <text x="618" y="215">Stage 4</text>
+      <text x="706" y="215">Stage 5</text>
+    </g>
+  </g>
+</svg>

@@ -1,4 +1,4 @@
-# Stage 4 · C++/CUDA 单请求流水线
+# Stage 4 · 用 C++/CUDA 实现前后处理
 
 复用 Stage 3 的 MaskDINO R50 panoptic TensorRT FP32 engine。固定 1024×1024、batch 1、单 slot、单条显式 CUDA stream，TF32 保持关闭。原生入口 `maskdino-native` 直接读取内存 JPEG，输出 CPU int32 panoptic map 和 segment metadata。运行时链接 TensorRT、CUDA、libjpeg、NVML 与系统库。Python 用于组织实验、参考链路、对齐和 COCO 评估。
 

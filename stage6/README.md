@@ -1,4 +1,4 @@
-# Stage 6 · Batch × Slot 与负载选型
+# Stage 6 · 对比 batch × slot 组合并按负载选型
 
 固定 RTX 4090、MaskDINO R50 panoptic、1024×1024、TensorRT FP32、关闭 TF32、相同权重和 Stage 4 C++/CUDA 前后处理。每个请求对应一张内存 JPEG，输出原图尺寸 CPU panoptic map 和 segment metadata。以 [Stage 5 的 B1 多 slot](../stage5/README.md) 为基线，比较更大的固定 batch 与联合配置，按两类负载选型。
 
