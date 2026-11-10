@@ -1,8 +1,22 @@
 # MaskDINO-TensorRT
 
-本项目面向 RTX 4090 台式机上的 MaskDINO R50 全景分割部署，目标是用 TensorRT 优化推理，并在统一口径下评估准确率、延迟、吞吐和显存。
+本项目以 MaskDINO R50 全景分割为例，在 GeForce RTX 4090 PC 上将官方 PyTorch 推理迁移到 TensorRT 和 C++/CUDA，记录从复现模型精度、建立性能基线，到优化 GPU 流水线并按负载选型的过程。[MaskDINO 官方实现](https://github.com/IDEA-Research/MaskDINO) · [RTX 4090 规格](https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4090/) · [实验环境](docs/experiment-environment.md)
 
-实验平台为 NVIDIA GeForce RTX 4090（24 GB 显存）、Intel Core i9-14900KF（24 核、32 线程）和 Ubuntu 24.04 LTS。系统可见内存约 62 GiB，代码和数据位于 NVMe SSD。[完整环境](docs/experiment-environment.md)
+在输入尺寸为 **1024×1024、FP32、batch 1的配置下，相比方形输入的 PyTorch 基线，C++/CUDA + TensorRT 将端到端 P95 从 **51.86 ms 降至 23.63 ms**，多slot并发将离线吞吐从 **20.43 提升到 53.36 图/s**。两条路径在 5,000 张 COCO 2017 panoptic 验证图上的 PQ 均为 **53.1863**（无任何精度损失）。[PyTorch 基线 PQ](stage3/README.md#全量准确率) · [C++/CUDA 验收与性能对照](stage4/README.md)
+
+## 技术路线
+
+1. **复现原始模型精度。** 用官方配置和权重跑完 COCO 2017 panoptic 验证集的 5,000 张图，复现官方 PQ。[Stage 1](stage1/README.md)
+2. **调整推理输入并建立性能基线。** 对比方形输入尺寸和 batch 大小，确定后续 TensorRT 对照使用的 1024×1024、B1 PyTorch 基线。[Stage 2](stage2/README.md)
+3. **将网络转换为 TensorRT。** 导出 ONNX，接入 MSDeformAttn 插件并构建 FP32 engine，通过逐图对齐和全量 PQ 验证转换结果。[Stage 3](stage3/README.md)
+4. **用 C++/CUDA 实现前后处理。** 打通从内存 JPEG 到 CPU 全景分割图和 segment metadata 的原生推理流水线。[Stage 4](stage4/README.md)
+5. **用多 CUDA stream 实现异步并发。** 为每个 slot 分配独立的 execution context、stream 和可写缓冲区，用 Nsight Systems 验证 GPU 执行重叠。[Stage 5](stage5/README.md)
+6. **对比 batch × slot 组合并按负载选型。** 对比 B1 多 slot 和更大 batch 的离线吞吐与显存，再用在线请求回放评估排队、凑批和 P99。[Stage 6](stage6/README.md)
+
+## TODO
+
+- **定位 FP16 精度回退。** 追踪 backbone 降精度后的误差，检验 Top-K 候选变化对分割结果的影响，验证可用的混合精度范围。[混合精度问题记录](stage3/mixed-precision.md)
+- **基于 profiling 进一步优化。** 用 Nsight Systems 定位 CPU/GPU 空闲和同步等待，用 TensorRT profiling 定位热点层，再用 Nsight Compute 分析关键 kernel 的执行效率、内存带宽和资源利用率。通过对照实验验证优化对端到端性能和准确率的影响。
 
 ## Stage 1 · 官方 PyTorch 基线
 
