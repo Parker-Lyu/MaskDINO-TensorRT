@@ -34,6 +34,30 @@ B1/S2 在三轮都取得最高吞吐。B2、B4 的多 slot 配置吞吐更低、
 | 周期突发 25 请求/s | 96.81 | 77.63 | 98.51 |
 | 周期突发 35 请求/s | 170.07 | 87.69 | 144.21 |
 
+### FP16 全量准确率
+
+B1/S1 和 B1/S2 分别覆盖 5,000 个唯一真值图像 ID。两组的 PQ、PQ Things、PQ Stuff 相同，均满足相对 PyTorch FP32 B1 每项下降不超过 0.05 点的门槛。[两组全量结果](results/fp16/pq/)
+
+| 配置 | PQ | PQ Things | PQ Stuff | ΔPQ / ΔPQ Things / ΔPQ Stuff（点） |
+| --- | ---: | ---: | ---: | --- |
+| B1/S1、B1/S2 | 53.168045 | 59.007167 | 44.354277 | −0.018207 / −0.020092 / −0.015361 |
+
+### FP16 离线长测
+
+选 **B1/S2**。每轮将同一份 500 张清单重复 35 次，三轮共完成 52,500 张，零失败。稳态吞吐取每轮墙钟中间 90% 的窗口。三轮中位数为 **74.44 图/s**、总完成时间 **235.12 s**、逐图 P95 **28.38 ms**、进程峰值显存 **1.70 GiB**。历史 FP32（TF32 off）B1/S3 的同口径稳态吞吐和峰值显存为 53.22 图/s 和 2.34 GiB。[FP16 长测逐轮数据](results/fp16/offline/summary.json) · [原始计时校验](results/fp16/offline/raw.sha256) · [FP32 历史长测](../stage5/README.md#离线长测)
+
+### FP16 在线长测进度
+
+2026-11-10 约 19:18（北京时间）暂停。计划按种子 311、449、593 交错回放三类负载。每个负载点的正式结论要求三轮各持续至少 300 秒、各完成至少 10,000 请求、每轮 P99 都在预算内、零错误和零拒绝，且队列无持续积压。
+
+| 到达负载 | 配置 | 每轮窗口 | P99 预算（ms） | 暂停时的进度 |
+| --- | --- | ---: | ---: | --- |
+| 匀速 55 请求/s | B1/S1 | 300 s | 30 | 种子 311 完成 16,499 个请求，零拒绝且队列达稳态。P95 16.80 ms，P99 **17.11 ms**，进程峰值 **1.15 GiB** |
+| 泊松 30 请求/s | B1/S2 | 350 s | 100 | 种子 311 启动后中断，保留到达序列校验及日志 |
+| 周期突发 30 请求/s | B1/S2 | 350 s | 100 | 长测待开始 |
+
+匀速结果为单轮达标。泊松和周期突发目前使用上节 10 秒粗扫作为筛选依据。原始逐请求文件与到达序列位于 4090 的 `/home/parker/Code/MaskDINO-TensorRT-stage6-fp16/repo/stage5/runs/`，校验清单的路径相对此目录。[匀速单轮汇总](results/fp16/online/uniform-55-1s1-311/summary.jsonl) · [泊松中断日志](results/fp16/online/poisson-30-1s2-311/console.log) · [控制器日志](results/fp16/online/controller.log) · [原始文件校验](results/fp16/online/raw.sha256)
+
 ### FP16 复现入口
 
 B2、B4 在 `acaf623` 构建，逐图诊断、初筛和场景回放从干净的 `922f94e` 运行。使用驱动 595.84、CUDA 13.0、TensorRT 10.14.1.48 和参考镜像 `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`。B1 复用 Stage 4 原生全量评估的混合 engine。`previous` 使用 FP16 原生 B1 的 500 张计时 manifest、`things.txt` 及 32 张逐图预测，目录名沿用历史入口。[B1 全量结果](../stage4/results/precision/autocast-pair/pq-mixed/result.json) · [B2/B4 导出、构建与哈希](results/fp16/engines/)
@@ -58,7 +82,18 @@ bash stage5/run.sh "$data" "$previous" "$engine" fp16-stage6-diagnostics check \
   --report-alignment 1s1 1s2 2s1 4s1 2s2 4s2
 bash stage5/run.sh "$data" "$previous" "$engine" fp16-stage6-screen screen \
   --skip-stage4 1s1 1s2 2s1 4s1 2s2 4s2
+bash stage5/run.sh "$data" "$previous" "$engine" fp16-stage6-pq pq 1s1 1s2 \
+  --pq-reference pytorch
+bash stage5/run.sh "$data" "$previous" "$engine" fp16-stage6-offline offline 1s2 \
+  --skip-stage4 --repeats 35
 python3 -m stage5.plot stage6/results/fp16 --precision-label 'TensorRT FP16 mix / TF32 on'
+```
+
+已完成的匀速在线轮次可按以下命令复跑，运行 ID 须为新值。
+
+```bash
+bash stage5/run.sh "$data" "$previous" "$engine" fp16-stage6-uniform-55-311-replay \
+  online 1s1 --shapes uniform --rates 55 --seconds 300 --seeds 311
 ```
 
 ## FP32（TF32 off）历史选型
