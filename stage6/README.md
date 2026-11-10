@@ -1,5 +1,68 @@
 # Stage 6 · 对比 batch × slot 组合并按负载选型
 
+## FP16 混合精度重新选型
+
+固定 RTX 4090、1024×1024、C++/CUDA 前后处理和模型级 FP16 autocast（允许 TF32）。精度验收以同输入的 PyTorch FP32 B1 为参考，完整 COCO val2017 的 PQ、PQ Things、PQ Stuff 各最多下降 0.05 点。B1 复用 Stage 4 已评估的 engine，B2、B4 分别导出并构建。
+
+### 逐图诊断与离线初筛
+
+32 张逐图诊断以同精度原生 B1 为参照。B1/S1 和 B1/S2 均为 32/32，B2 两种 slot 数均为 20/32，B4 两种 slot 数均为 21/32。同一 batch engine 在 S1、S2 的 32 张分割图和 metadata 逐字节一致。B4 尾批的 28 张 B4 和 3 张 B1，以及在线混跑的 22 张 B2 和 10 张 B1，也逐字节匹配各自实际执行的 engine。[逐图诊断](results/fp16/diagnostics/) · [按实际 batch 比对输出](results/fp16/diagnostics/path-consistency.json)
+
+每组每轮预载同一份 500 张 JPEG，每个 slot 预热 20 批，轮换顺序测三轮。表中为中位数，六组各轮均完成 500 张，零失败。逐图 P95 从派发到 CPU 结果就绪，网络 P95 按 batch 统计，进程峰值显存由 NVML 每 20 ms 采样。
+
+| 配置 | 离线吞吐（图/s） | 逐图 P95（ms） | 网络 GPU P95（ms/批） | 进程峰值显存（GiB） |
+| --- | ---: | ---: | ---: | ---: |
+| B1/S1 | 62.76 | 16.53 | 14.40 | 1.15 |
+| **B1/S2** | **73.99** | **28.47** | 26.43 | **1.70** |
+| B2/S1 | 63.08 | 32.52 | 28.79 | 1.69 |
+| B4/S1 | 62.29 | 65.34 | 58.45 | 2.78 |
+| B2/S2 | 68.91 | 60.27 | 56.27 | 2.79 |
+| B4/S2 | 67.44 | 142.60 | 113.65 | 4.96 |
+
+B1/S2 在三轮都取得最高吞吐。B2、B4 的多 slot 配置吞吐更低、显存更多，B4/S1 相对 B2/S1 的变化也落在轮间波动范围内。离线保留 B1/S2 进入全量评估与长测。[初筛逐轮汇总](results/fp16/screen/summary.json)
+
+![FP16 混合精度的六组 batch × slot 配置，比较离线吞吐、逐图 P95 与进程峰值显存。](results/fp16/screen.svg)
+
+### FP16 在线粗扫
+
+用种子 47 回放同一组到达序列，每点 10 秒。P99 从计划到达到 CPU 结果就绪，包含排队和凑批。B2 比较 S1、S2 和 0、2 ms 的最大凑批等待。以下四个同序列点的 B2 最低 P99 都高于 B1/S2，因此后续在线验证集中在 B1。匀速 55 请求/s 时，B1/S1 和 B1/S2 的 P99 分别为 17.32、17.94 ms。[全部粗扫结果](results/fp16/pilot/)
+
+| 到达负载 | B1/S1 P99（ms） | B1/S2 P99（ms） | B2 最低 P99（ms） |
+| --- | ---: | ---: | ---: |
+| 泊松 30 请求/s | 91.56 | 77.59 | 95.90 |
+| 泊松 45 请求/s | 127.79 | 103.07 | 130.53 |
+| 周期突发 25 请求/s | 96.81 | 77.63 | 98.51 |
+| 周期突发 35 请求/s | 170.07 | 87.69 | 144.21 |
+
+### FP16 复现入口
+
+B2、B4 在 `acaf623` 构建，逐图诊断、初筛和场景回放从干净的 `922f94e` 运行。使用驱动 595.84、CUDA 13.0、TensorRT 10.14.1.48 和参考镜像 `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`。B1 复用 Stage 4 原生全量评估的混合 engine。`previous` 使用 FP16 原生 B1 的 500 张计时 manifest、`things.txt` 及 32 张逐图预测，目录名沿用历史入口。[B1 全量结果](../stage4/results/precision/autocast-pair/pq-mixed/result.json) · [B2/B4 导出、构建与哈希](results/fp16/engines/)
+
+```bash
+export MASKDINO_IMAGE=sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+export MASKDINO_CHECKPOINT=/path/to/maskdino_r50_panoptic.pth
+data=/path/to/coco2017-panoptic-val
+engine=/path/to/fp16-b1/network.engine
+previous=/path/to/fp16-native-reference
+export MASKDINO_BATCH_ENGINES=/path/to/fp16-batch-engines
+
+for b in 2 4; do
+  bash stage3/run.sh "$data" "fp16-export-b$b" export --backend mixed \
+    --mixed-scope all --cpu-constants --batch "$b"
+  bash stage3/run.sh "$data" "fp16-build-b$b" build --backend mixed --tf32 on \
+    --batch "$b" --onnx "/project/stage3/runs/fp16-export-b$b/network.onnx"
+  mkdir -p "$MASKDINO_BATCH_ENGINES/build-b$b"
+  cp "stage3/runs/fp16-build-b$b/"{network.engine,build.json} "$MASKDINO_BATCH_ENGINES/build-b$b/"
+done
+bash stage5/run.sh "$data" "$previous" "$engine" fp16-stage6-diagnostics check \
+  --report-alignment 1s1 1s2 2s1 4s1 2s2 4s2
+bash stage5/run.sh "$data" "$previous" "$engine" fp16-stage6-screen screen \
+  --skip-stage4 1s1 1s2 2s1 4s1 2s2 4s2
+python3 -m stage5.plot stage6/results/fp16 --precision-label 'TensorRT FP16 mix / TF32 on'
+```
+
+## FP32（TF32 off）历史选型
+
 固定 RTX 4090、MaskDINO R50 panoptic、1024×1024、TensorRT FP32、关闭 TF32、相同权重和 Stage 4 C++/CUDA 前后处理。每个请求对应一张内存 JPEG，输出原图尺寸 CPU panoptic map 和 segment metadata。以 [Stage 5 的 B1 多 slot](../stage5/README.md) 为基线，比较更大的固定 batch 与联合配置，按两类负载选型。
 
 - **在线**在给定 P99、失败率和显存预算下，比较各到达模型的达标实测点。轻载先测 B1/S1 的响应速度，再看增加 slot 或小 batch 是否扩大达标负载区间。

@@ -1,0 +1,37 @@
+Project commit: 922f94e570733cc818948735eeba1c1cfa429348
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Phase: online 1s1 1s2 --shapes uniform --rates 25 45 55 --seconds 10 --seeds 47
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT-precision/repo/stage3/runs/precision-input-autocast-on/network.engine: OK
+13a9a6b940f8e40ce2b76aae8dcc5191ad54b0314b5c54360f1255ee38041534  /home/parker/Code/MaskDINO-TensorRT-precision/repo/stage3/runs/precision-input-autocast-on/build.json
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+ab6054100b6256861ad320df440543d2e82cf2a833db2e77c159b736021401cf  /home/parker/Code/MaskDINO-TensorRT-precision/repo/stage3/runs/precision-input-autocast-on/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/uniform-25-47-b1s1-0ms 1 1 online /output/uniform-25-47.arrivals 0 64
+Completed 250/250 images in 10.1183 s
+uniform-25-47-b1s1-0ms P99 22.85277300000007 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/uniform-25-47-b1s2-0ms 1 2 online /output/uniform-25-47.arrivals 0 64
+Completed 250/250 images in 10.1185 s
+uniform-25-47-b1s2-0ms P99 24.87520100000006 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/uniform-45-47-b1s1-0ms 1 1 online /output/uniform-45-47.arrivals 0 64
+Completed 450/450 images in 10.1166 s
+uniform-45-47-b1s1-0ms P99 17.520520000000033 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/uniform-45-47-b1s2-0ms 1 2 online /output/uniform-45-47.arrivals 0 64
+Completed 450/450 images in 10.1166 s
+uniform-45-47-b1s2-0ms P99 17.87445899999966 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/uniform-55-47-b1s1-0ms 1 1 online /output/uniform-55-47.arrivals 0 64
+Completed 550/550 images in 10.1169 s
+uniform-55-47-b1s1-0ms P99 17.323449000000437 rejected 0 sustained True
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/uniform-55-47-b1s2-0ms 1 2 online /output/uniform-55-47.arrivals 0 64
+Completed 550/550 images in 10.1169 s
+uniform-55-47-b1s2-0ms P99 17.941643000000113 rejected 0 sustained True

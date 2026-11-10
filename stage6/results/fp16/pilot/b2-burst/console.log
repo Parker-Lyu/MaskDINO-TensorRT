@@ -1,0 +1,44 @@
+Project commit: 922f94e570733cc818948735eeba1c1cfa429348
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Phase: online 2s1 2s2 --shapes burst --rates 25 35 --seconds 10 --seeds 47 --delays 0 2
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT-precision/repo/stage3/runs/precision-input-autocast-on/network.engine: OK
+13a9a6b940f8e40ce2b76aae8dcc5191ad54b0314b5c54360f1255ee38041534  /home/parker/Code/MaskDINO-TensorRT-precision/repo/stage3/runs/precision-input-autocast-on/build.json
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+ab6054100b6256861ad320df440543d2e82cf2a833db2e77c159b736021401cf  /home/parker/Code/MaskDINO-TensorRT-precision/repo/stage3/runs/precision-input-autocast-on/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+Verified batch engine /batch-engines/build-b2/network.engine eb3413ff8f1bbf46de2edd20d9649379d1e566e18344313ae08c70755d1f824c mixed True 10.14.1.48
+Run /output/maskdino-slots /batch-engines/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/burst-25-47-b2s1-0ms 2 1 online /output/burst-25-47.arrivals 0.0 64
+Completed 251/251 images in 10.0778 s
+burst-25-47-b2s1-0ms P99 109.27637000000001 rejected 0 sustained True
+Run /output/maskdino-slots /batch-engines/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/burst-25-47-b2s1-2ms 2 1 online /output/burst-25-47.arrivals 2.0 64
+Completed 251/251 images in 10.0772 s
+burst-25-47-b2s1-2ms P99 110.65029799999999 rejected 0 sustained True
+Run /output/maskdino-slots /batch-engines/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/burst-25-47-b2s2-0ms 2 2 online /output/burst-25-47.arrivals 0.0 64
+Completed 251/251 images in 10.0783 s
+burst-25-47-b2s2-0ms P99 100.47512699999999 rejected 0 sustained True
+Run /output/maskdino-slots /batch-engines/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/burst-25-47-b2s2-2ms 2 2 online /output/burst-25-47.arrivals 2.0 64
+Completed 251/251 images in 10.0781 s
+burst-25-47-b2s2-2ms P99 98.51414299999999 rejected 0 sustained True
+Run /output/maskdino-slots /batch-engines/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/burst-35-47-b2s1-0ms 2 1 online /output/burst-35-47.arrivals 0.0 64
+Completed 350/350 images in 10.0421 s
+burst-35-47-b2s1-0ms P99 182.3687369999999 rejected 0 sustained True
+Run /output/maskdino-slots /batch-engines/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/burst-35-47-b2s1-2ms 2 1 online /output/burst-35-47.arrivals 2.0 64
+Completed 350/350 images in 10.0412 s
+burst-35-47-b2s1-2ms P99 186.20421199999998 rejected 0 sustained True
+Run /output/maskdino-slots /batch-engines/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/burst-35-47-b2s2-0ms 2 2 online /output/burst-35-47.arrivals 0.0 64
+Completed 350/350 images in 10.0419 s
+burst-35-47-b2s2-0ms P99 154.48516300000003 rejected 0 sustained True
+Run /output/maskdino-slots /batch-engines/build-b2/network.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/burst-35-47-b2s2-2ms 2 2 online /output/burst-35-47.arrivals 2.0 64
+Completed 350/350 images in 10.0409 s
+burst-35-47-b2s2-2ms P99 144.21260700000005 rejected 0 sustained True
