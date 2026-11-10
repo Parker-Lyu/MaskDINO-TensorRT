@@ -1,0 +1,2966 @@
+{
+  "passed": false,
+  "images": 32,
+  "per_image": [
+    {
+      "id": 149770,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9999655172413793,
+        "segment_counts": [
+          4,
+          4
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9999291232546601
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9999152111243005
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 456394,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9995351239669421,
+        "segment_counts": [
+          8,
+          8
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9996990972918757
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9996300406955235
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.9988285825849278
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9933862433862434
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 107339,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9996990740740741,
+        "segment_counts": [
+          11,
+          11
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 11,
+            "engine_id": 11,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 10,
+            "engine_id": 10,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9991251093613298
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.99867637326274
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.9979498861047836
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 0.9841269841269841
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 536343,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9991960890820206,
+        "segment_counts": [
+          3,
+          3
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9996001142530706
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9994504739662041
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.996791311859805
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 547854,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9996337890625,
+        "segment_counts": [
+          8,
+          8
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9999811761162563
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.9999128988145529
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9998835193597676
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 0.9995665366276549
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 0.9990592662276576
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9974145151305488
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9956828559568286
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 562197,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.99973876953125,
+        "segment_counts": [
+          4,
+          4
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9997494216724833
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9985862631906693
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9961182442520156
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9943572129538764
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 562229,
+      "passed": false,
+      "metrics": {
+        "category_agreement": 0.99887451171875,
+        "segment_counts": [
+          9,
+          9
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.9999397251466688
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9997997654395149
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9996224325412807
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 0.9994020926756353
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 0.9987359227763732
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9976133651551312
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9902945587278232
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9894166749478287
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 562243,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.99975341796875,
+        "segment_counts": [
+          3,
+          3
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9999289395693738
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9996238716148446
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9994660345905397
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 42102,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9990536077235772,
+        "segment_counts": [
+          5,
+          5
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9999589086127547
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9996660544331274
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.999450370141358
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9929441148922885
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 452515,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9999107142857143,
+        "segment_counts": [
+          8,
+          8
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9999515292520964
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.9998808069370363
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9998188077550281
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9997387669801463
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9995539696699376
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 342971,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9999020034843206,
+        "segment_counts": [
+          4,
+          4
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9999547603429166
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9998847926267281
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9998155078804492
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 511760,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9999894425675676,
+        "segment_counts": [
+          10,
+          10
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 10,
+            "engine_id": 10,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9999463720705744
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 485237,
+      "passed": false,
+      "metrics": {
+        "category_agreement": 0.9530711206896552,
+        "segment_counts": [
+          12,
+          11
+        ],
+        "metadata_equal": false,
+        "category_metadata_counts_equal": false,
+        "unmatched_segments": [
+          1,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 12,
+            "engine_id": 11,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 11,
+            "engine_id": 10,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 10,
+            "engine_id": 9,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 8,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 0.9998997694697805
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9998795857750662
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9995341614906832
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9994578035622306
+          }
+        ]
+      },
+      "identical_metadata": false
+    },
+    {
+      "id": 449661,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9997133875739646,
+        "segment_counts": [
+          11,
+          11
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 0.9999048253545255
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9997641054234307
+          },
+          {
+            "reference_id": 11,
+            "engine_id": 11,
+            "iou": 0.9997407311381903
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9997357992073976
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9993730407523511
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9993493819128172
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9992889310263096
+          },
+          {
+            "reference_id": 10,
+            "engine_id": 10,
+            "iou": 0.9991445680068435
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.9980661380777412
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 205333,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9995807926829269,
+        "segment_counts": [
+          4,
+          4
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9991959652072216
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 298251,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9999803459119497,
+        "segment_counts": [
+          10,
+          10
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 10,
+            "engine_id": 10,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9999896088781745
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9992553983618764
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 25593,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.999833984375,
+        "segment_counts": [
+          5,
+          5
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9998932849558466
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9998606540683652
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9998397607093259
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9989860154632642
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 41488,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9999110772357723,
+        "segment_counts": [
+          1,
+          1
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9997382623110191
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 42888,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9999197860962566,
+        "segment_counts": [
+          2,
+          2
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9999060301777372
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9997167941093175
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 49091,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9999379380841121,
+        "segment_counts": [
+          2,
+          2
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.999948393222998
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9997867479055598
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 31296,
+      "passed": false,
+      "metrics": {
+        "category_agreement": 0.9997536764705882,
+        "segment_counts": [
+          64,
+          64
+        ],
+        "metadata_equal": false,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 64,
+            "engine_id": 64,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 61,
+            "engine_id": 61,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 60,
+            "engine_id": 60,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 57,
+            "engine_id": 57,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 55,
+            "engine_id": 55,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 54,
+            "engine_id": 54,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 53,
+            "engine_id": 53,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 52,
+            "engine_id": 52,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 51,
+            "engine_id": 51,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 47,
+            "engine_id": 47,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 46,
+            "engine_id": 46,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 45,
+            "engine_id": 45,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 44,
+            "engine_id": 44,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 43,
+            "engine_id": 43,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 42,
+            "engine_id": 42,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 41,
+            "engine_id": 41,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 39,
+            "engine_id": 39,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 38,
+            "engine_id": 38,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 37,
+            "engine_id": 37,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 36,
+            "engine_id": 36,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 34,
+            "engine_id": 34,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 31,
+            "engine_id": 31,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 30,
+            "engine_id": 30,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 28,
+            "engine_id": 28,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 27,
+            "engine_id": 27,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 26,
+            "engine_id": 26,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 25,
+            "engine_id": 25,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 23,
+            "engine_id": 23,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 21,
+            "engine_id": 21,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 20,
+            "engine_id": 20,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 19,
+            "engine_id": 19,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 18,
+            "engine_id": 18,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 12,
+            "engine_id": 12,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9999307143352041
+          },
+          {
+            "reference_id": 13,
+            "engine_id": 13,
+            "iou": 0.9999031945788964
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9998885607622444
+          },
+          {
+            "reference_id": 40,
+            "engine_id": 40,
+            "iou": 0.9997992773986351
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9997849462365591
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 0.9997835029227106
+          },
+          {
+            "reference_id": 14,
+            "engine_id": 14,
+            "iou": 0.9996982498491249
+          },
+          {
+            "reference_id": 62,
+            "engine_id": 62,
+            "iou": 0.9996963255390222
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9996662773235442
+          },
+          {
+            "reference_id": 63,
+            "engine_id": 63,
+            "iou": 0.9996039603960396
+          },
+          {
+            "reference_id": 10,
+            "engine_id": 10,
+            "iou": 0.9994640943193998
+          },
+          {
+            "reference_id": 56,
+            "engine_id": 56,
+            "iou": 0.9993979530403372
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.9993082776112521
+          },
+          {
+            "reference_id": 16,
+            "engine_id": 16,
+            "iou": 0.9992610837438424
+          },
+          {
+            "reference_id": 15,
+            "engine_id": 15,
+            "iou": 0.9990783410138249
+          },
+          {
+            "reference_id": 11,
+            "engine_id": 11,
+            "iou": 0.999067454149829
+          },
+          {
+            "reference_id": 22,
+            "engine_id": 22,
+            "iou": 0.9990671129890797
+          },
+          {
+            "reference_id": 50,
+            "engine_id": 50,
+            "iou": 0.9990574929311969
+          },
+          {
+            "reference_id": 59,
+            "engine_id": 58,
+            "iou": 0.9990291262135922
+          },
+          {
+            "reference_id": 17,
+            "engine_id": 17,
+            "iou": 0.9989440337909187
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 0.9986893840104849
+          },
+          {
+            "reference_id": 29,
+            "engine_id": 29,
+            "iou": 0.9977477477477478
+          },
+          {
+            "reference_id": 58,
+            "engine_id": 59,
+            "iou": 0.997186071051706
+          },
+          {
+            "reference_id": 48,
+            "engine_id": 48,
+            "iou": 0.9968847352024922
+          },
+          {
+            "reference_id": 35,
+            "engine_id": 35,
+            "iou": 0.9963702359346642
+          },
+          {
+            "reference_id": 49,
+            "engine_id": 49,
+            "iou": 0.9963235294117647
+          },
+          {
+            "reference_id": 24,
+            "engine_id": 24,
+            "iou": 0.9948717948717949
+          },
+          {
+            "reference_id": 33,
+            "engine_id": 33,
+            "iou": 0.9833333333333333
+          },
+          {
+            "reference_id": 32,
+            "engine_id": 32,
+            "iou": 0.9615384615384616
+          }
+        ]
+      },
+      "identical_metadata": false
+    },
+    {
+      "id": 303566,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9994131455399061,
+        "segment_counts": [
+          38,
+          38
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 35,
+            "engine_id": 35,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 32,
+            "engine_id": 32,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 30,
+            "engine_id": 30,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 29,
+            "engine_id": 29,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 28,
+            "engine_id": 28,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 23,
+            "engine_id": 23,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 20,
+            "engine_id": 20,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 18,
+            "engine_id": 17,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 17,
+            "engine_id": 18,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 14,
+            "engine_id": 14,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 13,
+            "engine_id": 13,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 11,
+            "engine_id": 11,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9999671829876609
+          },
+          {
+            "reference_id": 16,
+            "engine_id": 16,
+            "iou": 0.9998719754192805
+          },
+          {
+            "reference_id": 31,
+            "engine_id": 31,
+            "iou": 0.9998021369212505
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9997701677775224
+          },
+          {
+            "reference_id": 33,
+            "engine_id": 33,
+            "iou": 0.9997230684021047
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 0.9996827411167513
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.9995518374663878
+          },
+          {
+            "reference_id": 36,
+            "engine_id": 36,
+            "iou": 0.9995389580451821
+          },
+          {
+            "reference_id": 37,
+            "engine_id": 37,
+            "iou": 0.9994976557267247
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9994226327944573
+          },
+          {
+            "reference_id": 10,
+            "engine_id": 10,
+            "iou": 0.9993957703927493
+          },
+          {
+            "reference_id": 19,
+            "engine_id": 19,
+            "iou": 0.9993641788124816
+          },
+          {
+            "reference_id": 24,
+            "engine_id": 24,
+            "iou": 0.9992877492877493
+          },
+          {
+            "reference_id": 25,
+            "engine_id": 25,
+            "iou": 0.9992398327632079
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9991859991859992
+          },
+          {
+            "reference_id": 12,
+            "engine_id": 12,
+            "iou": 0.998992950654582
+          },
+          {
+            "reference_id": 15,
+            "engine_id": 15,
+            "iou": 0.998918626655853
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 0.9988499137435307
+          },
+          {
+            "reference_id": 26,
+            "engine_id": 26,
+            "iou": 0.9986033519553073
+          },
+          {
+            "reference_id": 21,
+            "engine_id": 21,
+            "iou": 0.9972016556870519
+          },
+          {
+            "reference_id": 34,
+            "engine_id": 34,
+            "iou": 0.9971879393844711
+          },
+          {
+            "reference_id": 38,
+            "engine_id": 38,
+            "iou": 0.9970472440944882
+          },
+          {
+            "reference_id": 22,
+            "engine_id": 22,
+            "iou": 0.9968847352024922
+          },
+          {
+            "reference_id": 27,
+            "engine_id": 27,
+            "iou": 0.9964586100044267
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 470924,
+      "passed": false,
+      "metrics": {
+        "category_agreement": 0.9997102864583334,
+        "segment_counts": [
+          72,
+          72
+        ],
+        "metadata_equal": false,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 72,
+            "engine_id": 72,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 71,
+            "engine_id": 71,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 70,
+            "engine_id": 70,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 69,
+            "engine_id": 69,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 68,
+            "engine_id": 67,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 66,
+            "engine_id": 66,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 65,
+            "engine_id": 65,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 64,
+            "engine_id": 64,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 63,
+            "engine_id": 62,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 62,
+            "engine_id": 63,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 61,
+            "engine_id": 61,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 59,
+            "engine_id": 59,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 58,
+            "engine_id": 58,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 57,
+            "engine_id": 57,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 53,
+            "engine_id": 53,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 51,
+            "engine_id": 50,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 50,
+            "engine_id": 51,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 48,
+            "engine_id": 48,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 46,
+            "engine_id": 46,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 44,
+            "engine_id": 44,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 43,
+            "engine_id": 43,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 42,
+            "engine_id": 42,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 41,
+            "engine_id": 41,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 37,
+            "engine_id": 37,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 33,
+            "engine_id": 33,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 32,
+            "engine_id": 32,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 31,
+            "engine_id": 31,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 30,
+            "engine_id": 30,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 29,
+            "engine_id": 29,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 27,
+            "engine_id": 27,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 25,
+            "engine_id": 25,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 24,
+            "engine_id": 24,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 23,
+            "engine_id": 23,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 22,
+            "engine_id": 22,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 21,
+            "engine_id": 21,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 19,
+            "engine_id": 19,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 18,
+            "engine_id": 18,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 16,
+            "engine_id": 16,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 15,
+            "engine_id": 14,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 14,
+            "engine_id": 15,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 11,
+            "engine_id": 11,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9998940116587175
+          },
+          {
+            "reference_id": 10,
+            "engine_id": 10,
+            "iou": 0.999888140674288
+          },
+          {
+            "reference_id": 20,
+            "engine_id": 20,
+            "iou": 0.9998755754634814
+          },
+          {
+            "reference_id": 13,
+            "engine_id": 13,
+            "iou": 0.999874686716792
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.999869981277304
+          },
+          {
+            "reference_id": 26,
+            "engine_id": 26,
+            "iou": 0.999719232569022
+          },
+          {
+            "reference_id": 40,
+            "engine_id": 40,
+            "iou": 0.99965656392204
+          },
+          {
+            "reference_id": 49,
+            "engine_id": 49,
+            "iou": 0.9996186972905078
+          },
+          {
+            "reference_id": 35,
+            "engine_id": 35,
+            "iou": 0.999341093784318
+          },
+          {
+            "reference_id": 52,
+            "engine_id": 52,
+            "iou": 0.9993337774816788
+          },
+          {
+            "reference_id": 34,
+            "engine_id": 34,
+            "iou": 0.9989637305699481
+          },
+          {
+            "reference_id": 39,
+            "engine_id": 39,
+            "iou": 0.9987600743955363
+          },
+          {
+            "reference_id": 47,
+            "engine_id": 47,
+            "iou": 0.9986111111111111
+          },
+          {
+            "reference_id": 28,
+            "engine_id": 28,
+            "iou": 0.9985537733368394
+          },
+          {
+            "reference_id": 67,
+            "engine_id": 68,
+            "iou": 0.9984319874558997
+          },
+          {
+            "reference_id": 56,
+            "engine_id": 56,
+            "iou": 0.9982817869415808
+          },
+          {
+            "reference_id": 12,
+            "engine_id": 12,
+            "iou": 0.9981894990947495
+          },
+          {
+            "reference_id": 54,
+            "engine_id": 54,
+            "iou": 0.9978321088763098
+          },
+          {
+            "reference_id": 17,
+            "engine_id": 17,
+            "iou": 0.99721059972106
+          },
+          {
+            "reference_id": 45,
+            "engine_id": 45,
+            "iou": 0.9954545454545455
+          },
+          {
+            "reference_id": 36,
+            "engine_id": 36,
+            "iou": 0.995418098510882
+          },
+          {
+            "reference_id": 38,
+            "engine_id": 38,
+            "iou": 0.9909638554216867
+          },
+          {
+            "reference_id": 55,
+            "engine_id": 55,
+            "iou": 0.988388969521045
+          },
+          {
+            "reference_id": 60,
+            "engine_id": 60,
+            "iou": 0.9792746113989638
+          }
+        ]
+      },
+      "identical_metadata": false
+    },
+    {
+      "id": 435081,
+      "passed": false,
+      "metrics": {
+        "category_agreement": 0.856848,
+        "segment_counts": [
+          55,
+          55
+        ],
+        "metadata_equal": false,
+        "category_metadata_counts_equal": false,
+        "unmatched_segments": [
+          1,
+          1
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 51,
+            "engine_id": 51,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 50,
+            "engine_id": 50,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 49,
+            "engine_id": 49,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 47,
+            "engine_id": 46,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 46,
+            "engine_id": 45,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 44,
+            "engine_id": 43,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 39,
+            "engine_id": 38,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 36,
+            "engine_id": 36,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 33,
+            "engine_id": 33,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 32,
+            "engine_id": 32,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 28,
+            "engine_id": 29,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 25,
+            "engine_id": 25,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 22,
+            "engine_id": 22,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 21,
+            "engine_id": 21,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 18,
+            "engine_id": 18,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 13,
+            "engine_id": 13,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 12,
+            "engine_id": 12,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 17,
+            "engine_id": 16,
+            "iou": 0.999626307922272
+          },
+          {
+            "reference_id": 20,
+            "engine_id": 20,
+            "iou": 0.999231950844854
+          },
+          {
+            "reference_id": 35,
+            "engine_id": 35,
+            "iou": 0.9990439770554493
+          },
+          {
+            "reference_id": 52,
+            "engine_id": 52,
+            "iou": 0.9988290398126464
+          },
+          {
+            "reference_id": 45,
+            "engine_id": 44,
+            "iou": 0.9985714285714286
+          },
+          {
+            "reference_id": 19,
+            "engine_id": 19,
+            "iou": 0.9983818770226537
+          },
+          {
+            "reference_id": 24,
+            "engine_id": 24,
+            "iou": 0.9983471074380166
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 0.9979674796747967
+          },
+          {
+            "reference_id": 29,
+            "engine_id": 28,
+            "iou": 0.9979144942648592
+          },
+          {
+            "reference_id": 14,
+            "engine_id": 14,
+            "iou": 0.9979035639412998
+          },
+          {
+            "reference_id": 38,
+            "engine_id": 37,
+            "iou": 0.9978791092258749
+          },
+          {
+            "reference_id": 15,
+            "engine_id": 17,
+            "iou": 0.9976635514018691
+          },
+          {
+            "reference_id": 34,
+            "engine_id": 34,
+            "iou": 0.9976306436751349
+          },
+          {
+            "reference_id": 43,
+            "engine_id": 42,
+            "iou": 0.9974905897114178
+          },
+          {
+            "reference_id": 23,
+            "engine_id": 23,
+            "iou": 0.9974025974025974
+          },
+          {
+            "reference_id": 11,
+            "engine_id": 11,
+            "iou": 0.9970501474926253
+          },
+          {
+            "reference_id": 40,
+            "engine_id": 39,
+            "iou": 0.9951593684837653
+          },
+          {
+            "reference_id": 53,
+            "engine_id": 53,
+            "iou": 0.9945533769063181
+          },
+          {
+            "reference_id": 54,
+            "engine_id": 54,
+            "iou": 0.9919354838709677
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 0.9906790945406125
+          },
+          {
+            "reference_id": 41,
+            "engine_id": 40,
+            "iou": 0.985854189336235
+          },
+          {
+            "reference_id": 16,
+            "engine_id": 15,
+            "iou": 0.9845626072041166
+          },
+          {
+            "reference_id": 27,
+            "engine_id": 27,
+            "iou": 0.9828992370428834
+          },
+          {
+            "reference_id": 10,
+            "engine_id": 10,
+            "iou": 0.9813664596273292
+          },
+          {
+            "reference_id": 30,
+            "engine_id": 30,
+            "iou": 0.9717438383005053
+          },
+          {
+            "reference_id": 48,
+            "engine_id": 47,
+            "iou": 0.9695577254451465
+          },
+          {
+            "reference_id": 42,
+            "engine_id": 41,
+            "iou": 0.9583592293349906
+          },
+          {
+            "reference_id": 31,
+            "engine_id": 31,
+            "iou": 0.9535232383808095
+          },
+          {
+            "reference_id": 26,
+            "engine_id": 26,
+            "iou": 0.8686868686868687
+          },
+          {
+            "reference_id": 37,
+            "engine_id": 55,
+            "iou": 0.16607851786501984
+          }
+        ]
+      },
+      "identical_metadata": false
+    },
+    {
+      "id": 14888,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.999697265625,
+        "segment_counts": [
+          4,
+          4
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9999403977457103
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9999285510145756
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9997706685013187
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9971440866945738
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 22623,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.99974609375,
+        "segment_counts": [
+          2,
+          2
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9998530343807696
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.999440770278156
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 58636,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9997954455835962,
+        "segment_counts": [
+          1,
+          1
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.999722681635176
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 36494,
+      "passed": false,
+      "metrics": {
+        "category_agreement": 0.9971954205069125,
+        "segment_counts": [
+          75,
+          74
+        ],
+        "metadata_equal": false,
+        "category_metadata_counts_equal": false,
+        "unmatched_segments": [
+          1,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 74,
+            "engine_id": 73,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 72,
+            "engine_id": 71,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 71,
+            "engine_id": 70,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 68,
+            "engine_id": 67,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 67,
+            "engine_id": 68,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 64,
+            "engine_id": 65,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 63,
+            "engine_id": 63,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 61,
+            "engine_id": 61,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 58,
+            "engine_id": 58,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 56,
+            "engine_id": 57,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 49,
+            "engine_id": 49,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 48,
+            "engine_id": 47,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 47,
+            "engine_id": 48,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 46,
+            "engine_id": 46,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 45,
+            "engine_id": 45,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 44,
+            "engine_id": 44,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 43,
+            "engine_id": 43,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 40,
+            "engine_id": 40,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 39,
+            "engine_id": 39,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 36,
+            "engine_id": 36,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 35,
+            "engine_id": 35,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 33,
+            "engine_id": 33,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 30,
+            "engine_id": 30,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 28,
+            "engine_id": 27,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 27,
+            "engine_id": 28,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 25,
+            "engine_id": 25,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 23,
+            "engine_id": 23,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 21,
+            "engine_id": 21,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 19,
+            "engine_id": 19,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 18,
+            "engine_id": 18,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 17,
+            "engine_id": 17,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 14,
+            "engine_id": 14,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 13,
+            "engine_id": 13,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 12,
+            "engine_id": 12,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 11,
+            "engine_id": 11,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 10,
+            "engine_id": 10,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9995857431926454
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.999458972046889
+          },
+          {
+            "reference_id": 66,
+            "engine_id": 66,
+            "iou": 0.9993698802772527
+          },
+          {
+            "reference_id": 31,
+            "engine_id": 31,
+            "iou": 0.9993211133740665
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9992905005912495
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.999198717948718
+          },
+          {
+            "reference_id": 37,
+            "engine_id": 37,
+            "iou": 0.9991525423728813
+          },
+          {
+            "reference_id": 29,
+            "engine_id": 29,
+            "iou": 0.9991212653778558
+          },
+          {
+            "reference_id": 54,
+            "engine_id": 54,
+            "iou": 0.9990962494351558
+          },
+          {
+            "reference_id": 16,
+            "engine_id": 16,
+            "iou": 0.9989994997498749
+          },
+          {
+            "reference_id": 24,
+            "engine_id": 24,
+            "iou": 0.9989939637826962
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9989858012170385
+          },
+          {
+            "reference_id": 32,
+            "engine_id": 32,
+            "iou": 0.9989484752891693
+          },
+          {
+            "reference_id": 53,
+            "engine_id": 53,
+            "iou": 0.9988571428571429
+          },
+          {
+            "reference_id": 38,
+            "engine_id": 38,
+            "iou": 0.9985422740524781
+          },
+          {
+            "reference_id": 62,
+            "engine_id": 62,
+            "iou": 0.9983706720977596
+          },
+          {
+            "reference_id": 20,
+            "engine_id": 20,
+            "iou": 0.998351195383347
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 0.9983031674208145
+          },
+          {
+            "reference_id": 60,
+            "engine_id": 60,
+            "iou": 0.9981884057971014
+          },
+          {
+            "reference_id": 57,
+            "engine_id": 56,
+            "iou": 0.9979166666666667
+          },
+          {
+            "reference_id": 26,
+            "engine_id": 26,
+            "iou": 0.9972451790633609
+          },
+          {
+            "reference_id": 42,
+            "engine_id": 42,
+            "iou": 0.9971181556195965
+          },
+          {
+            "reference_id": 15,
+            "engine_id": 15,
+            "iou": 0.9961449498843485
+          },
+          {
+            "reference_id": 65,
+            "engine_id": 64,
+            "iou": 0.9956140350877193
+          },
+          {
+            "reference_id": 73,
+            "engine_id": 72,
+            "iou": 0.99375
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 0.9937467430953622
+          },
+          {
+            "reference_id": 50,
+            "engine_id": 50,
+            "iou": 0.9929441949967928
+          },
+          {
+            "reference_id": 55,
+            "engine_id": 55,
+            "iou": 0.9924484461225676
+          },
+          {
+            "reference_id": 69,
+            "engine_id": 69,
+            "iou": 0.9923857868020305
+          },
+          {
+            "reference_id": 34,
+            "engine_id": 34,
+            "iou": 0.9914529914529915
+          },
+          {
+            "reference_id": 59,
+            "engine_id": 59,
+            "iou": 0.990909090909091
+          },
+          {
+            "reference_id": 75,
+            "engine_id": 74,
+            "iou": 0.989010989010989
+          },
+          {
+            "reference_id": 22,
+            "engine_id": 22,
+            "iou": 0.9878048780487805
+          },
+          {
+            "reference_id": 41,
+            "engine_id": 41,
+            "iou": 0.9872146118721461
+          },
+          {
+            "reference_id": 52,
+            "engine_id": 52,
+            "iou": 0.9818181818181818
+          },
+          {
+            "reference_id": 51,
+            "engine_id": 51,
+            "iou": 0.9786975045648204
+          }
+        ]
+      },
+      "identical_metadata": false
+    },
+    {
+      "id": 302882,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.99977,
+        "segment_counts": [
+          4,
+          4
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9999455241260027
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9998043052837573
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9994514262916417
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9994029850746269
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 571598,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.999638671875,
+        "segment_counts": [
+          17,
+          17
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 17,
+            "engine_id": 17,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 15,
+            "engine_id": 15,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 13,
+            "engine_id": 13,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9999146891129089
+          },
+          {
+            "reference_id": 7,
+            "engine_id": 7,
+            "iou": 0.9998525864379523
+          },
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 0.9994842586779084
+          },
+          {
+            "reference_id": 14,
+            "engine_id": 14,
+            "iou": 0.999438832772166
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.9994103773584906
+          },
+          {
+            "reference_id": 16,
+            "engine_id": 16,
+            "iou": 0.9992363497518136
+          },
+          {
+            "reference_id": 10,
+            "engine_id": 10,
+            "iou": 0.999126383226558
+          },
+          {
+            "reference_id": 8,
+            "engine_id": 8,
+            "iou": 0.999034749034749
+          },
+          {
+            "reference_id": 9,
+            "engine_id": 9,
+            "iou": 0.9973589435774309
+          },
+          {
+            "reference_id": 11,
+            "engine_id": 11,
+            "iou": 0.9956140350877193
+          },
+          {
+            "reference_id": 12,
+            "engine_id": 12,
+            "iou": 0.9859154929577465
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 39670,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.99937255859375,
+        "segment_counts": [
+          5,
+          5
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9997148267287204
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9994675634019896
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 0.9994659808736834
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9988034483752847
+          }
+        ]
+      },
+      "identical_metadata": true
+    },
+    {
+      "id": 285788,
+      "passed": true,
+      "metrics": {
+        "category_agreement": 0.9998310810810811,
+        "segment_counts": [
+          6,
+          6
+        ],
+        "metadata_equal": true,
+        "category_metadata_counts_equal": true,
+        "unmatched_segments": [
+          0,
+          0
+        ],
+        "same_category_matches": [
+          {
+            "reference_id": 5,
+            "engine_id": 5,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 1,
+            "engine_id": 1,
+            "iou": 1.0
+          },
+          {
+            "reference_id": 3,
+            "engine_id": 3,
+            "iou": 0.9998067463106114
+          },
+          {
+            "reference_id": 4,
+            "engine_id": 4,
+            "iou": 0.9997905495978552
+          },
+          {
+            "reference_id": 6,
+            "engine_id": 6,
+            "iou": 0.9996750845900464
+          },
+          {
+            "reference_id": 2,
+            "engine_id": 2,
+            "iou": 0.9994703389830508
+          }
+        ]
+      },
+      "identical_metadata": true
+    }
+  ]
+}

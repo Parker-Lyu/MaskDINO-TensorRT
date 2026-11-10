@@ -37,6 +37,8 @@ Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stag
 
 ![FPN 单层优化的离线配对，比较 B1/S1 与 B1/S2 的稳态吞吐、端到端 P95 和进程峰值显存](stage3/results/fpn-half-ab/comparison.svg)
 
+六层 encoder FFN 的两个 Linear 全部切到 FP16 后，B1/S1 端到端 P95 为 **13.90 ms**，B1/S2 稳态吞吐为 **89.22 图/s**。全量 PQ 为 **53.1856**，两种 slot 的逐图对齐均为 **26/32**，保留为实验配置。 [FFN 离线 A/B](stage3/ffn-full-half.md)
+
 ## Stage 1 · 复现原始模型精度
 
 在 RTX 4090 上使用 MaskDINO 官方 R50 panoptic 配置和权重评估 COCO 2017 val 的 5,000 张图片。模型和前后处理走官方 `train_net.py`，PQ 由 Detectron2 的 `COCOPanopticEvaluator` 调用 COCO panopticapi 计算。

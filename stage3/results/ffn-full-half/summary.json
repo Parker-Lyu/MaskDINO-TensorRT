@@ -1,0 +1,80 @@
+{
+  "native": {
+    "fpn": {
+      "b1s1": {
+        "network_p50_ms": 13.9919681549,
+        "network_p95_ms": 14.006272316,
+        "end_to_end_p50_ms": 15.501600000000053,
+        "end_to_end_p95_ms": 16.09778600000027,
+        "steady_images_per_second": 64.64486532129027,
+        "peak_process_gib": 1.1484375
+      },
+      "b1s2": {
+        "network_p50_ms": 24.1203193665,
+        "network_p95_ms": 25.7966079712,
+        "end_to_end_p50_ms": 26.12301000000025,
+        "end_to_end_p95_ms": 27.873790999999983,
+        "steady_images_per_second": 76.38916427415504,
+        "peak_process_gib": 1.69921875
+      }
+    },
+    "ffn-half": {
+      "b1s1": {
+        "network_p50_ms": 11.7661123276,
+        "network_p95_ms": 11.7819519043,
+        "end_to_end_p50_ms": 13.286928999999873,
+        "end_to_end_p95_ms": 13.900223000000096,
+        "steady_images_per_second": 75.40528020610584,
+        "peak_process_gib": 1.076171875
+      },
+      "b1s2": {
+        "network_p50_ms": 20.3642883301,
+        "network_p95_ms": 22.2177276611,
+        "end_to_end_p50_ms": 22.331638000000112,
+        "end_to_end_p95_ms": 24.275650999999925,
+        "steady_images_per_second": 89.22087898034559,
+        "peak_process_gib": 1.55859375
+      }
+    }
+  },
+  "pq": {
+    "scores": {
+      "PQ": 53.18562987558379,
+      "PQ_th": 59.024110766153434,
+      "PQ_st": 44.37282853132775
+    },
+    "delta_vs_fpn": {
+      "PQ": 0.013833188095546234,
+      "PQ_th": 0.011890817862223457,
+      "PQ_st": 0.016765067693057745
+    },
+    "delta_vs_pytorch": {
+      "PQ": -0.0006218956286758726,
+      "PQ_th": -0.0031478909135955746,
+      "PQ_st": 0.0031909274429864354
+    },
+    "coverage_per_configuration": 5000,
+    "configurations": [
+      "b1s1",
+      "b1s2"
+    ],
+    "passed": true
+  },
+  "alignment": {
+    "reference": "FPN B1/S1",
+    "passed_per_configuration": 26,
+    "images_per_configuration": 32,
+    "s1_s2_prediction_files_byte_identical": true,
+    "passed": false
+  },
+  "network_microbenchmark": {
+    "fpn": {
+      "p50_ms": 13.693,
+      "p95_ms": 13.7084
+    },
+    "ffn-half": {
+      "p50_ms": 11.5786,
+      "p95_ms": 11.5918
+    }
+  }
+}

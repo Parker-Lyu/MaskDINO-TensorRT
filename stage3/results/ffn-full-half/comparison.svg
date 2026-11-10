@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="275" viewBox="0 0 1080 275">
+<rect width="1080" height="275" rx="16" fill="#f3f6fa"/>
+<g font-family="system-ui,sans-serif" fill="#172b43">
+<text x="28" y="37" font-size="23" font-weight="700">MaskDINO R50 panoptic · Six encoder FFNs A/B</text>
+<text x="28" y="60" font-size="13" font-weight="400">RTX 4090 · 1024 × 1024 · B1 · 500 JPEGs per round · 3-run medians · candidate failed per-image alignment</text>
+<rect x="24" y="78" width="337" height="179" rx="10" fill="white"/>
+<text x="40" y="107" font-size="16" font-weight="650">Throughput</text>
+<text x="40" y="137" font-size="12" font-weight="600">FPN control · S1</text>
+<rect x="158" y="125" width="73.90" height="15" rx="3" fill="#168477"/>
+<text x="269" y="137" font-size="12" font-weight="400">64.64 img/s</text>
+<text x="40" y="172" font-size="12" font-weight="600">FFN FP16 · S1</text>
+<rect x="158" y="160" width="86.21" height="15" rx="3" fill="#168477"/>
+<text x="269" y="172" font-size="12" font-weight="400">75.41 img/s</text>
+<text x="40" y="207" font-size="12" font-weight="600">FPN control · S2</text>
+<rect x="158" y="195" width="87.33" height="15" rx="3" fill="#168477"/>
+<text x="269" y="207" font-size="12" font-weight="400">76.39 img/s</text>
+<text x="40" y="242" font-size="12" font-weight="600">FFN FP16 · S2</text>
+<rect x="158" y="230" width="102.00" height="15" rx="3" fill="#168477"/>
+<text x="269" y="242" font-size="12" font-weight="400">89.22 img/s</text>
+<rect x="370" y="78" width="337" height="179" rx="10" fill="white"/>
+<text x="386" y="107" font-size="16" font-weight="650">Per-image dispatch-to-result P95</text>
+<text x="386" y="137" font-size="12" font-weight="600">FPN control · S1</text>
+<rect x="504" y="125" width="58.91" height="15" rx="3" fill="#168477"/>
+<text x="615" y="137" font-size="12" font-weight="400">16.10 ms</text>
+<text x="386" y="172" font-size="12" font-weight="600">FFN FP16 · S1</text>
+<rect x="504" y="160" width="50.87" height="15" rx="3" fill="#168477"/>
+<text x="615" y="172" font-size="12" font-weight="400">13.90 ms</text>
+<text x="386" y="207" font-size="12" font-weight="600">FPN control · S2</text>
+<rect x="504" y="195" width="102.00" height="15" rx="3" fill="#168477"/>
+<text x="615" y="207" font-size="12" font-weight="400">27.87 ms</text>
+<text x="386" y="242" font-size="12" font-weight="600">FFN FP16 · S2</text>
+<rect x="504" y="230" width="88.83" height="15" rx="3" fill="#168477"/>
+<text x="615" y="242" font-size="12" font-weight="400">24.28 ms</text>
+<rect x="716" y="78" width="337" height="179" rx="10" fill="white"/>
+<text x="732" y="107" font-size="16" font-weight="650">Peak process VRAM</text>
+<text x="732" y="137" font-size="12" font-weight="600">FPN control · S1</text>
+<rect x="850" y="125" width="68.94" height="15" rx="3" fill="#168477"/>
+<text x="961" y="137" font-size="12" font-weight="400">1.15 GiB</text>
+<text x="732" y="172" font-size="12" font-weight="600">FFN FP16 · S1</text>
+<rect x="850" y="160" width="64.60" height="15" rx="3" fill="#168477"/>
+<text x="961" y="172" font-size="12" font-weight="400">1.08 GiB</text>
+<text x="732" y="207" font-size="12" font-weight="600">FPN control · S2</text>
+<rect x="850" y="195" width="102.00" height="15" rx="3" fill="#168477"/>
+<text x="961" y="207" font-size="12" font-weight="400">1.70 GiB</text>
+<text x="732" y="242" font-size="12" font-weight="600">FFN FP16 · S2</text>
+<rect x="850" y="230" width="93.56" height="15" rx="3" fill="#168477"/>
+<text x="961" y="242" font-size="12" font-weight="400">1.56 GiB</text>
+</g></svg>

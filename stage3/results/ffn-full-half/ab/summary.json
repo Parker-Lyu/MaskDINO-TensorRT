@@ -1,0 +1,518 @@
+[
+  {
+    "engine": "fpn",
+    "slots": 1,
+    "round": 1,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 7.751754275,
+    "makespan_images_per_second": 64.50152859108786,
+    "sampled_peak_process_used_bytes": 1233125376,
+    "network_ms_per_batch": {
+      "p50": 13.9898881912,
+      "p95": 14.0040960312
+    },
+    "latency_ms": {
+      "p50": 15.501600000000053,
+      "p95": 16.09778600000027,
+      "p99": 16.37121399999978
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 64.64486532129027,
+    "steady_window_ms": [
+      387.58771375,
+      7364.16656125
+    ]
+  },
+  {
+    "engine": "ffn-half",
+    "slots": 1,
+    "round": 1,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 6.645570572,
+    "makespan_images_per_second": 75.23808446285506,
+    "sampled_peak_process_used_bytes": 1155530752,
+    "network_ms_per_batch": {
+      "p50": 11.7647361755,
+      "p95": 11.7803516388
+    },
+    "latency_ms": {
+      "p50": 13.286928999999873,
+      "p95": 13.900223000000096,
+      "p99": 14.153236000000106
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 75.40528020610584,
+    "steady_window_ms": [
+      332.27852859999996,
+      6313.2920434
+    ]
+  },
+  {
+    "engine": "fpn",
+    "slots": 2,
+    "round": 1,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 6.571585883,
+    "makespan_images_per_second": 76.0851351411913,
+    "sampled_peak_process_used_bytes": 1824522240,
+    "network_ms_per_batch": {
+      "p50": 24.1807365417,
+      "p95": 25.8426876068
+    },
+    "latency_ms": {
+      "p50": 26.218873000000258,
+      "p95": 27.873790999999983,
+      "p99": 29.08703000000014
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 76.25421321928283,
+    "steady_window_ms": [
+      328.57929415,
+      6243.00658885
+    ]
+  },
+  {
+    "engine": "ffn-half",
+    "slots": 2,
+    "round": 1,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 5.616522913,
+    "makespan_images_per_second": 89.02304998038917,
+    "sampled_peak_process_used_bytes": 1673527296,
+    "network_ms_per_batch": {
+      "p50": 20.3642883301,
+      "p95": 22.1399040222
+    },
+    "latency_ms": {
+      "p50": 22.331638000000112,
+      "p95": 24.284527000000708,
+      "p99": 26.30858100000023
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 89.22087898034559,
+    "steady_window_ms": [
+      280.82614565,
+      5335.69676735
+    ]
+  },
+  {
+    "engine": "ffn-half",
+    "slots": 2,
+    "round": 2,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 5.622238996,
+    "makespan_images_per_second": 88.93254099580793,
+    "sampled_peak_process_used_bytes": 1673527296,
+    "network_ms_per_batch": {
+      "p50": 20.4605445862,
+      "p95": 22.2177276611
+    },
+    "latency_ms": {
+      "p50": 22.38303999999971,
+      "p95": 24.156506000000036,
+      "p99": 25.469228000000385
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 88.93254099580793,
+    "steady_window_ms": [
+      281.1119498,
+      5341.1270462
+    ]
+  },
+  {
+    "engine": "fpn",
+    "slots": 2,
+    "round": 2,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 6.559976351,
+    "makespan_images_per_second": 76.21978696977774,
+    "sampled_peak_process_used_bytes": 1824522240,
+    "network_ms_per_batch": {
+      "p50": 24.0281600952,
+      "p95": 25.7966079712
+    },
+    "latency_ms": {
+      "p50": 26.12301000000025,
+      "p95": 27.936164000000076,
+      "p99": 29.551399
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 76.38916427415504,
+    "steady_window_ms": [
+      327.99881755,
+      6231.97753345
+    ]
+  },
+  {
+    "engine": "ffn-half",
+    "slots": 1,
+    "round": 2,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 6.64771145,
+    "makespan_images_per_second": 75.21385423550537,
+    "sampled_peak_process_used_bytes": 1155530752,
+    "network_ms_per_batch": {
+      "p50": 11.7678079605,
+      "p95": 11.7823038101
+    },
+    "latency_ms": {
+      "p50": 13.298516999999265,
+      "p95": 13.901479999999992,
+      "p99": 14.153235999999993
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 75.38099613380648,
+    "steady_window_ms": [
+      332.3855725,
+      6315.3258775
+    ]
+  },
+  {
+    "engine": "fpn",
+    "slots": 1,
+    "round": 2,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 7.755373066,
+    "makespan_images_per_second": 64.47143106397147,
+    "sampled_peak_process_used_bytes": 1233125376,
+    "network_ms_per_batch": {
+      "p50": 13.9950084686,
+      "p95": 14.0103683472
+    },
+    "latency_ms": {
+      "p50": 15.51254999999992,
+      "p95": 16.129281999999876,
+      "p99": 16.36196000000018
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 64.61470091078029,
+    "steady_window_ms": [
+      387.7686533,
+      7367.6044127
+    ]
+  },
+  {
+    "engine": "fpn",
+    "slots": 1,
+    "round": 3,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 7.730393241,
+    "makespan_images_per_second": 64.67976264753645,
+    "sampled_peak_process_used_bytes": 1233125376,
+    "network_ms_per_batch": {
+      "p50": 13.9919681549,
+      "p95": 14.006272316
+    },
+    "latency_ms": {
+      "p50": 15.4644559999997,
+      "p95": 16.060829000000012,
+      "p99": 16.354577000000063
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 64.67976264753645,
+    "steady_window_ms": [
+      386.51966204999997,
+      7343.87357895
+    ]
+  },
+  {
+    "engine": "ffn-half",
+    "slots": 1,
+    "round": 3,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 6.6248647,
+    "makespan_images_per_second": 75.47323947612092,
+    "sampled_peak_process_used_bytes": 1155530752,
+    "network_ms_per_batch": {
+      "p50": 11.7661123276,
+      "p95": 11.7819519043
+    },
+    "latency_ms": {
+      "p50": 13.251314000000093,
+      "p95": 13.860321999999996,
+      "p99": 14.094211000000001
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 75.64095778606786,
+    "steady_window_ms": [
+      331.24323499999997,
+      6293.621465
+    ]
+  },
+  {
+    "engine": "fpn",
+    "slots": 2,
+    "round": 3,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 6.546389132,
+    "makespan_images_per_second": 76.37798333067379,
+    "sampled_peak_process_used_bytes": 1824522240,
+    "network_ms_per_batch": {
+      "p50": 24.1203193665,
+      "p95": 25.7853431702
+    },
+    "latency_ms": {
+      "p50": 26.07274099999995,
+      "p95": 27.74593399999958,
+      "p99": 29.174151999999992
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 76.54771218251972,
+    "steady_window_ms": [
+      327.31945659999997,
+      6219.0696754
+    ]
+  },
+  {
+    "engine": "ffn-half",
+    "slots": 2,
+    "round": 3,
+    "completed": 500,
+    "rejected": 0,
+    "makespan_seconds": 5.599040189,
+    "makespan_images_per_second": 89.30102001809368,
+    "sampled_peak_process_used_bytes": 1675624448,
+    "network_ms_per_batch": {
+      "p50": 20.3427848816,
+      "p95": 22.2832641602
+    },
+    "latency_ms": {
+      "p50": 22.25705300000004,
+      "p95": 24.275650999999925,
+      "p99": 25.498689000000013
+    },
+    "queue_including_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "queue_excluding_batch_wait_ms": {
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0
+    },
+    "batch_dispatch_histogram": {
+      "1": 500
+    },
+    "queue_depth_max_at_arrival": 0,
+    "steady_images_per_second": 89.499466729245,
+    "steady_window_ms": [
+      279.95200945,
+      5319.08817955
+    ]
+  }
+]

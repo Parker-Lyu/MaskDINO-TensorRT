@@ -14,6 +14,10 @@
 
 RTX 4090 的 B1/S1 逐层实测中，最贵的单层为 FPN 3×3 卷积（0.903 ms），encoder FFN 的 12 个 GEMM 合计 3.675 ms。FPN 单层 A/B 中，使用共享 timing cache 控制重建差异，B1/S1 端到端 P95 从 16.27 降至 15.85 ms，B1/S2 的稳态吞吐从 74.21 提高到 76.33 图/s。 [热点定位](layer-profile.md) · [FPN A/B 与全量验收](fpn-half-ab.md)
 
+## Encoder 六层 FFN FP16 实验
+
+在已验收 FPN B1 engine 上，将六层的 `linear1` 和 `linear2` 都切到 FP16。B1/S1 端到端 P95 为 13.90 ms，B1/S2 稳态吞吐为 89.22 图/s。两种 slot 的 COCO PQ 均为 53.1856，逐图均为 26/32。保留为实验配置。 [实测、精度差异和复现](ffn-full-half.md)
+
 ## 复现入口
 
 在 4090 上从干净的提交运行。准备 Stage 2 镜像及数据，设置 `MASKDINO_CHECKPOINT` 为权重路径。每次运行用新的 ID。日志和产物位于 `stage3/runs/<ID>/`。容器内可通过 `/project/stage3/runs/<ID>/` 读取之前的产物。
