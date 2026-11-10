@@ -194,3 +194,35 @@ done
 ```
 
 逐图命令先保存完整结果，再按对应 backend 的阈值返回失败。本轮以逐图差异作为诊断，继续独立跑全量 PQ，并在表中用统一的 99.9%/0.98 阈值重计通过数。原生 B1/S1 性能配对见 [Stage 4](../stage4/README.md#b1s1-精度策略对照)。
+
+### 三种 engine 的离线性能
+
+固定 RTX 4090、1024×1024、B1/S1、Python 前后处理和同一顺序的 500 张内存 JPEG。每轮预热 20 次，表中为三轮中位数。FP32/TF32 off 沿用历史验收，两种 TF32 on 配置按 FP32→混合、混合→FP32、FP32→混合的顺序补测，每轮均完成 500 张且零失败。
+
+| Engine | 网络 GPU P95（ms） | 端到端 P95（ms） | 离线吞吐（图/s） |
+| --- | ---: | ---: | ---: |
+| FP32 / TF32 off | 21.79 | 35.18 | 31.18 |
+| FP32 / TF32 on | 15.75 | 29.92 | 37.06 |
+| FP16 混合精度 / TF32 on | 14.56 | 28.71 | 38.78 |
+
+补测在 `acaf623` 的干净 checkout 执行，使用驱动 595.84、CUDA 13.0、TensorRT 10.14.1.48 和上节同一镜像。两种 engine 的 SHA-256 均与对应的全量 PQ 运行一致。逐轮日志记录镜像、权重、COCO 标注和样本清单的校验信息。[历史 TF32 off 汇总](results/summary.json) · [FP32/TF32 on 汇总](results/precision/benchmark/on-summary.json) · [混合/TF32 on 汇总](results/precision/benchmark/autocast-on-summary.json) · [逐图计时与运行日志](results/precision/benchmark/)
+
+复用全量 PQ 所用的 engine 和匹配的 `build.json`，分别放在 `stage3/runs/precision-input-on/` 和 `stage3/runs/precision-input-autocast-on/`。沿用上节的 `data`、`runs`、镜像和权重配置。
+
+```bash
+for round in 1 2 3; do
+  if (( round == 2 )); then order=(autocast-on on); else order=(on autocast-on); fi
+  for variant in "${order[@]}"; do
+    backend=fp32
+    if [[ "$variant" == autocast-on ]]; then backend=mixed; fi
+    bash stage3/run.sh "$data" "precision-benchmark-20261110-$variant-r$round" benchmark \
+      --backend "$backend" --engine "$runs/precision-input-$variant/network.engine"
+  done
+done
+
+for variant in on autocast-on; do
+  python3 stage3/summarize.py stage3/results/pt-pq/result.json \
+    "stage3/results/precision/precision-pq-$variant/result.json" \
+    stage3/runs/precision-benchmark-20261110-"$variant"-r{1,2,3}/result.json
+done
+```

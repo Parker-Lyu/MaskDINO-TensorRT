@@ -19,15 +19,19 @@
 <rect x="119.33" y="138.50" width="24" height="112.50" rx="3" fill="#61748b"/>
 <text x="131.33" y="133.50" font-size="12" font-weight="650" text-anchor="middle">51.93</text>
 <text x="270.0" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 3</text>
-<rect x="258.00" y="174.77" width="24" height="76.23" rx="3" fill="#3365a6"/>
-<text x="270.00" y="169.77" font-size="12" font-weight="650" text-anchor="middle">35.18</text>
+<rect x="224.00" y="174.77" width="24" height="76.23" rx="3" fill="#3365a6"/>
+<text x="236.00" y="169.77" font-size="11" font-weight="650" text-anchor="middle">35.18</text>
+<rect x="258.00" y="186.17" width="24" height="64.83" rx="3" fill="#067969"/>
+<text x="270.00" y="181.17" font-size="11" font-weight="650" text-anchor="middle">29.92</text>
+<rect x="292.00" y="188.80" width="24" height="62.20" rx="3" fill="#a14c17"/>
+<text x="304.00" y="183.80" font-size="11" font-weight="650" text-anchor="middle">28.71</text>
 <text x="408.66666666666663" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 4</text>
 <rect x="362.67" y="199.80" width="24" height="51.20" rx="3" fill="#3365a6"/>
-<text x="374.67" y="194.80" font-size="12" font-weight="650" text-anchor="middle">23.63</text>
+<text x="374.67" y="194.80" font-size="11" font-weight="650" text-anchor="middle">23.63</text>
 <rect x="396.67" y="212.56" width="24" height="38.44" rx="3" fill="#067969"/>
-<text x="408.67" y="207.56" font-size="12" font-weight="650" text-anchor="middle">17.74</text>
+<text x="408.67" y="207.56" font-size="11" font-weight="650" text-anchor="middle">17.74</text>
 <rect x="430.67" y="215.35" width="24" height="35.65" rx="3" fill="#a14c17"/>
-<text x="442.67" y="210.35" font-size="12" font-weight="650" text-anchor="middle">16.45</text>
+<text x="442.67" y="210.35" font-size="11" font-weight="650" text-anchor="middle">16.45</text>
 <rect x="506" y="69" width="474" height="218" rx="10" fill="white"/>
 <text x="522" y="96" font-size="17" font-weight="700" text-anchor="start">Offline throughput (img/s) ↑</text>
 <path d="M548 251.00h416" stroke="#dbe3ed"/>
@@ -44,22 +48,26 @@
 <rect x="588.00" y="217.89" width="24" height="33.11" rx="3" fill="#61748b"/>
 <text x="600.00" y="212.89" font-size="12" font-weight="650" text-anchor="middle">20.38</text>
 <text x="704.0" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 3</text>
-<rect x="692.00" y="200.33" width="24" height="50.67" rx="3" fill="#3365a6"/>
-<text x="704.00" y="195.33" font-size="12" font-weight="650" text-anchor="middle">31.18</text>
+<rect x="658.00" y="200.33" width="24" height="50.67" rx="3" fill="#3365a6"/>
+<text x="670.00" y="195.33" font-size="11" font-weight="650" text-anchor="middle">31.18</text>
+<rect x="692.00" y="190.78" width="24" height="60.22" rx="3" fill="#067969"/>
+<text x="704.00" y="185.78" font-size="11" font-weight="650" text-anchor="middle">37.06</text>
+<rect x="726.00" y="187.99" width="24" height="63.01" rx="3" fill="#a14c17"/>
+<text x="738.00" y="182.99" font-size="11" font-weight="650" text-anchor="middle">38.78</text>
 <text x="808.0" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 4</text>
 <rect x="762.00" y="180.07" width="24" height="70.93" rx="3" fill="#3365a6"/>
-<text x="774.00" y="175.07" font-size="12" font-weight="650" text-anchor="middle">43.65</text>
+<text x="774.00" y="175.07" font-size="11" font-weight="650" text-anchor="middle">43.65</text>
 <rect x="796.00" y="156.33" width="24" height="94.67" rx="3" fill="#067969"/>
-<text x="808.00" y="151.33" font-size="12" font-weight="650" text-anchor="middle">58.26</text>
+<text x="808.00" y="151.33" font-size="11" font-weight="650" text-anchor="middle">58.26</text>
 <rect x="830.00" y="148.56" width="24" height="102.44" rx="3" fill="#a14c17"/>
-<text x="842.00" y="143.56" font-size="12" font-weight="650" text-anchor="middle">63.04</text>
+<text x="842.00" y="143.56" font-size="11" font-weight="650" text-anchor="middle">63.04</text>
 <text x="912.0" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 5</text>
 <rect x="866.00" y="164.29" width="24" height="86.71" rx="3" fill="#3365a6"/>
-<text x="878.00" y="159.29" font-size="12" font-weight="650" text-anchor="middle">53.36</text>
+<text x="878.00" y="159.29" font-size="11" font-weight="650" text-anchor="middle">53.36</text>
 <rect x="900.00" y="143.05" width="24" height="107.95" rx="3" fill="#067969"/>
-<text x="912.00" y="138.05" font-size="12" font-weight="650" text-anchor="middle">66.43</text>
+<text x="912.00" y="138.05" font-size="11" font-weight="650" text-anchor="middle">66.43</text>
 <rect x="934.00" y="130.18" width="24" height="120.82" rx="3" fill="#a14c17"/>
-<text x="946.00" y="125.18" font-size="12" font-weight="650" text-anchor="middle">74.35</text>
+<text x="946.00" y="125.18" font-size="11" font-weight="650" text-anchor="middle">74.35</text>
 <rect x="152" y="309" width="12" height="12" rx="3" fill="#61748b"/>
 <text x="170" y="320" font-size="13" font-weight="400" text-anchor="start">PyTorch FP32</text>
 <rect x="332" y="309" width="12" height="12" rx="3" fill="#3365a6"/>

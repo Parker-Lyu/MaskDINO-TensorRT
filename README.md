@@ -16,22 +16,20 @@ TensorRT FP32（TF32 on）和TensorRT FP16 混合精度（TF32 on）虽然有较
 
 ![四种配置的单 slot 端到端 P95 和峰值离线吞吐柱状图](docs/precision-performance.svg)
 
-P95 从处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪，TensorRT 取 Stage 4 单 slot 结果。吞吐取 Stage 5 的 S1–S4 初筛峰值，S 为并发 slot 数。表中倍数为跨阶段归档对比。[PyTorch 性能基线](stage2/results/benchmark/summary.json) · [Stage 4 原生计时](stage4/README.md#rtx-4090-性能) · [Stage 4 精度配对](stage4/README.md#b1s1-精度策略对照) · [Stage 5 并发筛选](stage5/README.md#三种精度的-b1--s1s4-筛选)
-
-PQ 取 PyTorch B1 和 Stage 4 原生链路各自的 COCO val2017 全量评估（5,000 张）。逐图通过数取 Stage 3 的 32 张筛选，三种 engine 统一与 PyTorch 对比。[PyTorch 全量 PQ](stage3/results/pt-pq/result.json) · [TF32 off 全量 PQ](stage4/results/native-pq/result.json) · [TF32 on 全量 PQ 与原生差异](stage4/README.md#原生链路的跨精度差异) · [逐图筛选](stage3/README.md#b1s1-精度策略筛选)
-
+P95 从处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪，TensorRT 取 Stage 4 单 slot 结果。吞吐取 Stage 5 的 S1–S4 初筛峰值，S 为并发 slot 数。表中倍数为跨阶段归档对比。  
+PQ 取 PyTorch B1 和 Stage 4 原生链路各自的 COCO val2017 全量评估（5,000 张）。逐图通过数取 Stage 3 的 32 张筛选，三种 engine 统一与 PyTorch 对比。  
 ## 技术路线
 
-1. [Stage 1](#stage-1--复现原始模型精度) · 用官方 PyTorch 配置复现 COCO PQ 得分。
-2. [Stage 2](#stage-2--调整预处理方法并建立性能基线) · 修改预处理为使用 letterbox，选定输入尺寸 1024×1024 / B1 作为部署基线，并选定32张对齐数据和500张计时样本。
-3. [Stage 3](#stage-3--将网络转换为-tensorrt) · 导出 ONNX，接入 MSDeformAttn 插件，构建trt engine, 替换网络后端并筛选精度策略。
-4. [Stage 4](#stage-4--用-ccuda-实现前后处理) · 用 C++/CUDA 实现前后处理，在单 slot 下对比三种 engine。
-5. [Stage 5](#stage-5--用多-cuda-stream-实现异步并发) · 用多 CUDA stream 重叠 GPU 工作，对比各 engine 的 S1–S4 吞吐。
-6. [Stage 6](#stage-6--对比-batch--slot-组合并按负载选型) · 对比 batch × slot，按离线吞吐和在线 P99 选型。
+1. [Stage 1](stage1/README.md) · 用官方 PyTorch 配置复现 COCO PQ 得分。
+2. [Stage 2](stage2/README.md) · 修改预处理为使用 letterbox，选定输入尺寸 1024×1024 / B1 作为部署基线，并选定32张对齐数据和500张计时样本。
+3. [Stage 3](stage3/README.md) · 导出 ONNX，接入 MSDeformAttn 插件，构建trt engine, 替换网络后端并筛选精度策略。
+4. [Stage 4](stage4/README.md) · 用 C++/CUDA 实现前后处理，在单 slot 下对比三种 engine。
+5. [Stage 5](stage5/README.md) · 用多 CUDA stream 重叠 GPU 工作，对比各 engine 的 S1–S4 吞吐。
+6. [Stage 6](stage6/README.md) · 对比 batch × slot，按离线吞吐和在线 P99 选型。
 
-![分阶段性能柱状图。Stage 2 为 PyTorch，Stage 3 为 TensorRT FP32、TF32 off，Stage 4 并列三种 engine 的单 slot 结果，Stage 5 并列三种 engine 的多 slot 吞吐。](docs/roadmap-performance.svg)
+![分阶段性能柱状图。Stage 2 为 PyTorch，Stage 3 和 Stage 4 分别对比三种 TensorRT engine 的单 slot 结果，Stage 5 对比三种 engine 的多 slot 吞吐。](docs/roadmap-performance.svg)
 
-Stage 3 保留 Python 前后处理。Stage 4 并列三种 engine 的原生单 slot 实测，Stage 5 展示各自吞吐峰值（S3 / S3 / S2）。两张图可用 `python3 docs/plot-roadmap.py` 重绘。
+Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stage 5 展示各自吞吐峰值（S3 / S3 / S2）。README 图表可用 `python3 docs/plot-roadmap.py` 重绘。
 
 ## TODO
 
@@ -48,7 +46,7 @@ Stage 3 保留 Python 前后处理。Stage 4 并列三种 engine 的原生单 sl
 
 实测 PQ 按官方表格的一位小数精度为 **53.0**，预测覆盖全部 5,000 个真值图像 ID。
 
-[Stage 1 复现步骤](stage1/README.md) · [验收 tag `stage1-official-pytorch`](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/stage1-official-pytorch) · [环境、数据与权重](docs/experiment-environment.md)
+[Stage 1 复现步骤](stage1/README.md) · [环境、数据与权重](docs/experiment-environment.md)
 
 ## Stage 2 · 调整预处理方法并建立性能基线
 
@@ -80,21 +78,70 @@ Stage 3 保留 Python 前后处理。Stage 4 并列三种 engine 的原生单 sl
 
 表格和右图均按批统计端到端延迟，从该批开始处理内存 JPEG，计到最后一张图的 CPU 输出就绪。
 
-[Stage 2 复现步骤、运行版本与原始结果](stage2/README.md) · 验收 tag `stage2-pytorch-square`
+[Stage 2 复现步骤与原始结果](stage2/README.md)
 
 ## Stage 3 · 将网络转换为 TensorRT
 
-保留 Python 前后处理，将网络替换为 TensorRT，使用 MSDeformAttn PluginV3。TF32 off 的网络 GPU P95 在同轮对照中从 **37.75 降至 21.79 ms**，全量 PQ 与 PyTorch B1 持平（四位小数）。两种允许 TF32 的候选均满足全量 PQ 降幅门槛，逐图差异见上表。[同轮性能](stage3/README.md#性能) · [构建与精度筛选](stage3/README.md#b1s1-精度策略筛选) · [Nsight Systems](stage3/README.md#nsight-systems-基线) · 验收 tag `stage3-fp32-accepted`
+保留 Python 前后处理，将网络替换为 TensorRT，使用 MSDeformAttn PluginV3。[Stage 3 构建、精度筛选与性能分析](stage3/README.md)
+
+**32 张逐图对齐。** 三种 engine 都与同输入的 PyTorch FP32 B1 比较。通过条件为像素类别一致率 ≥99.9%、所有 segment 成功配对且同类 IoU ≥0.98。FP32（TF32 off）通过 **32/32**。FP32（TF32 on）通过 **27/32**，5 张失败图均触发了类别一致率门槛。FP16 混合精度（TF32 on）通过 **16/32**，最差图的类别一致率为 **91.63%**，两边各有一个未配对的 segment。[逐图结果与全量 PQ](stage3/README.md#b1s1-精度策略筛选)
+
+**按验收承诺选型。** 如果要求逐图输出满足上述 PyTorch 一致性门槛，只有 FP32（TF32 off）通过。如果只要求在 5,000 张 COCO val2017 上，PQ、PQ Things 和 PQ Stuff 相对同输入的 PyTorch FP32 各下降不超过 **0.05 点**，三种 engine 均达标，两种 TF32 on 配置可继续纳入性能选型。
+
+![Stage 1–3 累计对比。四个面板分别展示全量 COCO PQ、离线吞吐、端到端 P95 和网络 GPU P95，Stage 3 每项均对比三种 engine。](docs/stage3-cumulative.svg)
+
+PQ 保留 Stage 1 官方输入和 Stage 2 1024/B4 作为历史参考。性能从 Stage 2 的 1024/B1 PyTorch 开始，Stage 3 三种 engine 均使用 B1/S1 和同一份 500 张 JPEG。[Stage 3 三种 engine 的性能](stage3/README.md#三种-engine-的离线性能)
+
+### 整卡峰值显存
+
+固定 1024×1024、B1/S1，使用 Python 前后处理。NVML 每 20 ms 采样整卡显存，包含桌面等其他进程的占用，取每轮观测峰值的三轮中位数。两种 TF32 on 配置来自后续补测。[FP32 基线](stage3/README.md#性能) · [精度策略补测](stage3/README.md#三种-engine-的离线性能)
+
+| 后端 | 整卡峰值显存（GiB） |
+| --- | ---: |
+| PyTorch FP32 | 5.79 |
+| TensorRT FP32（TF32 off） | 5.59 |
+| TensorRT FP32（TF32 on） | 5.59 |
+| TensorRT FP16 混合精度（TF32 on） | 5.49 |
 
 ## Stage 4 · 用 C++/CUDA 实现前后处理
 
-复用 Stage 3 的 engine，用 C++ 解码 JPEG，用 CUDA 完成 resize、padding、归一化、mask 恢复和 panoptic 合并，最后同步 stream 交付 CPU 结果。TF32 off 的端到端 P95 从 **35.18 降至 23.63 ms**。三种 engine 的 C++/Python 同 engine 逐图对照均通过 32/32。[复现、同轮对照与 Nsight 时间线](stage4/README.md) · 验收 tag `stage4-native-fp32-accepted`
+复用 Stage 3 的 engine，用 C++ 解码 JPEG，用 CUDA 完成 resize、padding、归一化、mask 恢复和 panoptic 合并，最后同步 stream 交付 CPU 结果。[复现、同轮对照与 Nsight 时间线](stage4/README.md)
+
+![Stage 1–4 累计对比。四个面板均保留 Stage 3 的三种 engine，并加入 Stage 4 的三种 engine。](docs/stage4-cumulative.svg)
+
+Stage 3 和 Stage 4 均使用 B1/S1，分别展示 Python 与 C++/CUDA 前后处理的结果。
+
+### 进程峰值显存
+
+固定 1024×1024、B1/S1。NVML 每 20 ms 按 PID 采样推理进程显存，覆盖网络、前后处理与 CUDA 上下文，取每轮观测峰值的三轮中位数。前三行来自同轮复测，后两行来自原生链路精度配对。[同轮性能与显存](stage4/README.md#rtx-4090-性能) · [原生链路精度配对](stage4/README.md#b1s1-精度策略对照)
+
+| 推理链路 | 进程峰值显存（GiB） |
+| --- | ---: |
+| PyTorch FP32 | 5.19 |
+| Python 前后处理 + TensorRT FP32（TF32 off） | 4.98 |
+| C++/CUDA 前后处理 + TensorRT FP32（TF32 off） | 1.24 |
+| C++/CUDA 前后处理 + TensorRT FP32（TF32 on） | 1.24 |
+| C++/CUDA 前后处理 + TensorRT FP16 混合精度（TF32 on） | 1.15 |
 
 ## Stage 5 · 用多 CUDA stream 实现异步并发
 
 每个 slot 独立持有 execution context、CUDA stream 和可写缓冲区。Nsight Systems 显示，FP32/TF32 off 在 B1/S3 时有 **37.32%** 的 TensorRT kernel 活跃时间存在跨 stream 重叠。[时间线与原始报告](stage5/README.md#nsight-systems)
 
-TF32 off 的 B1/S3 在每轮 17,500 张的离线长测中达到 **53.22 图/s**。TF32 on 的 FP32 用 S2 可达到 **66.39 图/s**，接近 S3 峰值，且逐图延迟和显存更低。[离线长测](stage5/README.md#离线长测) · [三种精度的吞吐、P95 与显存](stage5/README.md#三种精度的-b1--s1s4-筛选)
+[Stage 5 并发配置、离线长测与精度对照](stage5/README.md)
+
+![Stage 1–5 累计对比。保留 Stage 3–4 的三种 engine，展开 Stage 5 每种 engine 的 B1/S1–S4。](docs/stage5-cumulative.svg)
+
+Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot 起算，Stage 2–4 从处理内存 JPEG 起算，均计到 CPU 结果就绪。Stage 5 的全量 COCO PQ 覆盖 FP32/TF32 off 的 S1–S3，其余配置以 `—` 标示，12 组均通过 32 张逐图检查。[正确性与全量评估](stage5/README.md#正确性) · [三种精度的离线筛选](stage5/README.md#三种精度的-b1--s1s4-筛选)
+
+### 进程峰值显存
+
+固定 B1，由 NVML 每 20 ms 采样推理进程，取每轮峰值的三轮中位数，单位为 GiB。[吞吐、逐图 P95 与显存对照图](stage5/results/precision-comparison.svg)
+
+| Engine | S1 | S2 | S3 | S4 |
+| --- | ---: | ---: | ---: | ---: |
+| FP32 / TF32 off | 1.24 | 1.79 | 2.34 | 2.89 |
+| FP32 / TF32 on | 1.24 | 1.79 | 2.34 | 2.89 |
+| FP16 混合精度 / TF32 on | 1.15 | 1.70 | 2.26 | 2.81 |
 
 ## Stage 6 · 对比 batch × slot 组合并按负载选型
 
@@ -112,7 +159,7 @@ TF32 off 的 B1/S3 在每轮 17,500 张的离线长测中达到 **53.22 图/s**�
 
 [在线长测数据（每轮超过 10,000 请求）](stage6/results/long-capacity.json) · [180 秒缩短验证数据](stage6/results/compact-capacity.json)
 
-[Stage 6 batch 筛选、在线回放与选型](stage6/README.md) · [Stage 5 和 6 拆分前的历史验收 tag `stage5-batch-slots-accepted`](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/stage5-batch-slots-accepted)
+[Stage 6 batch 筛选、在线回放与选型](stage6/README.md)
 
 ## 仓库结构
 
