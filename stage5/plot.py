@@ -33,7 +33,7 @@ def draw(path, title, subtitle, labels, columns, label_width):
         ceiling = max(values)
         for i, (name, value) in enumerate(zip(labels, values)):
             y = 133 + i * 35
-            color = "#168477" if name.startswith("Stage 5") or (label_width == 76 and name != "B1S1") else "#546a85"
+            color = "#168477" if name.startswith("Stage 5") or (label_width == 76 and name != "B1/S1") else "#546a85"
             label(x + 16, y + 4, name, 12, 600)
             bar = (236 - label_width) * value / ceiling
             svg.append(f'<rect x="{x+label_width}" y="{y-8}" width="{bar:.2f}" height="15" rx="3" fill="{color}"/>')
@@ -46,17 +46,30 @@ def plot(results, finalist=None, comparison=None):
     groups = defaultdict(list)
     for row in json.loads((results / "screen/summary.json").read_text()):
         groups[row["config"]].append(row)
-    columns = [[median(metric(row) for row in rows) for rows in groups.values()] for _, _, metric in PANELS]
+
+    # Keep the initial measurements for controls repeated in a follow-up.
+    followups = defaultdict(list)
+    for summary in sorted(results.glob("screen-b8*/summary.json"), key=lambda path: path.parent.name):
+        for row in json.loads(summary.read_text()):
+            if row["config"] not in groups:
+                followups[row["config"]].append(row)
+
+    screening = {**groups, **followups}
+    labels = []
+    for name in screening:
+        label = name.upper().replace("S", "/S")
+        labels.append(f"{label}*" if name in followups else label)
+    columns = [[median(metric(row) for row in rows) for rows in screening.values()] for _, _, metric in PANELS]
     subtitle = "RTX 4090 · 1024 × 1024 · FP32 · same 500 JPEGs · median of 3 rounds"
+    screen_subtitle = subtitle.replace("FP32", "TensorRT FP32")
+    if followups:
+        screen_subtitle += " · * B8 follow-up runs"
     draw(results / "screen.svg", "MaskDINO R50 panoptic · Stage 6 offline screening",
-         subtitle.replace("FP32", "TensorRT FP32"), [name.upper() for name in groups], columns, 76)
+         screen_subtitle, labels, columns, 76)
     if finalist is None:
         return
     if finalist not in groups:
-        for run in results.glob("screen-b8*/summary.json"):
-            for row in json.loads(run.read_text()):
-                if row["config"] == finalist:
-                    groups[finalist].append(row)
+        groups[finalist] = followups[finalist]
     assert len(groups[finalist]) == 3
     configs = sorted((config for config in groups if config.startswith("b1s")), key=lambda config: int(config[3:]))
     if finalist not in configs:

@@ -64,7 +64,7 @@ RTX 4090 上由 `ecf9e25` 运行。表中为三轮中位数，每轮 500 张、�
 
 同轮 Stage 4 原生程序的吞吐中位数是 43.77 图/s。新调度器 B1/S1 是 43.67 图/s。B1/S3 相比新调度器基准吞吐提高 22.2%，并以更低的显存取得略高于两组联合配置的吞吐。B4/S1 相比 B2/S1 仍有 2.7% 的收益，因此补测 B8。 [逐轮数据](results/screen/summary.json) · [运行记录](results/screen/console.log)
 
-![Stage 6 三轮离线筛选](results/screen.svg)
+![Stage 6 三轮离线筛选与 B8 补测](results/screen.svg)
 
 B8/S1 补测为 **48.76 图/s**、逐图 P95 **169.60 ms**、进程峰值 **5.82 GiB**。同轮 B4/S1 为 47.70 图/s，B1/S3 为 53.03 图/s。500 张末尾的 4 张使用 B1，B8/S1 的显存峰值包含常驻 B1 回退路径。B8/S1 和 B1/S3 各通过 32/32 对齐。 [补测数据](results/screen-b8/summary.json) · [验收记录](results/check-b8/console.log)
 
@@ -93,12 +93,14 @@ B8/S2 联合补测为 **52.67 图/s**、逐图 P95 **339.09 ms**、进程峰值 
 
 每点仅约 100–500 个请求。短测用于筛候选和确定长测范围。两组 B2 在这些同序列点上均落后于 B1/S2。 [泊松原始汇总](results/pilot-poisson/summary.jsonl) · [突发原始汇总](results/pilot-burst/summary.jsonl)
 
-补扫 5–20 请求/s 后，选 B1/S1 与 B1/S2 进入在线长测。B2 在 15 请求/s、凑批上限 0/1/2/5 ms 的回放中，最佳 P99 为 **64.95 ms**，同序列 B1/S1 为 **62.91 ms**。25 请求/s 匀速到达时，B1/S1 的 375 请求短测 P99 为 **24.73 ms**。54、58 请求/s 泊松粗扫中，B1/S3、B2/S2 均出现排队累积。 [低速回放](results/pilot-low/summary.jsonl) · [凑批扫描](results/pilot-delay/summary.jsonl) · [匀速回放](results/pilot-uniform/summary.jsonl) · [过载回放](results/pilot-ceiling/summary.jsonl)
+补扫 5–20 请求/s 后，选 B1/S1 与 B1/S2 进入配对验证。15 请求/s 泊松回放中，B2 在 0/1/2/5 ms 凑批上限下测得的最低 P99 为 **64.95 ms**（B2/S1、1 ms，15 秒内 217 个请求）。B1/S1 使用相同种子，20 秒内 306 个请求的 P99 为 **62.91 ms**。两组的 P99 来自不同长度的窗口。54、58 请求/s 泊松粗扫中，B1/S3、B2/S2 均出现排队累积。 [低速回放](results/pilot-low/summary.jsonl) · [凑批扫描](results/pilot-delay/summary.jsonl) · [过载回放](results/pilot-ceiling/summary.jsonl)
 
 
 ### 已验证的匀速轻载
 
-B1/S1 在 25 请求/s 匀速到达下重启进程跑三轮，每轮 420 秒，均完成 10,499 个请求。三轮零拒绝，队列通过稳态检查。P99 分别为 24.55、24.57、24.41 ms。该实测点满足 30 ms P99 预算。 [逐轮结果](results/formal-online-uniform-25-1s1/summary.jsonl)
+25 请求/s 匀速短测使用同一份 15 秒到达序列，各完成 375 个请求。B1/S1、B1/S2、B1/S3 的 P99 分别为 24.73、28.17、27.50 ms。该负载只对 B1/S1 做了长测。 [短测结果](results/pilot-uniform/summary.jsonl)
+
+B1/S1 重启进程跑三轮，每轮 420 秒，均完成 10,499 个请求。三轮零拒绝，队列通过稳态检查。P99 分别为 24.55、24.57、24.41 ms。该实测点满足 30 ms P99 预算。 [逐轮结果](results/formal-online-uniform-25-1s1/summary.jsonl)
 
 ```bash
 bash stage5/run.sh "$data" "$previous" "$engine" formal-online-uniform-25-1s1 online 1s1 \
@@ -107,7 +109,7 @@ bash stage5/run.sh "$data" "$previous" "$engine" formal-online-uniform-25-1s1 on
 
 ### 配对验证的时间预算
 
-匀速 25 请求/s 和泊松 20 请求/s 沿用每轮至少 10,000 请求的长测口径。后续验证限时 90 分钟，采用三个配对种子（311、449、593），每个种子让 B1/S1 和 B1/S2 分别回放相同序列。只有三轮各自通过 P99 和稳态检查、零拒绝的配置才通过该实测点。5 请求/s 档每轮约 900 个请求，P99 由少量尾部观测决定，适合作为缩短后的配置验证。
+泊松 20 请求/s 的配对长测沿用每轮至少 10,000 请求的口径。配对验证采用三个种子（311、449、593），每个种子让 B1/S1 和 B1/S2 分别回放相同序列。只有三轮各自通过 P99 和稳态检查、零拒绝和零错误的配置才通过该实测点。后续验证限时 90 分钟，5 请求/s 档每轮约 900 个请求，P99 由少量尾部观测决定，适合作为缩短后的配置验证。
 
 20 请求/s 突发第一对各跑 210 秒，P99 分别为 140.09 ms 和 102.33 ms。两组已各出现一次超预算。第二个种子在 CUDA 初始化时报错并退出，后续改为每个种子启用独立容器，测 15 请求/s 突发、5 请求/s 泊松、5 请求/s 突发，各 180 秒/轮。 [20 请求/s 突发记录](results/compact-burst-20/console.log)
 
@@ -125,14 +127,14 @@ bash stage5/run.sh "$data" "$previous" "$engine" joint-trace trace 2s2
 
 ## 场景选型
 
-以下为 RTX 4090、1024×1024、TensorRT FP32、内存 JPEG 到 CPU panoptic 结果的实测点。在线使用 64 项 FIFO，B1 无凑批等待。表中 P99 取三轮最差值。
+以下为 RTX 4090、1024×1024、TensorRT FP32、内存 JPEG 到 CPU panoptic 结果的实测点。在线使用 64 项 FIFO，B1 无凑批等待。表中 P99 取三轮最差值。两组都通过时，选进程峰值显存更低的 B1/S1（1.24 GiB，B1/S2 为 1.79 GiB）。
 
 | 场景 | 选型 | 实测范围和证据 |
 | --- | --- | --- |
-| 匀速、30 ms P99 | B1/S1 | 25 请求/s，最差 P99 24.57 ms，三轮各 10,499 个请求 |
+| 匀速、30 ms P99 | B1/S1 | 25 请求/s，最差 P99 24.57 ms，三轮各 10,499 个请求。B1/S2 仅做短测 |
 | 泊松、100 ms P99 | B1/S1 | 20 请求/s，最差 P99 83.06 ms。B1/S2 为 79.52 ms，两个配置均通过 |
 | 周期突发、100 ms P99 | B1/S2 | 平均 15 请求/s，最差 P99 92.46 ms。B1/S1 有一轮 100.007 ms，超过门槛 |
-| 泊松或周期突发、50 ms P99 | B1/S1 | 平均 5 请求/s，最差 P99 分别为 45.85 和 46.47 ms。B1/S2 也通过两组负载 |
+| 泊松或周期突发、50 ms P99 | B1/S1 | 平均 5 请求/s，B1/S1 最差 P99 分别为 45.85 和 46.47 ms，B1/S2 分别为 44.48 和 45.00 ms，两个配置均通过 |
 | 离线批量 | B1/S3 | 53.22 图/s，17,500 张总完成时间中位数 328.78 s，进程峰值 2.34 GiB。见 [Stage 5 长测](../stage5/README.md#离线长测) |
 
 所有在线通过点的测量轮次均零拒绝，并通过队列稳态检查。泊松 20 请求/s 每轮有 10,496–10,661 个请求。缩短后的 15 请求/s 突发每轮有 2,677–2,746 个请求，5 请求/s 每轮有 850–921 个请求。20 请求/s 突发的首对结果均超过 100 ms。通过点给出了各到达模型下已经验证的范围，容量上界仍需更密集的负载扫描。 [原长测汇总](results/long-capacity.json) · [缩短验证汇总](results/compact-capacity.json)
