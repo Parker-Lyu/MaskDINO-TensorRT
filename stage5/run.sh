@@ -14,6 +14,11 @@ shift 4
 cd "$root"
 [[ -z "$(git status --porcelain)" ]] || { echo "Run from a clean checkout" >&2; exit 1; }
 image=$(docker image inspect --format '{{.Id}}' "${MASKDINO_IMAGE:-maskdino:stage1}")
+build="$(dirname -- "$engine")/build.json"
+engine_sha=96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a
+if [[ -f "$build" ]]; then
+    engine_sha=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["engine_sha256"])' "$build")
+fi
 output="$root/stage5/runs/$id"
 mkdir -p "$(dirname "$output")"
 mkdir "$output"
@@ -22,7 +27,8 @@ mkdir "$output"
     echo "Container image: $image"
     printf 'Phase:'; printf ' %q' "$@"; echo
     nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv
-    printf '%s  %s\n' 96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a "$engine" | sha256sum -c
+    printf '%s  %s\n' "$engine_sha" "$engine" | sha256sum -c
+    if [[ -f "$build" ]]; then sha256sum "$build"; fi
     printf '%s  %s\n' 454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a "$dataset/annotations/panoptic_val2017.json" | sha256sum -c
     sha256sum "$engine" "$dataset/annotations/panoptic_val2017.json" stage2/sample.json
     find stage3/runs -path '*/build-b*/network.engine' -exec sha256sum {} +

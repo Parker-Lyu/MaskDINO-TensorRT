@@ -207,8 +207,15 @@ def main():
     assert int(count) == len(images)
     with args.engine.open("rb") as file:
         engine_hash = file_digest(file, "sha256").hexdigest()
+    build_path = args.engine.with_name("build.json")
+    precision, tf32 = "fp32", False
+    if build_path.is_file():
+        build = json.loads(build_path.read_text())
+        if build["engine_sha256"] != engine_hash:
+            raise ValueError(f"Build metadata does not match {args.engine}")
+        precision, tf32 = build["precision"], build["tf32"]
     report = dict(mode=args.mode, backend="native", images=int(count), failures=0, size=SIZE,
-                  batch=1, slots=1, precision="fp32", tf32=False, engine_sha256=engine_hash,
+                  batch=1, slots=1, precision=precision, tf32=tf32, engine_sha256=engine_hash,
                   loop_seconds=float(seconds), cuda_stream="dedicated non-default stream")
     if args.mode == "align":
         report.update(align(args.output, args.engine, images))

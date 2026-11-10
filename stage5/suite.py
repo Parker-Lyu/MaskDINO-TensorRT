@@ -43,14 +43,14 @@ def benchmark(output, config, repeats):
     return summarize(output)
 
 
-def screen(configs, repeats):
+def screen(configs, repeats, *, include_stage4=True):
     rows = []
     for index in range(3):
         order = configs[index:] + configs[:index]
         for config in order:
             output = OUTPUT / f"{name(config)}-r{index + 1}"
             rows.append({"config": name(config), "round": index + 1, **benchmark(output, config, repeats)})
-        if repeats == 1:
+        if repeats == 1 and include_stage4:
             output = OUTPUT / f"stage4-r{index + 1}"
             output.mkdir()
             subprocess.run([BASELINE / "maskdino-native", B1, BASELINE / "things.txt",
@@ -141,6 +141,7 @@ def main():
     parser.add_argument("phase", choices=("check", "screen", "offline", "online", "pq", "trace"))
     parser.add_argument("configs", nargs="+", type=configuration, help="Example: 2s2")
     parser.add_argument("--repeats", type=int, default=1)
+    parser.add_argument("--skip-stage4", action="store_true", help="Reuse existing Stage 4 serial benchmarks")
     parser.add_argument("--rates", type=float, nargs="+")
     parser.add_argument("--delays", type=float, nargs="+", default=[0])
     parser.add_argument("--shapes", choices=("uniform", "poisson", "burst"), nargs="+", default=["poisson"])
@@ -150,7 +151,7 @@ def main():
     if args.phase == "check":
         check(args.configs)
     elif args.phase in ("screen", "offline"):
-        screen(args.configs, args.repeats)
+        screen(args.configs, args.repeats, include_stage4=not args.skip_stage4)
     elif args.phase == "online":
         if not args.rates or min(args.rates) <= 0 or args.seconds <= 0:
             parser.error("Online requires positive rates and duration")

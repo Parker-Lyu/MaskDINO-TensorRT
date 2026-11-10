@@ -20,6 +20,15 @@ cd "$root"
 [[ -z "$(git status --porcelain)" ]] || { echo "Run from a clean checkout" >&2; exit 1; }
 image=$(docker image inspect --format '{{.Id}}' "${MASKDINO_IMAGE:-maskdino:stage1}")
 checkpoint=$(realpath -- "${MASKDINO_CHECKPOINT:-$root/weights/maskdino_r50_panoptic.pth}")
+build="$(dirname -- "$engine")/build.json"
+engine_sha=96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a
+build_mount=()
+precision=fp32
+if [[ -f "$build" ]]; then
+    engine_sha=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["engine_sha256"])' "$build")
+    precision=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["precision"])' "$build")
+    build_mount=(--mount "type=bind,source=$build,target=/build.json,readonly")
+fi
 output="$root/stage4/runs/$id"
 mkdir -p "$(dirname "$output")"
 mkdir "$output"
@@ -28,7 +37,7 @@ mkdir "$output"
     echo "Container image: $image"
     printf 'Command:'; printf ' %q' "$@"; echo
     nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv
-    printf '%s  %s\n' 96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a "$engine" | sha256sum -c
+    printf '%s  %s\n' "$engine_sha" "$engine" | sha256sum -c
     printf '%s  %s\n' 3e3d04a930ad42e14e97bc68d0e5844eefde702aa3d0a2324e603e5e9b5d0d37 "$checkpoint" | sha256sum -c
     printf '%s  %s\n' 454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a "$dataset/annotations/panoptic_val2017.json" | sha256sum -c
     sha256sum "$engine" "$checkpoint" "$dataset/annotations/panoptic_val2017.json" stage2/sample.json
@@ -38,6 +47,7 @@ mkdir "$output"
         --mount "type=bind,source=$dataset,target=/coco,readonly" \
         --mount "type=bind,source=$checkpoint,target=/checkpoint.pth,readonly" \
         --mount "type=bind,source=$engine,target=/network.engine,readonly" \
+        "${build_mount[@]}" \
         --mount "type=bind,source=$root,target=/project,readonly" \
         --mount "type=bind,source=$output,target=/run-output" \
         --entrypoint bash "$image" -ec '
@@ -52,7 +62,7 @@ mkdir "$output"
             profile=(nsys profile --trace=cuda,nvtx,osrt --sample=none --cpuctxsw=none
                      --capture-range=cudaProfilerApi --capture-range-end=stop --output="$output/trace")
             if [[ "$backend" != native ]]; then
-                args=(python -u -m stage3.run "$mode" --backend fp32 --engine /network.engine)
+                args=(python -u -m stage3.run "$mode" --backend "$3" --engine /network.engine)
                 if [[ "$backend" == pytorch ]]; then args=(python -u -m stage3.run "$mode" --backend pytorch); fi
                 if [[ "$mode" == trace ]]; then "${profile[@]}" "${args[@]}"; else "${args[@]}" --process-memory; fi
             else
@@ -80,5 +90,5 @@ mkdir "$output"
                 python -m stage3.trace_summary "$output/trace.sqlite" > "$output/trace-summary.json"
                 (cd "$output"; sha256sum trace.nsys-rep > trace.sha256)
             fi
-        ' bash "$backend" "$mode"
+        ' bash "$backend" "$mode" "$precision"
 } 2>&1 | tee "$output/console.log"
