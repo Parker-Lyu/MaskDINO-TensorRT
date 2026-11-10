@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="342" viewBox="0 0 1000 342" role="img" aria-labelledby="title description">
+<title id="title">PyTorch vs. TensorRT</title>
+<desc id="description">RTX 4090 · 1024 × 1024 · batch 1 · 500 JPEGs · medians of three runs</desc>
+<rect width="1000" height="342" rx="16" fill="#f3f6fa"/>
+<g font-family="system-ui, sans-serif" fill="#172b43">
+<text x="24" y="32" font-size="23" font-weight="700" text-anchor="start">PyTorch vs. TensorRT</text>
+<text x="24" y="55" font-size="14" font-weight="400" text-anchor="start">RTX 4090 · 1024 × 1024 · batch 1 · 500 JPEGs · medians of three runs</text>
+<rect x="20" y="69" width="474" height="218" rx="10" fill="white"/>
+<text x="36" y="96" font-size="17" font-weight="700" text-anchor="start">Single-slot end-to-end P95 (ms) ↓</text>
+<path d="M62 251.00h416" stroke="#dbe3ed"/>
+<text x="55" y="255.00" font-size="12" font-weight="400" text-anchor="end">0</text>
+<path d="M62 207.67h416" stroke="#dbe3ed"/>
+<text x="55" y="211.67" font-size="12" font-weight="400" text-anchor="end">20</text>
+<path d="M62 164.33h416" stroke="#dbe3ed"/>
+<text x="55" y="168.33" font-size="12" font-weight="400" text-anchor="end">40</text>
+<path d="M62 121.00h416" stroke="#dbe3ed"/>
+<text x="55" y="125.00" font-size="12" font-weight="400" text-anchor="end">60</text>
+<text x="114.0" y="274" font-size="13" font-weight="650" text-anchor="middle">PyTorch</text>
+<rect x="102.00" y="138.50" width="24" height="112.50" rx="3" fill="#61748b"/>
+<text x="114.00" y="133.50" font-size="12" font-weight="650" text-anchor="middle">51.93</text>
+<text x="218.0" y="274" font-size="13" font-weight="650" text-anchor="middle">FP32 off</text>
+<rect x="206.00" y="199.80" width="24" height="51.20" rx="3" fill="#3365a6"/>
+<text x="218.00" y="194.80" font-size="12" font-weight="650" text-anchor="middle">23.63</text>
+<text x="322.0" y="274" font-size="13" font-weight="650" text-anchor="middle">FP32 on</text>
+<rect x="310.00" y="212.56" width="24" height="38.44" rx="3" fill="#067969"/>
+<text x="322.00" y="207.56" font-size="12" font-weight="650" text-anchor="middle">17.74</text>
+<text x="426.0" y="274" font-size="13" font-weight="650" text-anchor="middle">FP16 mix</text>
+<rect x="414.00" y="215.35" width="24" height="35.65" rx="3" fill="#a14c17"/>
+<text x="426.00" y="210.35" font-size="12" font-weight="650" text-anchor="middle">16.45</text>
+<rect x="506" y="69" width="474" height="218" rx="10" fill="white"/>
+<text x="522" y="96" font-size="17" font-weight="700" text-anchor="start">Offline throughput (img/s) ↑</text>
+<path d="M548 251.00h416" stroke="#dbe3ed"/>
+<text x="541" y="255.00" font-size="12" font-weight="400" text-anchor="end">0</text>
+<path d="M548 218.50h416" stroke="#dbe3ed"/>
+<text x="541" y="222.50" font-size="12" font-weight="400" text-anchor="end">20</text>
+<path d="M548 186.00h416" stroke="#dbe3ed"/>
+<text x="541" y="190.00" font-size="12" font-weight="400" text-anchor="end">40</text>
+<path d="M548 153.50h416" stroke="#dbe3ed"/>
+<text x="541" y="157.50" font-size="12" font-weight="400" text-anchor="end">60</text>
+<path d="M548 121.00h416" stroke="#dbe3ed"/>
+<text x="541" y="125.00" font-size="12" font-weight="400" text-anchor="end">80</text>
+<text x="600.0" y="274" font-size="13" font-weight="650" text-anchor="middle">PyTorch</text>
+<rect x="588.00" y="217.89" width="24" height="33.11" rx="3" fill="#61748b"/>
+<text x="600.00" y="212.89" font-size="12" font-weight="650" text-anchor="middle">20.38</text>
+<text x="704.0" y="274" font-size="13" font-weight="650" text-anchor="middle">FP32 off</text>
+<rect x="692.00" y="164.29" width="24" height="86.71" rx="3" fill="#3365a6"/>
+<text x="704.00" y="159.29" font-size="12" font-weight="650" text-anchor="middle">53.36</text>
+<text x="808.0" y="274" font-size="13" font-weight="650" text-anchor="middle">FP32 on</text>
+<rect x="796.00" y="143.05" width="24" height="107.95" rx="3" fill="#067969"/>
+<text x="808.00" y="138.05" font-size="12" font-weight="650" text-anchor="middle">66.43</text>
+<text x="912.0" y="274" font-size="13" font-weight="650" text-anchor="middle">FP16 mix</text>
+<rect x="900.00" y="130.18" width="24" height="120.82" rx="3" fill="#a14c17"/>
+<text x="912.00" y="125.18" font-size="12" font-weight="650" text-anchor="middle">74.35</text>
+<text x="500" y="320" font-size="14" font-weight="400" text-anchor="middle">TensorRT throughput: FP32 off S3 · FP32 on S3 · FP16 mix S2</text>
+</g></svg>

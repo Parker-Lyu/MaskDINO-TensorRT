@@ -1,4 +1,4 @@
-"""Rebuild the cumulative README charts from the archived stage results."""
+"""Rebuild the README performance charts from archived stage results."""
 
 from html import escape
 import json
@@ -9,6 +9,8 @@ from statistics import median
 
 DOCS = Path(__file__).resolve().parent
 ROOT = DOCS.parent
+POLICIES = ("PyTorch", "FP32 off", "FP32 on", "FP16 mix")
+COLORS = ("#61748b", "#3365a6", "#067969", "#a14c17")
 
 
 def read_json(path):
@@ -49,6 +51,97 @@ def draw(stage, panels):
               "Latency ends at CPU result. Timing starts at JPEG processing in Stages 2–4 and at slot dispatch in Stage 5.", 14)
     svg.append("</g></svg>")
     (DOCS / f"stage{stage}-cumulative.svg").write_text("\n".join(svg) + "\n")
+
+
+def draw_performance(filename, title, subtitle, panels, show_legend=False):
+    svg = [
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="342" viewBox="0 0 1000 342" role="img" aria-labelledby="title description">',
+        f'<title id="title">{escape(title)}</title>',
+        f'<desc id="description">{escape(subtitle)}</desc>',
+        '<rect width="1000" height="342" rx="16" fill="#f3f6fa"/>',
+        '<g font-family="system-ui, sans-serif" fill="#172b43">',
+    ]
+
+    def label(x, y, content, size=14, weight=400, anchor="start"):
+        svg.append(f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
+                   f'text-anchor="{anchor}">{escape(content)}</text>')
+
+    label(24, 32, title, 23, 700)
+    label(24, 55, subtitle, 14)
+    for index, (heading, limit, groups) in enumerate(panels):
+        x = 20 + 486 * index
+        svg.append(f'<rect x="{x}" y="69" width="474" height="218" rx="10" fill="white"/>')
+        label(x + 16, 96, heading, 17, 700)
+        for tick in range(0, limit + 1, 20):
+            y = 251 - 130 * tick / limit
+            svg.append(f'<path d="M{x + 42} {y:.2f}h416" stroke="#dbe3ed"/>')
+            label(x + 35, f"{y + 4:.2f}", str(tick), 12, anchor="end")
+
+        group_width = 416 / len(groups)
+        for group_index, (name, values) in enumerate(groups):
+            center = x + 42 + group_width * (group_index + 0.5)
+            label(center, 274, name, 13, 650, "middle")
+            for bar_index, (policy, value) in enumerate(values):
+                bar_x = center + 34 * (bar_index - (len(values) - 1) / 2)
+                bar_height = 130 * value / limit
+                bar_y = 251 - bar_height
+                svg.append(f'<rect x="{bar_x - 12:.2f}" y="{bar_y:.2f}" width="24" '
+                           f'height="{bar_height:.2f}" rx="3" fill="{COLORS[policy]}"/>')
+                label(f"{bar_x:.2f}", f"{bar_y - 5:.2f}", f"{value:.2f}", 12, 650, "middle")
+
+    if show_legend:
+        for i, (name, color) in enumerate(zip(
+                ("PyTorch FP32", "FP32 / TF32 off", "FP32 / TF32 on", "FP16 mix / TF32 on"), COLORS)):
+            x = 152 + 180 * i
+            svg.append(f'<rect x="{x}" y="309" width="12" height="12" rx="3" fill="{color}"/>')
+            label(x + 18, 320, name, 13)
+    else:
+        label(500, 320, "TensorRT throughput: FP32 off S3 · FP32 on S3 · FP16 mix S2", 14, anchor="middle")
+    svg.append("</g></svg>")
+    (DOCS / filename).write_text("\n".join(svg) + "\n")
+
+
+def draw_precision(latency, throughput):
+    native = (
+        read_json("stage4/results/precision/tf32-pair/summary.json")["performance"]["on"],
+        read_json("stage4/results/precision/autocast-pair/summary.json")["performance"]["mixed"],
+    )
+    native_latency = [latency[2][2], *(row["e2e_ms_p95"]["median"] for row in native)]
+    native_throughput = [throughput[2][2], *(row["images_per_second"]["median"] for row in native)]
+    # Stage 5 screening medians published in stage5/README.md, using S3 / S3 / S2.
+    slot_throughput = [throughput[3][2], 66.43, 74.35]
+    latency_heading = "Single-slot end-to-end P95 (ms) ↓"
+    throughput_heading = "Offline throughput (img/s) ↑"
+
+    def overview(baseline, values):
+        return [(name, [(i, value)]) for i, (name, value) in enumerate(zip(POLICIES, [baseline, *values]))]
+
+    draw_performance(
+        "precision-performance.svg", "PyTorch vs. TensorRT",
+        "RTX 4090 · 1024 × 1024 · batch 1 · 500 JPEGs · medians of three runs",
+        (
+            (latency_heading, 60, overview(latency[0][2], native_latency)),
+            (throughput_heading, 80, overview(throughput[0][2], slot_throughput)),
+        ),
+    )
+    draw_performance(
+        "roadmap-performance.svg", "Inference performance by stage",
+        "Stage 2 · PyTorch     Stage 3 · TensorRT network     Stage 4 · Native C++/CUDA     Stage 5 · Multi-slot",
+        (
+            (latency_heading, 60, [
+                ("Stage 2", [(0, latency[0][2])]),
+                ("Stage 3", [(1, latency[1][2])]),
+                ("Stage 4", list(enumerate(native_latency, 1))),
+            ]),
+            (throughput_heading, 80, [
+                ("Stage 2", [(0, throughput[0][2])]),
+                ("Stage 3", [(1, throughput[1][2])]),
+                ("Stage 4", list(enumerate(native_throughput, 1))),
+                ("Stage 5", list(enumerate(slot_throughput, 1))),
+            ]),
+        ),
+        show_legend=True,
+    )
 
 
 def main():
@@ -92,6 +185,7 @@ def main():
     )
     for stage in (3, 4, 5):
         draw(stage, panels)
+    draw_precision(latency, throughput)
 
 
 if __name__ == "__main__":

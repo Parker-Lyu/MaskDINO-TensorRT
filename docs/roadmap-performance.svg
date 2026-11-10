@@ -1,45 +1,71 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="760" height="270" viewBox="0 0 760 270" role="img" aria-labelledby="title description">
-  <title id="title">Archived performance by stage</title>
-  <desc id="description">Each stage uses the same 500 JPEGs and reports the median of three runs. The left panel shows single-slot end-to-end P95. The right panel shows offline throughput, with three slots for Stage 5.</desc>
-  <g fill="#f3f6fa">
-    <rect x="0" y="0" width="372" height="240" rx="12"/>
-    <rect x="388" y="0" width="372" height="240" rx="12"/>
-  </g>
-  <g font-family="system-ui, sans-serif" fill="#172b43">
-    <g font-size="18" font-weight="700">
-      <text x="22" y="33">Single-slot end-to-end P95 (ms)</text>
-      <text x="410" y="33">Offline throughput (img/s)</text>
-    </g>
-    <path d="M22 190H350 M410 190H738" stroke="#93a5b8"/>
-    <g text-anchor="middle" font-size="14">
-      <g fill="#405e8b">
-        <rect x="52" y="70.56" width="52" height="119.44"/>
-        <rect x="160" y="109.09" width="52" height="80.91"/>
-        <rect x="268" y="135.65" width="52" height="54.35"/>
-      </g>
-      <g fill="#168477">
-        <rect x="416" y="143.13" width="52" height="46.87"/>
-        <rect x="504" y="118.29" width="52" height="71.71"/>
-        <rect x="592" y="89.60" width="52" height="100.40"/>
-        <rect x="680" y="67.27" width="52" height="122.73"/>
-      </g>
-      <g font-weight="700">
-        <text x="78" y="62">51.93</text>
-        <text x="186" y="101">35.18</text>
-        <text x="294" y="127">23.63</text>
-        <text x="442" y="135">20.38</text>
-        <text x="530" y="110">31.18</text>
-        <text x="618" y="81">43.65</text>
-        <text x="706" y="59">53.36</text>
-      </g>
-      <text x="78" y="215">Stage 2</text>
-      <text x="186" y="215">Stage 3</text>
-      <text x="294" y="215">Stage 4</text>
-      <text x="442" y="215">Stage 2</text>
-      <text x="530" y="215">Stage 3</text>
-      <text x="618" y="215">Stage 4</text>
-      <text x="706" y="215">Stage 5</text>
-    </g>
-    <text x="380" y="260" text-anchor="middle" font-size="13" fill="#546a85">Archived results · 500 images · Median of three runs per stage · Stage 5 uses three slots</text>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="342" viewBox="0 0 1000 342" role="img" aria-labelledby="title description">
+<title id="title">Inference performance by stage</title>
+<desc id="description">Stage 2 · PyTorch     Stage 3 · TensorRT network     Stage 4 · Native C++/CUDA     Stage 5 · Multi-slot</desc>
+<rect width="1000" height="342" rx="16" fill="#f3f6fa"/>
+<g font-family="system-ui, sans-serif" fill="#172b43">
+<text x="24" y="32" font-size="23" font-weight="700" text-anchor="start">Inference performance by stage</text>
+<text x="24" y="55" font-size="14" font-weight="400" text-anchor="start">Stage 2 · PyTorch     Stage 3 · TensorRT network     Stage 4 · Native C++/CUDA     Stage 5 · Multi-slot</text>
+<rect x="20" y="69" width="474" height="218" rx="10" fill="white"/>
+<text x="36" y="96" font-size="17" font-weight="700" text-anchor="start">Single-slot end-to-end P95 (ms) ↓</text>
+<path d="M62 251.00h416" stroke="#dbe3ed"/>
+<text x="55" y="255.00" font-size="12" font-weight="400" text-anchor="end">0</text>
+<path d="M62 207.67h416" stroke="#dbe3ed"/>
+<text x="55" y="211.67" font-size="12" font-weight="400" text-anchor="end">20</text>
+<path d="M62 164.33h416" stroke="#dbe3ed"/>
+<text x="55" y="168.33" font-size="12" font-weight="400" text-anchor="end">40</text>
+<path d="M62 121.00h416" stroke="#dbe3ed"/>
+<text x="55" y="125.00" font-size="12" font-weight="400" text-anchor="end">60</text>
+<text x="131.33333333333331" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 2</text>
+<rect x="119.33" y="138.50" width="24" height="112.50" rx="3" fill="#61748b"/>
+<text x="131.33" y="133.50" font-size="12" font-weight="650" text-anchor="middle">51.93</text>
+<text x="270.0" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 3</text>
+<rect x="258.00" y="174.77" width="24" height="76.23" rx="3" fill="#3365a6"/>
+<text x="270.00" y="169.77" font-size="12" font-weight="650" text-anchor="middle">35.18</text>
+<text x="408.66666666666663" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 4</text>
+<rect x="362.67" y="199.80" width="24" height="51.20" rx="3" fill="#3365a6"/>
+<text x="374.67" y="194.80" font-size="12" font-weight="650" text-anchor="middle">23.63</text>
+<rect x="396.67" y="212.56" width="24" height="38.44" rx="3" fill="#067969"/>
+<text x="408.67" y="207.56" font-size="12" font-weight="650" text-anchor="middle">17.74</text>
+<rect x="430.67" y="215.35" width="24" height="35.65" rx="3" fill="#a14c17"/>
+<text x="442.67" y="210.35" font-size="12" font-weight="650" text-anchor="middle">16.45</text>
+<rect x="506" y="69" width="474" height="218" rx="10" fill="white"/>
+<text x="522" y="96" font-size="17" font-weight="700" text-anchor="start">Offline throughput (img/s) ↑</text>
+<path d="M548 251.00h416" stroke="#dbe3ed"/>
+<text x="541" y="255.00" font-size="12" font-weight="400" text-anchor="end">0</text>
+<path d="M548 218.50h416" stroke="#dbe3ed"/>
+<text x="541" y="222.50" font-size="12" font-weight="400" text-anchor="end">20</text>
+<path d="M548 186.00h416" stroke="#dbe3ed"/>
+<text x="541" y="190.00" font-size="12" font-weight="400" text-anchor="end">40</text>
+<path d="M548 153.50h416" stroke="#dbe3ed"/>
+<text x="541" y="157.50" font-size="12" font-weight="400" text-anchor="end">60</text>
+<path d="M548 121.00h416" stroke="#dbe3ed"/>
+<text x="541" y="125.00" font-size="12" font-weight="400" text-anchor="end">80</text>
+<text x="600.0" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 2</text>
+<rect x="588.00" y="217.89" width="24" height="33.11" rx="3" fill="#61748b"/>
+<text x="600.00" y="212.89" font-size="12" font-weight="650" text-anchor="middle">20.38</text>
+<text x="704.0" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 3</text>
+<rect x="692.00" y="200.33" width="24" height="50.67" rx="3" fill="#3365a6"/>
+<text x="704.00" y="195.33" font-size="12" font-weight="650" text-anchor="middle">31.18</text>
+<text x="808.0" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 4</text>
+<rect x="762.00" y="180.07" width="24" height="70.93" rx="3" fill="#3365a6"/>
+<text x="774.00" y="175.07" font-size="12" font-weight="650" text-anchor="middle">43.65</text>
+<rect x="796.00" y="156.33" width="24" height="94.67" rx="3" fill="#067969"/>
+<text x="808.00" y="151.33" font-size="12" font-weight="650" text-anchor="middle">58.26</text>
+<rect x="830.00" y="148.56" width="24" height="102.44" rx="3" fill="#a14c17"/>
+<text x="842.00" y="143.56" font-size="12" font-weight="650" text-anchor="middle">63.04</text>
+<text x="912.0" y="274" font-size="13" font-weight="650" text-anchor="middle">Stage 5</text>
+<rect x="866.00" y="164.29" width="24" height="86.71" rx="3" fill="#3365a6"/>
+<text x="878.00" y="159.29" font-size="12" font-weight="650" text-anchor="middle">53.36</text>
+<rect x="900.00" y="143.05" width="24" height="107.95" rx="3" fill="#067969"/>
+<text x="912.00" y="138.05" font-size="12" font-weight="650" text-anchor="middle">66.43</text>
+<rect x="934.00" y="130.18" width="24" height="120.82" rx="3" fill="#a14c17"/>
+<text x="946.00" y="125.18" font-size="12" font-weight="650" text-anchor="middle">74.35</text>
+<rect x="152" y="309" width="12" height="12" rx="3" fill="#61748b"/>
+<text x="170" y="320" font-size="13" font-weight="400" text-anchor="start">PyTorch FP32</text>
+<rect x="332" y="309" width="12" height="12" rx="3" fill="#3365a6"/>
+<text x="350" y="320" font-size="13" font-weight="400" text-anchor="start">FP32 / TF32 off</text>
+<rect x="512" y="309" width="12" height="12" rx="3" fill="#067969"/>
+<text x="530" y="320" font-size="13" font-weight="400" text-anchor="start">FP32 / TF32 on</text>
+<rect x="692" y="309" width="12" height="12" rx="3" fill="#a14c17"/>
+<text x="710" y="320" font-size="13" font-weight="400" text-anchor="start">FP16 mix / TF32 on</text>
+</g></svg>
