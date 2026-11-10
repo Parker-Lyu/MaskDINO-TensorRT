@@ -90,7 +90,7 @@ def screen(configs, repeats, *, include_stage4=True):
         print(name(config), values, "median", statistics.median(values))
 
 
-def check(configs):
+def check(configs, *, strict=True):
     from stage5.validate import alignment
     for config in configs:
         output = OUTPUT / name(config)
@@ -98,7 +98,7 @@ def check(configs):
         result = alignment(output, ALIGN)
         (output / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
         print(name(config), sum(row["passed"] for row in result["per_image"]), "/", result["images"])
-        if not result["passed"]:
+        if strict and not result["passed"]:
             raise RuntimeError(f"{name(config)} correctness gate failed")
     if (4, 2) in configs:
         output = OUTPUT / "tail"
@@ -109,8 +109,10 @@ def check(configs):
         result = alignment(output, ALIGN, {int(line.split()[0]) for line in lines})
         (output / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
         report = summarize(output)
-        assert result["passed"] and report["batch_dispatch_histogram"] == {4: 7, 1: 3}
-        print("Offline tail:", report["batch_dispatch_histogram"])
+        assert report["batch_dispatch_histogram"] == {4: 7, 1: 3}
+        print("Offline tail:", report["batch_dispatch_histogram"], "aligned", result["passed"])
+        if strict and not result["passed"]:
+            raise RuntimeError("Offline tail correctness gate failed")
     if (2, 2) in configs:
         output = OUTPUT / "mixed"
         trace = OUTPUT / "mixed-arrivals.txt"
@@ -119,8 +121,10 @@ def check(configs):
         result = alignment(output, ALIGN)
         (output / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
         report = summarize(output, 2.0)
-        assert result["passed"] and report["batch_dispatch_histogram"].keys() == {1, 2}
-        print("Mixed B1/B2:", report["batch_dispatch_histogram"])
+        assert report["batch_dispatch_histogram"].keys() == {1, 2}
+        print("Mixed B1/B2:", report["batch_dispatch_histogram"], "aligned", result["passed"])
+        if strict and not result["passed"]:
+            raise RuntimeError("Mixed B1/B2 correctness gate failed")
 
 
 def online(configs, delays, shapes, rates, seconds, seeds):
@@ -172,6 +176,8 @@ def main():
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--skip-stage4", action="store_true", help="Reuse existing Stage 4 serial benchmarks")
     parser.add_argument("--pq-reference", choices=("stage4", "pytorch"), default="stage4")
+    parser.add_argument("--report-alignment", action="store_true",
+                        help="Report numeric differences for check without failing the run")
     parser.add_argument("--rates", type=float, nargs="+")
     parser.add_argument("--delays", type=float, nargs="+", default=[0])
     parser.add_argument("--shapes", choices=("uniform", "poisson", "burst"), nargs="+", default=["poisson"])
@@ -180,7 +186,7 @@ def main():
     args = parser.parse_args()
     verify_batch_engines(args.configs)
     if args.phase == "check":
-        check(args.configs)
+        check(args.configs, strict=not args.report_alignment)
     elif args.phase in ("screen", "offline"):
         screen(args.configs, args.repeats, include_stage4=not args.skip_stage4)
     elif args.phase == "online":
