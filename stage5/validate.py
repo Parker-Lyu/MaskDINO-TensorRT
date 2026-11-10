@@ -27,13 +27,16 @@ def alignment(output, reference, image_ids=None):
     return {"passed": all(row["passed"] for row in rows), "images": len(rows), "per_image": rows}
 
 
-def full_pq(output):
+def full_pq(output, *, reference="stage4"):
     annotation, images = load_requests("evaluate")
     result = evaluate(output, annotation, images)
-    stage4 = Path(__file__).resolve().parents[1] / "stage4/results/native-pq/result.json"
-    baseline = json.loads(stage4.read_text())["scores"]
+    source = {
+        "stage4": "stage4/results/native-pq/result.json",
+        "pytorch": "stage3/results/pt-pq/result.json",
+    }[reference]
+    baseline = json.loads((Path(__file__).resolve().parents[1] / source).read_text())["scores"]
     deltas = {key: result["scores"][key] - baseline[key] for key in ("PQ", "PQ_th", "PQ_st")}
-    result["delta_vs_stage4"] = deltas
+    result[f"delta_vs_{reference}"] = deltas
     result["passed"] = all(delta >= -LIMITS["fp32"]["pq_delta"] for delta in deltas.values())
     return result
 
