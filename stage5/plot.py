@@ -83,10 +83,35 @@ def plot(results, finalist=None, comparison=None):
          subtitle, labels, columns, 76)
 
 
+def plot_precision(results, output):
+    precision = Path(__file__).resolve().parent / "results/precision"
+    sources = {
+        "FP32 / TF32 off": results / "screen/summary.json",
+        "FP32 / TF32 on": precision / "on/screen/summary.json",
+        "FP16 mix / TF32 on": precision / "autocast-on/screen/summary.json",
+    }
+    labels, groups = [], []
+    for policy, path in sources.items():
+        rows = json.loads(path.read_text())
+        for slots in range(1, 5):
+            group = [row for row in rows if row["config"] == f"b1s{slots}"]
+            assert sorted(row["round"] for row in group) == [1, 2, 3]
+            labels.append(f"{policy} · S{slots}")
+            groups.append(group)
+    columns = [[median(metric(row) for row in group) for group in groups] for _, _, metric in PANELS]
+    draw(output, "MaskDINO R50 panoptic · B1 precision and slot screening",
+         "RTX 4090 · same 500 JPEGs per round · 3-round medians · TF32 off from the historical screen",
+         labels, columns, 158)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("results", type=Path)
     parser.add_argument("--finalist")
     parser.add_argument("--comparison", type=Path, help="Output path for the Stage 5 slot comparison")
+    parser.add_argument("--precision-comparison", type=Path, help="Output path for the three-policy slot comparison")
     args = parser.parse_args()
-    plot(args.results, args.finalist, args.comparison)
+    if args.precision_comparison:
+        plot_precision(args.results, args.precision_comparison)
+    else:
+        plot(args.results, args.finalist, args.comparison)

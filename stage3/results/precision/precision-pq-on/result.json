@@ -1,0 +1,29 @@
+{
+  "mode": "evaluate",
+  "backend": "fp32",
+  "size": 1024,
+  "batch": 1,
+  "slots": 1,
+  "torch": "2.10.0a0+b558c986e8.nv25.11",
+  "cuda": "13.0",
+  "tf32": true,
+  "cuda_stream": "dedicated non-default stream",
+  "sample_sha256": "270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5",
+  "config_sha256": "89f9b1e0497cf6adf27d4e8231865f76dfefe01d71dec77537768848fde2c7ff",
+  "engine_sha256": "605849843c7e938c4b17d43f263a0dfe9db0ac6b2d2b33f5f8914b2850fc4acd",
+  "images": 5000,
+  "failures": 0,
+  "loop_seconds": 160.1017181950001,
+  "scores": {
+    "PQ": 53.17450893309748,
+    "SQ": 83.3313303705047,
+    "RQ": 63.00965163880612,
+    "PQ_th": 59.001048950540444,
+    "SQ_th": 84.64114556553965,
+    "RQ_th": 69.24653290046567,
+    "PQ_st": 44.37973154827787,
+    "SQ_st": 81.35425083082932,
+    "RQ_st": 53.59549124384824
+  },
+  "unique_prediction_ids": 5000
+}

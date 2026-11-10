@@ -1,6 +1,6 @@
 # Stage 5 · 用多 CUDA stream 实现异步并发
 
-固定 RTX 4090、MaskDINO R50 panoptic、1024×1024、TensorRT FP32、关闭 TF32，复用 Stage 4 的 B1 engine 和 C++/CUDA 前后处理。每个请求处理一张内存 JPEG，交付原图尺寸的 CPU panoptic map 和 segment metadata。固定 batch 为 1，只扫 slot 数。批大小与在线负载的比较见 [Stage 6](../stage6/README.md)。
+固定 RTX 4090、MaskDINO R50 panoptic、1024×1024，复用 Stage 4 的 B1 engine 和 C++/CUDA 前后处理。每个请求处理一张内存 JPEG，交付原图尺寸的 CPU panoptic map 和 segment metadata。固定 batch 为 1，只扫 slot 数。先给出 FP32/TF32 off 的流水线参考，再比较两种允许 TF32 的精度策略。批大小与在线负载的比较见 [Stage 6](../stage6/README.md)。
 
 ## Slot 生命周期
 
@@ -67,6 +67,43 @@ B1/S3 的稳态吞吐提高 **21.7%**，固定任务总完成时间缩短 **17.8
 ### 正确性
 
 32 张逐图对齐使用 Stage 4 的类别一致率、segment 配对和 IoU 阈值，B1/S1、S2、S3、S4 均通过。B1/S1、S2、S3 的正式评估在 `c8d4796` 上运行，各覆盖 5,000 个唯一 COCO 预测 ID。三组 PQ / PQ_th / PQ_st 均为 **53.186256 / 59.027261 / 44.369645**，与 Stage 4 一致。 [S1/S2/S4 对齐](../stage6/results/check/console.log) · [S3 对齐](../stage6/results/check-b8/b1s3/validation.json) · [全量 PQ](results/pq/)
+
+### 三种精度的 B1 × S1–S4 筛选
+
+固定 1024×1024、C++/CUDA 前后处理和饱和离线负载，比较 FP32/TF32 off、FP32/TF32 on 和模型级 autocast FP16/TF32 on。新测两种候选各自轮换 S1–S4 的执行顺序，共三轮，每轮同顺序预载 500 张 JPEG，每 slot 预热 20 批。表中 P95 从派发到 slot 计到 CPU 结果就绪，吞吐按整轮墙钟时间计算。显存是 NVML 每 20 ms 采样的进程峰值。FP32/off 沿用上方历史初筛，可比较各组随 slot 数变化的趋势。三种精度来自分组运行，精度间差值为跨组描述。
+
+| 精度策略 | Slot | 吞吐（图/s） | 逐图 P95（ms） | 进程峰值显存（GiB） | 逐图检查 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| FP32 / TF32 off | S1 | 43.67 | 23.74 | 1.24 | 32/32 |
+| FP32 / TF32 off | S2 | 50.89 | 41.93 | 1.79 | 32/32 |
+| FP32 / TF32 off | S3 | 53.36 | 58.54 | 2.34 | 32/32 |
+| FP32 / TF32 off | S4 | 53.08 | 77.74 | 2.89 | 32/32 |
+| FP32 / TF32 on | S1 | 58.18 | 17.79 | 1.24 | 32/32 |
+| FP32 / TF32 on | S2 | 66.39 | 32.41 | 1.79 | 32/32 |
+| FP32 / TF32 on | S3 | 66.43 | 49.97 | 2.34 | 32/32 |
+| FP32 / TF32 on | S4 | 65.32 | 65.34 | 2.89 | 32/32 |
+| FP16 混合精度 / TF32 on | S1 | 62.96 | 16.48 | 1.15 | 32/32 |
+| FP16 混合精度 / TF32 on | S2 | 74.35 | 28.42 | 1.70 | 32/32 |
+| FP16 混合精度 / TF32 on | S3 | 73.26 | 44.70 | 2.26 | 32/32 |
+| FP16 混合精度 / TF32 on | S4 | 72.01 | 60.25 | 2.81 | 32/32 |
+
+新测两组共完成 **12,000** 张计时请求，零失败。FP32/on 的 S2 与 S3 吞吐分别为 **66.39** 和 **66.43 图/s**，S2 的逐图 P95 少 **17.56 ms**，进程峰值显存少 **0.55 GiB**。混合/on 在 S2 达到组内最高吞吐 **74.35 图/s**，相对其 S1 提升 **18.1%**。
+
+新测使用 `cc64d1b`、RTX 4090、驱动 595.84、CUDA 13.0、TensorRT 10.14.1.48 和 Stage 4 的参考容器。每个候选用自身 Stage 4 的 B1/S1 原生预测作逐图参考，S1–S4 均沿用类别一致率 ≥99.9%、全部 segment 配对且同类 IoU ≥0.98。 [FP32/on 逐图结果](results/precision/on/check/) · [FP32/on 逐轮计时](results/precision/on/screen/) · [混合/on 逐图结果](results/precision/autocast-on/check/) · [混合/on 逐轮计时](results/precision/autocast-on/screen/)
+
+![Throughput, per-image P95 and peak process VRAM for three precision policies and one to four slots](results/precision-comparison.svg)
+
+### 复现精度筛选
+
+沿用 [Stage 3 候选构建](../stage3/README.md#b1s1-精度策略筛选) 的镜像、数据和 engine。每次选择一个候选，令 `previous/native-align-fixed` 指向该 engine 的 Stage 4 32 张原生预测目录，`previous/perf-native-r1` 包含 Stage 4 原生性能运行的 `manifest.tsv` 和 `things.txt`。把文件放在实际挂载的目录下。新测复用了 Stage 4 已有的两份原生参考输出，避免重复生成预测和原生计时。
+
+```bash
+bash stage5/run.sh "$data" "$previous" "$engine" precision-check-new check 1s1 1s2 1s3 1s4
+bash stage5/run.sh "$data" "$previous" "$engine" precision-screen-new screen 1s1 1s2 1s3 1s4 --skip-stage4
+python3 -m stage5.plot stage6/results --precision-comparison stage5/results/precision-comparison.svg
+```
+
+逐请求 TSV、验收 JSON 和运行日志位于结果目录。完整预测和运行目录保存在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-precision/native-repo/stage5/runs/`。Stage 6 的现有负载选型使用 TF32 off 的历史结果。
 
 ## 复现入口
 

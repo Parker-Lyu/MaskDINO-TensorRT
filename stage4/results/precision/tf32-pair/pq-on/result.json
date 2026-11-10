@@ -1,0 +1,33 @@
+{
+  "mode": "evaluate",
+  "backend": "native",
+  "images": 5000,
+  "failures": 0,
+  "size": 1024,
+  "batch": 1,
+  "slots": 1,
+  "precision": "fp32",
+  "tf32": true,
+  "engine_sha256": "605849843c7e938c4b17d43f263a0dfe9db0ac6b2d2b33f5f8914b2850fc4acd",
+  "loop_seconds": 86.778103782,
+  "cuda_stream": "dedicated non-default stream",
+  "scores": {
+    "PQ": 53.17450787868303,
+    "SQ": 83.33132895981734,
+    "RQ": 63.00965163880612,
+    "PQ_th": 59.00104719287212,
+    "SQ_th": 84.6411432213388,
+    "RQ_th": 69.24653290046567,
+    "PQ_st": 44.37973155537869,
+    "SQ_st": 81.35425082921891,
+    "RQ_st": 53.59549124384824
+  },
+  "unique_prediction_ids": 5000,
+  "delta_vs_stage3": {
+    "PQ": -0.011743892529437971,
+    "PQ_th": -0.026211464194908274,
+    "PQ_st": 0.010093951493928444
+  },
+  "passed": true,
+  "reference": "stage3/results/pt-pq/result.json"
+}

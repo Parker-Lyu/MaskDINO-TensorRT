@@ -1,6 +1,6 @@
 # Stage 4 · 用 C++/CUDA 实现前后处理
 
-复用 Stage 3 的 MaskDINO R50 panoptic TensorRT FP32 engine。固定 1024×1024、batch 1、单 slot、单条显式 CUDA stream，TF32 保持关闭。原生入口 `maskdino-native` 直接读取内存 JPEG，输出 CPU int32 panoptic map 和 segment metadata。运行时链接 TensorRT、CUDA、libjpeg、NVML 与系统库。Python 用于组织实验、参考链路、对齐和 COCO 评估。
+复用 Stage 3 的 MaskDINO R50 panoptic TensorRT engine。固定 1024×1024、batch 1、单 slot、单条显式 CUDA stream，迁移基线关闭 TF32，另外比较两种允许 TF32 的精度策略。原生入口 `maskdino-native` 直接读取内存 JPEG，输出 CPU int32 panoptic map 和 segment metadata。运行时链接 TensorRT、CUDA、libjpeg、NVML 与系统库。Python 用于组织实验、参考链路、对齐和 COCO 评估。
 
 ## 实现与验收
 
@@ -75,6 +75,54 @@ python3 stage3/trace_plot.py stage3/runs/{trace-pytorch-rerun,trace-fp32}/trace.
 相对本阶段复测的 Python/TensorRT 链路，原生链路端到端 P95 降低 **32.8%**，吞吐增加 **39.8%**，进程显存采样峰值降低 **75.1%**。网络 P95 增加 0.05 ms，P50 增加 0.93 ms。九轮均完成 500 张，失败数为 0。 [逐轮汇总](results/summary.json)
 
 ![Stage 1–4 全量 COCO PQ 与 Stage 4 同轮性能对照](results/comparison.svg)
+
+## B1/S1 精度策略对照
+
+固定 RTX 4090、1024×1024、单 slot、原生 C++/CUDA 前后处理和同一份 500 张 JPEG。复用两组已有的原生配对实验。每组每轮预热 20 次，参考和候选交替运行，共三轮，每轮 500 张且零失败。表中为三轮中位数。两组各自有 FP32/TF32 on 数据，差值按组内比较。
+
+| 配对组 | Engine | 网络 GPU P95（ms） | 端到端 P95（ms） | 离线吞吐（图/s） | 进程峰值显存（MiB） |
+| --- | --- | ---: | ---: | ---: | ---: |
+| TF32 开关 | FP32 / TF32 off | 21.73 | 23.59 | 43.71 | 1,270 |
+| TF32 开关 | FP32 / TF32 on | 15.71 | 17.74 | 58.26 | 1,270 |
+| 模型级 autocast | FP32 / TF32 on | 15.71 | 17.74 | 58.27 | 1,270 |
+| 模型级 autocast | FP16 混合精度 / TF32 on | 14.40 | 16.45 | 63.04 | 1,176 |
+
+允许 TF32 后，FP32 的端到端 P95 下降 **24.8%**，吞吐增加 **33.3%**。在两组都允许 TF32 时，模型级 autocast 再缩短 **1.29 ms** 的端到端 P95，吞吐增加 **8.2%**。 [TF32 逐轮汇总](results/precision/tf32-pair/summary.json) · [Autocast 逐轮汇总](results/precision/autocast-pair/summary.json)
+
+### 同一 engine 的 Python 与 C++/CUDA 输出
+
+使用候选的同一个 engine，通过 Python 和原生 C++/CUDA 各自生成输出。新测复用原有 32 张原生预测，只补 Python 预测、同张量后处理对照和 7 组后处理边界检查。FP32/off 使用历史验收的 engine。两个 on 候选分别在 `125f8a5` 和 `cc64d1b` 完成同 engine 检查。
+
+| Engine | Python 与原生逐图通过 | 同张量后处理通过 | 类别一致率 / 同类 IoU 最小值 | Metadata 一致 |
+| --- | ---: | ---: | --- | ---: |
+| [FP32 / TF32 off](results/native-align-fixed/result.json) | 32/32 | 32/32 | 100% / 1.0 | 32/32 |
+| [FP32 / TF32 on](results/precision/precision-align-on/result.json) | 32/32 | 32/32 | 100% / 1.0 | 32/32 |
+| [FP16 混合精度 / TF32 on](results/precision/precision-align-autocast-on/result.json) | 32/32 | 32/32 | 100% / 1.0 | 32/32 |
+
+两个候选的原生与 Python 全量结果中，三项 PQ 的最大绝对差小于 0.000002 点。
+
+### 原生链路的跨精度差异
+
+以下比较固定原生前后处理并更换 engine。逐图按类别一致率 ≥99.9%、全部 segment 配对且同类 IoU ≥0.98 统计。全量按 [Stage 3 PyTorch FP32 B1](../stage3/results/pt-pq/result.json) 的三项 PQ 各下降不超过 0.05 点统计。
+
+| 配置 | 原生逐图参考 | 逐图通过 | 最差类别一致率 | PQ / PQ_th / PQ_st | 相对 PyTorch ΔPQ / ΔPQ_th / ΔPQ_st |
+| --- | --- | ---: | ---: | --- | --- |
+| FP32 / TF32 on | FP32 / TF32 off | 27/32 | 99.5868% | 53.174508 / 59.001047 / 44.379732 | −0.011744 / −0.026211 / +0.010094 |
+| FP16 混合精度 / TF32 on | FP32 / TF32 on | 15/32 | 91.6264% | 53.168045 / 59.007167 / 44.354277 | −0.018207 / −0.020092 / −0.015361 |
+
+两种候选均覆盖 **5,000** 个唯一真值图像 ID，三项全量 PQ 均达标。TF32 on 的 5 张逐图失败只涉及类别一致率，segment 均配对且 IoU 达标。混合精度有 9 张出现未配对 segment 或 IoU 低于 0.98，最差类别一致率出现在 `435081`。 [TF32 逐图与差异图](results/precision/tf32-pair/) · [Autocast 逐图与差异图](results/precision/autocast-pair/)
+
+### 运行来源与复现
+
+2026-11-10 在 RTX 4090 上运行，驱动 595.84、CUDA 13.0、TensorRT 10.14.1.48。原生两组分别运行于 `26f56c8` 和 `81a7d61`，完整提交和镜像 ID 见日志。TF32 配对使用同一 FP32 ONNX 构建的 off/on engine，TF32 off 的 engine SHA 与早期原生验收使用的 engine 不同。混合精度配对复用 TF32 on engine。原始 engine 和预测位于 4090 的 `/home/parker/Code/MaskDINO-TensorRT-stage7/repo/`，目录为 `stage3/runs/stage7-build-{off,on,autocast-on}/` 和 `stage7/runs/{tf32-pair,autocast-tf32-on}/`。 [TF32 原生运行日志](results/precision/tf32-pair/console.log) · [Autocast 原生运行日志](results/precision/autocast-pair/console.log) · [配对 off 构建记录](results/precision/tf32-pair/build-off/)
+
+复现时沿用 [Stage 3 精度构建](../stage3/README.md#b1s1-精度策略筛选) 的镜像、权重、数据和 engine。将各 engine 与对应的 `build.json` 放在一起，运行以下命令。对每个原生配对按参考、候选的顺序交替计时三轮。
+
+```bash
+bash stage4/run.sh "$data" "$engine" precision-align-new native align
+bash stage4/run.sh "$data" "$engine" precision-pq-new native evaluate
+bash stage4/run.sh "$data" "$engine" precision-perf-r1 native benchmark
+```
 
 ## Nsight Systems
 

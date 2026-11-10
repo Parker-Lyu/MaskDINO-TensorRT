@@ -1,0 +1,62 @@
+Project commit: 125f8a50bf7279a2ffafbf3e9a9a61d59c237931
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Reused native predictions and restore-check.so: on from /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage7/runs
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+605849843c7e938c4b17d43f263a0dfe9db0ac6b2d2b33f5f8914b2850fc4acd  /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-on/network.engine
+88f614a6ab9673a7283f9be33aef51c49f580a2f1a3f7e7865bef175d9b3eb50  /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-on/build.json
+3e3d04a930ad42e14e97bc68d0e5844eefde702aa3d0a2324e603e5e9b5d0d37  /home/parker/Code/MaskDINO-TensorRT/weights/maskdino_r50_panoptic.pth
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+5a5ed5a74dcef54bcbf5dc14684f215486c0c84fdaadf28930d930d1358530a6  /home/parker/Code/MaskDINO-TensorRT-precision/native-repo/stage4/runs/precision-align-on/manifest.tsv
+163436bfaeb5b69908328bc99c3fddbc51cc6ad7544650b38f9d1285091d0aa4  /home/parker/Code/MaskDINO-TensorRT-precision/native-repo/stage4/runs/precision-align-on/restore-check.so
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+/usr/local/lib/python3.12/dist-packages/torch/backends/__init__.py:46: UserWarning: Please use the new API settings to control TF32 behavior, such as torch.backends.cudnn.conv.fp32_precision = 'tf32' or torch.backends.cuda.matmul.fp32_precision = 'ieee'. Old settings, e.g, torch.backends.cuda.matmul.allow_tf32 = True, torch.backends.cudnn.allow_tf32 = True, allowTF32CuDNN() and allowTF32CuBLAS() will be deprecated after Pytorch 2.9. Please see https://pytorch.org/docs/main/notes/cuda.html#tensorfloat-32-tf32-on-ampere-and-later-devices (Triggered internally at /opt/pytorch/pytorch/aten/src/ATen/Context.cpp:45.)
+  self.setter(val)
+criterion.weight_dict  {'loss_ce': 4.0, 'loss_mask': 5.0, 'loss_dice': 5.0, 'loss_bbox': 5.0, 'loss_giou': 2.0, 'loss_ce_interm': 4.0, 'loss_mask_interm': 5.0, 'loss_dice_interm': 5.0, 'loss_bbox_interm': 5.0, 'loss_giou_interm': 2.0, 'loss_ce_dn': 4.0, 'loss_mask_dn': 5.0, 'loss_dice_dn': 5.0, 'loss_bbox_dn': 5.0, 'loss_giou_dn': 2.0, 'loss_ce_interm_dn': 4.0, 'loss_mask_interm_dn': 5.0, 'loss_dice_interm_dn': 5.0, 'loss_bbox_interm_dn': 5.0, 'loss_giou_interm_dn': 2.0, 'loss_ce_0': 4.0, 'loss_mask_0': 5.0, 'loss_dice_0': 5.0, 'loss_bbox_0': 5.0, 'loss_giou_0': 2.0, 'loss_ce_interm_0': 4.0, 'loss_mask_interm_0': 5.0, 'loss_dice_interm_0': 5.0, 'loss_bbox_interm_0': 5.0, 'loss_giou_interm_0': 2.0, 'loss_ce_dn_0': 4.0, 'loss_mask_dn_0': 5.0, 'loss_dice_dn_0': 5.0, 'loss_bbox_dn_0': 5.0, 'loss_giou_dn_0': 2.0, 'loss_ce_interm_dn_0': 4.0, 'loss_mask_interm_dn_0': 5.0, 'loss_dice_interm_dn_0': 5.0, 'loss_bbox_interm_dn_0': 5.0, 'loss_giou_interm_dn_0': 2.0, 'loss_ce_1': 4.0, 'loss_mask_1': 5.0, 'loss_dice_1': 5.0, 'loss_bbox_1': 5.0, 'loss_giou_1': 2.0, 'loss_ce_interm_1': 4.0, 'loss_mask_interm_1': 5.0, 'loss_dice_interm_1': 5.0, 'loss_bbox_interm_1': 5.0, 'loss_giou_interm_1': 2.0, 'loss_ce_dn_1': 4.0, 'loss_mask_dn_1': 5.0, 'loss_dice_dn_1': 5.0, 'loss_bbox_dn_1': 5.0, 'loss_giou_dn_1': 2.0, 'loss_ce_interm_dn_1': 4.0, 'loss_mask_interm_dn_1': 5.0, 'loss_dice_interm_dn_1': 5.0, 'loss_bbox_interm_dn_1': 5.0, 'loss_giou_interm_dn_1': 2.0, 'loss_ce_2': 4.0, 'loss_mask_2': 5.0, 'loss_dice_2': 5.0, 'loss_bbox_2': 5.0, 'loss_giou_2': 2.0, 'loss_ce_interm_2': 4.0, 'loss_mask_interm_2': 5.0, 'loss_dice_interm_2': 5.0, 'loss_bbox_interm_2': 5.0, 'loss_giou_interm_2': 2.0, 'loss_ce_dn_2': 4.0, 'loss_mask_dn_2': 5.0, 'loss_dice_dn_2': 5.0, 'loss_bbox_dn_2': 5.0, 'loss_giou_dn_2': 2.0, 'loss_ce_interm_dn_2': 4.0, 'loss_mask_interm_dn_2': 5.0, 'loss_dice_interm_dn_2': 5.0, 'loss_bbox_interm_dn_2': 5.0, 'loss_giou_interm_dn_2': 2.0, 'loss_ce_3': 4.0, 'loss_mask_3': 5.0, 'loss_dice_3': 5.0, 'loss_bbox_3': 5.0, 'loss_giou_3': 2.0, 'loss_ce_interm_3': 4.0, 'loss_mask_interm_3': 5.0, 'loss_dice_interm_3': 5.0, 'loss_bbox_interm_3': 5.0, 'loss_giou_interm_3': 2.0, 'loss_ce_dn_3': 4.0, 'loss_mask_dn_3': 5.0, 'loss_dice_dn_3': 5.0, 'loss_bbox_dn_3': 5.0, 'loss_giou_dn_3': 2.0, 'loss_ce_interm_dn_3': 4.0, 'loss_mask_interm_dn_3': 5.0, 'loss_dice_interm_dn_3': 5.0, 'loss_bbox_interm_dn_3': 5.0, 'loss_giou_interm_dn_3': 2.0, 'loss_ce_4': 4.0, 'loss_mask_4': 5.0, 'loss_dice_4': 5.0, 'loss_bbox_4': 5.0, 'loss_giou_4': 2.0, 'loss_ce_interm_4': 4.0, 'loss_mask_interm_4': 5.0, 'loss_dice_interm_4': 5.0, 'loss_bbox_interm_4': 5.0, 'loss_giou_interm_4': 2.0, 'loss_ce_dn_4': 4.0, 'loss_mask_dn_4': 5.0, 'loss_dice_dn_4': 5.0, 'loss_bbox_dn_4': 5.0, 'loss_giou_dn_4': 2.0, 'loss_ce_interm_dn_4': 4.0, 'loss_mask_interm_dn_4': 5.0, 'loss_dice_interm_dn_4': 5.0, 'loss_bbox_interm_dn_4': 5.0, 'loss_giou_interm_dn_4': 2.0, 'loss_ce_5': 4.0, 'loss_mask_5': 5.0, 'loss_dice_5': 5.0, 'loss_bbox_5': 5.0, 'loss_giou_5': 2.0, 'loss_ce_interm_5': 4.0, 'loss_mask_interm_5': 5.0, 'loss_dice_interm_5': 5.0, 'loss_bbox_interm_5': 5.0, 'loss_giou_interm_5': 2.0, 'loss_ce_dn_5': 4.0, 'loss_mask_dn_5': 5.0, 'loss_dice_dn_5': 5.0, 'loss_bbox_dn_5': 5.0, 'loss_giou_dn_5': 2.0, 'loss_ce_interm_dn_5': 4.0, 'loss_mask_interm_dn_5': 5.0, 'loss_dice_interm_dn_5': 5.0, 'loss_bbox_interm_dn_5': 5.0, 'loss_giou_interm_dn_5': 2.0, 'loss_ce_6': 4.0, 'loss_mask_6': 5.0, 'loss_dice_6': 5.0, 'loss_bbox_6': 5.0, 'loss_giou_6': 2.0, 'loss_ce_interm_6': 4.0, 'loss_mask_interm_6': 5.0, 'loss_dice_interm_6': 5.0, 'loss_bbox_interm_6': 5.0, 'loss_giou_interm_6': 2.0, 'loss_ce_dn_6': 4.0, 'loss_mask_dn_6': 5.0, 'loss_dice_dn_6': 5.0, 'loss_bbox_dn_6': 5.0, 'loss_giou_dn_6': 2.0, 'loss_ce_interm_dn_6': 4.0, 'loss_mask_interm_dn_6': 5.0, 'loss_dice_interm_dn_6': 5.0, 'loss_bbox_interm_dn_6': 5.0, 'loss_giou_interm_dn_6': 2.0, 'loss_ce_7': 4.0, 'loss_mask_7': 5.0, 'loss_dice_7': 5.0, 'loss_bbox_7': 5.0, 'loss_giou_7': 2.0, 'loss_ce_interm_7': 4.0, 'loss_mask_interm_7': 5.0, 'loss_dice_interm_7': 5.0, 'loss_bbox_interm_7': 5.0, 'loss_giou_interm_7': 2.0, 'loss_ce_dn_7': 4.0, 'loss_mask_dn_7': 5.0, 'loss_dice_dn_7': 5.0, 'loss_bbox_dn_7': 5.0, 'loss_giou_dn_7': 2.0, 'loss_ce_interm_dn_7': 4.0, 'loss_mask_interm_dn_7': 5.0, 'loss_dice_interm_dn_7': 5.0, 'loss_bbox_interm_dn_7': 5.0, 'loss_giou_interm_dn_7': 2.0, 'loss_ce_8': 4.0, 'loss_mask_8': 5.0, 'loss_dice_8': 5.0, 'loss_bbox_8': 5.0, 'loss_giou_8': 2.0, 'loss_ce_interm_8': 4.0, 'loss_mask_interm_8': 5.0, 'loss_dice_interm_8': 5.0, 'loss_bbox_interm_8': 5.0, 'loss_giou_interm_8': 2.0, 'loss_ce_dn_8': 4.0, 'loss_mask_dn_8': 5.0, 'loss_dice_dn_8': 5.0, 'loss_bbox_dn_8': 5.0, 'loss_giou_dn_8': 2.0, 'loss_ce_interm_dn_8': 4.0, 'loss_mask_interm_dn_8': 5.0, 'loss_dice_interm_dn_8': 5.0, 'loss_bbox_interm_dn_8': 5.0, 'loss_giou_interm_dn_8': 2.0}
+/usr/local/lib/python3.12/dist-packages/fvcore/common/checkpoint.py:252: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  return torch.load(f, map_location=torch.device("cpu"))
+149770 1.0 1.0
+456394 1.0 1.0
+107339 1.0 1.0
+536343 1.0 1.0
+547854 1.0 1.0
+562197 1.0 1.0
+562229 1.0 1.0
+562243 1.0 1.0
+42102 1.0 1.0
+452515 1.0 1.0
+342971 1.0 1.0
+511760 1.0 1.0
+485237 1.0 1.0
+449661 1.0 1.0
+205333 1.0 1.0
+298251 1.0 1.0
+25593 1.0 1.0
+41488 1.0 1.0
+42888 1.0 1.0
+49091 1.0 1.0
+31296 1.0 1.0
+303566 1.0 1.0
+470924 1.0 1.0
+435081 1.0 1.0
+14888 1.0 1.0
+22623 1.0 1.0
+58636 1.0 1.0
+36494 1.0 1.0
+302882 1.0 1.0
+571598 1.0 1.0
+39670 1.0 1.0
+285788 1.0 1.0
+{'mode': 'align', 'backend': 'native', 'images': 32, 'failures': 0, 'size': 1024, 'batch': 1, 'slots': 1, 'precision': 'fp32', 'tf32': True, 'engine_sha256': '605849843c7e938c4b17d43f263a0dfe9db0ac6b2d2b33f5f8914b2850fc4acd', 'loop_seconds': 0.582361593, 'cuda_stream': 'dedicated non-default stream', 'boundary_checks': {'no_candidates': {'map': [0, 0, 0, 0, 0], 'metadata': []}, 'score_equal_to_threshold': {'map': [0, 0, 0, 0, 0], 'metadata': []}, 'mask_equal_to_threshold_and_class_132': {'map': [1, 1, 1, 1, 1], 'metadata': [{'id': 1, 'category_id': 132, 'isthing': False}]}, 'winner_tie_uses_first_query': {'map': [1, 1, 1, 1, 0], 'metadata': [{'id': 1, 'category_id': 132, 'isthing': False}]}, 'overlap_equal_to_threshold': {'map': [2, 1, 1, 1, 1], 'metadata': [{'id': 1, 'category_id': 132, 'isthing': False}, {'id': 2, 'category_id': 0, 'isthing': True}]}, 'overlap_below_threshold': {'map': [1, 1, 0, 0, 0], 'metadata': [{'id': 1, 'category_id': 0, 'isthing': True}]}, 'merge_same_stuff_category': {'map': [1, 1, 1, 1, 1], 'metadata': [{'id': 1, 'category_id': 132, 'isthing': False}]}}, 'passed': True}

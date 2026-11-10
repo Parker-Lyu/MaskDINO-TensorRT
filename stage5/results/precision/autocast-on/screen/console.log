@@ -1,0 +1,47 @@
+Project commit: cc64d1b79420200ecedc36e776617d7249452a24
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Phase: screen 1s1 1s2 1s3 1s4 --skip-stage4
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-autocast-on/network.engine: OK
+13a9a6b940f8e40ce2b76aae8dcc5191ad54b0314b5c54360f1255ee38041534  /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-autocast-on/build.json
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+ab6054100b6256861ad320df440543d2e82cf2a833db2e77c159b736021401cf  /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-autocast-on/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s1-r1 1 1 benchmark 1 0 64
+Completed 500/500 images in 7.94164 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s2-r1 1 2 benchmark 1 0 64
+Completed 500/500 images in 6.72512 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s3-r1 1 3 benchmark 1 0 64
+Completed 500/500 images in 6.82484 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s4-r1 1 4 benchmark 1 0 64
+Completed 500/500 images in 6.94359 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s2-r2 1 2 benchmark 1 0 64
+Completed 500/500 images in 6.72748 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s3-r2 1 3 benchmark 1 0 64
+Completed 500/500 images in 6.8295 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s4-r2 1 4 benchmark 1 0 64
+Completed 500/500 images in 6.93395 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s1-r2 1 1 benchmark 1 0 64
+Completed 500/500 images in 7.94369 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s3-r3 1 3 benchmark 1 0 64
+Completed 500/500 images in 6.81844 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s4-r3 1 4 benchmark 1 0 64
+Completed 500/500 images in 6.9493 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s1-r3 1 1 benchmark 1 0 64
+Completed 500/500 images in 7.87281 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s2-r3 1 2 benchmark 1 0 64
+Completed 500/500 images in 6.68832 s
+b1s1 [62.95928544534263, 62.94302470757272, 63.50974353205381] median 62.95928544534263
+b1s2 [74.34815643799072, 74.32206985372267, 74.75715371111691] median 74.34815643799072
+b1s3 [73.26175791553833, 73.21182634470188, 73.3305858240088] median 73.26175791553833
+b1s4 [72.00889515743027, 72.10895624753977, 71.94967850766884] median 72.00889515743027

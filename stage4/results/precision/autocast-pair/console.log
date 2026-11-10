@@ -1,0 +1,69 @@
+Project commit: 81a7d618315fa6df2702aba8ea4a22b77d72620a
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Command: /home/parker/datasets/coco2017-panoptic-val stage3/runs/stage7-build-on/network.engine stage3/runs/stage7-build-autocast-on/network.engine autocast-tf32-on --mixed
+name, driver_version, memory.total [MiB], temperature.gpu, utilization.gpu [%]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB, 35, 0 %
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+605849843c7e938c4b17d43f263a0dfe9db0ac6b2d2b33f5f8914b2850fc4acd  /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-on/network.engine
+ab6054100b6256861ad320df440543d2e82cf2a833db2e77c159b736021401cf  /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-autocast-on/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+	linux-vdso.so.1 (0x00007943083da000)
+	libnvinfer.so.10 => /usr/lib/x86_64-linux-gnu/libnvinfer.so.10 (0x00007942e161c000)
+	libnvinfer_plugin.so.10 => /usr/lib/x86_64-linux-gnu/libnvinfer_plugin.so.10 (0x00007942de969000)
+	libjpeg.so.8 => /usr/lib/x86_64-linux-gnu/libjpeg.so.8 (0x00007942de8e6000)
+	libnvidia-ml.so.1 => /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 (0x00007942dd600000)
+	libstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007942dd382000)
+	libm.so.6 => /usr/lib/x86_64-linux-gnu/libm.so.6 (0x00007942de7fb000)
+	libgcc_s.so.1 => /usr/lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007942de7cd000)
+	libc.so.6 => /usr/lib/x86_64-linux-gnu/libc.so.6 (0x00007942dd170000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007943083dc000)
+	libdl.so.2 => /usr/lib/x86_64-linux-gnu/libdl.so.2 (0x00007942de7c8000)
+	libpthread.so.0 => /usr/lib/x86_64-linux-gnu/libpthread.so.0 (0x00007942de7c3000)
+	librt.so.1 => /usr/lib/x86_64-linux-gnu/librt.so.1 (0x00007942de7be000)
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+align-fp32 (align)
+Completed 32 images in 0.590744 s
+align-mixed (align)
+Completed 32 images in 0.52969 s
+Native paired alignment: 15/32
+pq-mixed (evaluate)
+Completed 5000 images in 80.0128 s
+{'mode': 'evaluate', 'backend': 'native', 'images': 5000, 'failures': 0, 'size': 1024, 'batch': 1, 'slots': 1, 'precision': 'mixed', 'tf32': True, 'engine_sha256': 'ab6054100b6256861ad320df440543d2e82cf2a833db2e77c159b736021401cf', 'loop_seconds': 80.012783525, 'cuda_stream': 'dedicated non-default stream', 'scores': {'PQ': np.float64(53.16804514876638), 'SQ': np.float64(83.33103453199342), 'RQ': 63.00467994507051, 'PQ_th': np.float64(59.00716686532517), 'SQ_th': np.float64(84.62940384914745), 'RQ_th': 69.2623559266856, 'PQ_st': np.float64(44.35427651999845), 'SQ_st': np.float64(81.37123178911943), 'RQ_st': 53.55913129357598}, 'unique_prediction_ids': 5000, 'delta_vs_stage3': {'PQ': np.float64(-0.01820662244608684), 'PQ_th': np.float64(-0.020091791741862153), 'PQ_st': np.float64(-0.015361083886311633)}, 'passed': True, 'reference': 'stage3/results/pt-pq/result.json'}
+perf-fp32-r1 (benchmark)
+Completed 500 images in 8.48964 s
+{'network_ms_p50': 15.3881921768, 'network_ms_p95': 15.713067388569998, 'e2e_ms_p50': 16.961785499999998, 'e2e_ms_p95': 17.603196399999998, 'images_per_second': 58.89528433592938, 'sampled_peak_process_used_bytes': 1331691520}
+perf-mixed-r1 (benchmark)
+Completed 500 images in 7.93025 s
+{'network_ms_p50': 14.3800315857, 'network_ms_p95': 14.3933439255, 'e2e_ms_p50': 15.860282999999999, 'e2e_ms_p95': 16.44151395, 'images_per_second': 63.04971753838141, 'sampled_peak_process_used_bytes': 1233125376}
+perf-fp32-r2 (benchmark)
+Completed 500 images in 8.5813 s
+{'network_ms_p50': 15.6986398697, 'network_ms_p95': 15.714179372810001, 'e2e_ms_p50': 17.1683815, 'e2e_ms_p95': 17.7414384, 'images_per_second': 58.26626102716565, 'sampled_peak_process_used_bytes': 1331691520}
+perf-mixed-r2 (benchmark)
+Completed 500 images in 7.93119 s
+{'network_ms_p50': 14.3819999695, 'network_ms_p95': 14.395393991465, 'e2e_ms_p50': 15.8665965, 'e2e_ms_p95': 16.45166445, 'images_per_second': 63.04224362676916, 'sampled_peak_process_used_bytes': 1233125376}
+perf-fp32-r3 (benchmark)
+Completed 500 images in 8.5818 s
+{'network_ms_p50': 15.6979198456, 'network_ms_p95': 15.7122564316, 'e2e_ms_p50': 17.170582, 'e2e_ms_p95': 17.763775550000002, 'images_per_second': 58.262837230726156, 'sampled_peak_process_used_bytes': 1331691520}
+perf-mixed-r3 (benchmark)
+Completed 500 images in 7.93353 s
+{'network_ms_p50': 14.3831357956, 'network_ms_p95': 14.3984642029, 'e2e_ms_p50': 15.8645755, 'e2e_ms_p95': 16.4591111, 'images_per_second': 63.02362845311655, 'sampled_peak_process_used_bytes': 1233125376}

@@ -1,0 +1,43 @@
+Project commit: cc64d1b79420200ecedc36e776617d7249452a24
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Phase: check 1s1 1s2 1s3 1s4
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-on/network.engine: OK
+88f614a6ab9673a7283f9be33aef51c49f580a2f1a3f7e7865bef175d9b3eb50  /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-on/build.json
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+605849843c7e938c4b17d43f263a0dfe9db0ac6b2d2b33f5f8914b2850fc4acd  /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-on/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/b1s1 1 1 predict 1 0 64
+Completed 32/32 images in 0.574318 s
+b1s1 32 / 32
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/b1s2 1 2 predict 1 0 64
+Completed 32/32 images in 0.511273 s
+b1s2 32 / 32
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/b1s3 1 3 predict 1 0 64
+Completed 32/32 images in 0.517698 s
+b1s3 32 / 32
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/b1s4 1 4 predict 1 0 64
+Completed 32/32 images in 0.515022 s
+b1s4 32 / 32

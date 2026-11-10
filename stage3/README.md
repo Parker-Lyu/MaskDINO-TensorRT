@@ -1,6 +1,6 @@
 # Stage 3 · 将网络转换为 TensorRT
 
-固定 MaskDINO R50 panoptic、1024×1024、batch=1、单 slot。前处理、归一化、panoptic 后处理和 COCO evaluator 共用 Stage 2 实现。PyTorch FP32 与 TensorRT 均关闭 TF32。
+固定 MaskDINO R50 panoptic、1024×1024、batch=1、单 slot。前处理、归一化、panoptic 后处理和 COCO evaluator 共用 Stage 2 实现。PyTorch FP32 参考和首轮 TensorRT FP32 验收关闭 TF32，另对照两种允许 TF32 的策略。
 
 ## 验收标准
 
@@ -161,3 +161,36 @@ bash stage3/run.sh "$data" trace-fp32-nvtx trace --backend fp32 --engine "$runs/
 ```bash
 bash stage4/run.sh "$data" "$engine" trace-stage3-gpu-projection reference trace
 ```
+
+## B1/S1 精度策略筛选
+
+使用相同的 PyTorch 前后处理和 PyTorch FP32 B1 参考，对比历史的 FP32/TF32 off、FP32/TF32 on 和模型级 autocast FP16/TF32 on。两个 FP32 engine 使用相同的 FP32 ONNX。混合 engine 复用 `mixed-scope=all` 的导出，图内保留显式 FP32 区域，三个 engine 的输入和三个输出均为 FP32。两种 on 构建允许 FP32 算子选择 TF32 tactic，使用 4 GiB workspace、零辅助 stream 和相同的 TensorRT 10.14.1.48。Inspector 中 FP32/on 有 245 个 tactic 名称含 `tf32`，混合/on 有 125 个名称含 `tf32`、112 个名称含 `f16f16`。 [FP32/on 构建](results/precision/build-fp32-on/) · [混合/on 构建](results/precision/build-autocast-on/) · [混合 ONNX 导出](results/export-mixed-rerun/export.json)
+
+逐图统一按类别一致率 ≥99.9%、segment 全部配对、同类 IoU ≥0.98 统计。全量三项均以 [PyTorch FP32 B1](results/pt-pq/result.json) 为参照，各项最多下降 0.05 点。
+
+| Engine | 逐图通过 | 最差类别一致率 | PQ / PQ_th / PQ_st | ΔPQ / ΔPQ_th / ΔPQ_st（点） |
+| --- | ---: | ---: | --- | --- |
+| FP32 / TF32 off | 32/32 | 99.9987% | 53.186256 / 59.027261 / 44.369646 | +0.000005 / +0.000002 / +0.000008 |
+| FP32 / TF32 on | 27/32 | 99.5868% | 53.174509 / 59.001049 / 44.379732 | −0.011743 / −0.026210 / +0.010094 |
+| FP16 混合精度 / TF32 on | 16/32 | 91.6320% | 53.168045 / 59.007167 / 44.354277 | −0.018206 / −0.020092 / −0.015360 |
+
+三组均覆盖 **5,000** 张且全量 PQ 达标。FP32/on 的 5 张逐图失败只涉及类别一致率。模型级 autocast 按原 mixed backend 的阈值（99% 和 0.90）通过 26/32，按三组统一阈值通过 16/32。两种 on 策略均保留为性能候选，沿用逐图硬门槛时两种都未通过。 [FP32/on 逐图](results/precision/precision-align-on/result.json) · [FP32/on 全量](results/precision/precision-pq-on/result.json) · [混合/on 逐图](results/precision/precision-align-autocast-on/result.json) · [混合/on 全量](results/precision/precision-pq-autocast-on/result.json)
+
+### 构建与复现
+
+复用 RTX 4090 上已有的两个 on engine。构建日志记录 FP32/on 运行提交 `7fb2a97`，混合/on 运行提交 `81a7d61`。Python 逐图及 COCO 评估在 `acaf623` 上完成，使用相同镜像 `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`。原始 ONNX 和 engine 见 [Stage 4 运行来源](../stage4/README.md#运行来源与复现)，诊断张量留在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-precision/repo/stage3/runs/`，构建校验值见各组 `build.json`，容器内 `NVIDIA_TF32_OVERRIDE` 未设置。
+
+沿用上方 `data`、`runs` 和权重路径。分别将现有的 FP32 与 autocast ONNX 放入 `stage3/runs/precision-input-{fp32,mixed}/network.onnx`，可重建两个候选。若已有相同 engine，复制 `network.engine` 和匹配的 `build.json` 到相应构建目录，直接从 `align` 开始。
+
+```bash
+for backend in fp32 mixed; do
+  build="precision-build-$backend-on"
+  bash stage3/run.sh "$data" "$build" build --backend "$backend" --batch 1 \
+    --tf32 on --onnx "$runs/precision-input-$backend/network.onnx"
+  engine="$runs/$build/network.engine"
+  bash stage3/run.sh "$data" "precision-align-$backend-on" align --backend "$backend" --engine "$engine"
+  bash stage3/run.sh "$data" "precision-pq-$backend-on" evaluate --backend "$backend" --engine "$engine"
+done
+```
+
+逐图命令先保存完整结果，再按对应 backend 的阈值返回失败。本轮以逐图差异作为诊断，继续独立跑全量 PQ，并在表中用统一的 99.9%/0.98 阈值重计通过数。原生 B1/S1 性能配对见 [Stage 4](../stage4/README.md#b1s1-精度策略对照)。

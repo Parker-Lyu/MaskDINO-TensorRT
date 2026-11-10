@@ -1,0 +1,49 @@
+{
+  "onnx_sha256": "944bfb6a2cb7df23815aec6c1683baf43068cbe674759b5bd2949e8220c80558",
+  "engine_sha256": "ab6054100b6256861ad320df440543d2e82cf2a833db2e77c159b736021401cf",
+  "tensorrt": "10.14.1.48",
+  "precision": "mixed",
+  "seconds": 49.14636205300002,
+  "strongly_typed": true,
+  "tf32": true,
+  "max_aux_streams": 0,
+  "workspace_bytes": 4294967296,
+  "plugin_count": 15,
+  "finite_smoke": true,
+  "io": {
+    "image": {
+      "shape": [
+        1,
+        3,
+        1024,
+        1024
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    "logits": {
+      "shape": [
+        1,
+        300,
+        133
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    "masks": {
+      "shape": [
+        1,
+        300,
+        256,
+        256
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    "boxes": {
+      "shape": [
+        1,
+        300,
+        4
+      ],
+      "dtype": "DataType.FLOAT"
+    }
+  }
+}

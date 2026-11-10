@@ -1,0 +1,47 @@
+Project commit: cc64d1b79420200ecedc36e776617d7249452a24
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Phase: screen 1s1 1s2 1s3 1s4 --skip-stage4
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-on/network.engine: OK
+88f614a6ab9673a7283f9be33aef51c49f580a2f1a3f7e7865bef175d9b3eb50  /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-on/build.json
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+605849843c7e938c4b17d43f263a0dfe9db0ac6b2d2b33f5f8914b2850fc4acd  /home/parker/Code/MaskDINO-TensorRT-stage7/repo/stage3/runs/stage7-build-on/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s1-r1 1 1 benchmark 1 0 64
+Completed 500/500 images in 8.59338 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s2-r1 1 2 benchmark 1 0 64
+Completed 500/500 images in 7.6718 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s3-r1 1 3 benchmark 1 0 64
+Completed 500/500 images in 7.52694 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s4-r1 1 4 benchmark 1 0 64
+Completed 500/500 images in 7.75779 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s2-r2 1 2 benchmark 1 0 64
+Completed 500/500 images in 7.50632 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s3-r2 1 3 benchmark 1 0 64
+Completed 500/500 images in 7.59032 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s4-r2 1 4 benchmark 1 0 64
+Completed 500/500 images in 7.64301 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s1-r2 1 1 benchmark 1 0 64
+Completed 500/500 images in 8.59339 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s3-r3 1 3 benchmark 1 0 64
+Completed 500/500 images in 7.52358 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s4-r3 1 4 benchmark 1 0 64
+Completed 500/500 images in 7.65511 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s1-r3 1 1 benchmark 1 0 64
+Completed 500/500 images in 8.59666 s
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/b1s2-r3 1 2 benchmark 1 0 64
+Completed 500/500 images in 7.53079 s
+b1s1 [58.184337540783126, 58.184238693541545, 58.16215234579931] median 58.184238693541545
+b1s2 [65.1737733088454, 66.61055053731525, 66.3940951282267] median 66.3940951282267
+b1s3 [66.42805166683623, 65.87339974983468, 66.45773055316079] median 66.42805166683623
+b1s4 [64.45135846908032, 65.41925484482996, 65.3158158833712] median 65.3158158833712
