@@ -12,7 +12,7 @@
 
 ## FP16 混合 engine 逐层 profiling
 
-RTX 4090 的 B1/S1 逐层实测中，最贵的单层为 FPN 3×3 卷积（0.903 ms），encoder FFN 的 12 个 GEMM 合计 3.675 ms。首次改动选 FPN 单层做 A/B。 [测量、kernel 复核与复现](layer-profile.md)
+RTX 4090 的 B1/S1 逐层实测中，最贵的单层为 FPN 3×3 卷积（0.903 ms），encoder FFN 的 12 个 GEMM 合计 3.675 ms。FPN 单层 A/B 中，使用共享 timing cache 控制重建差异，B1/S1 端到端 P95 从 16.27 降至 15.85 ms，B1/S2 的稳态吞吐从 74.21 提高到 76.33 图/s。 [热点定位](layer-profile.md) · [FPN A/B 与全量验收](fpn-half-ab.md)
 
 ## 复现入口
 

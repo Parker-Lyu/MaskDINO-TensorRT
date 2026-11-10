@@ -37,7 +37,7 @@ Nsight Systems 2025.5.1 在独立采集中通过 NVTX 层名关联 CPU launch，
 
 优先对 **`/sem_seg_head/layer_1/Conv` 做单层精度 A/B**。原 ONNX 数据流显示该卷积只通向 `masks`，encoder FFN 则通向 TopK 和三个 engine 输出。先把卷积输入与权重转成 FP16，卷积输出在原 GroupNorm 前转回 FP32。检查是否选到 Tensor Core tactic，并比较卷积和新增 Cast 或 reformat 的总耗时。若显式转换抵消收益，再评估相邻布局和精度边界。 [ONNX 路径核对](results/layer-profile-b1/onnx-paths.txt) · [上游 FPN 实现](https://github.com/IDEA-Research/MaskDINO/blob/3831d8514a3728535ace8d4ecc7d28044c42dd14/maskdino/modeling/pixel_decoder/maskdino_encoder.py#L382-L397)
 
-Encoder FFN 的累计优化空间更大，第二步再做。一次只选少量 FFN 层，保留残差、归一化和 TopK 的 FP32 表示，检查是否出现 proposal 翻转。候选用 32 张图检查输出和差异，用同一份 500 张 JPEG 比较 B1/S1 延迟、B1/S2 饱和吞吐和显存，最终候选按 Stage 6 的三项 PQ 各最多下降 0.05 点进行全量 COCO 验收。本轮以 profiling 定位改动点，表中没有候选 engine 的加速数据。
+Encoder FFN 的累计优化空间更大，第二步再做。一次只选少量 FFN 层，保留残差、归一化和 TopK 的 FP32 表示，检查是否出现 proposal 翻转。候选用 32 张图检查输出和差异，用同一份 500 张 JPEG 比较 B1/S1 延迟、B1/S2 饱和吞吐和显存，最终候选按 Stage 6 的三项 PQ 各最多下降 0.05 点进行全量 COCO 验收。本节记录 profiling 时的选择，实际改动和 A/B 结果见 [FPN 单层实验](fpn-half-ab.md)。
 
 ## 复现
 

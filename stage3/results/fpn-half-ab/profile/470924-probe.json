@@ -1,0 +1,163 @@
+{
+  "tensors_vs_shipped": {
+    "control": {
+      "logits": {
+        "max_abs": 0.11328125,
+        "mean_abs": 0.004150852560997009,
+        "relative_l2": 0.0013044930528849363,
+        "exact": false
+      },
+      "masks": {
+        "max_abs": 7.0,
+        "mean_abs": 0.058696672320365906,
+        "relative_l2": 0.0015703246463090181,
+        "exact": false
+      },
+      "boxes": {
+        "max_abs": 0.05142182111740112,
+        "mean_abs": 0.00012895031250081956,
+        "relative_l2": 0.004901725798845291,
+        "exact": false
+      }
+    },
+    "fpn-half": {
+      "logits": {
+        "max_abs": 0.0390625,
+        "mean_abs": 0.0034971009008586407,
+        "relative_l2": 0.0008686522487550974,
+        "exact": false
+      },
+      "masks": {
+        "max_abs": 4.0,
+        "mean_abs": 0.07243464142084122,
+        "relative_l2": 0.0014910103054717183,
+        "exact": false
+      },
+      "boxes": {
+        "max_abs": 0.015538930892944336,
+        "mean_abs": 4.6544577344320714e-05,
+        "relative_l2": 0.0014356212923303246,
+        "exact": false
+      }
+    }
+  },
+  "swaps_vs_shipped": {
+    "shipped-logits/shipped-masks": {
+      "category_agreement": 1.0,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "shipped-logits/control-masks": {
+      "category_agreement": 0.9998567708333334,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "shipped-logits/fpn-half-masks": {
+      "category_agreement": 0.999833984375,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "control-logits/shipped-masks": {
+      "category_agreement": 0.9999674479166667,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "control-logits/control-masks": {
+      "category_agreement": 0.99984375,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "control-logits/fpn-half-masks": {
+      "category_agreement": 0.9998209635416667,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "fpn-half-logits/shipped-masks": {
+      "category_agreement": 0.99775390625,
+      "segment_counts": [
+        72,
+        71
+      ],
+      "metadata_equal": false,
+      "category_metadata_counts_equal": false,
+      "unmatched_segments": [
+        1,
+        0
+      ]
+    },
+    "fpn-half-logits/control-masks": {
+      "category_agreement": 0.9976302083333334,
+      "segment_counts": [
+        72,
+        71
+      ],
+      "metadata_equal": false,
+      "category_metadata_counts_equal": false,
+      "unmatched_segments": [
+        1,
+        0
+      ]
+    },
+    "fpn-half-logits/fpn-half-masks": {
+      "category_agreement": 0.9976139322916666,
+      "segment_counts": [
+        72,
+        71
+      ],
+      "metadata_equal": false,
+      "category_metadata_counts_equal": false,
+      "unmatched_segments": [
+        1,
+        0
+      ]
+    }
+  }
+}

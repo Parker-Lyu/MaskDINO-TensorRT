@@ -31,9 +31,11 @@ PQ 取 PyTorch B1 和 Stage 4 原生链路各自的 COCO val2017 全量评估（
 
 Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stage 5 展示各自吞吐峰值（S3 / S3 / S2）。README 图表可用 `python3 docs/plot-roadmap.py` 重绘。
 
-## TODO
+## FPN 卷积单层优化
 
-- **验证 FPN 3×3 卷积的单层混合精度。** FP16 B1 engine 中，该卷积为最贵单层（0.903 ms），encoder FFN 的 12 个 GEMM 合计 3.675 ms。优先对只通向 mask 输出的 FPN 卷积做对照。 [逐层 profiling 与优化依据](stage3/layer-profile.md)
+固定已验收的 FP16 B1 模型并用共享 timing cache 重建配对。将 FPN 的一个 3×3 卷积切到 FP16 Tensor Core 后，B1/S1 的端到端 P95 从 **16.27 降至 15.85 ms**，B1/S2 的稳态吞吐从 **74.21 提高至 76.33 图/s**。两个配置各完成 5,000 张 COCO val2017 的评估，PQ 均为 **53.1718**。验收 tag 为 `stage3-fpn-fp16-accepted`。 [逐层 profiling](stage3/layer-profile.md) · [配对计时与全量 PQ](stage3/fpn-half-ab.md)
+
+![FPN 单层优化的离线配对，比较 B1/S1 与 B1/S2 的稳态吞吐、端到端 P95 和进程峰值显存](stage3/results/fpn-half-ab/comparison.svg)
 
 ## Stage 1 · 复现原始模型精度
 

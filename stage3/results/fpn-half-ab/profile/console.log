@@ -1,0 +1,7 @@
+Project commit: d9e30d7ef747830980334cd6103e8be0aa08a7b0
+name, driver_version, utilization.gpu [%], memory.used [MiB], clocks.current.sm [MHz]
+NVIDIA GeForce RTX 4090, 595.84, 0 %, 109 MiB, 210 MHz
+Profiling shipped
+Profiling control
+Profiling fpn-half
+COCO 470924: original and valid geometry [480, 640, 768, 1024]
