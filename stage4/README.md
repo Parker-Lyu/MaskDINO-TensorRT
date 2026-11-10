@@ -64,13 +64,17 @@ python3 stage3/trace_plot.py stage3/runs/{trace-pytorch-rerun,trace-fp32}/trace.
 
 ### RTX 4090 性能
 
+表中 PyTorch 和 Python/TensorRT 均在 Stage 4 与原生链路一同复测。
+
 | 路径 | 网络 GPU P50 / P95（ms） | 端到端 P50 / P95（ms） | 吞吐（图/s） | 进程显存采样峰值（GiB） |
 | --- | ---: | ---: | ---: | ---: |
 | PyTorch FP32 | 37.57 / 37.81 | 48.70 / 51.86 | 20.43 | 5.19 |
 | Python 前后处理 + TensorRT FP32 | 20.63 / 21.76 | 31.89 / 35.16 | 31.21 | 4.98 |
 | C++/CUDA + 同一 TensorRT engine | 21.56 / 21.81 | 22.92 / 23.63 | 43.65 | 1.24 |
 
-相对 Stage 3 的 Python/TensorRT 链路，原生链路端到端 P95 降低 **32.8%**，吞吐增加 **39.8%**，进程显存采样峰值降低 **75.1%**。网络 P95 增加 0.05 ms，P50 增加 0.93 ms。九轮均完成 500 张，失败数为 0。 [逐轮汇总](results/summary.json)
+相对本阶段复测的 Python/TensorRT 链路，原生链路端到端 P95 降低 **32.8%**，吞吐增加 **39.8%**，进程显存采样峰值降低 **75.1%**。网络 P95 增加 0.05 ms，P50 增加 0.93 ms。九轮均完成 500 张，失败数为 0。 [逐轮汇总](results/summary.json)
+
+![Stage 1–4 全量 COCO PQ 与 Stage 4 同轮性能对照](results/comparison.svg)
 
 ## Nsight Systems
 

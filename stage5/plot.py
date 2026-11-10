@@ -33,7 +33,7 @@ def draw(path, title, subtitle, labels, columns, label_width):
         ceiling = max(values)
         for i, (name, value) in enumerate(zip(labels, values)):
             y = 133 + i * 35
-            color = "#168477" if name.startswith("Stage 5") or (label_width == 76 and name != "B1/S1") else "#546a85"
+            color = "#168477" if name != "B1/S1" else "#546a85"
             label(x + 16, y + 4, name, 12, 600)
             bar = (236 - label_width) * value / ceiling
             svg.append(f'<rect x="{x+label_width}" y="{y-8}" width="{bar:.2f}" height="15" rx="3" fill="{color}"/>')
@@ -60,8 +60,8 @@ def plot(results, finalist=None, comparison=None):
         label = name.upper().replace("S", "/S")
         labels.append(f"{label}*" if name in followups else label)
     columns = [[median(metric(row) for row in rows) for rows in screening.values()] for _, _, metric in PANELS]
-    subtitle = "RTX 4090 · 1024 × 1024 · FP32 · same 500 JPEGs · median of 3 rounds"
-    screen_subtitle = subtitle.replace("FP32", "TensorRT FP32")
+    subtitle = "RTX 4090 · 1024 × 1024 · TensorRT FP32 · same 500 JPEGs · median of 3 rounds"
+    screen_subtitle = subtitle
     if followups:
         screen_subtitle += " · * B8 follow-up runs"
     draw(results / "screen.svg", "MaskDINO R50 panoptic · Stage 6 offline screening",
@@ -74,23 +74,19 @@ def plot(results, finalist=None, comparison=None):
     configs = sorted((config for config in groups if config.startswith("b1s")), key=lambda config: int(config[3:]))
     if finalist not in configs:
         configs.append(finalist)
-    stage4 = results.resolve().parents[1] / "stage4/results/summary.json"
-    previous = json.loads(stage4.read_text())["performance"]
-    cumulative = []
-    for (_, _, metric), name, scale in zip(PANELS, ("images_per_second", "e2e_ms_p95",
-                                                   "sampled_peak_process_used_bytes"), (1, 1, 2**30)):
-        cumulative.append([previous[key][name]["median"] / scale for key in ("pytorch", "reference", "native")]
-                          + [median(metric(row) for row in groups[config]) for config in configs])
-    labels = ["PyTorch", "TRT + Python", "Stage 4 C++"]
-    labels += [f"Stage 5 {config.upper().replace('S', '/S')}" for config in configs]
-    draw(comparison or results / "comparison.svg", "MaskDINO R50 panoptic · offline comparison",
-         subtitle, labels, cumulative, 127)
+    labels = [config.upper().replace("S", "/S") for config in configs]
+    if finalist in followups:
+        labels[configs.index(finalist)] += "*"
+        subtitle += " · * follow-up run"
+    columns = [[median(metric(row) for row in groups[config]) for config in configs] for _, _, metric in PANELS]
+    draw(comparison or results / "comparison.svg", "MaskDINO R50 panoptic · Stage 5 offline slot screening",
+         subtitle, labels, columns, 76)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("results", type=Path)
     parser.add_argument("--finalist")
-    parser.add_argument("--comparison", type=Path, help="Output path for the cumulative comparison")
+    parser.add_argument("--comparison", type=Path, help="Output path for the Stage 5 slot comparison")
     args = parser.parse_args()
     plot(args.results, args.finalist, args.comparison)

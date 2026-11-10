@@ -80,7 +80,7 @@ TensorRT FP32 的三项 PQ 指标均通过验收，与 PyTorch B1 的差值各�
 
 ### 性能
 
-每种后端三轮均完成 500 张，失败数为 0。网络 GPU P50/P95 用 CUDA events 计时。端到端从内存 JPEG 到 CPU panoptic map 和 metadata。显存使用整卡 NVML 20 ms 采样，表中为三轮观测峰值的中位数，包含桌面进程和 TensorRT 分配。
+下表使用 Stage 3 同轮复测的 PyTorch 和 TensorRT，量化网络后端的替换收益。每种后端三轮均完成 500 张，失败数为 0。网络 GPU P50/P95 用 CUDA events 计时。端到端从内存 JPEG 到 CPU panoptic map 和 metadata。显存使用整卡 NVML 20 ms 采样，表中为三轮观测峰值的中位数，包含桌面进程和 TensorRT 分配。
 
 | 后端 | 网络 P50 / P95（ms） | 端到端 P50 / P95（ms） | 吞吐（图/s） | 整卡采样峰值（GiB） |
 | --- | ---: | ---: | ---: | ---: |
@@ -90,6 +90,8 @@ TensorRT FP32 的三项 PQ 指标均通过验收，与 PyTorch B1 的差值各�
 - **TensorRT 转换收益。** FP32 转换使网络 P95 减少 15.97 ms（42.3%），端到端 P95 减少 16.69 ms（32.2%），吞吐增加 10.74 图/s（52.5%）。
 
 两组 FP32 性能运行均使用 `18986d2`。 [验收汇总与逐轮范围](results/summary.json)
+
+![Stage 1–3 全量 COCO PQ 与 Stage 3 同轮后端性能对照](results/comparison.svg)
 
 ### Nsight Systems 基线
 

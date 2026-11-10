@@ -1,75 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="380" viewBox="0 0 1080 380">
-<rect width="1080" height="380" rx="16" fill="#f3f6fa"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="275" viewBox="0 0 1080 275">
+<rect width="1080" height="275" rx="16" fill="#f3f6fa"/>
 <g font-family="system-ui,sans-serif" fill="#172b43">
-<text x="28" y="37" font-size="23" font-weight="700">MaskDINO R50 panoptic · offline comparison</text>
-<text x="28" y="60" font-size="13" font-weight="400">RTX 4090 · 1024 × 1024 · FP32 · same 500 JPEGs · median of 3 rounds</text>
-<rect x="24" y="78" width="337" height="284" rx="10" fill="white"/>
+<text x="28" y="37" font-size="23" font-weight="700">MaskDINO R50 panoptic · Stage 5 offline slot screening</text>
+<text x="28" y="60" font-size="13" font-weight="400">RTX 4090 · 1024 × 1024 · TensorRT FP32 · same 500 JPEGs · median of 3 rounds</text>
+<rect x="24" y="78" width="337" height="179" rx="10" fill="white"/>
 <text x="40" y="107" font-size="16" font-weight="650">Throughput</text>
-<text x="40" y="137" font-size="12" font-weight="600">PyTorch</text>
-<rect x="151" y="125" width="41.73" height="15" rx="3" fill="#546a85"/>
-<text x="269" y="137" font-size="12" font-weight="400">20.43 img/s</text>
-<text x="40" y="172" font-size="12" font-weight="600">TRT + Python</text>
-<rect x="151" y="160" width="63.77" height="15" rx="3" fill="#546a85"/>
-<text x="269" y="172" font-size="12" font-weight="400">31.21 img/s</text>
-<text x="40" y="207" font-size="12" font-weight="600">Stage 4 C++</text>
-<rect x="151" y="195" width="89.16" height="15" rx="3" fill="#546a85"/>
-<text x="269" y="207" font-size="12" font-weight="400">43.65 img/s</text>
-<text x="40" y="242" font-size="12" font-weight="600">Stage 5 B1/S1</text>
-<rect x="151" y="230" width="89.21" height="15" rx="3" fill="#168477"/>
-<text x="269" y="242" font-size="12" font-weight="400">43.67 img/s</text>
-<text x="40" y="277" font-size="12" font-weight="600">Stage 5 B1/S2</text>
-<rect x="151" y="265" width="103.96" height="15" rx="3" fill="#168477"/>
-<text x="269" y="277" font-size="12" font-weight="400">50.89 img/s</text>
-<text x="40" y="312" font-size="12" font-weight="600">Stage 5 B1/S3</text>
-<rect x="151" y="300" width="109.00" height="15" rx="3" fill="#168477"/>
-<text x="269" y="312" font-size="12" font-weight="400">53.36 img/s</text>
-<text x="40" y="347" font-size="12" font-weight="600">Stage 5 B1/S4</text>
-<rect x="151" y="335" width="108.42" height="15" rx="3" fill="#168477"/>
-<text x="269" y="347" font-size="12" font-weight="400">53.08 img/s</text>
-<rect x="370" y="78" width="337" height="284" rx="10" fill="white"/>
+<text x="40" y="137" font-size="12" font-weight="600">B1/S1</text>
+<rect x="100" y="125" width="130.96" height="15" rx="3" fill="#546a85"/>
+<text x="269" y="137" font-size="12" font-weight="400">43.67 img/s</text>
+<text x="40" y="172" font-size="12" font-weight="600">B1/S2</text>
+<rect x="100" y="160" width="152.60" height="15" rx="3" fill="#168477"/>
+<text x="269" y="172" font-size="12" font-weight="400">50.89 img/s</text>
+<text x="40" y="207" font-size="12" font-weight="600">B1/S3</text>
+<rect x="100" y="195" width="160.00" height="15" rx="3" fill="#168477"/>
+<text x="269" y="207" font-size="12" font-weight="400">53.36 img/s</text>
+<text x="40" y="242" font-size="12" font-weight="600">B1/S4</text>
+<rect x="100" y="230" width="159.15" height="15" rx="3" fill="#168477"/>
+<text x="269" y="242" font-size="12" font-weight="400">53.08 img/s</text>
+<rect x="370" y="78" width="337" height="179" rx="10" fill="white"/>
 <text x="386" y="107" font-size="16" font-weight="650">Per-image dispatch-to-result P95</text>
-<text x="386" y="137" font-size="12" font-weight="600">PyTorch</text>
-<rect x="497" y="125" width="72.71" height="15" rx="3" fill="#546a85"/>
-<text x="615" y="137" font-size="12" font-weight="400">51.86 ms</text>
-<text x="386" y="172" font-size="12" font-weight="600">TRT + Python</text>
-<rect x="497" y="160" width="49.30" height="15" rx="3" fill="#546a85"/>
-<text x="615" y="172" font-size="12" font-weight="400">35.16 ms</text>
-<text x="386" y="207" font-size="12" font-weight="600">Stage 4 C++</text>
-<rect x="497" y="195" width="33.13" height="15" rx="3" fill="#546a85"/>
-<text x="615" y="207" font-size="12" font-weight="400">23.63 ms</text>
-<text x="386" y="242" font-size="12" font-weight="600">Stage 5 B1/S1</text>
-<rect x="497" y="230" width="33.29" height="15" rx="3" fill="#168477"/>
-<text x="615" y="242" font-size="12" font-weight="400">23.74 ms</text>
-<text x="386" y="277" font-size="12" font-weight="600">Stage 5 B1/S2</text>
-<rect x="497" y="265" width="58.79" height="15" rx="3" fill="#168477"/>
-<text x="615" y="277" font-size="12" font-weight="400">41.93 ms</text>
-<text x="386" y="312" font-size="12" font-weight="600">Stage 5 B1/S3</text>
-<rect x="497" y="300" width="82.09" height="15" rx="3" fill="#168477"/>
-<text x="615" y="312" font-size="12" font-weight="400">58.54 ms</text>
-<text x="386" y="347" font-size="12" font-weight="600">Stage 5 B1/S4</text>
-<rect x="497" y="335" width="109.00" height="15" rx="3" fill="#168477"/>
-<text x="615" y="347" font-size="12" font-weight="400">77.74 ms</text>
-<rect x="716" y="78" width="337" height="284" rx="10" fill="white"/>
+<text x="386" y="137" font-size="12" font-weight="600">B1/S1</text>
+<rect x="446" y="125" width="48.87" height="15" rx="3" fill="#546a85"/>
+<text x="615" y="137" font-size="12" font-weight="400">23.74 ms</text>
+<text x="386" y="172" font-size="12" font-weight="600">B1/S2</text>
+<rect x="446" y="160" width="86.29" height="15" rx="3" fill="#168477"/>
+<text x="615" y="172" font-size="12" font-weight="400">41.93 ms</text>
+<text x="386" y="207" font-size="12" font-weight="600">B1/S3</text>
+<rect x="446" y="195" width="120.49" height="15" rx="3" fill="#168477"/>
+<text x="615" y="207" font-size="12" font-weight="400">58.54 ms</text>
+<text x="386" y="242" font-size="12" font-weight="600">B1/S4</text>
+<rect x="446" y="230" width="160.00" height="15" rx="3" fill="#168477"/>
+<text x="615" y="242" font-size="12" font-weight="400">77.74 ms</text>
+<rect x="716" y="78" width="337" height="179" rx="10" fill="white"/>
 <text x="732" y="107" font-size="16" font-weight="650">Peak process VRAM</text>
-<text x="732" y="137" font-size="12" font-weight="600">PyTorch</text>
-<rect x="843" y="125" width="109.00" height="15" rx="3" fill="#546a85"/>
-<text x="961" y="137" font-size="12" font-weight="400">5.19 GiB</text>
-<text x="732" y="172" font-size="12" font-weight="600">TRT + Python</text>
-<rect x="843" y="160" width="104.73" height="15" rx="3" fill="#546a85"/>
-<text x="961" y="172" font-size="12" font-weight="400">4.98 GiB</text>
-<text x="732" y="207" font-size="12" font-weight="600">Stage 4 C++</text>
-<rect x="843" y="195" width="26.11" height="15" rx="3" fill="#546a85"/>
-<text x="961" y="207" font-size="12" font-weight="400">1.24 GiB</text>
-<text x="732" y="242" font-size="12" font-weight="600">Stage 5 B1/S1</text>
-<rect x="843" y="230" width="26.11" height="15" rx="3" fill="#168477"/>
-<text x="961" y="242" font-size="12" font-weight="400">1.24 GiB</text>
-<text x="732" y="277" font-size="12" font-weight="600">Stage 5 B1/S2</text>
-<rect x="843" y="265" width="37.69" height="15" rx="3" fill="#168477"/>
-<text x="961" y="277" font-size="12" font-weight="400">1.79 GiB</text>
-<text x="732" y="312" font-size="12" font-weight="600">Stage 5 B1/S3</text>
-<rect x="843" y="300" width="49.27" height="15" rx="3" fill="#168477"/>
-<text x="961" y="312" font-size="12" font-weight="400">2.34 GiB</text>
-<text x="732" y="347" font-size="12" font-weight="600">Stage 5 B1/S4</text>
-<rect x="843" y="335" width="60.84" height="15" rx="3" fill="#168477"/>
-<text x="961" y="347" font-size="12" font-weight="400">2.89 GiB</text>
+<text x="732" y="137" font-size="12" font-weight="600">B1/S1</text>
+<rect x="792" y="125" width="68.66" height="15" rx="3" fill="#546a85"/>
+<text x="961" y="137" font-size="12" font-weight="400">1.24 GiB</text>
+<text x="732" y="172" font-size="12" font-weight="600">B1/S2</text>
+<rect x="792" y="160" width="99.11" height="15" rx="3" fill="#168477"/>
+<text x="961" y="172" font-size="12" font-weight="400">1.79 GiB</text>
+<text x="732" y="207" font-size="12" font-weight="600">B1/S3</text>
+<rect x="792" y="195" width="129.55" height="15" rx="3" fill="#168477"/>
+<text x="961" y="207" font-size="12" font-weight="400">2.34 GiB</text>
+<text x="732" y="242" font-size="12" font-weight="600">B1/S4</text>
+<rect x="792" y="230" width="160.00" height="15" rx="3" fill="#168477"/>
+<text x="961" y="242" font-size="12" font-weight="400">2.89 GiB</text>
 </g></svg>
