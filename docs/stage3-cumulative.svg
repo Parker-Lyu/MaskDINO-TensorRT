@@ -24,19 +24,19 @@
 <rect x="676" y="154" width="123.31" height="17" rx="3" fill="#168477"/>
 <text x="902" y="168" font-size="14" font-weight="650">31.18</text>
 <rect x="20" y="245" width="474" height="153" rx="10" fill="white"/>
-<text x="36" y="274" font-size="17" font-weight="700">Single-slot end-to-end P95 (ms)</text>
+<text x="36" y="274" font-size="17" font-weight="700">Per-image latency P95 (ms)</text>
 <text x="36" y="306" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
-<rect x="190" y="292" width="211.00" height="17" rx="3" fill="#54769a"/>
+<rect x="190" y="292" width="187.15" height="17" rx="3" fill="#54769a"/>
 <text x="416" y="306" font-size="14" font-weight="650">51.93</text>
 <text x="36" y="337" font-size="14" font-weight="400">Stage 3 · Python/TRT</text>
-<rect x="190" y="323" width="142.96" height="17" rx="3" fill="#168477"/>
+<rect x="190" y="323" width="126.80" height="17" rx="3" fill="#168477"/>
 <text x="416" y="337" font-size="14" font-weight="650">35.18</text>
 <rect x="506" y="245" width="474" height="153" rx="10" fill="white"/>
-<text x="522" y="274" font-size="17" font-weight="700">Single-slot network GPU P95 (ms)</text>
+<text x="522" y="274" font-size="17" font-weight="700">Network GPU P95 (ms/batch)</text>
 <text x="522" y="306" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
-<rect x="676" y="292" width="211.00" height="17" rx="3" fill="#54769a"/>
+<rect x="676" y="292" width="142.59" height="17" rx="3" fill="#54769a"/>
 <text x="902" y="306" font-size="14" font-weight="650">37.88</text>
 <text x="522" y="337" font-size="14" font-weight="400">Stage 3 · Python/TRT</text>
-<rect x="676" y="323" width="121.37" height="17" rx="3" fill="#168477"/>
+<rect x="676" y="323" width="82.01" height="17" rx="3" fill="#168477"/>
 <text x="902" y="337" font-size="14" font-weight="650">21.79</text>
 </g></svg>

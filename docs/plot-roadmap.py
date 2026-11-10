@@ -15,7 +15,7 @@ def read_json(path):
     return json.loads((ROOT / path).read_text())
 
 
-def draw(stage, panels, dispatch_p95):
+def draw(stage, panels):
     panel_height = 60 + 31 * stage
     height = 112 + 2 * panel_height + (28 if stage == 5 else 0)
     svg = [
@@ -46,7 +46,7 @@ def draw(stage, panels, dispatch_p95):
 
     if stage == 5:
         label(28, height - 14,
-              f"Stage 5 B1/S3 per-image P95: {dispatch_p95:.2f} ms from dispatch to CPU result.", 14)
+              "Latency ends at CPU result. Timing starts at JPEG processing in Stages 2–4 and at slot dispatch in Stage 5.", 14)
     svg.append("</g></svg>")
     (DOCS / f"stage{stage}-cumulative.svg").write_text("\n".join(svg) + "\n")
 
@@ -70,24 +70,28 @@ def main():
     stage4 = read_json("stage4/results/summary.json")["performance"]["native"]
     stage5 = [row for row in read_json("stage6/results/screen/summary.json") if row["config"] == "b1s3"]
 
-    def single_slot_rows(stage2_key, key):
+    def performance_rows(stage2_key, key, stage5_values):
         return [
             (2, "Stage 2 · PyTorch", stage2[stage2_key]["median"]),
             (3, "Stage 3 · Python/TRT", stage3[key]["median"]),
             (4, "Stage 4 · C++/TRT", stage4[key]["median"]),
+            (5, "Stage 5 · B1/S3", median(stage5_values)),
         ]
 
-    throughput = single_slot_rows("images_per_s", "images_per_second")
-    throughput.append((5, "Stage 5 · B1/S3", median(row["makespan_images_per_second"] for row in stage5)))
+    throughput = performance_rows("images_per_s", "images_per_second",
+                                  (row["makespan_images_per_second"] for row in stage5))
+    latency = performance_rows("e2e_p95_ms", "e2e_ms_p95",
+                               (row["latency_ms"]["p95"] for row in stage5))
+    network = performance_rows("network_p95_ms", "network_ms_p95",
+                               (row["network_ms_per_batch"]["p95"] for row in stage5))
     panels = (
         ("PQ on full COCO val2017", 4, pq),
         ("Offline throughput (img/s)", 2, throughput),
-        ("Single-slot end-to-end P95 (ms)", 2, single_slot_rows("e2e_p95_ms", "e2e_ms_p95")),
-        ("Single-slot network GPU P95 (ms)", 2, single_slot_rows("network_p95_ms", "network_ms_p95")),
+        ("Per-image latency P95 (ms)", 2, latency),
+        ("Network GPU P95 (ms/batch)", 2, network),
     )
-    dispatch_p95 = median(row["latency_ms"]["p95"] for row in stage5)
     for stage in (3, 4, 5):
-        draw(stage, panels, dispatch_p95)
+        draw(stage, panels)
 
 
 if __name__ == "__main__":

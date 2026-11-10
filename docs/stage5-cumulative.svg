@@ -36,26 +36,32 @@
 <rect x="676" y="216" width="211.00" height="17" rx="3" fill="#168477"/>
 <text x="902" y="230" font-size="14" font-weight="650">53.36</text>
 <rect x="20" y="307" width="474" height="215" rx="10" fill="white"/>
-<text x="36" y="336" font-size="17" font-weight="700">Single-slot end-to-end P95 (ms)</text>
+<text x="36" y="336" font-size="17" font-weight="700">Per-image latency P95 (ms)</text>
 <text x="36" y="368" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
-<rect x="190" y="354" width="211.00" height="17" rx="3" fill="#54769a"/>
+<rect x="190" y="354" width="187.15" height="17" rx="3" fill="#54769a"/>
 <text x="416" y="368" font-size="14" font-weight="650">51.93</text>
 <text x="36" y="399" font-size="14" font-weight="400">Stage 3 · Python/TRT</text>
-<rect x="190" y="385" width="142.96" height="17" rx="3" fill="#54769a"/>
+<rect x="190" y="385" width="126.80" height="17" rx="3" fill="#54769a"/>
 <text x="416" y="399" font-size="14" font-weight="650">35.18</text>
 <text x="36" y="430" font-size="14" font-weight="400">Stage 4 · C++/TRT</text>
-<rect x="190" y="416" width="96.02" height="17" rx="3" fill="#54769a"/>
+<rect x="190" y="416" width="85.17" height="17" rx="3" fill="#54769a"/>
 <text x="416" y="430" font-size="14" font-weight="650">23.63</text>
+<text x="36" y="461" font-size="14" font-weight="400">Stage 5 · B1/S3</text>
+<rect x="190" y="447" width="211.00" height="17" rx="3" fill="#168477"/>
+<text x="416" y="461" font-size="14" font-weight="650">58.54</text>
 <rect x="506" y="307" width="474" height="215" rx="10" fill="white"/>
-<text x="522" y="336" font-size="17" font-weight="700">Single-slot network GPU P95 (ms)</text>
+<text x="522" y="336" font-size="17" font-weight="700">Network GPU P95 (ms/batch)</text>
 <text x="522" y="368" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
-<rect x="676" y="354" width="211.00" height="17" rx="3" fill="#54769a"/>
+<rect x="676" y="354" width="142.59" height="17" rx="3" fill="#54769a"/>
 <text x="902" y="368" font-size="14" font-weight="650">37.88</text>
 <text x="522" y="399" font-size="14" font-weight="400">Stage 3 · Python/TRT</text>
-<rect x="676" y="385" width="121.37" height="17" rx="3" fill="#54769a"/>
+<rect x="676" y="385" width="82.01" height="17" rx="3" fill="#54769a"/>
 <text x="902" y="399" font-size="14" font-weight="650">21.79</text>
 <text x="522" y="430" font-size="14" font-weight="400">Stage 4 · C++/TRT</text>
-<rect x="676" y="416" width="121.48" height="17" rx="3" fill="#54769a"/>
+<rect x="676" y="416" width="82.09" height="17" rx="3" fill="#54769a"/>
 <text x="902" y="430" font-size="14" font-weight="650">21.81</text>
-<text x="28" y="556" font-size="14" font-weight="400">Stage 5 B1/S3 per-image P95: 58.54 ms from dispatch to CPU result.</text>
+<text x="522" y="461" font-size="14" font-weight="400">Stage 5 · B1/S3</text>
+<rect x="676" y="447" width="211.00" height="17" rx="3" fill="#168477"/>
+<text x="902" y="461" font-size="14" font-weight="650">56.05</text>
+<text x="28" y="556" font-size="14" font-weight="400">Latency ends at CPU result. Timing starts at JPEG processing in Stages 2–4 and at slot dispatch in Stage 5.</text>
 </g></svg>

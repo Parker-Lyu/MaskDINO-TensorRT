@@ -15,14 +15,14 @@
 
 ![Archived performance by stage. Single-slot end-to-end P95 is 51.93, 35.18, and 23.63 ms in Stages 2–4. Offline throughput is 20.38, 31.18, 43.65, and 53.36 img/s in Stages 2–5.](docs/roadmap-performance.svg)
 
-图表沿用各阶段归档的交付配置。固定 RTX 4090、1024×1024、FP32、batch 1 和同一份 500 张 JPEG，取各阶段三轮中位数。吞吐按完整一轮的墙钟时间计算。单 slot 端到端延迟从处理内存 JPEG 计到 CPU panoptic map 和 segment metadata 就绪。多 slot 的逐图延迟在 Stage 5 单独报告。
+图表沿用各阶段归档的交付配置。固定 RTX 4090、1024×1024、FP32、batch 1 和同一份 500 张 JPEG，取各阶段三轮中位数。吞吐按完整一轮的墙钟时间计算。逐图延迟均计到 CPU panoptic map 和 segment metadata 就绪。Stage 2–4 从处理内存 JPEG 起算，Stage 5 从派发到 slot 起算。
 
-| 阶段 | 交付配置 | 单 slot 端到端 P95（ms） | 500 张离线吞吐（图/s） | 归档来源 |
+| 阶段 | 交付配置 | 逐图延迟 P95（ms） | 500 张离线吞吐（图/s） | 归档来源 |
 | --- | --- | ---: | ---: | --- |
 | Stage 2 | PyTorch FP32，B1 | 51.93 | 20.38 | [1024/B1 性能汇总](stage2/results/benchmark/summary.json) |
 | Stage 3 | Python + TensorRT FP32，B1/S1 | 35.18 | 31.18 | [FP32 性能汇总](stage3/results/summary.json) |
 | Stage 4 | C++/CUDA + TensorRT FP32，B1/S1 | 23.63 | 43.65 | [原生流水线性能汇总](stage4/results/summary.json) |
-| Stage 5 | C++/CUDA + TensorRT FP32，B1/S3 | — | 53.36 | [B1/S3 初筛汇总](stage6/results/screen/summary.json) |
+| Stage 5 | C++/CUDA + TensorRT FP32，B1/S3 | 58.54 | 53.36 | [B1/S3 初筛汇总](stage6/results/screen/summary.json) |
 
 Stage 3–5 的累计图可从仓库根目录运行 `python3 docs/plot-roadmap.py` 重绘。
 
@@ -130,7 +130,7 @@ B1/S3 图中前三个请求的首条网络 kernel 在 **0.06–4.08 ms** 启动�
 
 从 Stage 4 的单 slot 到 Stage 5 的三 slot，500 张离线吞吐从 **43.65 提高到 53.36 图/s**。Stage 5 的 B1/S3 从派发到结果就绪的逐图 P95 为 **58.54 ms**，进程峰值显存为 **2.34 GiB**。四 slot 的吞吐与三 slot 接近，逐图 P95 和显存更高。 [B1/S1–S4 同轮筛选](stage5/README.md#500-张离线筛选)
 
-![Stages 1–5 cumulative charts adding full COCO PQ and offline throughput for B1/S3, with its per-image P95 reported separately](docs/stage5-cumulative.svg)
+![Stages 1–5 cumulative charts adding B1/S3 results for full COCO PQ, offline throughput, per-image P95, and network GPU P95](docs/stage5-cumulative.svg)
 
 每轮 17,500 张的离线长测中，**B1/S3** 的稳态吞吐为 **53.22 图/s**。B1/S1、B1/S2、B1/S3 各通过完整 COCO val2017，三项 PQ 与 Stage 4 一致。 [离线长测与同轮对照](stage5/README.md#离线长测)
 
