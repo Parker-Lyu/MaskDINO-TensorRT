@@ -1,0 +1,412 @@
+{
+  "reference_image_id": 149770,
+  "runs": {
+    "107339-r1": {
+      "timed_queries": 356,
+      "profiled_queries": 419,
+      "network_gpu_ms": {
+        "p50": 14.1138,
+        "p95": 14.1313
+      },
+      "host_enqueue_ms": {
+        "p50": 10.6401,
+        "p95": 10.8184
+      },
+      "summed_layer_mean_ms": 15.118442,
+      "group_layer_mean_ms": {
+        "fpn_conv": {
+          "layers": 1,
+          "ms": 0.904684
+        },
+        "encoder_ffn_linear1": {
+          "layers": 6,
+          "ms": 1.760645
+        },
+        "encoder_ffn_linear2": {
+          "layers": 6,
+          "ms": 1.913893
+        },
+        "encoder_msda": {
+          "layers": 6,
+          "ms": 1.485194
+        },
+        "decoder_msda": {
+          "layers": 9,
+          "ms": 0.092984
+        },
+        "input_proj_3": {
+          "layers": 1,
+          "ms": 0.305692
+        },
+        "mask_einsum": {
+          "layers": 1,
+          "ms": 0.067185
+        },
+        "mask_fp32_cast": {
+          "layers": 1,
+          "ms": 0.104176
+        },
+        "encoder_ffn": {
+          "layers": 12,
+          "ms": 3.674538
+        }
+      }
+    },
+    "149770-r1": {
+      "timed_queries": 357,
+      "profiled_queries": 419,
+      "network_gpu_ms": {
+        "p50": 14.0859,
+        "p95": 14.1003
+      },
+      "host_enqueue_ms": {
+        "p50": 10.5747,
+        "p95": 10.7905
+      },
+      "summed_layer_mean_ms": 15.110425,
+      "group_layer_mean_ms": {
+        "fpn_conv": {
+          "layers": 1,
+          "ms": 0.901154
+        },
+        "encoder_ffn_linear1": {
+          "layers": 6,
+          "ms": 1.758377
+        },
+        "encoder_ffn_linear2": {
+          "layers": 6,
+          "ms": 1.912123
+        },
+        "encoder_msda": {
+          "layers": 6,
+          "ms": 1.478371
+        },
+        "decoder_msda": {
+          "layers": 9,
+          "ms": 0.092767
+        },
+        "input_proj_3": {
+          "layers": 1,
+          "ms": 0.304904
+        },
+        "mask_einsum": {
+          "layers": 1,
+          "ms": 0.067071
+        },
+        "mask_fp32_cast": {
+          "layers": 1,
+          "ms": 0.104191
+        },
+        "encoder_ffn": {
+          "layers": 12,
+          "ms": 3.6705
+        }
+      }
+    },
+    "149770-r2": {
+      "timed_queries": 356,
+      "profiled_queries": 419,
+      "network_gpu_ms": {
+        "p50": 14.1045,
+        "p95": 14.1199
+      },
+      "host_enqueue_ms": {
+        "p50": 10.6274,
+        "p95": 10.8591
+      },
+      "summed_layer_mean_ms": 15.125354,
+      "group_layer_mean_ms": {
+        "fpn_conv": {
+          "layers": 1,
+          "ms": 0.903431
+        },
+        "encoder_ffn_linear1": {
+          "layers": 6,
+          "ms": 1.760861
+        },
+        "encoder_ffn_linear2": {
+          "layers": 6,
+          "ms": 1.914156
+        },
+        "encoder_msda": {
+          "layers": 6,
+          "ms": 1.479885
+        },
+        "decoder_msda": {
+          "layers": 9,
+          "ms": 0.092649
+        },
+        "input_proj_3": {
+          "layers": 1,
+          "ms": 0.305661
+        },
+        "mask_einsum": {
+          "layers": 1,
+          "ms": 0.067299
+        },
+        "mask_fp32_cast": {
+          "layers": 1,
+          "ms": 0.104192
+        },
+        "encoder_ffn": {
+          "layers": 12,
+          "ms": 3.675017
+        }
+      }
+    },
+    "149770-r3": {
+      "timed_queries": 356,
+      "profiled_queries": 419,
+      "network_gpu_ms": {
+        "p50": 14.1045,
+        "p95": 14.1211
+      },
+      "host_enqueue_ms": {
+        "p50": 10.6309,
+        "p95": 10.7971
+      },
+      "summed_layer_mean_ms": 15.126917,
+      "group_layer_mean_ms": {
+        "fpn_conv": {
+          "layers": 1,
+          "ms": 0.903614
+        },
+        "encoder_ffn_linear1": {
+          "layers": 6,
+          "ms": 1.761161
+        },
+        "encoder_ffn_linear2": {
+          "layers": 6,
+          "ms": 1.914201
+        },
+        "encoder_msda": {
+          "layers": 6,
+          "ms": 1.479944
+        },
+        "decoder_msda": {
+          "layers": 9,
+          "ms": 0.092577
+        },
+        "input_proj_3": {
+          "layers": 1,
+          "ms": 0.305528
+        },
+        "mask_einsum": {
+          "layers": 1,
+          "ms": 0.067216
+        },
+        "mask_fp32_cast": {
+          "layers": 1,
+          "ms": 0.104734
+        },
+        "encoder_ffn": {
+          "layers": 12,
+          "ms": 3.675362
+        }
+      }
+    },
+    "456394-r1": {
+      "timed_queries": 356,
+      "profiled_queries": 419,
+      "network_gpu_ms": {
+        "p50": 14.123,
+        "p95": 14.1416
+      },
+      "host_enqueue_ms": {
+        "p50": 10.6348,
+        "p95": 10.9106
+      },
+      "summed_layer_mean_ms": 15.140582,
+      "group_layer_mean_ms": {
+        "fpn_conv": {
+          "layers": 1,
+          "ms": 0.904986
+        },
+        "encoder_ffn_linear1": {
+          "layers": 6,
+          "ms": 1.762184
+        },
+        "encoder_ffn_linear2": {
+          "layers": 6,
+          "ms": 1.915712
+        },
+        "encoder_msda": {
+          "layers": 6,
+          "ms": 1.488162
+        },
+        "decoder_msda": {
+          "layers": 9,
+          "ms": 0.095045
+        },
+        "input_proj_3": {
+          "layers": 1,
+          "ms": 0.306059
+        },
+        "mask_einsum": {
+          "layers": 1,
+          "ms": 0.067255
+        },
+        "mask_fp32_cast": {
+          "layers": 1,
+          "ms": 0.104226
+        },
+        "encoder_ffn": {
+          "layers": 12,
+          "ms": 3.677896
+        }
+      }
+    }
+  },
+  "reference_median": {
+    "summed_layer_mean_ms": 15.125354,
+    "groups": {
+      "fpn_conv": {
+        "layers": 1,
+        "ms": 0.903431,
+        "share_pct": 5.973
+      },
+      "encoder_ffn_linear1": {
+        "layers": 6,
+        "ms": 1.760861,
+        "share_pct": 11.642
+      },
+      "encoder_ffn_linear2": {
+        "layers": 6,
+        "ms": 1.914156,
+        "share_pct": 12.654
+      },
+      "encoder_msda": {
+        "layers": 6,
+        "ms": 1.479885,
+        "share_pct": 9.784
+      },
+      "decoder_msda": {
+        "layers": 9,
+        "ms": 0.092649,
+        "share_pct": 0.613
+      },
+      "input_proj_3": {
+        "layers": 1,
+        "ms": 0.305528,
+        "share_pct": 2.02
+      },
+      "mask_einsum": {
+        "layers": 1,
+        "ms": 0.067216,
+        "share_pct": 0.444
+      },
+      "mask_fp32_cast": {
+        "layers": 1,
+        "ms": 0.104192,
+        "share_pct": 0.69
+      },
+      "encoder_ffn": {
+        "layers": 12,
+        "ms": 3.675017,
+        "share_pct": 24.297
+      }
+    },
+    "top_layers": [
+      {
+        "name": "/sem_seg_head/layer_1/Conv",
+        "ms": 0.903431
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_1/linear2/MatMul_myl912_3",
+        "ms": 0.320138
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_3/linear2/MatMul_myl920_3",
+        "ms": 0.319145
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_4/linear2/MatMul_myl924_3",
+        "ms": 0.318718
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_0/linear2/MatMul_myl908_3",
+        "ms": 0.318662
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_2/linear2/MatMul_myl916_3",
+        "ms": 0.31862
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_5/linear2/MatMul_myl928_4",
+        "ms": 0.318446
+      },
+      {
+        "name": "/sem_seg_head/input_proj.3/input_proj.3.0/Conv",
+        "ms": 0.305528
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_1/linear1/MatMul_myl912_2",
+        "ms": 0.294364
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_4/linear1/MatMul_myl924_2",
+        "ms": 0.293784
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_0/linear1/MatMul_myl908_2",
+        "ms": 0.293283
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_3/linear1/MatMul_myl920_2",
+        "ms": 0.293225
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_5/linear1/MatMul_myl928_3",
+        "ms": 0.293129
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers_2/linear1/MatMul_myl916_2",
+        "ms": 0.292729
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers.0/self_attn/MultiscaleDeformableAttnPlugin_TRT",
+        "ms": 0.249662
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers.1/self_attn/MultiscaleDeformableAttnPlugin_TRT",
+        "ms": 0.248614
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers.2/self_attn/MultiscaleDeformableAttnPlugin_TRT",
+        "ms": 0.247721
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers.5/self_attn/MultiscaleDeformableAttnPlugin_TRT",
+        "ms": 0.246587
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers.3/self_attn/MultiscaleDeformableAttnPlugin_TRT",
+        "ms": 0.244384
+      },
+      {
+        "name": "/sem_seg_head/transformer/encoder/layers.4/self_attn/MultiscaleDeformableAttnPlugin_TRT",
+        "ms": 0.242678
+      },
+      {
+        "name": "__myl_Add_myl962_0",
+        "ms": 0.21345
+      },
+      {
+        "name": "/sem_seg_head/mask_features/Conv",
+        "ms": 0.161134
+      },
+      {
+        "name": "/sem_seg_head/adapter_1/Conv",
+        "ms": 0.158522
+      },
+      {
+        "name": "__myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddReluMeanMean_myl968_4",
+        "ms": 0.155835
+      },
+      {
+        "name": "__myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_myl958_2",
+        "ms": 0.138342
+      }
+    ]
+  }
+}

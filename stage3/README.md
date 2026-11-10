@@ -10,6 +10,10 @@
 - 每种后端用相同顺序跑 Stage 2 的 500 张性能清单，每轮预热 20 次，共三轮。内存 JPEG 到 CPU panoptic map 与 metadata 就绪为端到端边界。GPU 网络时间用 CUDA events。整卡 NVML 20 ms 采样涵盖 TensorRT 内存及桌面占用，记录观测峰值。
 - Nsight Systems 单独采集，NVTX 覆盖解码、前处理、H2D、GPU 归一化、网络、后处理、D2H。
 
+## FP16 混合 engine 逐层 profiling
+
+RTX 4090 的 B1/S1 逐层实测中，最贵的单层为 FPN 3×3 卷积（0.903 ms），encoder FFN 的 12 个 GEMM 合计 3.675 ms。首次改动选 FPN 单层做 A/B。 [测量、kernel 复核与复现](layer-profile.md)
+
 ## 复现入口
 
 在 4090 上从干净的提交运行。准备 Stage 2 镜像及数据，设置 `MASKDINO_CHECKPOINT` 为权重路径。每次运行用新的 ID。日志和产物位于 `stage3/runs/<ID>/`。容器内可通过 `/project/stage3/runs/<ID>/` 读取之前的产物。

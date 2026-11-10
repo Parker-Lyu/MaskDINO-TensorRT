@@ -33,7 +33,7 @@ Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stag
 
 ## TODO
 
-- **基于 profiling 进一步优化。** 用 Nsight Systems 定位 CPU/GPU 空闲和同步等待，用 TensorRT profiling 定位热点层，再用 Nsight Compute 分析关键 kernel 的执行效率、内存带宽和资源利用率。通过对照实验验证优化对端到端性能和准确率的影响。
+- **验证 FPN 3×3 卷积的单层混合精度。** FP16 B1 engine 中，该卷积为最贵单层（0.903 ms），encoder FFN 的 12 个 GEMM 合计 3.675 ms。优先对只通向 mask 输出的 FPN 卷积做对照。 [逐层 profiling 与优化依据](stage3/layer-profile.md)
 
 ## Stage 1 · 复现原始模型精度
 
