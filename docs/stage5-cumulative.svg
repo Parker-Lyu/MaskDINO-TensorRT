@@ -2,11 +2,11 @@
 <title id="title">Stage 1–5 cumulative results</title>
 <rect width="1000" height="570" rx="16" fill="#f3f6fa"/>
 <g font-family="system-ui, sans-serif" fill="#172b43">
-<text x="28" y="36" font-size="24" font-weight="700">Stage 1–5 · 累计结果</text>
-<text x="28" y="61" font-size="14" font-weight="400">RTX 4090 · COCO val2017 PQ · 500 张离线性能取各阶段三轮中位数</text>
+<text x="28" y="36" font-size="24" font-weight="700">Stage 1–5 · Cumulative results</text>
+<text x="28" y="61" font-size="14" font-weight="400">RTX 4090 · COCO val2017 PQ · 500-image offline tests, median of three runs per stage</text>
 <rect x="20" y="76" width="474" height="215" rx="10" fill="white"/>
-<text x="36" y="105" font-size="17" font-weight="700">全量 COCO PQ</text>
-<text x="36" y="137" font-size="14" font-weight="400">Stage 1 官方输入</text>
+<text x="36" y="105" font-size="17" font-weight="700">PQ on full COCO val2017</text>
+<text x="36" y="137" font-size="14" font-weight="400">Stage 1 · Official input</text>
 <rect x="190" y="123" width="210.09" height="17" rx="3" fill="#54769a"/>
 <text x="416" y="137" font-size="14" font-weight="650">52.9567</text>
 <text x="36" y="168" font-size="14" font-weight="400">Stage 2 · 1024/B4</text>
@@ -22,7 +22,7 @@
 <rect x="190" y="247" width="211.00" height="17" rx="3" fill="#168477"/>
 <text x="416" y="261" font-size="14" font-weight="650">53.1863</text>
 <rect x="506" y="76" width="474" height="215" rx="10" fill="white"/>
-<text x="522" y="105" font-size="17" font-weight="700">500 张离线吞吐（图/s）</text>
+<text x="522" y="105" font-size="17" font-weight="700">Offline throughput (img/s)</text>
 <text x="522" y="137" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
 <rect x="676" y="123" width="80.57" height="17" rx="3" fill="#54769a"/>
 <text x="902" y="137" font-size="14" font-weight="650">20.38</text>
@@ -36,7 +36,7 @@
 <rect x="676" y="216" width="211.00" height="17" rx="3" fill="#168477"/>
 <text x="902" y="230" font-size="14" font-weight="650">53.36</text>
 <rect x="20" y="307" width="474" height="215" rx="10" fill="white"/>
-<text x="36" y="336" font-size="17" font-weight="700">单 slot 端到端 P95（ms）</text>
+<text x="36" y="336" font-size="17" font-weight="700">Single-slot end-to-end P95 (ms)</text>
 <text x="36" y="368" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
 <rect x="190" y="354" width="211.00" height="17" rx="3" fill="#54769a"/>
 <text x="416" y="368" font-size="14" font-weight="650">51.93</text>
@@ -47,7 +47,7 @@
 <rect x="190" y="416" width="96.02" height="17" rx="3" fill="#54769a"/>
 <text x="416" y="430" font-size="14" font-weight="650">23.63</text>
 <rect x="506" y="307" width="474" height="215" rx="10" fill="white"/>
-<text x="522" y="336" font-size="17" font-weight="700">单 slot 网络 GPU P95（ms）</text>
+<text x="522" y="336" font-size="17" font-weight="700">Single-slot network GPU P95 (ms)</text>
 <text x="522" y="368" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
 <rect x="676" y="354" width="211.00" height="17" rx="3" fill="#54769a"/>
 <text x="902" y="368" font-size="14" font-weight="650">37.88</text>
@@ -57,5 +57,5 @@
 <text x="522" y="430" font-size="14" font-weight="400">Stage 4 · C++/TRT</text>
 <rect x="676" y="416" width="121.48" height="17" rx="3" fill="#54769a"/>
 <text x="902" y="430" font-size="14" font-weight="650">21.81</text>
-<text x="28" y="556" font-size="14" font-weight="400">Stage 5 B1/S3 的逐图 P95 为 58.54 ms，从派发计到 CPU 结果就绪。</text>
+<text x="28" y="556" font-size="14" font-weight="400">Stage 5 B1/S3 per-image P95: 58.54 ms from dispatch to CPU result.</text>
 </g></svg>

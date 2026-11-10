@@ -13,7 +13,7 @@
 5. **用多 CUDA stream 实现异步并发。** 为每个 slot 分配独立的 execution context、stream 和可写缓冲区，用 Nsight Systems 验证 GPU 执行重叠。[Stage 5](#stage-5--用多-cuda-stream-实现异步并发)
 6. **对比 batch × slot 组合并按负载选型。** 对比 B1 多 slot 和更大 batch 的离线吞吐与显存，再用在线请求回放评估排队、凑批和 P99。[Stage 6](#stage-6--对比-batch--slot-组合并按负载选型)
 
-![技术路线性能摘要。端到端 P95 从 Stage 2 到 Stage 4 依次为 51.93、35.18、23.63 ms。离线吞吐从 Stage 2 到 Stage 5 依次为 20.38、31.18、43.65、53.36 图/s。](docs/roadmap-performance.svg)
+![Archived performance by stage. Single-slot end-to-end P95 is 51.93, 35.18, and 23.63 ms in Stages 2–4. Offline throughput is 20.38, 31.18, 43.65, and 53.36 img/s in Stages 2–5.](docs/roadmap-performance.svg)
 
 图表沿用各阶段归档的交付配置。固定 RTX 4090、1024×1024、FP32、batch 1 和同一份 500 张 JPEG，取各阶段三轮中位数。吞吐按完整一轮的墙钟时间计算。单 slot 端到端延迟从处理内存 JPEG 计到 CPU panoptic map 和 segment metadata 就绪。多 slot 的逐图延迟在 Stage 5 单独报告。
 
@@ -78,7 +78,7 @@ Stage 3–5 的累计图可从仓库根目录运行 `python3 docs/plot-roadmap.p
 | 1024×1024 | 4 | 138.83 / 139.37 | 183.56 / 189.70 | 21.82 | 3.06 / 4.91 |
 | 1024×1024 | 8 | 264.16 / 274.32 | 355.51 / 365.04 | 22.56 | 5.06 / 7.25 |
 
-![Stage 1 与 Stage 2 的 COCO PQ，以及 1024 方形输入的离线吞吐与批次端到端 P95](stage2/results/comparison.svg)
+![COCO PQ for Stages 1 and 2, plus offline throughput and batch end-to-end P95 for 1024-square inputs](stage2/results/comparison.svg)
 
 表格和右图均按批统计端到端延迟，从该批开始处理内存 JPEG，计到最后一张图的 CPU 输出就绪。
 
@@ -94,11 +94,11 @@ Stage 3–5 的累计图可从仓库根目录运行 `python3 docs/plot-roadmap.p
 
 从 Stage 2 到 Stage 3，端到端 P95 从 **51.93 降至 35.18 ms**，离线吞吐从 **20.38 提高到 31.18 图/s**。TensorRT FP32 的全量 PQ / PQ_th / PQ_st 为 **53.1863 / 59.0273 / 44.3696**，通过 B1 精度验收。 [同轮后端对照](stage3/README.md#性能) · [全量准确率](stage3/README.md#全量准确率)
 
-![Stage 1–3 累计柱状图，含全量 COCO PQ、单 slot 端到端和网络 GPU P95，以及 500 张离线吞吐](docs/stage3-cumulative.svg)
+![Stages 1–3 cumulative charts for full COCO PQ, single-slot end-to-end and network GPU P95, and 500-image offline throughput](docs/stage3-cumulative.svg)
 
 混合精度在较大范围使用 FP16 时测试数值误差较大，暂不纳入后续优化，待进一步定位原因。 [问题记录](stage3/mixed-precision.md)
 
-![Nsight Systems 采集的同图 FP32 时间线](stage3/results/nsight-fp32-timeline.svg)
+![Nsight Systems FP32 timelines for the same input image](stage3/results/nsight-fp32-timeline.svg)
 
 Nsight Systems 原始报告 · [TensorRT FP32（GPU 分阶段）](stage3/results/trace-fp32-gpu-projection/trace.nsys-rep) · [PyTorch FP32](stage3/results/trace-pytorch-nvtx/trace.nsys-rep)
 
@@ -110,11 +110,11 @@ Nsight Systems 原始报告 · [TensorRT FP32（GPU 分阶段）](stage3/results
 
 从 Stage 3 到 Stage 4，端到端 P95 从 **35.18 降至 23.63 ms**，离线吞吐从 **31.18 提高到 43.65 图/s**。32 张对齐的类别图、segment IoU 和 metadata 均与 Stage 3 一致。完整 COCO val2017 覆盖 5,000 张，PQ / PQ_th / PQ_st 为 **53.186256 / 59.027261 / 44.369645**，三项与 Stage 3 的差异均小于 0.000001 点。 [同轮前后处理对照与显存](stage4/README.md#rtx-4090-性能)
 
-![Stage 1–4 累计柱状图，新增 C++/CUDA + TensorRT 单 slot 的全量 PQ、P95 和离线吞吐](docs/stage4-cumulative.svg)
+![Stages 1–4 cumulative charts adding full COCO PQ, P95 latency, and offline throughput for single-slot C++/CUDA with TensorRT](docs/stage4-cumulative.svg)
 
 下图对比同一张 COCO 图像的三路 Nsight Systems 时间线。CPU 轨道上的红色表示 CUDA 同步调用，GPU 轨道上的绿色表示后处理活动。
 
-![PyTorch FP32、Stage 3 TensorRT FP32 和 Stage 4 C++/CUDA 的同图时间线](stage4/results/nsight-timeline.svg)
+![Timelines for PyTorch FP32, Stage 3 TensorRT FP32, and Stage 4 C++/CUDA on the same image](stage4/results/nsight-timeline.svg)
 
 Nsight Systems 原始报告 · [C++/CUDA + TensorRT FP32（GPU 分阶段）](stage4/results/trace-native-gpu-projection/trace.nsys-rep)
 
@@ -124,13 +124,13 @@ Nsight Systems 原始报告 · [C++/CUDA + TensorRT FP32（GPU 分阶段）](sta
 
 复用 Stage 4 的 B1 engine 和 C++/CUDA 前后处理。每个 slot 独立持有 execution context、CUDA stream 和可写缓冲区。同一 B1 engine 下，Nsight Systems 显示 B1/S3 有 **37.32% 的 TensorRT kernel 活跃时间**存在跨 stream 重叠。
 
-![B1/S1 和 B1/S3 的 GPU stream 时间线](stage5/results/nsight-slot-overlap.svg)
+![GPU stream timelines for B1/S1 and B1/S3](stage5/results/nsight-slot-overlap.svg)
 
 B1/S3 图中前三个请求的首条网络 kernel 在 **0.06–4.08 ms** 启动，末条在 **53.22–55.73 ms** 结束。三个请求的首末区间有 **49.15 ms** 的交集，三条 stream 实际同时执行网络 kernel 的时间合计 **9.28 ms**。该图展示饱和离线负载下的开头 60 ms。
 
 从 Stage 4 的单 slot 到 Stage 5 的三 slot，500 张离线吞吐从 **43.65 提高到 53.36 图/s**。Stage 5 的 B1/S3 从派发到结果就绪的逐图 P95 为 **58.54 ms**，进程峰值显存为 **2.34 GiB**。四 slot 的吞吐与三 slot 接近，逐图 P95 和显存更高。 [B1/S1–S4 同轮筛选](stage5/README.md#500-张离线筛选)
 
-![Stage 1–5 累计柱状图，新增 B1/S3 的全量 PQ 和离线吞吐，单独标注多 slot 逐图 P95](docs/stage5-cumulative.svg)
+![Stages 1–5 cumulative charts adding full COCO PQ and offline throughput for B1/S3, with its per-image P95 reported separately](docs/stage5-cumulative.svg)
 
 每轮 17,500 张的离线长测中，**B1/S3** 的稳态吞吐为 **53.22 图/s**。B1/S1、B1/S2、B1/S3 各通过完整 COCO val2017，三项 PQ 与 Stage 4 一致。 [离线长测与同轮对照](stage5/README.md#离线长测)
 
@@ -146,7 +146,7 @@ Stage 5 固定 B1，验证了多个 slot 的并发收益。Stage 6 进一步比�
 
 500 张初筛沿用 Stage 5 的 B1 多 slot 结果，加入 B2/B4 的单 slot 和双 slot 配置。B8/S1 和 B8/S2 分别补测，按各自的同轮结果比较。B8/S1 相对 B4/S1 的吞吐增益有限，逐图延迟和显存上升。B2/S2、B4/S2 和 B8/S2 的同轮吞吐均低于 B1/S3，进程峰值显存更高。 [离线初筛与 B8 补测](stage6/README.md#500-张离线筛选) · [联合配置 Nsight](stage6/README.md#联合配置的-nsight-采集)
 
-![Stage 6 离线筛选，包含吞吐、逐图 P95 和进程峰值显存，星号标出两次 B8 补测](stage6/results/screen.svg)
+![Stage 6 offline screening for throughput, per-image P95, and peak process VRAM. Asterisks mark the two B8 follow-up runs.](stage6/results/screen.svg)
 
 **离线沿用 Stage 5 的 B1/S3。** 17,500 张长测的稳态吞吐为 **53.22 图/s**，总完成时间中位数为 **328.78 s**，三轮共完成 52,500 张、零失败。 [离线长测](stage5/README.md#离线长测)
 

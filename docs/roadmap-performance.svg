@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="270" viewBox="0 0 760 270" role="img" aria-labelledby="title description">
-  <title id="title">各阶段归档性能对比</title>
-  <desc id="description">各阶段交付配置使用同一份 500 张 JPEG，取各自三轮中位数。左图比较单 slot 端到端 P95，右图比较离线吞吐，Stage 5 使用三 slot。</desc>
+  <title id="title">Archived performance by stage</title>
+  <desc id="description">Each stage uses the same 500 JPEGs and reports the median of three runs. The left panel shows single-slot end-to-end P95. The right panel shows offline throughput, with three slots for Stage 5.</desc>
   <g fill="#f3f6fa">
     <rect x="0" y="0" width="372" height="240" rx="12"/>
     <rect x="388" y="0" width="372" height="240" rx="12"/>
   </g>
   <g font-family="system-ui, sans-serif" fill="#172b43">
     <g font-size="18" font-weight="700">
-      <text x="22" y="33">单 slot 端到端 P95（ms）</text>
-      <text x="410" y="33">离线吞吐（图/s）</text>
+      <text x="22" y="33">Single-slot end-to-end P95 (ms)</text>
+      <text x="410" y="33">Offline throughput (img/s)</text>
     </g>
     <path d="M22 190H350 M410 190H738" stroke="#93a5b8"/>
     <g text-anchor="middle" font-size="14">
@@ -40,6 +40,6 @@
       <text x="618" y="215">Stage 4</text>
       <text x="706" y="215">Stage 5</text>
     </g>
-    <text x="380" y="260" text-anchor="middle" font-size="13" fill="#546a85">各阶段归档值 · 500 张离线测试 · 各取三轮中位数 · Stage 5 为三 slot</text>
+    <text x="380" y="260" text-anchor="middle" font-size="13" fill="#546a85">Archived results · 500 images · Median of three runs per stage · Stage 5 uses three slots</text>
   </g>
 </svg>

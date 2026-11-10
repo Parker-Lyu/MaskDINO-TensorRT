@@ -28,8 +28,8 @@ def draw(stage, panels, dispatch_p95):
     def label(x, y, content, size=15, weight=400):
         svg.append(f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}">{escape(content)}</text>')
 
-    label(28, 36, f"Stage 1–{stage} · 累计结果", 24, 700)
-    label(28, 61, "RTX 4090 · COCO val2017 PQ · 500 张离线性能取各阶段三轮中位数", 14)
+    label(28, 36, f"Stage 1–{stage} · Cumulative results", 24, 700)
+    label(28, 61, "RTX 4090 · COCO val2017 PQ · 500-image offline tests, median of three runs per stage", 14)
 
     for index, (title, precision, rows) in enumerate(panels):
         x = 20 + 486 * (index % 2)
@@ -45,7 +45,8 @@ def draw(stage, panels, dispatch_p95):
             label(x + 396, cy + 5, f"{value:.{precision}f}", 14, 650)
 
     if stage == 5:
-        label(28, height - 14, f"Stage 5 B1/S3 的逐图 P95 为 {dispatch_p95:.2f} ms，从派发计到 CPU 结果就绪。", 14)
+        label(28, height - 14,
+              f"Stage 5 B1/S3 per-image P95: {dispatch_p95:.2f} ms from dispatch to CPU result.", 14)
     svg.append("</g></svg>")
     (DOCS / f"stage{stage}-cumulative.svg").write_text("\n".join(svg) + "\n")
 
@@ -59,7 +60,7 @@ def main():
         "stage4/results/native-pq/result.json",
         "stage5/results/pq/b1s3/validation.json",
     )
-    pq_names = ("Stage 1 官方输入", "Stage 2 · 1024/B4", "Stage 3 · B1/S1", "Stage 4 · B1/S1", "Stage 5 · B1/S3")
+    pq_names = ("Stage 1 · Official input", "Stage 2 · 1024/B4", "Stage 3 · B1/S1", "Stage 4 · B1/S1", "Stage 5 · B1/S3")
     pq_values = [official_pq] + [read_json(path)["scores"]["PQ"] for path in pq_paths]
     pq = [(number, name, value) for number, (name, value) in enumerate(zip(pq_names, pq_values), 1)]
 
@@ -79,10 +80,10 @@ def main():
     throughput = single_slot_rows("images_per_s", "images_per_second")
     throughput.append((5, "Stage 5 · B1/S3", median(row["makespan_images_per_second"] for row in stage5)))
     panels = (
-        ("全量 COCO PQ", 4, pq),
-        ("500 张离线吞吐（图/s）", 2, throughput),
-        ("单 slot 端到端 P95（ms）", 2, single_slot_rows("e2e_p95_ms", "e2e_ms_p95")),
-        ("单 slot 网络 GPU P95（ms）", 2, single_slot_rows("network_p95_ms", "network_ms_p95")),
+        ("PQ on full COCO val2017", 4, pq),
+        ("Offline throughput (img/s)", 2, throughput),
+        ("Single-slot end-to-end P95 (ms)", 2, single_slot_rows("e2e_p95_ms", "e2e_ms_p95")),
+        ("Single-slot network GPU P95 (ms)", 2, single_slot_rows("network_p95_ms", "network_ms_p95")),
     )
     dispatch_p95 = median(row["latency_ms"]["p95"] for row in stage5)
     for stage in (3, 4, 5):
