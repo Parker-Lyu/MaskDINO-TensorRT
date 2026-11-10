@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="480" viewBox="0 0 1000 480" role="img" aria-labelledby="title">
+<title id="title">Stage 1–4 cumulative results</title>
+<rect width="1000" height="480" rx="16" fill="#f3f6fa"/>
+<g font-family="system-ui, sans-serif" fill="#172b43">
+<text x="28" y="36" font-size="24" font-weight="700">Stage 1–4 · 累计结果</text>
+<text x="28" y="61" font-size="14" font-weight="400">RTX 4090 · COCO val2017 PQ · 500 张离线性能取各阶段三轮中位数</text>
+<rect x="20" y="76" width="474" height="184" rx="10" fill="white"/>
+<text x="36" y="105" font-size="17" font-weight="700">全量 COCO PQ</text>
+<text x="36" y="137" font-size="14" font-weight="400">Stage 1 官方输入</text>
+<rect x="190" y="123" width="210.09" height="17" rx="3" fill="#54769a"/>
+<text x="416" y="137" font-size="14" font-weight="650">52.9567</text>
+<text x="36" y="168" font-size="14" font-weight="400">Stage 2 · 1024/B4</text>
+<rect x="190" y="154" width="211.00" height="17" rx="3" fill="#54769a"/>
+<text x="416" y="168" font-size="14" font-weight="650">53.1862</text>
+<text x="36" y="199" font-size="14" font-weight="400">Stage 3 · B1/S1</text>
+<rect x="190" y="185" width="211.00" height="17" rx="3" fill="#54769a"/>
+<text x="416" y="199" font-size="14" font-weight="650">53.1863</text>
+<text x="36" y="230" font-size="14" font-weight="400">Stage 4 · B1/S1</text>
+<rect x="190" y="216" width="211.00" height="17" rx="3" fill="#168477"/>
+<text x="416" y="230" font-size="14" font-weight="650">53.1863</text>
+<rect x="506" y="76" width="474" height="184" rx="10" fill="white"/>
+<text x="522" y="105" font-size="17" font-weight="700">500 张离线吞吐（图/s）</text>
+<text x="522" y="137" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
+<rect x="676" y="123" width="80.57" height="17" rx="3" fill="#54769a"/>
+<text x="902" y="137" font-size="14" font-weight="650">20.38</text>
+<text x="522" y="168" font-size="14" font-weight="400">Stage 3 · Python/TRT</text>
+<rect x="676" y="154" width="123.31" height="17" rx="3" fill="#54769a"/>
+<text x="902" y="168" font-size="14" font-weight="650">31.18</text>
+<text x="522" y="199" font-size="14" font-weight="400">Stage 4 · C++/TRT</text>
+<rect x="676" y="185" width="172.60" height="17" rx="3" fill="#168477"/>
+<text x="902" y="199" font-size="14" font-weight="650">43.65</text>
+<rect x="20" y="276" width="474" height="184" rx="10" fill="white"/>
+<text x="36" y="305" font-size="17" font-weight="700">单 slot 端到端 P95（ms）</text>
+<text x="36" y="337" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
+<rect x="190" y="323" width="211.00" height="17" rx="3" fill="#54769a"/>
+<text x="416" y="337" font-size="14" font-weight="650">51.93</text>
+<text x="36" y="368" font-size="14" font-weight="400">Stage 3 · Python/TRT</text>
+<rect x="190" y="354" width="142.96" height="17" rx="3" fill="#54769a"/>
+<text x="416" y="368" font-size="14" font-weight="650">35.18</text>
+<text x="36" y="399" font-size="14" font-weight="400">Stage 4 · C++/TRT</text>
+<rect x="190" y="385" width="96.02" height="17" rx="3" fill="#168477"/>
+<text x="416" y="399" font-size="14" font-weight="650">23.63</text>
+<rect x="506" y="276" width="474" height="184" rx="10" fill="white"/>
+<text x="522" y="305" font-size="17" font-weight="700">单 slot 网络 GPU P95（ms）</text>
+<text x="522" y="337" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
+<rect x="676" y="323" width="211.00" height="17" rx="3" fill="#54769a"/>
+<text x="902" y="337" font-size="14" font-weight="650">37.88</text>
+<text x="522" y="368" font-size="14" font-weight="400">Stage 3 · Python/TRT</text>
+<rect x="676" y="354" width="121.37" height="17" rx="3" fill="#54769a"/>
+<text x="902" y="368" font-size="14" font-weight="650">21.79</text>
+<text x="522" y="399" font-size="14" font-weight="400">Stage 4 · C++/TRT</text>
+<rect x="676" y="385" width="121.48" height="17" rx="3" fill="#168477"/>
+<text x="902" y="399" font-size="14" font-weight="650">21.81</text>
+</g></svg>
