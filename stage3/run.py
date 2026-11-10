@@ -45,13 +45,16 @@ def run():
     parser.add_argument("--mixed-scope", choices=("all", "backbone", "mask-projection"), default="all")
     parser.add_argument("--process-memory", action="store_true")
     parser.add_argument("--batch", type=int, choices=(1, 2, 4, 8), default=1)
+    parser.add_argument("--tf32", choices=("off", "on"), help="TensorRT builder policy (default: off)")
     args = parser.parse_args()
+    if args.tf32 is not None and args.mode != "build":
+        parser.error("--tf32 is supported for build only")
     if args.batch != 1 and args.mode not in ("export", "build"):
         parser.error("--batch is supported for export and build")
     if args.mode in ("build", "plugin-test"):
         from stage3 import trt_backend
         if args.mode == "build":
-            trt_backend.build(args.onnx, args.backend, args.batch)
+            trt_backend.build(args.onnx, args.backend, args.batch, allow_tf32=args.tf32 == "on")
         else:
             from stage3.plugin_test import validate
             validate()
@@ -83,6 +86,7 @@ def run():
         return
     network = None
     engine_hash = None
+    allow_tf32 = False
     if args.backend != "pytorch":
         from stage3.trt_backend import Engine
         if args.mode != "align":
@@ -92,9 +96,15 @@ def run():
             torch.cuda.empty_cache()
         network = Engine(args.engine)
         engine_hash = digest(args.engine)
+        metadata = args.engine.with_name("build.json")
+        if metadata.is_file():
+            build = json.loads(metadata.read_text())
+            if build["engine_sha256"] != engine_hash or build["precision"] != args.backend:
+                raise ValueError(f"Build metadata does not match {args.engine} and backend {args.backend}")
+            allow_tf32 = build["tf32"]
     report = {
         "mode": args.mode, "backend": args.backend, "size": SIZE, "batch": 1, "slots": 1,
-        "torch": torch.__version__, "cuda": torch.version.cuda, "tf32": False,
+        "torch": torch.__version__, "cuda": torch.version.cuda, "tf32": allow_tf32,
         "cuda_stream": "dedicated non-default stream", "sample_sha256": digest(SAMPLE), "config_sha256": digest(OUTPUT / "resolved-config.yaml"),
         "engine_sha256": engine_hash, "images": len(ids), "failures": 0,
     }

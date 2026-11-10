@@ -93,7 +93,7 @@ def export(model, image, precision, cpu_constants, mixed_scope):
     })
 
 
-def make_plan(path, logger):
+def make_plan(path, logger, *, allow_tf32=False):
     import tensorrt as trt
 
     trt.init_libnvinfer_plugins(logger, "")
@@ -104,7 +104,10 @@ def make_plan(path, logger):
     if not parser.parse_from_file(str(path)):
         raise RuntimeError([str(parser.get_error(i)) for i in range(parser.num_errors)])
     config = builder.create_builder_config()
-    config.clear_flag(trt.BuilderFlag.TF32)
+    if allow_tf32:
+        config.set_flag(trt.BuilderFlag.TF32)
+    else:
+        config.clear_flag(trt.BuilderFlag.TF32)
     config.max_aux_streams = 0
     config.set_memory_pool_limit(trt.MemoryPoolType.WORKSPACE, 4 * 1024**3)
     config.profiling_verbosity = trt.ProfilingVerbosity.DETAILED
@@ -114,13 +117,13 @@ def make_plan(path, logger):
     return plan
 
 
-def build(path, precision, batch=1):
+def build(path, precision, batch=1, *, allow_tf32=False):
     import json
     import tensorrt as trt
 
     assert precision in ("fp32", "mixed")
     start = time.perf_counter()
-    plan = make_plan(path, trt.Logger(trt.Logger.INFO))
+    plan = make_plan(path, trt.Logger(trt.Logger.INFO), allow_tf32=allow_tf32)
     destination = OUTPUT / "network.engine"
     destination.write_bytes(bytes(plan))
     engine = Engine(destination, batch)
@@ -137,7 +140,7 @@ def build(path, precision, batch=1):
     dump("build.json", {
         "onnx_sha256": digest(path), "engine_sha256": digest(destination),
         "tensorrt": trt.__version__, "precision": precision, "seconds": time.perf_counter() - start,
-        "strongly_typed": True, "tf32": False, "max_aux_streams": 0, "workspace_bytes": 4 * 1024**3,
+        "strongly_typed": True, "tf32": allow_tf32, "max_aux_streams": 0, "workspace_bytes": 4 * 1024**3,
         "plugin_count": len(plugin_layers), "finite_smoke": True,
         "io": {name: {"shape": shape, "dtype": str(engine.engine.get_tensor_dtype(name))}
                for name, shape in engine.shapes.items()},
