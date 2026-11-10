@@ -46,15 +46,19 @@ def run():
     parser.add_argument("--process-memory", action="store_true")
     parser.add_argument("--batch", type=int, choices=(1, 2, 4, 8), default=1)
     parser.add_argument("--tf32", choices=("off", "on"), help="TensorRT builder policy (default: off)")
+    parser.add_argument("--timing-cache", type=Path, help="Load and update a TensorRT build timing cache")
     args = parser.parse_args()
     if args.tf32 is not None and args.mode != "build":
         parser.error("--tf32 is supported for build only")
+    if args.timing_cache is not None and args.mode != "build":
+        parser.error("--timing-cache is supported for build only")
     if args.batch != 1 and args.mode not in ("export", "build"):
         parser.error("--batch is supported for export and build")
     if args.mode in ("build", "plugin-test"):
         from stage3 import trt_backend
         if args.mode == "build":
-            trt_backend.build(args.onnx, args.backend, args.batch, allow_tf32=args.tf32 == "on")
+            trt_backend.build(args.onnx, args.backend, args.batch, allow_tf32=args.tf32 == "on",
+                              timing_cache=args.timing_cache)
         else:
             from stage3.plugin_test import validate
             validate()
