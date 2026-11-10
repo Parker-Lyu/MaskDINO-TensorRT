@@ -27,8 +27,8 @@ def native(engine, output, slots, mode, manifest):
     subprocess.run([str(arg) for arg in command], check=True)
 
 
-def verify_engines():
-    for name, engine in ENGINES.items():
+def verify_engines(engines=ENGINES):
+    for name, engine in engines.items():
         build = json.loads(engine.with_name("build.json").read_text())
         with engine.open("rb") as stream:
             actual = hashlib.file_digest(stream, "sha256").hexdigest()
