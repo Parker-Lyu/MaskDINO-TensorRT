@@ -31,7 +31,9 @@ mkdir "$output"
     if [[ -f "$build" ]]; then sha256sum "$build"; fi
     printf '%s  %s\n' 454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a "$dataset/annotations/panoptic_val2017.json" | sha256sum -c
     sha256sum "$engine" "$dataset/annotations/panoptic_val2017.json" stage2/sample.json
-    find stage3/runs -path '*/build-b*/network.engine' -exec sha256sum {} +
+    if [[ -d stage3/runs ]]; then
+        find stage3/runs -path '*/build-b*/network.engine' -exec sha256sum {} +
+    fi
     docker run --rm --gpus all --pid=host --ipc=host --network=none \
         --user "$(id -u):$(id -g)" -e HOME=/tmp -e OMP_NUM_THREADS=1 \
         -e DETECTRON2_DATASETS=/coco -e TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1 \
