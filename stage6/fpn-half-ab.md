@@ -1,58 +1,60 @@
-# FPN 3×3 卷积的单层 FP16 对照
+# Single-Layer FP16 A/B for the FPN 3×3 Convolution
 
-[逐层 profiling](layer-profile.md) 将 `/sem_seg_head/layer_1/Conv` 定位为已验收 FP16 混合 B1 engine 中最贵的单层。该卷积在原 ONNX 中只通向最终 `masks`。候选只将这个卷积的输入和权重转成 FP16，并在原 GroupNorm 前将输出转回 FP32。图的其他权重、接口和精度策略沿用原模型。 [ONNX 改写入口](fpn_precision.py) · [原图数据流](results/layer-profile-b1/onnx-paths.txt)
+**English** · [简体中文](fpn-half-ab.zh-CN.md)
 
-## 无共享 cache 的首轮
+[Layer profiling](layer-profile.md) identified `/sem_seg_head/layer_1/Conv` as the most expensive single layer in the accepted FP16 mixed-precision B1 engine. In the original ONNX graph, this convolution feeds only the final `masks`. The candidate converts only this convolution's inputs and weights to FP16 and casts the output back to FP32 before the original GroupNorm. Other weights, interfaces, and precision policies carry over from the original graph. [ONNX rewrite entry point](fpn_precision.py) · [Original graph data path](results/layer-profile-b1/onnx-paths.txt)
 
-RTX 4090、1024×1024、B1，使用参考镜像 `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`、驱动 595.84、CUDA Toolkit 13.0.88、TensorRT 10.14.1.48。原 ONNX 和权重由 [原构建日志](../stage3/results/precision/build-autocast-on/console.log) 标识。以 Stage 6 已验收的 plan 为输出参照，同时从同一原 ONNX 重建控制组。新 plan 均从干净提交 `672f0aa` 构建。原生逐图与逐层微基准由 `d9e30d7` 运行，异常图的张量交叉对照由 `9237433` 运行。逐图检查前 GPU 空闲，构建和逐图采样中只出现本次进程。 [候选构建](results/fpn-half-ab/half-build/) · [对照构建](results/fpn-half-ab/control-build/) · [原生逐图记录](results/fpn-half-ab/alignment/console.log)
+## Initial Round Without a Shared Cache
 
-| 配置 | Conv（ms） | 局部 Add 至 GroupNorm/ReLU（ms） | 网络 GPU P50 / P95（ms） |
+Use an RTX 4090, 1024×1024, B1, reference image `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`, driver 595.84, CUDA Toolkit 13.0.88, and TensorRT 10.14.1.48. The [original build log](../stage3/results/precision/build-autocast-on/console.log) identifies the original ONNX and weights. Use the Stage 6 accepted plan as the output reference and rebuild a control from the same original ONNX. Both new plans were built from clean commit `672f0aa`. Native per-image checks and layer microbenchmarks ran at `d9e30d7`. Tensor swapping for the anomalous image ran at `9237433`. The GPU was idle before per-image checks, and sampling during builds and per-image checks found only experiment processes. [Candidate build](results/fpn-half-ab/half-build/) · [Control build](results/fpn-half-ab/control-build/) · [Native per-image records](results/fpn-half-ab/alignment/console.log)
+
+| Configuration | Conv (ms) | Local Add to GroupNorm/ReLU (ms) | Network GPU P50 / P95 (ms) |
 | --- | ---: | ---: | ---: |
-| 已验收 | 0.906 | 1.280 | 14.091 / 14.105 |
-| 重建对照 | 0.909 | 1.283 | 14.113 / 14.132 |
-| 单卷积 FP16 | 0.251 | 0.819 | 13.696 / 13.712 |
+| Accepted plan | 0.906 | 1.280 | 14.091 / 14.105 |
+| Rebuilt control | 0.909 | 1.283 | 14.113 / 14.132 |
+| Single-convolution FP16 | 0.251 | 0.819 | 13.696 / 13.712 |
 
-固定原生预处理后的 COCO 149770，单 stream，预热 1 秒，计时至少 2 秒或 100 次，关闭计时循环的 H2D/D2H。Conv 与局部时间取 `--separateProfileRun` 的逐层均值，局部合计含相邻 Add、Cast、reformat 和 GroupNorm/ReLU 的归属层。网络时间来自独立的普通计时段，只覆盖网络。Inspector 确认候选从 FP32 Winograd 切换至 FP16 Tensor Core，输入转换约 0.094 ms，输出转换融合到 GroupNorm 的相关 kernel。 [逐层原始结果](results/fpn-half-ab/profile/)
+Use natively preprocessed COCO 149770, one stream, 1 second of warmup, and at least 2 seconds or 100 iterations of timing. Disable H2D/D2H in the timing loop. Convolution and local times use layer means from `--separateProfileRun`. The local total includes attributed layers for the adjacent Add, Cast, reformat, and GroupNorm/ReLU. Network time comes from an independent normal timing run and covers only the network. Engine Inspector confirms the switch from FP32 Winograd to FP16 Tensor Cores. Input conversion costs about 0.094 ms, and output conversion is fused into a GroupNorm-related kernel. [Raw layer results](results/fpn-half-ab/profile/)
 
-重建对照通过 32/32。候选 S1、S2 均通过 31/32，两个 slot 配置的 32 份 map 和 metadata 逐字节一致。COCO `470924` 的类别一致率为 99.7614%，比参照少一个 segment（72 → 71）。使用原生后处理交叉替换输出，已验收或重建对照的 logits 配候选 masks 都保留 72 个 segment，候选 logits 配任意一组 masks 都只得到 71 个。该异常由候选 plan 的 logits 触发。虽然 ONNX 的改动只在 mask 分支，首次两个新 plan 的 Inspector 仍显示四个 backbone 卷积使用了不同的 tactic。 [S1 逐图](results/fpn-half-ab/alignment/fpn-half-align-s1/validation.json) · [S2 逐图](results/fpn-half-ab/alignment/fpn-half-align-s2/validation.json) · [张量交叉对照](results/fpn-half-ab/profile/470924-probe.json)
+The rebuilt control passes 32/32. The candidate passes 31/32 at both S1 and S2, and all 32 maps and metadata files match byte for byte across slot settings. COCO `470924` has 99.7614% category agreement and one fewer segment than the reference (72 → 71). When outputs are swapped in native postprocessing, accepted or rebuilt control logits with candidate masks retain 72 segments. Candidate logits with any set of masks yield 71. The candidate plan's logits trigger the anomaly. The ONNX edit is confined to the mask branch, but Engine Inspector shows four backbone convolutions with different tactics in the first pair of new plans. [S1 per-image](results/fpn-half-ab/alignment/fpn-half-align-s1/validation.json) · [S2 per-image](results/fpn-half-ab/alignment/fpn-half-align-s2/validation.json) · [Tensor swapping](results/fpn-half-ab/profile/470924-probe.json)
 
-## 共享 timing cache 的配对
+## Paired Builds With a Shared Timing Cache
 
-从干净提交 `54e6f15` 用原 ONNX 构建对照，再将同一份 cache 交给单卷积候选。对照输出 cache 的 SHA-256 与候选输入 cache 一致。Inspector 中两份 plan 有 60 个同名卷积或池化层，其中唯一更换 tactic 的是目标卷积。对 `470924`，候选相对重建对照的 logits 和 boxes 逐元素一致，mask 的相对 L2 为 0.001342。九种 logits × masks 组合均保留 72 个 segment。该图的复查支持将首轮异常归到重建后的非目标路径。 [重建对照](results/fpn-half-ab/cached/control/build.json) · [候选](results/fpn-half-ab/cached/fpn-half/build.json) · [张量交叉对照](results/fpn-half-ab/cached/ab/470924-probe.json)
+Build the control from the original ONNX at clean commit `54e6f15`, then pass its cache to the single-convolution candidate. The SHA-256 of the control's output cache matches the candidate's input cache. Engine Inspector shows 60 matching convolution or pooling layers across the plans, with a tactic change only for the target convolution. For `470924`, the candidate's logits and boxes match the rebuilt control elementwise, and mask relative L2 is 0.001342. All nine logits × masks combinations retain 72 segments. The recheck supports attributing the original anomaly to rebuild changes outside the target path. [Rebuilt control](results/fpn-half-ab/cached/control/build.json) · [Candidate](results/fpn-half-ab/cached/fpn-half/build.json) · [Tensor swapping](results/fpn-half-ab/cached/ab/470924-probe.json)
 
-共享 cache 后，目标卷积的逐层均值从 **0.9035 降至 0.2505 ms**，从相邻 Add 到 GroupNorm/ReLU 的合计从 **1.2786 降至 0.8203 ms**。同输入普通网络计时的 GPU P95 为 14.1567 → 13.7502 ms。逐层诊断按同一边界汇总，正式原生计时单独运行。 [共享 cache 逐层明细](results/fpn-half-ab/summary.json)
+With the shared cache, target convolution mean layer time drops from **0.9035 to 0.2505 ms**, and the total from adjacent Add to GroupNorm/ReLU falls from **1.2786 to 0.8203 ms**. Normal GPU network P95 on the same input goes from 14.1567 to 13.7502 ms. Layer diagnostics use the same boundary. Formal native timing runs separately. [Shared-cache layer details](results/fpn-half-ab/summary.json)
 
-### 原生 500 图性能
+### Native Performance on 500 Images
 
-沿用 Stage 6 的 32 张对齐与 500 张计时清单，候选 B1/S1 和 B1/S2 相对已验收 B1 均通过 32/32。统一要求类别一致率至少 99.9%、所有 segment 均配对、同类 IoU 至少 0.98。正式计时按三轮轮换三套 plan 的顺序，每个 slot 预热 20 批。每轮从派发到 CPU panoptic map 和 metadata 就绪记墙钟，网络段用 CUDA events，稳态吞吐取墙钟中间 90%，显存取 NVML 20 ms 的进程采样峰值。18 轮均完成 500 张，零失败。 [对齐与计时原始结果](results/fpn-half-ab/cached/ab/) · [GPU 进程采样](results/fpn-half-ab/cached/compute-processes.csv)
+Reuse the Stage 6 alignment list of 32 images and timing list of 500 images. Candidate B1/S1 and B1/S2 both pass 32/32 against the accepted B1 reference. Require category agreement of at least 99.9%, all segments matched, and same-class IoU of at least 0.98. Rotate the three plans across three rounds of formal timing and warm up each slot with 20 batches. Measure wall-clock time from dispatch to CPU panoptic map and metadata readiness, network time with CUDA events, steady-state throughput in the middle 90% of wall-clock time, and process peak GPU memory with 20 ms NVML samples. All 18 runs complete 500 images with zero failures. [Raw alignment and timing results](results/fpn-half-ab/cached/ab/) · [GPU process samples](results/fpn-half-ab/cached/compute-processes.csv)
 
-| Plan | 配置 | 网络 GPU P50 / P95（ms） | 端到端 P50 / P95（ms） | 稳态吞吐（图/s） | 峰值显存（GiB） |
+| Plan | Configuration | Network GPU P50 / P95 (ms) | End-to-end P50 / P95 (ms) | Steady-state throughput (images/s) | Peak GPU memory (GiB) |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 已验收 | B1/S1 | 14.13 / 14.17 | 15.64 / 16.24 | 64.07 | 1.15 |
-| 共享 cache 对照 | B1/S1 | 14.14 / 14.17 | 15.64 / 16.27 | 64.06 | 1.15 |
-| 单卷积 FP16 | B1/S1 | **13.73 / 13.76** | **15.24 / 15.85** | **65.76** | 1.15 |
-| 已验收 | B1/S2 | 24.75 / 26.32 | 26.81 / 28.44 | 74.24 | 1.70 |
-| 共享 cache 对照 | B1/S2 | 24.84 / 26.38 | 26.83 / 28.55 | 74.21 | 1.70 |
-| 单卷积 FP16 | B1/S2 | **24.05 / 25.69** | **26.10 / 27.80** | **76.33** | 1.70 |
+| Accepted plan | B1/S1 | 14.13 / 14.17 | 15.64 / 16.24 | 64.07 | 1.15 |
+| Shared-cache control | B1/S1 | 14.14 / 14.17 | 15.64 / 16.27 | 64.06 | 1.15 |
+| Single-convolution FP16 | B1/S1 | **13.73 / 13.76** | **15.24 / 15.85** | **65.76** | 1.15 |
+| Accepted plan | B1/S2 | 24.75 / 26.32 | 26.81 / 28.44 | 74.24 | 1.70 |
+| Shared-cache control | B1/S2 | 24.84 / 26.38 | 26.83 / 28.55 | 74.21 | 1.70 |
+| Single-convolution FP16 | B1/S2 | **24.05 / 25.69** | **26.10 / 27.80** | **76.33** | 1.70 |
 
-以上取逐轮中位数。相对共享 cache 对照，候选 B1/S1 的端到端 P95 缩短 **0.42 ms（2.6%）**，B1/S2 的稳态吞吐提高 **2.13 图/s（2.9%）**。这两项在三轮配对中方向一致。显存未观测到实质变化。 [逐轮与中位数](results/fpn-half-ab/summary.json)
+Values are medians across runs. Against the shared-cache control, the candidate lowers B1/S1 end-to-end P95 by **0.42 ms (2.6%)** and raises B1/S2 steady-state throughput by **2.13 images/s (2.9%)**. Both changes have the same direction across all three paired rounds. No material memory change was observed. [Per-run values and medians](results/fpn-half-ab/summary.json)
 
-![共享 cache 的 FPN 卷积三组对照，比较稳态吞吐、端到端 P95 和进程峰值显存](results/fpn-half-ab/comparison.svg)
+![Three-way shared-cache FPN convolution comparison for steady-state throughput, end-to-end P95, and peak process GPU memory](results/fpn-half-ab/comparison.svg)
 
-### 全量 COCO PQ
+### Full COCO PQ
 
-共享 cache 候选的 B1/S1 和 B1/S2 各处理 5,000 张 COCO val2017 图片，全部预测 ID 唯一且完整，零运行失败。两个配置的三项分数一致，均满足相对同输入 PyTorch FP32 B1 每项最多下降 0.05 点的门槛。
+B1/S1 and B1/S2 with the shared-cache candidate each process 5,000 COCO val2017 images with unique and complete prediction IDs and zero run failures. Both configurations have identical scores in all three metrics and meet the 0.05-point maximum drop per metric against PyTorch FP32 B1 with the same inputs.
 
-| 原生配置 | 覆盖 | PQ | PQ Things | PQ Stuff | 相对 PyTorch 三项变化（点） |
+| Native configuration | Coverage | PQ | PQ Things | PQ Stuff | Three metric changes vs. PyTorch (points) |
 | --- | ---: | ---: | ---: | ---: | --- |
-| 单卷积 FP16，B1/S1 | 5,000 | 53.17180 | 59.01222 | 44.35606 | −0.01446 / −0.01504 / −0.01357 |
-| 单卷积 FP16，B1/S2 | 5,000 | 53.17180 | 59.01222 | 44.35606 | −0.01446 / −0.01504 / −0.01357 |
+| Single-convolution FP16, B1/S1 | 5,000 | 53.17180 | 59.01222 | 44.35606 | −0.01446 / −0.01504 / −0.01357 |
+| Single-convolution FP16, B1/S2 | 5,000 | 53.17180 | 59.01222 | 44.35606 | −0.01446 / −0.01504 / −0.01357 |
 
-验收范围为 RTX 4090 的 B1/S1、B1/S2 逐图、全量 PQ 和 500 张离线配对，标记为 `stage3-fpn-fp16-accepted`。在线 P99 和长时间离线吞吐待测。 [S1 结果](results/fpn-half-ab/pq/b1s1/validation.json) · [S2 结果](results/fpn-half-ab/pq/b1s2/validation.json) · [完整评估日志](results/fpn-half-ab/pq/console.log)
+Acceptance covers B1/S1 and B1/S2 per-image checks, full PQ, and the paired 500-image offline benchmarks on the RTX 4090. The tag is `stage3-fpn-fp16-accepted`. Online P99 and sustained offline throughput remain to be measured. [S1 results](results/fpn-half-ab/pq/b1s1/validation.json) · [S2 results](results/fpn-half-ab/pq/b1s2/validation.json) · [Full evaluation logs](results/fpn-half-ab/pq/console.log)
 
-## 复现入口
+## Reproduction
 
-使用 [逐层实验](layer-profile.md#复现) 的输入与镜像，另准备原混合 B1 ONNX、已验收 engine 目录（含 `build.json`）、Stage 6 的 `previous` 目录和 COCO 数据。正式运行从干净 checkout 启动，确认 GPU 空闲。以下命令使用新输出目录，先改写 ONNX，再在两次构建间共享 cache。
+Use the inputs and image from the [layer profiling experiment](layer-profile.md#reproduction). Prepare the original mixed B1 ONNX, accepted engine directory with `build.json`, Stage 6 `previous` directory, and COCO data. Start formal runs from a clean checkout and verify that the GPU is idle. The commands below use a new output directory, rewrite ONNX first, and share the cache between builds.
 
 ```bash
 root="$PWD"
@@ -94,7 +96,7 @@ bash stage5/run.sh "$data" "$previous" "$run/fpn-half/network.engine" \
   fpn-cache-repro-pq pq 1s1 1s2 --pq-reference pytorch
 ```
 
-单层微基准另起进程，在上述镜像内加载三套 plan，使用已生成的 `149770.f32`。异常图复查复用 `stage4/build.sh` 生成的 `restore-check.so`，以及原生预处理生成的 `470924.f32`。
+Run the single-layer microbenchmark in a separate process inside the same image. Load the three plans and reuse `149770.f32`. To recheck the anomalous image, reuse `restore-check.so` from `stage4/build.sh` and the natively preprocessed `470924.f32`.
 
 ```bash
 trtexec --loadEngine=/plans/fpn-half/network.engine --loadInputs=image:/inputs/149770.f32 \
@@ -106,4 +108,4 @@ python -m stage6.fpn_probe /inputs/470924.f32 480 640 768 1024 \
   /plans/{shipped,control,fpn-half}/network.engine --output /output/470924-probe.json
 ```
 
-完整 run 目录位于 4090 的 `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/`，对应 `stage3/runs/fpn-cache-pair` 和 `stage5/runs/fpn-cache-pq`。原生逐请求数据使用固定 JPEG 清单和同一 C++ 二进制。
+Full run directories are on the 4090 under `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/` at `stage3/runs/fpn-cache-pair` and `stage5/runs/fpn-cache-pq`. Native per-request data uses the fixed JPEG list and the same C++ binary.

@@ -1,5 +1,7 @@
 # Third-party sources
 
+**English** · [简体中文](THIRD_PARTY_NOTICES.zh-CN.md)
+
 | Component | Source | License or terms |
 | --- | --- | --- |
 | MaskDINO | Pinned official repository revision | Apache-2.0 |

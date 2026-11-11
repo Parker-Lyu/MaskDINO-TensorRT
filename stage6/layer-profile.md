@@ -1,47 +1,49 @@
-# FP16 混合 engine 的逐层 profiling
+# Layer Profiling of the FP16 Mixed-Precision Engine
 
-固定 RTX 4090、MaskDINO R50 panoptic、1024×1024、B1/S1。直接加载 Stage 6 验收的模型级 FP16 autocast / TF32 on plan。Engine SHA-256 为 `ab6054100b6256861ad320df440543d2e82cf2a833db2e77c159b736021401cf`。原构建提交为 `81a7d618315fa6df2702aba8ea4a22b77d72620a`，本次采样提交为 `8e3964b29c0f082b7d2ade365cf6241ebc2e55f0`。环境为驱动 595.84、CUDA Toolkit 13.0.88、TensorRT 10.14.1.48，镜像为 `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`。COCO 标注、权重与 ONNX 来源沿用现有构建记录。 [构建信息](../stage3/results/precision/build-autocast-on/build.json) · [构建日志](../stage3/results/precision/build-autocast-on/console.log) · [运行日志](results/layer-profile-b1/console.log)
+**English** · [简体中文](layer-profile.zh-CN.md)
 
-## 测量方法
+Fix the RTX 4090, MaskDINO R50 panoptic, 1024×1024, and B1/S1. Load the model-level FP16 autocast / TF32-on plan accepted for Stage 6 directly. Engine SHA-256 is `ab6054100b6256861ad320df440543d2e82cf2a833db2e77c159b736021401cf`. The original build ran at `81a7d618315fa6df2702aba8ea4a22b77d72620a` and this profiling run at `8e3964b29c0f082b7d2ade365cf6241ebc2e55f0`. The environment uses driver 595.84, CUDA Toolkit 13.0.88, TensorRT 10.14.1.48, and image `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`. Reuse the COCO annotations, weights, and ONNX source from the existing build record. [Build details](../stage3/results/precision/build-autocast-on/build.json) · [Build log](../stage3/results/precision/build-autocast-on/console.log) · [Run log](results/layer-profile-b1/console.log)
 
-- 启动前连续 8 次每秒采样为 0% GPU 和 0% 显存控制器利用率，110 MiB，只有 Xorg 和 GNOME Shell。逐层实验每秒采样，记录到本次预处理和 5 个 `trtexec` 进程。使用默认功耗及频率策略，采样可以发现持续占用。 [GPU 采样](results/layer-profile-b1/gpu-samples.csv) · [计算进程采样](results/layer-profile-b1/compute-processes.csv)
-- 从 32 张清单选 COCO 149770，重复三轮，每轮新建进程；再分别用 456394、107339 各跑一轮检查排序。Stage 4 原生前处理生成 FP32 NCHW 输入，预加载到 GPU。关闭计时循环内的 H2D/D2H，JPEG 前处理和 panoptic 后处理也在计时范围外。每轮预热 2 秒，普通计时至少 5 秒、至少 300 次，实际 356–357 次。 [输入校验](results/layer-profile-b1/inputs.sha256)
-- `--separateProfileRun` 单独采集层耗时，每轮 profiler 导出计数为 419。下表取 149770 三轮的中位数。组内先按每轮将对应层的 `averageMs` 相加，占比以同一轮全部层的均值之和为分母。逐层均值总和约 15.13 ms，普通计时的 GPU Compute Time P50 为 14.086–14.105 ms，P95 为 14.100–14.121 ms。两种计时分开执行，层耗时适用于比较热点排序。 [逐轮计时与分组结果](results/layer-profile-b1/summary.json) · [逐层原始导出](results/layer-profile-b1/149770-r1.layers.json)
+## Measurement Method
 
-## 热点
+- Eight consecutive one-second samples before launch showed 0% GPU utilization, 0% memory controller utilization, and 110 MiB, with only Xorg and GNOME Shell. One-second sampling during layer profiling recorded the preprocessing process and five `trtexec` processes. The experiment uses default power and clock policies, and sampling can detect sustained utilization. [GPU samples](results/layer-profile-b1/gpu-samples.csv) · [Compute process samples](results/layer-profile-b1/compute-processes.csv)
+- Select COCO 149770 from the 32-image list and run it three times in separate processes. Run 456394 and 107339 once each to check rankings. Stage 4 native preprocessing generates FP32 NCHW input, which is preloaded to the GPU. Disable H2D/D2H in the timing loop and exclude JPEG preprocessing and panoptic postprocessing. Each run warms up for 2 seconds and runs normal timing for at least 5 seconds and 300 iterations. Actual counts are 356–357. [Input checksums](results/layer-profile-b1/inputs.sha256)
+- `--separateProfileRun` collects layer timings separately. The profiler export count is 419 per run. The table takes the median of the three runs for 149770. Within each group, sum the corresponding layer `averageMs` per run and divide by the sum of all layer means in that run for the share. The sum of layer means is about 15.13 ms. In normal timing, GPU Compute Time P50 is 14.086–14.105 ms and P95 is 14.100–14.121 ms. The two measurements run separately. Layer time is used to rank hotspots. [Per-run timings and grouped results](results/layer-profile-b1/summary.json) · [Raw layer export](results/layer-profile-b1/149770-r1.layers.json)
 
-| 层或组 | 耗时（ms/图） | 逐层时间占比 |
+## Hotspots
+
+| Layer or group | Time (ms/image) | Share of layer time |
 | --- | ---: | ---: |
-| Encoder FFN 的 12 个 GEMM | **3.675** | **24.30%** |
-| Encoder MSDeformAttn 的 6 个插件层 | 1.480 | 9.78% |
-| `/sem_seg_head/layer_1/Conv`，最贵的单层 | **0.903** | **5.97%** |
+| 12 encoder FFN GEMMs | **3.675** | **24.30%** |
+| 6 encoder MSDeformAttn plugin layers | 1.480 | 9.78% |
+| `/sem_seg_head/layer_1/Conv`, most expensive single layer | **0.903** | **5.97%** |
 | `/sem_seg_head/input_proj.3/input_proj.3.0/Conv` | 0.306 | 2.02% |
-| 最后一次 mask Einsum 和输出 FP32 Cast | 0.171 | 1.13% |
-| Transformer decoder 的 9 个 MSDeformAttn 插件层 | 0.093 | 0.61% |
+| Final mask Einsum and output FP32 Cast | 0.171 | 1.13% |
+| 9 transformer decoder MSDeformAttn plugin layers | 0.093 | 0.61% |
 
-五轮的最贵单层均为 `layer_1/Conv`，范围 0.901–0.905 ms。六个 encoder FFN `linear2` GEMM 占据单层第 2–7 名，六个 `linear1` GEMM 合计约 1.761 ms。两个额外输入的 FFN 总耗时为 3.675 和 3.678 ms。 [逐轮数据](results/layer-profile-b1/summary.json) · [Engine Inspector](../stage3/results/precision/build-autocast-on/layers.json)
+`layer_1/Conv` is the most expensive single layer in all five runs, ranging from 0.901–0.905 ms. The six encoder FFN `linear2` GEMMs rank 2–7 among individual layers. The six `linear1` GEMMs total about 1.761 ms. FFN time on the two additional inputs totals 3.675 and 3.678 ms. [Per-run data](results/layer-profile-b1/summary.json) · [Engine Inspector](../stage3/results/precision/build-autocast-on/layers.json)
 
-## Kernel 复核
+## Kernel Analysis
 
-Nsight Systems 2025.5.1 在独立采集中通过 NVTX 层名关联 CPU launch，再按 CUDA correlation ID 关联 GPU kernel。每个下列 NVTX 层观测到 40 次 kernel。Nsight Compute 2025.3.1 对每种 kernel 单独采一次，使用 SpeedOfLight 和 LaunchStats，使用自然频率和 cache 行为。计数器用来解释 kernel，表中的 Nsight Systems 时间是 trace 中对应 kernel 的中位数。 [Nsight Systems 原始报告](results/layer-profile-b1/layer-kernels.nsys-rep) · [Nsight Compute 方法](https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#replay)
+In a separate capture, Nsight Systems 2025.5.1 correlates NVTX layer names with CPU launches, then uses CUDA correlation IDs to link GPU kernels. Each NVTX layer below has 40 observed kernel instances. Nsight Compute 2025.3.1 profiles each kernel type once with SpeedOfLight and LaunchStats and leaves clocks and cache behavior at their natural settings. Counters characterize each kernel. The table's Nsight Systems times are medians for the corresponding kernels in the trace. [Raw Nsight Systems report](results/layer-profile-b1/layer-kernels.nsys-rep) · [Nsight Compute method](https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#replay)
 
-| 代表 kernel | Nsight Systems（µs） | Tensor pipe 活跃 | L2 吞吐占峰值 | DRAM 吞吐占峰值 | 活跃 warp 占上限 |
+| Representative kernel | Nsight Systems (µs) | Tensor pipe activity | L2 throughput as a share of peak | DRAM throughput as a share of peak | Active warps as a share of the limit |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | FPN FP32 Winograd 3×3 | 910 | 0.0% | 74.3% | 15.0% | 32.8% |
-| Encoder 第 1 层 `linear2`，零起始 | 324 | 41.8% | 45.3% | 67.8% | 14.6% |
+| Encoder layer 1 `linear2`, zero-based | 324 | 41.8% | 45.3% | 67.8% | 14.6% |
 | Encoder MSDeformAttn | 256 | 0.0% | 38.9% | 26.5% | 91.7% |
 
-`layer_1/Conv` 的输入和输出均为 `[1,256,256,256]` FP32，使用 Winograd tactic。该 kernel 的 L2 活动较高且未使用 Tensor Core。代表性 FFN `linear2` 已使用 TF32 Tensor Core，单线程使用 238 个寄存器。以上是单次 kernel 计数器采样，足以指导下一组 A/B，资源利用率本身无法证明更换 tactic 的收益。 [FPN counters](results/layer-profile-b1/conv-hot.ncu.csv) · [FFN counters](results/layer-profile-b1/encoder-ffn-linear2.ncu.csv) · [MSDeformAttn counters](results/layer-profile-b1/msda.ncu.csv)
+`layer_1/Conv` has FP32 `[1,256,256,256]` inputs and outputs and uses a Winograd tactic. This kernel has high L2 activity and uses no Tensor Cores. The representative FFN `linear2` already uses TF32 Tensor Cores and 238 registers per thread. These single-kernel counter samples guide the next A/B. Utilization alone cannot establish the gain from switching tactics. [FPN counters](results/layer-profile-b1/conv-hot.ncu.csv) · [FFN counters](results/layer-profile-b1/encoder-ffn-linear2.ncu.csv) · [MSDeformAttn counters](results/layer-profile-b1/msda.ncu.csv)
 
-## 下一处改动
+## Next Optimization
 
-优先对 **`/sem_seg_head/layer_1/Conv` 做单层精度 A/B**。原 ONNX 数据流显示该卷积只通向 `masks`，encoder FFN 则通向 TopK 和三个 engine 输出。先把卷积输入与权重转成 FP16，卷积输出在原 GroupNorm 前转回 FP32。检查是否选到 Tensor Core tactic，并比较卷积和新增 Cast 或 reformat 的总耗时。若显式转换抵消收益，再评估相邻布局和精度边界。 [ONNX 路径核对](results/layer-profile-b1/onnx-paths.txt) · [上游 FPN 实现](https://github.com/IDEA-Research/MaskDINO/blob/3831d8514a3728535ace8d4ecc7d28044c42dd14/maskdino/modeling/pixel_decoder/maskdino_encoder.py#L382-L397)
+Prioritize a **single-layer precision A/B on `/sem_seg_head/layer_1/Conv`**. In the original ONNX graph, this convolution feeds only `masks`. Encoder FFNs feed TopK and all three engine outputs. First convert convolution inputs and weights to FP16 and cast the output back to FP32 before the original GroupNorm. Check for a Tensor Core tactic and compare the total time of the convolution and new casts or reformats. If explicit conversions offset the gain, evaluate adjacent layouts and precision boundaries. [ONNX data path check](results/layer-profile-b1/onnx-paths.txt) · [Upstream FPN implementation](https://github.com/IDEA-Research/MaskDINO/blob/3831d8514a3728535ace8d4ecc7d28044c42dd14/maskdino/modeling/pixel_decoder/maskdino_encoder.py#L382-L397)
 
-Encoder FFN 的累计优化空间更大，第二步再做。一次只选少量 FFN 层，保留残差、归一化和 TopK 的 FP32 表示，检查是否出现 proposal 翻转。候选用 32 张图检查输出和差异，用同一份 500 张 JPEG 比较 B1/S1 延迟、B1/S2 饱和吞吐和显存，最终候选按 Stage 6 的三项 PQ 各最多下降 0.05 点进行全量 COCO 验收。本节记录 profiling 时的选择，实际改动和 A/B 结果见 [FPN 单层实验](fpn-half-ab.md)。
+Encoder FFNs offer more cumulative optimization headroom and come second. Select only a few FFN layers at a time, keep residuals, normalization, and TopK in FP32, and check whether proposals change. Check candidate outputs on 32 images. Use the same 500 JPEGs to compare B1/S1 latency, B1/S2 saturated throughput, and GPU memory. Evaluate the final candidate on all of COCO with the Stage 6 limit of a 0.05-point drop in each PQ metric. This section records the choice at profiling time. See the [single-layer FPN experiment](fpn-half-ab.md) for the implemented change and A/B results.
 
-## 复现
+## Reproduction
 
-在 4090 上使用干净 checkout，设置验收过的 engine 路径。脚本会检查是否已有 CUDA 计算进程，并在本次逐层实验期间保存 GPU 采样。每次使用新运行 ID。
+Use a clean checkout on the 4090 and set the accepted engine path. The script checks for existing CUDA compute processes and saves GPU samples during layer profiling. Use a new run ID each time.
 
 ```bash
 export MASKDINO_IMAGE=sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
@@ -50,7 +52,7 @@ engine=/path/to/accepted/fp16-b1/network.engine
 bash stage6/profile_layers.sh "$data" "$engine" layer-profile-b1
 ```
 
-Nsight 的完整命令如下。使用计时脚本生成的 `149770.f32`，避免采集时更换输入。Nsight Compute 在该主机使用临时容器能力读取性能计数器。 [NVIDIA 性能计数器权限说明](https://developer.nvidia.com/nvidia-development-tools-solutions-err_nvgpuctrperm-permission-issue-performance-counters)
+The complete Nsight commands follow. Use `149770.f32` from the timing script to keep the capture input fixed. On this host, Nsight Compute reads performance counters with a temporary container capability. [NVIDIA performance counter permissions](https://developer.nvidia.com/nvidia-development-tools-solutions-err_nvgpuctrperm-permission-issue-performance-counters)
 
 ```bash
 out="$PWD/stage6/runs/layer-profile-b1"
@@ -79,4 +81,4 @@ profile_kernel encoder-ffn-linear2 sm86_xmma_gemm_f32f32_tf32f32_f32_tn_n_tilesi
 profile_kernel msda ms_deformable_im2col_gpu_kernel 30
 ```
 
-FFN 的 `--launch-skip` 由本次 Nsight Systems trace 的同名 kernel 顺序确定。该符号被多个层复用，重建 plan 后要重新通过 NVTX 关联定位。原始报告、SQLite 导出和输入在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/layer-profile-b1/`。 [报告校验](results/layer-profile-b1/reports.sha256)
+The FFN `--launch-skip` is based on the order of identically named kernels in this Nsight Systems trace. Multiple layers use the symbol. After rebuilding the plan, locate the kernel again through NVTX. Raw reports, SQLite exports, and inputs are on the 4090 at `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/layer-profile-b1/`. [Report checksums](results/layer-profile-b1/reports.sha256)

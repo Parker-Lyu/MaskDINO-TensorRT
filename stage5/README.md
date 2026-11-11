@@ -1,78 +1,80 @@
-# Stage 5 · 用多 CUDA stream 实现异步并发
+# Stage 5 · Run Requests Concurrently With Multiple CUDA Streams
 
-固定 RTX 4090、MaskDINO R50 panoptic、1024×1024，复用 Stage 4 的 B1 engine 和 C++/CUDA 前后处理。每个请求处理一张内存 JPEG，交付原图尺寸的 CPU panoptic map 和 segment metadata。固定 batch 为 1，只扫 slot 数。先给出 FP32/TF32 off 的流水线参考，再比较两种允许 TF32 的精度策略。历史 batch 与在线负载选型可在提交 `fcc7dc9` 的 `stage6/README.md` 查看。本分支的 [Stage 6](../stage6/README.md) 继续定位网络热点并验证局部混合精度。
+**English** · [简体中文](README.zh-CN.md)
 
-## Slot 生命周期
+Fix the RTX 4090, MaskDINO R50 panoptic, and 1024×1024. Reuse the Stage 4 B1 engine and C++/CUDA pre- and postprocessing. Each request reads one in-memory JPEG and returns an original-size CPU panoptic map and segment metadata. Fix batch at 1 and sweep only the slot count. Start with the FP32/TF32-off pipeline reference, then compare two precision policies that allow TF32. Historical batch and online workload selection is in `stage6/README.md` at commit `fcc7dc9`. [Stage 6](../stage6/README.md) on this branch continues with network hotspots and targeted mixed precision.
 
-同一进程共享一份反序列化的 engine。每个 slot 对应一个长期运行的 CPU worker，独立持有 CUDA stream、TensorRT execution context、可写 I/O、前后处理工作区和 pinned staging buffers。worker 在本 slot 的 stream 上提交前处理、`enqueueV3`、后处理与 D2H，等待最终 D2H 后把 map 和 metadata 拷贝到 CPU 结果对象，然后复用 slot。等待期间，其他 worker 可以继续提交或收取结果。运行时要求 engine 的辅助 stream 数为 0，图中的并发来自多个请求的独立 slot。 [调度器](main.cu) · [原生运行时](../stage4/runtime.cu)
+## Slot Lifecycle
+
+All workers in a process share a deserialized engine. Each slot has a long-lived CPU worker with its own CUDA stream, TensorRT execution context, writable I/O, pre- and postprocessing workspaces, and pinned staging buffers. The worker submits preprocessing, `enqueueV3`, postprocessing, and D2H on its slot's stream. After waiting for the final D2H, it copies the map and metadata into a CPU result object and reuses the slot. Other workers can submit or collect results during the wait. The runtime requires zero engine auxiliary streams. The overlap in the chart comes from independent request slots. [Scheduler](main.cu) · [Native runtime](../stage4/runtime.cu)
 
 ## Nsight Systems
 
-用 `c8d4796` 在同一份 32 张 COCO 清单上独立采集，每 slot 预热 20 批。图中两组都从各自第一条 GPU kernel 开始，展示前 60 ms。蓝色按 CUDA correlation ID 关联到同一 CPU 线程的 `TensorRT inference` NVTX 区间，灰色为其余 kernel。橙色标出至少两个 stream 同时执行 TensorRT kernel 的区间。Req 编号按每份 trace 的推理提交区间起点排序。
+Capture each trace independently from `c8d4796` using the same 32 COCO images and 20 warmup batches per slot. The two traces show the first 60 ms from their respective first GPU kernels. Blue denotes kernels linked by CUDA correlation ID to the `TensorRT inference` NVTX range on the same CPU thread. Gray marks other kernels. Orange marks intervals with TensorRT kernels running on at least two streams at once. Request numbers follow the start order of inference submission ranges in each trace.
 
-![B1/S1 与 B1/S3 的 CUDA stream 时间线和跨请求 TensorRT kernel 重叠](results/nsight-slot-overlap.svg)
+![CUDA stream timelines and cross-request TensorRT kernel overlap for B1/S1 and B1/S3](results/nsight-slot-overlap.svg)
 
-B1/S3 的前三个请求在饱和离线队列启动时被不同 worker 取走。以下时间相对该 trace 的首条 GPU kernel，起止点取每个请求的首条和末条 TensorRT kernel。
+Three different workers pick up the first three B1/S3 requests when the saturated offline queue starts. Times below are relative to the first GPU kernel in that trace. Each span begins with the request's first TensorRT kernel and ends with its last.
 
-| 请求 | CUDA stream | 首条网络 kernel 开始（ms） | 末条网络 kernel 结束（ms） |
+| Request | CUDA stream | First network kernel start (ms) | Last network kernel end (ms) |
 | --- | ---: | ---: | ---: |
 | Req 1 | 15 | 0.06 | 53.22 |
 | Req 2 | 49 | 3.11 | 54.84 |
 | Req 3 | 83 | 4.08 | 55.73 |
 
-三个请求的首末区间有 **49.15 ms** 的交集。按实际 kernel 区间累计，前三个请求中恰好两条 stream 同时执行网络 kernel 的时间为 **13.91 ms**，三条同时执行的时间为 **9.28 ms**。
+The three request spans intersect for **49.15 ms**. Based on actual kernel intervals for the first three requests, exactly two streams ran network kernels at once for **13.91 ms**, and all three ran at once for **9.28 ms**.
 
-下表统计完整采集。重叠比例的分母为至少一个相应类别 kernel 活跃的时间。无 kernel 活动的时间在首条到末条 kernel 之间统计。
+The table covers the full trace. The denominator for each overlap percentage is the time during which at least one kernel in the corresponding category was active. Kernel idle time is measured from the first to the last kernel.
 
-| 32 张 trace 指标 | B1/S1 | B1/S3 |
+| 32-image trace metric | B1/S1 | B1/S3 |
 | --- | ---: | ---: |
-| CUDA stream 数（有 kernel） | 1 | 3 |
-| 首条到末条 kernel 的时间窗口（ms） | 704.10 | 607.37 |
-| 无 kernel 活动时间（ms） | 52.11 | 7.58 |
-| 多 stream kernel 重叠（整条流水线） | 0.0% | 38.0% |
-| 多 stream kernel 重叠（仅 TensorRT 网络） | 0.00% | 37.32% |
-| 单请求 TensorRT GPU 投影跨度中位数（ms） | 19.95 | 53.22 |
-| `cudaStreamSynchronize` 次数 | 32 | 32 |
+| CUDA streams with kernels | 1 | 3 |
+| First-to-last kernel window (ms) | 704.10 | 607.37 |
+| Kernel idle time (ms) | 52.11 | 7.58 |
+| Multi-stream kernel overlap (full pipeline) | 0.0% | 38.0% |
+| Multi-stream kernel overlap (TensorRT network only) | 0.00% | 37.32% |
+| Median per-request TensorRT GPU projection span (ms) | 19.95 | 53.22 |
+| `cudaStreamSynchronize` calls | 32 | 32 |
 
-两组各执行 16,608 条 kernel，其中 16,416 条关联到 TensorRT 推理。B1/S3 缩短了完成整组 GPU 工作的时间，每个请求的网络投影跨度则变长。GPU 投影跨度包含首末 GPU 操作之间的间隙。 [B1/S1 原始报告](results/trace/b1s1.nsys-rep) · [B1/S3 原始报告](results/trace/b1s3.nsys-rep) · [全流水线重叠汇总](results/trace/b1s3.overlap.json)
+Each configuration runs 16,608 kernels, 16,416 of them associated with TensorRT inference. B1/S3 completes the total GPU work sooner while increasing the network projection span per request. The GPU projection span includes gaps between the first and last GPU operations. [B1/S1 raw report](results/trace/b1s1.nsys-rep) · [B1/S3 raw report](results/trace/b1s3.nsys-rep) · [Full-pipeline overlap summary](results/trace/b1s3.overlap.json)
 
-## RTX 4090 性能与准确率
+## RTX 4090 Performance and Accuracy
 
-### 500 张离线筛选
+### 500-Image Offline Screen
 
-由 `ecf9e25` 运行，表中为三轮中位数，每轮 500 张、零失败。相同 JPEG 清单在计时前预载，每个 slot 预热 20 批。逐图 P95 从派发到 slot 计到 CPU 结果就绪。显存为 NVML 每 20 ms 采样到的推理进程峰值。
+Runs used `ecf9e25`. The table reports three-run medians, with 500 images and zero failures per run. The same JPEG list is preloaded before timing, with 20 warmup batches per slot. Per-image P95 spans slot dispatch to CPU result availability. Peak process GPU memory is sampled by NVML every 20 ms.
 
-| 配置 | 吞吐（图/s） | 逐图 P95（ms） | 进程显存峰值（GiB） |
+| Configuration | Throughput (images/s) | Per-image P95 (ms) | Peak process GPU memory (GiB) |
 | --- | ---: | ---: | ---: |
 | B1/S1 | 43.67 | 23.74 | 1.24 |
 | B1/S2 | 50.89 | 41.93 | 1.79 |
 | B1/S3 | 53.36 | 58.54 | 2.34 |
 | B1/S4 | 53.08 | 77.74 | 2.89 |
 
-同轮 Stage 4 原生 B1/S1 为 43.77 图/s，新调度器 B1/S1 为 43.67 图/s。以新调度器 B1/S1 为对照，B1/S3 吞吐提高 22.2%，S4 的延迟和显存进一步上升，因此选 S3 进入离线长测。 [B1 逐轮结果](results/screen/summary.json)
+In the same session, Stage 4 native B1/S1 reached 43.77 images/s and the new scheduler at B1/S1 reached 43.67 images/s. Relative to the new scheduler at B1/S1, B1/S3 increased throughput by 22.2%. S4 further increased latency and GPU memory use, so S3 advanced to the sustained offline benchmark. [Per-run B1 results](results/screen/summary.json)
 
-![500 张筛选的 B1/S1–S4 吞吐、逐图 P95 和进程显存](results/comparison.svg)
+![B1/S1–S4 throughput, per-image P95, and process GPU memory in the 500-image screen](results/comparison.svg)
 
-### 离线长测
+### Sustained Offline Benchmark
 
-在 `c8d4796` 上，同一份 500 张清单重复 35 次。每配置三轮，每轮 17,500 张，轮换运行顺序。稳态吞吐取总完成时间中间 90% 的窗口。表中为三轮中位数。
+At `c8d4796`, repeat the same 500-image list 35 times. Run each configuration three times with 17,500 images per run and rotate execution order. Steady-state throughput uses the middle 90% of total completion time. The table reports three-run medians.
 
-| 配置 | 稳态吞吐（图/s） | 总完成时间（s） | 逐图 P95（ms） | 进程显存峰值（GiB） | 三轮失败 |
+| Configuration | Steady-state throughput (images/s) | Total completion time (s) | Per-image P95 (ms) | Peak process GPU memory (GiB) | Failures across three runs |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | B1/S1 | 43.74 | 400.18 | 23.68 | 1.24 | 0 / 52,500 |
 | B1/S3 | 53.22 | 328.78 | 58.31 | 2.34 | 0 / 52,500 |
 
-B1/S3 的稳态吞吐提高 **21.7%**，固定任务总完成时间缩短 **17.8%**。 [逐轮结果](results/offline/summary.json) · [逐请求记录校验](results/offline/raw.sha256)
+B1/S3 improves steady-state throughput by **21.7%** and reduces total completion time for the fixed workload by **17.8%**. [Per-run results](results/offline/summary.json) · [Per-request log checksums](results/offline/raw.sha256)
 
-### 正确性
+### Correctness
 
-32 张逐图对齐使用 Stage 4 的类别一致率、segment 配对和 IoU 阈值，B1/S1、S2、S3、S4 均通过。B1/S1、S2、S3 的正式评估在 `c8d4796` 上运行，各覆盖 5,000 个唯一 COCO 预测 ID。三组 PQ / PQ_th / PQ_st 均为 **53.186256 / 59.027261 / 44.369645**，与 Stage 4 一致。 逐图日志保存在 `fcc7dc9` 的 `stage6/results/check/console.log` 和 `stage6/results/check-b8/b1s3/validation.json`。 [全量 PQ](results/pq/)
+The 32-image alignment uses Stage 4 category agreement, segment matching, and IoU thresholds. B1/S1, S2, S3, and S4 all pass. The full B1/S1, S2, and S3 evaluations ran at `c8d4796` and each covered 5,000 unique COCO prediction IDs. All three produced PQ / PQ_th / PQ_st of **53.186256 / 59.027261 / 44.369645**, matching Stage 4. Per-image logs are stored in `stage6/results/check/console.log` and `stage6/results/check-b8/b1s3/validation.json` at `fcc7dc9`. [Full PQ](results/pq/)
 
-### 三种精度的 B1 × S1–S4 筛选
+### B1 × S1–S4 Screen for Three Precision Policies
 
-固定 1024×1024、C++/CUDA 前后处理和饱和离线负载，比较 FP32/TF32 off、FP32/TF32 on 和模型级 autocast FP16/TF32 on。新测两种候选各自轮换 S1–S4 的执行顺序，共三轮，每轮同顺序预载 500 张 JPEG，每 slot 预热 20 批。表中 P95 从派发到 slot 计到 CPU 结果就绪，吞吐按整轮墙钟时间计算。显存是 NVML 每 20 ms 采样的进程峰值。FP32/off 沿用上方历史初筛，可比较各组随 slot 数变化的趋势。三种精度来自分组运行，精度间差值为跨组描述。
+Compare FP32/TF32 off, FP32/TF32 on, and model-level autocast FP16/TF32 on at 1024×1024 with C++/CUDA pre- and postprocessing and a saturated offline workload. For each of the two follow-up candidates, rotate S1–S4 order across three runs. Each run preloads the same 500 JPEGs in the same order and warms up with 20 batches per slot. P95 spans slot dispatch to CPU result availability. Throughput uses full-run wall-clock time. NVML samples peak process GPU memory every 20 ms. FP32/off uses the historical screen above, which allows comparison of scaling trends within each group. The policies were measured in separate groups, so differences between policies describe cross-group measurements.
 
-| 精度策略 | Slot | 吞吐（图/s） | 逐图 P95（ms） | 进程峰值显存（GiB） | 逐图检查 |
+| Precision policy | Slot | Throughput (images/s) | Per-image P95 (ms) | Peak process GPU memory (GiB) | Per-image check |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | FP32 / TF32 off | S1 | 43.67 | 23.74 | 1.24 | 32/32 |
 | FP32 / TF32 off | S2 | 50.89 | 41.93 | 1.79 | 32/32 |
@@ -82,20 +84,20 @@ B1/S3 的稳态吞吐提高 **21.7%**，固定任务总完成时间缩短 **17.8
 | FP32 / TF32 on | S2 | 66.39 | 32.41 | 1.79 | 32/32 |
 | FP32 / TF32 on | S3 | 66.43 | 49.97 | 2.34 | 32/32 |
 | FP32 / TF32 on | S4 | 65.32 | 65.34 | 2.89 | 32/32 |
-| FP16 混合精度 / TF32 on | S1 | 62.96 | 16.48 | 1.15 | 32/32 |
-| FP16 混合精度 / TF32 on | S2 | 74.35 | 28.42 | 1.70 | 32/32 |
-| FP16 混合精度 / TF32 on | S3 | 73.26 | 44.70 | 2.26 | 32/32 |
-| FP16 混合精度 / TF32 on | S4 | 72.01 | 60.25 | 2.81 | 32/32 |
+| FP16 mixed precision / TF32 on | S1 | 62.96 | 16.48 | 1.15 | 32/32 |
+| FP16 mixed precision / TF32 on | S2 | 74.35 | 28.42 | 1.70 | 32/32 |
+| FP16 mixed precision / TF32 on | S3 | 73.26 | 44.70 | 2.26 | 32/32 |
+| FP16 mixed precision / TF32 on | S4 | 72.01 | 60.25 | 2.81 | 32/32 |
 
-新测两组共完成 **12,000** 张计时请求，零失败。FP32/on 的 S2 与 S3 吞吐分别为 **66.39** 和 **66.43 图/s**，S2 的逐图 P95 少 **17.56 ms**，进程峰值显存少 **0.55 GiB**。混合/on 在 S2 达到组内最高吞吐 **74.35 图/s**，相对其 S1 提升 **18.1%**。
+The two follow-up groups completed **12,000** timed image requests with zero failures. FP32/on reached **66.39** and **66.43 images/s** at S2 and S3, respectively. S2 had **17.56 ms** lower per-image P95 and **0.55 GiB** lower peak process GPU memory. Mixed/on peaked at **74.35 images/s** at S2, **18.1%** above its S1 throughput.
 
-新测使用 `cc64d1b`、RTX 4090、驱动 595.84、CUDA 13.0、TensorRT 10.14.1.48 和 Stage 4 的参考容器。每个候选用自身 Stage 4 的 B1/S1 原生预测作逐图参考，S1–S4 均沿用类别一致率 ≥99.9%、全部 segment 配对且同类 IoU ≥0.98。 [FP32/on 逐图结果](results/precision/on/check/) · [FP32/on 逐轮计时](results/precision/on/screen/) · [混合/on 逐图结果](results/precision/autocast-on/check/) · [混合/on 逐轮计时](results/precision/autocast-on/screen/)
+Follow-up runs used `cc64d1b`, an RTX 4090, driver 595.84, CUDA 13.0, TensorRT 10.14.1.48, and the Stage 4 reference container. For each candidate, use its own Stage 4 B1/S1 native predictions as the reference. S1–S4 require ≥99.9% category agreement, all segments matched, and same-class IoU ≥0.98. [FP32/on per-image results](results/precision/on/check/) · [FP32/on per-run timings](results/precision/on/screen/) · [Mixed/on per-image results](results/precision/autocast-on/check/) · [Mixed/on per-run timings](results/precision/autocast-on/screen/)
 
 ![Throughput, per-image P95 and peak process VRAM for three precision policies and one to four slots](results/precision-comparison.svg)
 
-### 复现精度筛选
+### Reproduce the Precision Screen
 
-沿用 [Stage 3 候选构建](../stage3/README.md#b1s1-精度策略筛选) 的镜像、数据和 engine。每次选择一个候选，令 `previous/native-align-fixed` 指向该 engine 的 Stage 4 32 张原生预测目录，`previous/perf-native-r1` 包含 Stage 4 原生性能运行的 `manifest.tsv` 和 `things.txt`。把文件放在实际挂载的目录下。新测复用了 Stage 4 已有的两份原生参考输出，避免重复生成预测和原生计时。
+Reuse the image, data, and engines from the [Stage 3 candidate builds](../stage3/README.md#b1s1-precision-policy-screening). Select one candidate at a time. Set `previous/native-align-fixed` to the directory containing its 32 Stage 4 native predictions, and put `manifest.tsv` and `things.txt` from the Stage 4 native benchmark in `previous/perf-native-r1`. Place the files in the directories actually mounted. The follow-up reused both Stage 4 native references to avoid regenerating predictions and repeating native timings.
 
 ```bash
 bash stage5/run.sh "$data" "$previous" "$engine" precision-check-new check 1s1 1s2 1s3 1s4
@@ -103,11 +105,11 @@ bash stage5/run.sh "$data" "$previous" "$engine" precision-screen-new screen 1s1
 python3 -m stage5.plot stage5/results --precision-comparison stage5/results/precision-comparison.svg
 ```
 
-逐请求 TSV、验收 JSON 和运行日志位于结果目录。完整预测和运行目录保存在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-precision/native-repo/stage5/runs/`。
+Per-request TSVs, acceptance JSON, and run logs are in the results directories. Full predictions and run directories remain on the 4090 host at `/home/parker/Code/MaskDINO-TensorRT-precision/native-repo/stage5/runs/`.
 
-## 复现入口
+## Reproduction
 
-在 RTX 4090 上使用干净 checkout。沿用 [Stage 3 参考镜像](../stage3/results/environment.json)、COCO 数据、原始权重和固定 B1 engine。`previous` 指向 [Stage 4 正式运行目录](../stage4/README.md#复现)，需包含 `perf-native-r1` 和 `native-align-fixed`。每个运行 ID 只使用一次。以下命令使用两阶段共用的 [运行入口](run.sh)。
+Use a clean checkout on the RTX 4090. Reuse the [Stage 3 reference image](../stage3/results/environment.json), COCO data, original checkpoint, and fixed B1 engine. Set `previous` to the [Stage 4 formal run directory](../stage4/README.md#reproduction), which must contain `perf-native-r1` and `native-align-fixed`. Use each run ID only once. The commands below use the [launcher](run.sh) shared by both stages.
 
 ```bash
 export MASKDINO_IMAGE=maskdino:stage1
@@ -122,7 +124,7 @@ bash stage5/run.sh "$data" "$previous" "$engine" slots-pq pq 1s1 1s2 1s3
 bash stage5/run.sh "$data" "$previous" "$engine" slots-trace trace 1s1 1s3
 ```
 
-从已有报告重绘时间线只需离线导出 SQLite。以下命令使用 Nsight Systems CLI 和 Python 3。
+To redraw the timeline from existing reports, export SQLite offline. The commands below use the Nsight Systems CLI and Python 3.
 
 ```bash
 for config in b1s1 b1s3; do
@@ -131,4 +133,4 @@ done
 python3 -m stage5.trace_plot /tmp/b1s1.sqlite /tmp/b1s3.sqlite stage5/results/nsight-slot-overlap.svg
 ```
 
-500 张筛选、长测、PQ 和 trace 沿用拆分前的结果，正式提交分别见各节。历史实验入口、日志与原始布局见 [验收 tag `stage5-batch-slots-accepted`](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/stage5-batch-slots-accepted/stage5)。
+The 500-image screen, sustained benchmark, PQ evaluation, and traces use results from before the stage split. The relevant run commits are listed in each section. See the [acceptance tag `stage5-batch-slots-accepted`](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/stage5-batch-slots-accepted/stage5) for historical entry points, logs, and layout.

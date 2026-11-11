@@ -1,20 +1,22 @@
-# Stage 3 · 将网络转换为 TensorRT
+# Stage 3 · Convert the Network to TensorRT
 
-固定 MaskDINO R50 panoptic、1024×1024、batch=1、单 slot。前处理、归一化、panoptic 后处理和 COCO evaluator 共用 Stage 2 实现。PyTorch FP32 参考和首轮 TensorRT FP32 验收关闭 TF32，另对照两种允许 TF32 的策略。
+**English** · [简体中文](README.zh-CN.md)
 
-## 验收标准
+Fix MaskDINO R50 panoptic, 1024×1024, batch=1, and one slot. Preprocessing, normalization, panoptic postprocessing, and the COCO evaluator reuse Stage 2 implementations. The PyTorch FP32 reference and initial TensorRT FP32 acceptance runs disable TF32. The comparison also includes two policies that allow TF32.
 
-- 复用 Stage 2 的 32 张验证清单。逐图报告 logits、masks、boxes 的最大绝对误差、平均绝对误差和相对 L2。张量形状须一致且所有值有限。当 mask 的直接相对 L2 大于 0.02 时，使用下采样 mask 余弦距离与类别概率距离做匈牙利匹配，附上配对后误差。匹配只用于诊断，后处理仍使用原始输出。
-- 类别图比较包含 void，并区分 thing 和 stuff。对同类 segment 按 IoU 从高到低一对一配对，记录原始 metadata 是否相同、每个匹配的 IoU 和未匹配数量。FP32 逐图类别一致率至少 99.9%，所有 segment 均配对且 IoU 至少 0.98。异常保存原始输入、输出张量、panoptic map、metadata 和差异图。
-- 全量 5,000 张预测 ID 唯一且与真值集合一致。FP32 相对 PyTorch B1 的 PQ、PQ_th、PQ_st 各项下降最多 0.05 点。Stage 2 B4 的 PQ 53.1862 单独列作参考。
-- 每种后端用相同顺序跑 Stage 2 的 500 张性能清单，每轮预热 20 次，共三轮。内存 JPEG 到 CPU panoptic map 与 metadata 就绪为端到端边界。GPU 网络时间用 CUDA events。整卡 NVML 20 ms 采样涵盖 TensorRT 内存及桌面占用，记录观测峰值。
-- Nsight Systems 单独采集，NVTX 覆盖解码、前处理、H2D、GPU 归一化、网络、后处理、D2H。
+## Acceptance Criteria
 
-已验收混合精度 B1 engine 的逐层 profiling 和后续网络优化见 [Stage 6](../stage6/README.md)。
+- Reuse the 32-image Stage 2 validation list. Report maximum absolute error, mean absolute error, and relative L2 for logits, masks, and boxes per image. Tensor shapes must match and all values must be finite. If direct mask relative L2 exceeds 0.02, use Hungarian matching based on downsampled mask cosine distance and class probability distance, and report matched errors. Matching is diagnostic only. Postprocessing uses the original outputs.
+- Category-map comparisons include void and distinguish things from stuff. Match same-class segments one-to-one in descending IoU order. Record whether original metadata matches, IoU for each match, and unmatched counts. FP32 requires at least 99.9% per-image category agreement, a match for every segment, and IoU of at least 0.98. For anomalies, save inputs, output tensors, panoptic maps, metadata, and difference images.
+- All 5,000 prediction IDs must be unique and match ground truth. FP32 may lose at most 0.05 points each in PQ, PQ_th, and PQ_st against PyTorch B1. Stage 2 B4 PQ of 53.1862 is a separate reference.
+- Run each backend on the Stage 2 500-image benchmark list in the same order, with 20 warmups per run and three runs total. End-to-end timing spans in-memory JPEG to CPU panoptic map and metadata availability. Use CUDA events for GPU network time. NVML samples GPU-wide memory every 20 ms, including TensorRT allocations and desktop usage. Record the observed peak.
+- Capture Nsight Systems separately. NVTX covers decoding, preprocessing, H2D, GPU normalization, the network, postprocessing, and D2H.
 
-## 复现入口
+See [Stage 6](../stage6/README.md) for layer profiling and further optimization of the accepted mixed-precision B1 engine.
 
-在 4090 上从干净的提交运行。准备 Stage 2 镜像及数据，设置 `MASKDINO_CHECKPOINT` 为权重路径。每次运行用新的 ID。日志和产物位于 `stage3/runs/<ID>/`。容器内可通过 `/project/stage3/runs/<ID>/` 读取之前的产物。
+## Reproduction
+
+Run from a clean commit on the 4090. Prepare the Stage 2 image and data and set `MASKDINO_CHECKPOINT` to the checkpoint path. Use a new ID for each run. Logs and artifacts are in `stage3/runs/<ID>/`. Inside the container, read previous artifacts under `/project/stage3/runs/<ID>/`.
 
 ```bash
 export MASKDINO_IMAGE=maskdino:stage1
@@ -22,7 +24,7 @@ export MASKDINO_CHECKPOINT=/path/to/maskdino_r50_panoptic.pth
 data=/path/to/coco2017-panoptic-val
 runs=/project/stage3/runs
 
-# 复现时各运行 ID 必须未使用。
+# Use an unused run ID for each reproduction run.
 bash stage3/run.sh "$data" constants-raw repro-constants
 bash stage3/run.sh "$data" constants-fixed repro-constants --cpu-constants
 bash stage3/run.sh "$data" export-fp32-raw export --backend fp32
@@ -45,7 +47,7 @@ done
 
 ```
 
-无补丁的常量复现和完整导出预期以 SIGSEGV 退出，分别保留日志。每次运行均记录提交、镜像 ID、命令和资产哈希。完整 COCO JPEG 与 PNG 的 SHA-256 清单可在数据根目录用以下命令生成，然后与 [环境记录](results/environment.json) 的清单摘要对照。
+The unpatched constant reproducer and full export are expected to exit with SIGSEGV. Keep both logs. Each run records the commit, image ID, command, and asset hashes. Generate complete COCO JPEG and PNG SHA-256 manifests from the dataset root with the commands below, then compare their digests with the [environment record](results/environment.json).
 
 ```bash
 for asset in val2017 panoptic_val2017; do
@@ -55,68 +57,68 @@ for asset in val2017 panoptic_val2017; do
 done
 ```
 
-## RTX 4090 运行记录
+## RTX 4090 Run Records
 
-- PyTorch B1 全量 PQ 在 `9d79baa` 运行。完整覆盖 5,000 个预测 ID，PQ / PQ_th / PQ_st 为 53.186252 / 59.027259 / 44.369638。该准确率对照使用 PyTorch 默认 stream。正式性能对照的两个后端均使用同样的单条显式 stream。 [PyTorch B1 原始记录](results/pt-pq/)
-- FP32 导出、CUDA 常量复现与插件独立验证在 `b4c5eb3` 运行。未修复的最小复现于 ONNX Slice shape inference 崩溃，完整导出同样触发 SIGSEGV。修复仅把导出器访问的常量属性移到 CPU，模型和输入继续位于 GPU。最小复现移动 2 个属性，完整 FP32 导出移动 21 个。 [最小复现日志](results/constants-raw/console.log) · [完整导出失败日志](results/export-fp32-raw/console.log) · [修复后导出信息](results/export-fp32-fixed/export.json)
-- NVIDIA MSDA v2 对随机样本的 FP32 输出与上游 CUDA 算子逐元素一致。样本使用 4 个尺度、21,760 个空间位置、8 个 head、每 head 32 通道以及 300 个 query，采样点包含越界坐标。CUDA 对 grid-sample 最大绝对误差为 \(6.67\times 10^{-7}\)。 [NVIDIA 官方插件](https://github.com/NVIDIA/TensorRT/tree/main/plugin/multiscaleDeformableAttnPlugin) · [数值验证](results/msda/result.json)
-- FP32 engine 构建和 32 张对齐在 `dd6213a` 运行。固定输入与输出全部为 FP32，engine inspector 确认 6 个 encoder 和 9 个 decoder PluginV3 层，输入 shapes 和 starts 为 INT32。禁用 TF32 与辅助 stream，workspace 上限 4 GiB。 [构建信息](results/build-fp32/build.json) · [逐层信息](results/build-fp32/layers.json)
-- 32 张全部通过，metadata 全部一致。最差类别一致率 99.99873%，同类 segment 最小 IoU 0.999608。3 张图有一对 query 互换，直接 mask 相对 L2 为 4.33%–5.55%，匹配后为约 0.0003%–0.0013%。 [逐图张量及后处理数据](results/align-fp32/result.json)
-- 首次 TensorRT PQ 启动在第一张图失败。释放 PyTorch 网络显存时删除了后处理读取的 `sem_seg_head.num_classes`。将网络模块移至 CPU 后保留同一个后处理方法与元数据，重跑通过。TensorRT FP32 全量覆盖 5,000 个唯一 ID，PQ / PQ_th / PQ_st 为 53.186256 / 59.027261 / 44.369646。 [首次失败日志](results/fp32-pq-initial-failure/console.log) · [重跑结果](results/fp32-pq-rerun/result.json)
+- PyTorch B1 full PQ ran at `9d79baa`. It covered all 5,000 prediction IDs with PQ / PQ_th / PQ_st of 53.186252 / 59.027259 / 44.369638. This accuracy reference uses the default PyTorch stream. The formal benchmark uses the same single explicit stream setup for both backends. [Raw PyTorch B1 records](results/pt-pq/)
+- FP32 export, the CUDA constant reproducer, and standalone plugin validation ran at `b4c5eb3`. The unfixed minimal reproducer crashed during ONNX Slice shape inference, and full export also triggered SIGSEGV. The fix moves only exporter-accessed constant attributes to the CPU. The model and inputs stay on the GPU. The minimal reproducer moves 2 attributes and the full FP32 export moves 21. [Minimal reproduction log](results/constants-raw/console.log) · [Full export failure log](results/export-fp32-raw/console.log) · [Fixed export details](results/export-fp32-fixed/export.json)
+- NVIDIA MSDA v2 matches the upstream CUDA operator elementwise on random FP32 samples. The samples use 4 scales, 21,760 spatial locations, 8 heads, 32 channels per head, and 300 queries, with some out-of-bounds sampling coordinates. The maximum absolute error between CUDA and grid-sample is \(6.67\times 10^{-7}\). [Official NVIDIA plugin](https://github.com/NVIDIA/TensorRT/tree/main/plugin/multiscaleDeformableAttnPlugin) · [Numerical validation](results/msda/result.json)
+- FP32 engine build and 32-image alignment ran at `dd6213a`. Fixed inputs and outputs are all FP32. Engine Inspector confirms 6 encoder and 9 decoder PluginV3 layers, with INT32 shapes and starts inputs. TF32 and auxiliary streams are disabled, and workspace is capped at 4 GiB. [Build details](results/build-fp32/build.json) · [Layer details](results/build-fp32/layers.json)
+- All 32 images passed and all metadata matched. The lowest category agreement was 99.99873% and the minimum same-class segment IoU was 0.999608. In 3 images a pair of queries swapped order. Direct mask relative L2 was 4.33%–5.55%, falling to about 0.0003%–0.0013% after matching. [Per-image tensors and postprocessing data](results/align-fp32/result.json)
+- The first TensorRT PQ run failed on the first image. Freeing PyTorch network GPU memory deleted `sem_seg_head.num_classes`, which postprocessing reads. Moving the network module to CPU preserved the same postprocessing method and metadata, and the rerun passed. TensorRT FP32 covered 5,000 unique IDs with PQ / PQ_th / PQ_st of 53.186256 / 59.027261 / 44.369646. [Initial failure log](results/fp32-pq-initial-failure/console.log) · [Rerun results](results/fp32-pq-rerun/result.json)
 
-### 混合精度调查
+### Mixed-Precision Investigation
 
-失败样本、缩小 FP16 范围的对照、复现命令与未验证假设单独归档。 [混合精度问题记录](mixed-precision.md)
+Failing samples, comparisons with narrower FP16 scopes, reproduction commands, and unverified hypotheses are archived separately. [Mixed-precision investigation notes](mixed-precision.md)
 
-### 全量准确率
+### Full-Set Accuracy
 
-| 1024×1024 后端 | Batch | PQ | PQ_th | PQ_st | 唯一预测 ID |
+| 1024×1024 backend | Batch | PQ | PQ_th | PQ_st | Unique prediction IDs |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | PyTorch FP32 | 1 | 53.186252 | 59.027259 | 44.369638 | 5,000 |
 | TensorRT FP32 | 1 | 53.186256 | 59.027261 | 44.369646 | 5,000 |
-| Stage 2 PyTorch FP32，历史参考 | 4 | 53.186242 | 59.027230 | 44.369656 | 5,000 |
+| Stage 2 PyTorch FP32, historical reference | 4 | 53.186242 | 59.027230 | 44.369656 | 5,000 |
 
-TensorRT FP32 的三项 PQ 指标均通过验收，与 PyTorch B1 的差值各小于 0.00001 点。 [FP32 验收记录](results/pq-fp32-gate.json) · [Stage 2 B4 全量结果](../stage2/results/evaluate/1024-4/result.json)
+All three TensorRT FP32 PQ metrics meet the acceptance criteria. Each differs from PyTorch B1 by less than 0.00001 points. [FP32 acceptance record](results/pq-fp32-gate.json) · [Stage 2 B4 full evaluation](../stage2/results/evaluate/1024-4/result.json)
 
-完整实验位于 4090 的 `/home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/`。其中保留 ONNX、engine、预测 JSON、异常图张量和两套数据文件哈希清单。仓库归档日志、配置、engine inspector、数值指标、差异图与原始计时样本。
+Full experiment outputs are on the 4090 at `/home/parker/Code/MaskDINO-TensorRT-stage3/stage3/runs/`, including ONNX, engines, prediction JSON, tensors from anomalous images, and both dataset file hash manifests. The repository archives logs, configurations, Engine Inspector output, metrics, difference images, and raw timing samples.
 
-### 性能
+### Performance
 
-下表使用 Stage 3 同轮复测的 PyTorch 和 TensorRT，量化网络后端的替换收益。每种后端三轮均完成 500 张，失败数为 0。网络 GPU P50/P95 用 CUDA events 计时。端到端从内存 JPEG 到 CPU panoptic map 和 metadata。显存使用整卡 NVML 20 ms 采样，表中为三轮观测峰值的中位数，包含桌面进程和 TensorRT 分配。
+The table compares PyTorch and TensorRT reruns from the same Stage 3 benchmark session to quantify the effect of replacing the network backend. Each backend completed 500 images per run in all three runs, with zero failures. Network GPU P50/P95 uses CUDA events. End-to-end timing runs from in-memory JPEG to CPU panoptic map and metadata. NVML samples GPU-wide memory every 20 ms. The table reports the median observed peak across three runs, including desktop processes and TensorRT allocations.
 
-| 后端 | 网络 P50 / P95（ms） | 端到端 P50 / P95（ms） | 吞吐（图/s） | 整卡采样峰值（GiB） |
+| Backend | Network P50 / P95 (ms) | End-to-end P50 / P95 (ms) | Throughput (images/s) | Observed GPU-wide peak (GiB) |
 | --- | ---: | ---: | ---: | ---: |
 | PyTorch FP32 | 37.58 / 37.75 | 48.68 / 51.87 | 20.44 | 5.79 |
 | TensorRT FP32 | 20.65 / 21.79 | 31.91 / 35.18 | 31.18 | 5.59 |
 
-- **TensorRT 转换收益。** FP32 转换使网络 P95 减少 15.97 ms（42.3%），端到端 P95 减少 16.69 ms（32.2%），吞吐增加 10.74 图/s（52.5%）。
+- **TensorRT conversion gains.** FP32 conversion reduces network P95 by 15.97 ms (42.3%) and end-to-end P95 by 16.69 ms (32.2%), and increases throughput by 10.74 images/s (52.5%).
 
-两组 FP32 性能运行均使用 `18986d2`。 [验收汇总与逐轮范围](results/summary.json)
+Both FP32 performance configurations ran at `18986d2`. [Acceptance summary and per-run ranges](results/summary.json)
 
-![Stage 1–3 全量 COCO PQ 与 Stage 3 同轮后端性能对照](results/comparison.svg)
+![Full COCO PQ for Stages 1–3 and same-session backend performance in Stage 3](results/comparison.svg)
 
-### Nsight Systems 基线
+### Nsight Systems Baseline
 
-两组 FP32 trace 均从 `d56ac7a` 运行，各预热 20 次，使用同一份 32 张清单，并与正式性能计时分开采集。TensorRT trace 使用与对齐、PQ、性能测试相同的 engine。 [PyTorch 采集](results/trace-pytorch-rerun/) · [TensorRT 采集](results/trace-fp32/)
+Both FP32 traces ran at `d56ac7a`, with 20 warmups each and the same 32-image list. They were captured separately from formal timings. The TensorRT trace uses the same engine as alignment, PQ, and performance runs. [PyTorch capture](results/trace-pytorch-rerun/) · [TensorRT capture](results/trace-fp32/)
 
-![Nsight Systems FP32 时间线](results/nsight-fp32-timeline.svg)
+![Nsight Systems FP32 timeline](results/nsight-fp32-timeline.svg)
 
-图由 Nsight Systems 导出的 SQLite 原始事件绘制，展示两组预热后的同一张 COCO 图 149770，横轴共用毫秒尺度。第一行按 NVTX 阶段着色，红色覆盖记录到的 CUDA 同步 API 区间。第二行单独展示同一批同步调用。GPU 活动用 CUDA correlation ID 关联到提交它的 NVTX 阶段，灰色表示未归属的事件。三条轨道可在同一时刻重叠，图中数值不能相加得到端到端时间。
+The figure uses raw events from the Nsight Systems SQLite export and shows the same post-warmup COCO image, 149770, for both backends on a shared millisecond axis. The first row is colored by NVTX stage, with recorded CUDA synchronization API intervals overlaid in red. The second row isolates the same calls. CUDA correlation IDs link GPU activity to the NVTX stage that submitted it, and gray marks unattributed events. The three tracks can overlap, so their durations do not add up to end-to-end latency.
 
-TensorRT 在该图的 CPU 后处理 NVTX 区间为 20.60 ms，其中 CUDA 同步 API 占 19.82 ms。整个区间与此前由网络提交的 GPU 活动重叠 17.25 ms，由后处理提交的 GPU 活动为 2.38 ms。PyTorch 的对应数值为 2.99 ms、2.29 ms、0.00 ms 和 2.36 ms。第一行的绿色只表示后处理 NVTX 区间中未被已记录的 CUDA 同步调用覆盖的墙钟时间。下表统计全部 32 张。
+For this image, the TensorRT CPU postprocessing NVTX range lasts 20.60 ms, of which CUDA synchronization APIs occupy 19.82 ms. The range overlaps 17.25 ms of previously submitted network GPU activity and contains 2.38 ms of GPU activity submitted by postprocessing. The corresponding PyTorch figures are 2.99 ms, 2.29 ms, 0.00 ms, and 2.36 ms. Green in the first row marks wall-clock time in the postprocessing range outside recorded CUDA synchronization calls. The table covers all 32 images.
 
-| 独立 trace 指标 | PyTorch FP32 | TensorRT FP32 |
+| Separate trace metric | PyTorch FP32 | TensorRT FP32 |
 | --- | ---: | ---: |
-| 请求区间无记录 CUDA GPU 活动的时间占比 | 26.4% | 24.1% |
-| 按 CUDA API 关联到网络提交的 GPU 活动，平均 ms/图 | 33.74 | 19.79 |
-| 按 CUDA API 关联到后处理提交的 GPU 活动，平均 ms/图 | 4.33 | 4.34 |
-| 网络区间的 `cudaStreamSynchronize` 次数 | 2,432 | 0 |
-| 后处理区间的 `cudaStreamSynchronize` 次数 | 2,591 | 2,591 |
-| 最终 D2H 区间内 GPU 活动，平均 ms/图 | 0.045 | 0.045 |
+| Share of request time with no recorded CUDA GPU activity | 26.4% | 24.1% |
+| GPU activity attributed by CUDA API to network submissions, mean ms/image | 33.74 | 19.79 |
+| GPU activity attributed by CUDA API to postprocessing submissions, mean ms/image | 4.33 | 4.34 |
+| `cudaStreamSynchronize` calls in the network range | 2,432 | 0 |
+| `cudaStreamSynchronize` calls in the postprocessing range | 2,591 | 2,591 |
+| GPU activity in the final D2H range, mean ms/image | 0.045 | 0.045 |
 
-TensorRT 异步提交网络，GPU 网络执行延续到后处理的 NVTX 区间，后处理主机区间中位数 24.00 ms 包含这段等待。两组后处理自身的 GPU 活动均约 4.3 ms/图。CPU 解码和前处理平均合计约 5.4 ms/图，其间无该进程的 CUDA GPU 活动。后处理每图约 81 次 stream 同步，源代码中的 GPU 布尔筛选和逐 segment 的 `.item()` 是可检查的同步点。 [PyTorch 聚合](results/trace-pytorch-rerun/trace-summary.json) · [TensorRT 聚合](results/trace-fp32/trace-summary.json)
+TensorRT submits network work asynchronously. GPU network execution extends into the postprocessing NVTX range, and the 24.00 ms median host postprocessing range includes that wait. In both traces, GPU activity attributable to postprocessing is about 4.3 ms/image. CPU decoding and preprocessing take about 5.4 ms/image on average, with no CUDA GPU activity from the process during that time. Postprocessing makes about 81 stream synchronization calls per image. GPU boolean filtering and per-segment `.item()` calls are synchronization points to inspect in the source. [PyTorch aggregation](results/trace-pytorch-rerun/trace-summary.json) · [TensorRT aggregation](results/trace-fp32/trace-summary.json)
 
-仓库保存两份可直接在 Nsight Systems 2025.5.1 或更新版本中打开的原始报告。每份包含同一清单的全部 32 张图，采集目录同时保存报告哈希、`nsys stats` 和逐阶段聚合。SQLite 导出位于 4090 对应运行目录。 [PyTorch FP32 原始报告](results/trace-pytorch-rerun/trace.nsys-rep) · [TensorRT FP32 原始报告](results/trace-fp32/trace.nsys-rep)
+The repository includes two raw reports that open in Nsight Systems 2025.5.1 or newer. Each contains all 32 images from the same list. The capture directories also contain the report hash, `nsys stats`, and per-stage aggregates. SQLite exports remain in the corresponding run directories on the 4090. [Raw PyTorch FP32 report](results/trace-pytorch-rerun/trace.nsys-rep) · [Raw TensorRT FP32 report](results/trace-fp32/trace.nsys-rep)
 
 ```bash
 bash stage3/run.sh "$data" trace-pytorch-rerun trace --backend pytorch
@@ -134,55 +136,55 @@ python3 stage3/summarize.py stage3/runs/{pt-pq,fp32-pq}/result.json \
 python3 stage3/plot.py stage3/results
 ```
 
-#### 带明确 CPU 阶段名的重采报告
+#### Recaptures With Explicit CPU Stage Names
 
-从 `de2e61f` 重采两组 FP32，沿用同一份 32 张清单、20 次预热和同一 TensorRT engine。Nsight Systems 的 NVTX Range Summary 现在将两段标成 `CPU / network call (GPU may continue after return)` 和 `CPU / postprocess (includes CUDA waits)`。前者覆盖主机调用，后者覆盖主机后处理代码及其同步等待。查看单张图时，可把 NVTX、CUDA API 和 CUDA stream 轨道同时展开。上方时间线和统计表对应原始验收采集。
+Both FP32 traces were recaptured at `de2e61f` with the same 32-image list, 20 warmups, and the same TensorRT engine. Nsight Systems NVTX Range Summary now labels the ranges `CPU / network call (GPU may continue after return)` and `CPU / postprocess (includes CUDA waits)`. The first covers the host call, and the second covers host postprocessing code and its synchronization waits. To inspect one image, expand NVTX, CUDA API, and CUDA stream tracks together. The timeline and statistics above use the original acceptance captures.
 
-- [PyTorch FP32 新版原始报告](results/trace-pytorch-nvtx/trace.nsys-rep) · [统计目录](results/trace-pytorch-nvtx/)
-- [TensorRT FP32 新版原始报告](results/trace-fp32-nvtx/trace.nsys-rep) · [统计目录](results/trace-fp32-nvtx/)
+- [Updated raw PyTorch FP32 report](results/trace-pytorch-nvtx/trace.nsys-rep) · [Statistics directory](results/trace-pytorch-nvtx/)
+- [Updated raw TensorRT FP32 report](results/trace-fp32-nvtx/trace.nsys-rep) · [Statistics directory](results/trace-fp32-nvtx/)
 
 ```bash
 bash stage3/run.sh "$data" trace-pytorch-nvtx trace --backend pytorch
 bash stage3/run.sh "$data" trace-fp32-nvtx trace --backend fp32 --engine "$runs/build-fp32/network.engine"
 ```
 
-### GPU 分阶段原始报告
+### Raw GPU Reports by Stage
 
-从 `d88ff9c` 在 RTX 4090 重采 Stage 3 的 Python 前后处理 + TensorRT FP32 链路。固定原 engine、1024×1024、B1、单 slot、同一份 32 张清单和 20 次预热。NVTX 标签为 `TensorRT inference`、`postprocess` 和 `D2H`，与 Stage 4 最新原始报告使用同样的阶段名。Nsight 的 GPU 投影跨度包含同阶段 GPU 操作之间的空隙。
+The Stage 3 Python pre- and postprocessing plus TensorRT FP32 pipeline was recaptured on the RTX 4090 at `d88ff9c`. It used the original engine, 1024×1024, B1, one slot, the same 32-image list, and 20 warmups. The NVTX labels are `TensorRT inference`, `postprocess`, and `D2H`, matching the latest Stage 4 raw report. Nsight GPU projection spans include gaps between GPU operations in the same stage.
 
-| 阶段 | GPU 投影跨度中位数（ms/图） |
+| Stage | Median GPU projection span (ms/image) |
 | --- | ---: |
 | TensorRT inference | 19.879 |
 | postprocess | 4.737 |
 | D2H | 0.051 |
 
-[新版 Nsight 原始报告](results/trace-fp32-gpu-projection/trace.nsys-rep) · [Nsight GPU Projection 统计](results/trace-fp32-gpu-projection/nsys-gpu-projection.txt)
+[Updated raw Nsight report](results/trace-fp32-gpu-projection/trace.nsys-rep) · [Nsight GPU Projection statistics](results/trace-fp32-gpu-projection/nsys-gpu-projection.txt)
 
-使用 Stage 4 的对照入口可复现同一条 Stage 3 链路与统计。设置 `data`、`engine` 和 `MASKDINO_CHECKPOINT` 后运行：
+Use the Stage 4 comparison entry point to reproduce the same Stage 3 pipeline and statistics. Set `data`, `engine`, and `MASKDINO_CHECKPOINT`, then run the commands below.
 
 ```bash
 bash stage4/run.sh "$data" "$engine" trace-stage3-gpu-projection reference trace
 ```
 
-## B1/S1 精度策略筛选
+## B1/S1 Precision Policy Screening
 
-使用相同的 PyTorch 前后处理和 PyTorch FP32 B1 参考，对比历史的 FP32/TF32 off、FP32/TF32 on 和模型级 autocast FP16/TF32 on。两个 FP32 engine 使用相同的 FP32 ONNX。混合 engine 复用 `mixed-scope=all` 的导出，图内保留显式 FP32 区域，三个 engine 的输入和三个输出均为 FP32。两种 on 构建允许 FP32 算子选择 TF32 tactic，使用 4 GiB workspace、零辅助 stream 和相同的 TensorRT 10.14.1.48。Inspector 中 FP32/on 有 245 个 tactic 名称含 `tf32`，混合/on 有 125 个名称含 `tf32`、112 个名称含 `f16f16`。 [FP32/on 构建](results/precision/build-fp32-on/) · [混合/on 构建](results/precision/build-autocast-on/) · [混合 ONNX 导出](results/export-mixed-rerun/export.json)
+Compare historical FP32/TF32 off, FP32/TF32 on, and model-level FP16 autocast with TF32 on, using the same PyTorch pre- and postprocessing and PyTorch FP32 B1 reference. Both FP32 engines use the same FP32 ONNX. The mixed engine reuses the `mixed-scope=all` export and retains explicit FP32 regions. All three engines have FP32 input and three FP32 outputs. Both TF32-on builds allow FP32 operators to choose TF32 tactics and use a 4 GiB workspace, zero auxiliary streams, and TensorRT 10.14.1.48. In Engine Inspector, FP32/on has 245 tactic names containing `tf32`, and mixed/on has 125 containing `tf32` and 112 containing `f16f16`. [FP32/on build](results/precision/build-fp32-on/) · [Mixed/on build](results/precision/build-autocast-on/) · [Mixed ONNX export](results/export-mixed-rerun/export.json)
 
-逐图统一按类别一致率 ≥99.9%、segment 全部配对、同类 IoU ≥0.98 统计。全量三项均以 [PyTorch FP32 B1](results/pt-pq/result.json) 为参照，各项最多下降 0.05 点。
+The common per-image thresholds are ≥99.9% category agreement, all segments matched, and same-class IoU ≥0.98. Each full-set metric may fall by at most 0.05 points against [PyTorch FP32 B1](results/pt-pq/result.json).
 
-| Engine | 逐图通过 | 最差类别一致率 | PQ / PQ_th / PQ_st | ΔPQ / ΔPQ_th / ΔPQ_st（点） |
+| Engine | Per-image passes | Lowest category agreement | PQ / PQ_th / PQ_st | ΔPQ / ΔPQ_th / ΔPQ_st (points) |
 | --- | ---: | ---: | --- | --- |
 | FP32 / TF32 off | 32/32 | 99.9987% | 53.186256 / 59.027261 / 44.369646 | +0.000005 / +0.000002 / +0.000008 |
 | FP32 / TF32 on | 27/32 | 99.5868% | 53.174509 / 59.001049 / 44.379732 | −0.011743 / −0.026210 / +0.010094 |
-| FP16 混合精度 / TF32 on | 16/32 | 91.6320% | 53.168045 / 59.007167 / 44.354277 | −0.018206 / −0.020092 / −0.015360 |
+| FP16 mixed precision / TF32 on | 16/32 | 91.6320% | 53.168045 / 59.007167 / 44.354277 | −0.018206 / −0.020092 / −0.015360 |
 
-三组均覆盖 **5,000** 张且全量 PQ 达标。FP32/on 的 5 张逐图失败只涉及类别一致率。模型级 autocast 按原 mixed backend 的阈值（99% 和 0.90）通过 26/32，按三组统一阈值通过 16/32。两种 on 策略均保留为性能候选，沿用逐图硬门槛时两种都未通过。 [FP32/on 逐图](results/precision/precision-align-on/result.json) · [FP32/on 全量](results/precision/precision-pq-on/result.json) · [混合/on 逐图](results/precision/precision-align-autocast-on/result.json) · [混合/on 全量](results/precision/precision-pq-autocast-on/result.json)
+All three configurations cover **5,000** images and meet the full PQ thresholds. The 5 per-image failures for FP32/on are due solely to category agreement. Model-level autocast passes 26/32 with the original mixed backend thresholds (99% and 0.90) and 16/32 with the common thresholds. Both TF32-on policies remain performance candidates. Neither meets the strict per-image gate. [FP32/on per-image](results/precision/precision-align-on/result.json) · [FP32/on full evaluation](results/precision/precision-pq-on/result.json) · [Mixed/on per-image](results/precision/precision-align-autocast-on/result.json) · [Mixed/on full evaluation](results/precision/precision-pq-autocast-on/result.json)
 
-### 构建与复现
+### Build and Reproduction
 
-复用 RTX 4090 上已有的两个 on engine。构建日志记录 FP32/on 运行提交 `7fb2a97`，混合/on 运行提交 `81a7d61`。Python 逐图及 COCO 评估在 `acaf623` 上完成，使用相同镜像 `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`。原始 ONNX 和 engine 见 [Stage 4 运行来源](../stage4/README.md#运行来源与复现)，诊断张量留在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-precision/repo/stage3/runs/`，构建校验值见各组 `build.json`，容器内 `NVIDIA_TF32_OVERRIDE` 未设置。
+Reuse the two existing TF32-on engines on the RTX 4090. Build logs record commit `7fb2a97` for FP32/on and `81a7d61` for mixed/on. Python per-image checks and COCO evaluation ran at `acaf623` with the same image, `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`. See [Stage 4 run provenance](../stage4/README.md#run-provenance-and-reproduction) for original ONNX and engines. Diagnostic tensors remain on the 4090 at `/home/parker/Code/MaskDINO-TensorRT-precision/repo/stage3/runs/`. Each `build.json` contains build checksums. `NVIDIA_TF32_OVERRIDE` was unset in the container.
 
-沿用上方 `data`、`runs` 和权重路径。分别将现有的 FP32 与 autocast ONNX 放入 `stage3/runs/precision-input-{fp32,mixed}/network.onnx`，可重建两个候选。若已有相同 engine，复制 `network.engine` 和匹配的 `build.json` 到相应构建目录，直接从 `align` 开始。
+Reuse `data`, `runs`, and the checkpoint path above. To rebuild both candidates, place existing FP32 and autocast ONNX files in `stage3/runs/precision-input-{fp32,mixed}/network.onnx`, respectively. If the same engines are available, copy `network.engine` and matching `build.json` to each build directory and start at `align`.
 
 ```bash
 for backend in fp32 mixed; do
@@ -195,21 +197,21 @@ for backend in fp32 mixed; do
 done
 ```
 
-逐图命令先保存完整结果，再按对应 backend 的阈值返回失败。本轮以逐图差异作为诊断，继续独立跑全量 PQ，并在表中用统一的 99.9%/0.98 阈值重计通过数。原生 B1/S1 性能配对见 [Stage 4](../stage4/README.md#b1s1-精度策略对照)。
+The per-image command saves complete results before returning a failure under the respective backend's thresholds. This round treats per-image differences as diagnostics, runs full PQ independently, and recalculates pass counts with common 99.9%/0.98 thresholds. See [Stage 4](../stage4/README.md#b1s1-precision-policy-comparison) for paired native B1/S1 benchmarks.
 
-### 三种 engine 的离线性能
+### Offline Performance of the Three Engines
 
-固定 RTX 4090、1024×1024、B1/S1、Python 前后处理和同一顺序的 500 张内存 JPEG。每轮预热 20 次，表中为三轮中位数。FP32/TF32 off 沿用历史验收，两种 TF32 on 配置按 FP32→混合、混合→FP32、FP32→混合的顺序补测，每轮均完成 500 张且零失败。
+Fix the RTX 4090, 1024×1024, B1/S1, Python pre- and postprocessing, and the same 500 in-memory JPEGs in order. Warm up 20 times per run. The table reports three-run medians. FP32/TF32 off uses historical acceptance data. The two TF32-on configurations were measured in the order FP32→mixed, mixed→FP32, and FP32→mixed. Each run completed 500 images with zero failures.
 
-| Engine | 网络 GPU P95（ms） | 端到端 P95（ms） | 离线吞吐（图/s） |
+| Engine | Network GPU P95 (ms) | End-to-end P95 (ms) | Offline throughput (images/s) |
 | --- | ---: | ---: | ---: |
 | FP32 / TF32 off | 21.79 | 35.18 | 31.18 |
 | FP32 / TF32 on | 15.75 | 29.92 | 37.06 |
-| FP16 混合精度 / TF32 on | 14.56 | 28.71 | 38.78 |
+| FP16 mixed precision / TF32 on | 14.56 | 28.71 | 38.78 |
 
-补测在 `acaf623` 的干净 checkout 执行，使用驱动 595.84、CUDA 13.0、TensorRT 10.14.1.48 和上节同一镜像。两种 engine 的 SHA-256 均与对应的全量 PQ 运行一致。逐轮日志记录镜像、权重、COCO 标注和样本清单的校验信息。[历史 TF32 off 汇总](results/summary.json) · [FP32/TF32 on 汇总](results/precision/benchmark/on-summary.json) · [混合/TF32 on 汇总](results/precision/benchmark/autocast-on-summary.json) · [逐图计时与运行日志](results/precision/benchmark/)
+Follow-up benchmarks ran from a clean checkout of `acaf623`, with driver 595.84, CUDA 13.0, TensorRT 10.14.1.48, and the same image as above. Both engine SHA-256 hashes match their respective full PQ runs. Per-run logs record checksums for the image, weights, COCO annotations, and sample list. [Historical TF32-off summary](results/summary.json) · [FP32/TF32-on summary](results/precision/benchmark/on-summary.json) · [Mixed/TF32-on summary](results/precision/benchmark/autocast-on-summary.json) · [Per-image timings and run logs](results/precision/benchmark/)
 
-复用全量 PQ 所用的 engine 和匹配的 `build.json`，分别放在 `stage3/runs/precision-input-on/` 和 `stage3/runs/precision-input-autocast-on/`。沿用上节的 `data`、`runs`、镜像和权重配置。
+Reuse the engines and matching `build.json` from full PQ, placing them in `stage3/runs/precision-input-on/` and `stage3/runs/precision-input-autocast-on/`, respectively. Reuse the preceding `data`, `runs`, image, and weights configuration.
 
 ```bash
 for round in 1 2 3; do

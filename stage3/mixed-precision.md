@@ -1,20 +1,22 @@
-# Stage 3 混合精度问题记录
+# Stage 3 Mixed-Precision Investigation
 
-正式验收和后续优化基线采用 PyTorch FP32 与 TensorRT FP32。较大范围的 FP16 候选在逐图对齐中出现明显误差，后续需进一步定位传播路径。以下保留失败样本、缩小范围后的对照和复现入口。
+**English** · [简体中文](mixed-precision.zh-CN.md)
 
-逐图门槛为类别一致率至少 99%，所有 segment 可配对且同类 IoU 至少 0.90。进入全量后，PQ、PQ_th、PQ_st 相对 PyTorch B1 各最多下降 0.20 点。使用 [Stage 3 的环境与数据](README.md)，`data` 和 `runs` 与该页复现命令相同。
+Formal acceptance and the baseline for further optimization use PyTorch FP32 and TensorRT FP32. Candidates with broader FP16 coverage produced substantial per-image differences, and the propagation path needs further investigation. The failing samples, narrower-scope comparisons, and reproduction entry points are below.
 
-## 逐图筛选
+The per-image gate requires at least 99% category agreement, a match for every segment, and same-class IoU of at least 0.90. For full evaluation, PQ, PQ_th, and PQ_st may each drop by at most 0.20 points against PyTorch B1. Use the [Stage 3 environment and data](README.md) and the same `data` and `runs` as in its reproduction commands.
 
-| FP16 范围 | 通过图数 | 最低类别一致率 | 结果 |
+## Per-Image Screening
+
+| FP16 scope | Images passed | Lowest category agreement | Outcome |
 | --- | ---: | ---: | --- |
-| 模型级 autocast，沿用上游显式 FP32 区域 | 25 / 32 | 93.5712% | 停在逐图验收 |
-| 仅 backbone autocast | 27 / 32 | 93.5900% | 停在逐图验收 |
-| 仅最终 mask 投影 | 32 / 32 | 99.9867% | 进入全量验收 |
+| Model-level autocast with upstream explicit FP32 regions | 25 / 32 | 93.5712% | Stopped at the per-image gate |
+| Backbone-only autocast | 27 / 32 | 93.5900% | Stopped at the per-image gate |
+| Final mask projection only | 32 / 32 | 99.9867% | Advanced to full evaluation |
 
-模型级 autocast 的第一次导出在 MSDA symbolic 处失败。Cast 节点缺少静态 shape 元数据，修复按固定 head 数和通道数声明 MSDA 几何，并校验导出器能推断出的维度。修复后，该候选的 15 个 MSDA 插件仍是 FP32。只将 backbone 降为 FP16 后，模型级 autocast 的 7 张失败图中有 4 张再次失败。对 435081，两种候选的类别一致率均约 93.6%。这说明 backbone 精度变化足以复现该图的大部分误差。逐层误差传播路径尚未做张量归因。 [首次导出失败](results/export-mixed-initial-failure/console.log) · [模型级 autocast 差异](results/align-mixed/) · [仅 backbone 差异](results/align-mixed-backbone/)
+The first model-level autocast export failed in the MSDA symbolic. Cast nodes lacked static shape metadata. The fix declares MSDA geometry using fixed head and channel counts and checks the dimensions that the exporter can infer. After the fix, all 15 MSDA plugins in the candidate still use FP32. With FP16 limited to the backbone, 4 of the 7 images that failed model-level autocast failed again. For 435081, both candidates reach about 93.6% category agreement. The backbone precision change alone reproduces most of the error on that image. The layer-by-layer propagation path has yet to be attributed using tensors. [First export failure](results/export-mixed-initial-failure/console.log) · [Model-level autocast differences](results/align-mixed/) · [Backbone-only differences](results/align-mixed-backbone/)
 
-最终候选只在 ONNX 末端 mask Einsum 的两个输入前插入 FP16 Cast，复用原有的 FP32 输出 Cast。engine inspector 显示该层选用了 `sm80_xmma_gemm_f16f16_f16f16_f16` tactic，输出边界仍是 FP32。32 张均通过，最小 segment IoU 为 0.998230。 [导出与检查](results/export-mixed-mask-projection-rerun/) · [engine 逐层信息](results/build-mixed-mask-projection/layers.json) · [对齐结果](results/align-mixed-mask-projection/result.json)
+The final candidate inserts FP16 Casts before the two inputs of the final ONNX mask Einsum and reuses the existing FP32 output Cast. Engine Inspector shows the `sm80_xmma_gemm_f16f16_f16f16_f16` tactic for this layer with an FP32 output boundary. All 32 images pass, with a minimum segment IoU of 0.998230. [Export and checks](results/export-mixed-mask-projection-rerun/) · [Engine layer details](results/build-mixed-mask-projection/layers.json) · [Alignment results](results/align-mixed-mask-projection/result.json)
 
 ```bash
 bash stage3/run.sh "$data" export-mixed-rerun export --backend mixed --cpu-constants
@@ -36,11 +38,11 @@ for round in 1 2 3; do
 done
 ```
 
-## 后续排查
+## Follow-Up Investigation
 
-- 模型级 autocast 和仅 backbone FP16 的共同失败图为 449661、49091、435081、36494。最差图 435081 在两组的类别一致率都约为 93.6%，与仅发生 query 换位的 FP32 情况不同。模型级 autocast 的该图 mask 相对 L2 在匹配后仍约 8.9%。原始张量保存在 4090 的对应 `align-mixed*` 运行目录，类别与 ID 差异图已归档。
-- 建议先用同一输入在 PyTorch 比较 FP32 和仅 backbone FP16 的 proposal 排名，记录 TopK 索引交集及第 300/301 名的分数差，再固定 FP32 的索引做反事实验证。TopK 截断是否放大误差仍待实测。
-- 最终 mask 投影 FP16 作为局部试验通过了逐图与全量 PQ。其 5,000 张的 PQ / PQ_th / PQ_st 为 53.188202 / 59.030471 / 44.369681。 [全量结果](results/mixed-pq/result.json)
-- **混合精度额外收益。** 相对 TensorRT FP32，网络 P95 减少 0.223 ms，端到端 P95 减少 0.024 ms，吞吐减少 0.086 图/s。两者的端到端 P95 逐轮范围分别为 35.14–35.20 ms（混合版）与 35.04–35.19 ms（FP32），本实验未观察到有实际意义的额外端到端收益。 [汇总与逐轮范围](results/summary-mixed-investigation.json)
-- 混合版 Nsight trace 中，两处输入 Cast 合计约 0.081 ms/图，FP16 GEMM 约 0.068 ms/图，输出转回 FP32 约 0.104 ms/图。Cast 约占这段 GPU 时间的 73%。 [混合版 Nsight 数据](results/trace-mixed/nsys-stats.txt)
-- 补采的 TensorRT FP32 trace 中，最终 mask GEMM 约 0.233 ms/图，随后的 FP32 输出 kernel 约 0.142 ms/图。两者合计约 0.376 ms/图，混合版同一路径约 0.253 ms/图，局部节省约 0.123 ms/图。该差值来自独立 trace 的 kernel 平均值。 [FP32 Nsight 数据](results/trace-fp32/nsys-stats.txt)
+- Images 449661, 49091, 435081, and 36494 fail both model-level autocast and backbone-only FP16. The worst image, 435081, reaches about 93.6% category agreement in both configurations. The FP32 case involved only a query swap. With model-level autocast, matched mask relative L2 on this image is still about 8.9%. Raw tensors are in the corresponding `align-mixed*` run directories on the 4090. Category and ID difference images are archived.
+- First compare proposal rankings for FP32 and backbone-only FP16 in PyTorch on the same input. Record the overlap of TopK indices and the score gap between ranks 300 and 301, then fix the FP32 indices for a counterfactual test. Whether the TopK cutoff amplifies error remains to be measured.
+- The targeted final mask projection FP16 experiment passed both per-image checks and full PQ. Its 5,000-image PQ / PQ_th / PQ_st was 53.188202 / 59.030471 / 44.369681. [Full results](results/mixed-pq/result.json)
+- **Incremental mixed-precision gains.** Against TensorRT FP32, network P95 falls by 0.223 ms, end-to-end P95 falls by 0.024 ms, and throughput falls by 0.086 images/s. End-to-end P95 across runs ranges from 35.14–35.20 ms for mixed precision and 35.04–35.19 ms for FP32. The experiment observed no meaningful incremental end-to-end gain. [Summary and per-run ranges](results/summary-mixed-investigation.json)
+- In the mixed-precision Nsight trace, the two input Casts total about 0.081 ms/image, FP16 GEMM takes about 0.068 ms/image, and the cast back to FP32 takes about 0.104 ms/image. Casts take about 73% of GPU time in this region. [Mixed-precision Nsight data](results/trace-mixed/nsys-stats.txt)
+- In the follow-up TensorRT FP32 trace, the final mask GEMM takes about 0.233 ms/image and the following FP32 output kernel takes about 0.142 ms/image. They total about 0.376 ms/image. The same path in the mixed version takes about 0.253 ms/image, saving about 0.123 ms/image locally. This difference uses kernel means from separate traces. [FP32 Nsight data](results/trace-fp32/nsys-stats.txt)

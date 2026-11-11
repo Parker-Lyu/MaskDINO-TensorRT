@@ -1,5 +1,7 @@
 # Experiment environment
 
+**English** · [简体中文](experiment-environment.zh-CN.md)
+
 ## RTX 4090 experiment host
 
 | Component | Recorded configuration |

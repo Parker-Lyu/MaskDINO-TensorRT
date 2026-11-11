@@ -1,23 +1,25 @@
-# Encoder 六层 FFN 的 FP16 实验
+# FP16 Experiment Across All Six Encoder FFNs
 
-固定已验收的 [FPN FP16 B1 engine](fpn-half-ab.md) 和 RTX 4090、MaskDINO R50 panoptic、1024×1024。候选只改 pixel decoder 中 encoder 第 0–5 层 FFN。每层的 `linear1`、bias、ReLU、`linear2` 和 bias 保持 FP16，`linear2` 输出转回 FP32，再进入原来的残差加法与 LayerNorm。Proposal TopK 的图和 engine 的四个 FP32 I/O 不变。候选导入 FPN 构建留下的 timing cache，实验目录使用 cache 的副本。 [改图脚本](ffn_precision.py)
+**English** · [简体中文](ffn-full-half.zh-CN.md)
 
-## 测量口径
+Fix the accepted [FPN FP16 B1 engine](fpn-half-ab.md), RTX 4090, MaskDINO R50 panoptic, and 1024×1024. The candidate changes only encoder FFNs 0–5 in the pixel decoder. Each layer keeps `linear1`, bias, ReLU, `linear2`, and bias in FP16, then casts `linear2` output back to FP32 for the original residual add and LayerNorm. The proposal TopK graph and the engine's four FP32 I/O tensors are preserved. The candidate imports the timing cache left by the FPN build and uses a copy in the experiment directory. [Graph rewrite script](ffn_precision.py)
 
-- **对照。** 加载 FPN 已验收 plan（`d80102c6…`），候选从对应 ONNX（`22433739…`）构建，使用 FPN 已验收构建后的 timing cache（`68549769…`）。全程从干净提交 `301764c` 运行。使用驱动 595.84、CUDA Toolkit 13.0.88、TensorRT 10.14.1.48 和参考容器 `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`。输入清单和 COCO 标注哈希见日志，权重沿用已验收 FPN ONNX。
-- **逐图。** 用同一份 32 张 JPEG 和同一个原生可执行文件。候选 B1/S1 和 B1/S2 都对照 FPN B1/S1。通过要求为类别一致率 ≥99.9%、segment 全部配对、同类 IoU ≥0.98。
-- **原生性能。** 每个配置预载同样的 500 张 JPEG，每个 slot 预热 20 批，三轮交替两套 plan 的先后次序。网络段用 CUDA events，端到端从派发到原图尺寸的 CPU panoptic map 和 metadata 就绪。稳态吞吐使用墙钟中间 90% 的窗口。NVML 每 20 ms 采样进程峰值显存。单图网络微基准另起进程采集。
-- **全量 PQ。** 候选 B1/S1 与 B1/S2 各运行 COCO val2017 全部 5,000 张，核对唯一预测 ID。三项 PQ 以同口径 PyTorch FP32 B1 为验收参照，门槛为各下降最多 0.05 点。同时列出相对 FPN plan 的差值。逐图失败后仍继续测性能和全量 PQ，以区分局部输出差异与全量指标。
+## Measurement Definitions
 
-## TensorRT 构建
+- **Control.** Load the accepted FPN plan (`d80102c6…`). Build the candidate from the corresponding ONNX (`22433739…`) and use the timing cache from the accepted FPN build (`68549769…`). Run everything from clean commit `301764c`. Use driver 595.84, CUDA Toolkit 13.0.88, TensorRT 10.14.1.48, and reference container `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`. Input manifest and COCO annotation hashes are in the logs. Weights carry over from the accepted FPN ONNX.
+- **Per-image checks.** Use the same 32 JPEGs and native executable. Compare both B1/S1 and B1/S2 candidates with FPN B1/S1. A pass requires ≥99.9% category agreement, all segments matched, and same-class IoU ≥0.98.
+- **Native performance.** Preload the same 500 JPEGs per configuration, warm up each slot with 20 batches, and alternate plan order across three rounds. Use CUDA events for network time. End-to-end time spans dispatch to original-size CPU panoptic map and metadata readiness. Steady-state throughput uses the middle 90% of wall-clock time. NVML samples peak process GPU memory every 20 ms. Capture the single-image network microbenchmark in a separate process.
+- **Full PQ.** Candidate B1/S1 and B1/S2 each run all 5,000 COCO val2017 images and verify unique prediction IDs. The three PQ metrics use PyTorch FP32 B1 with the same measurement setup as the acceptance reference and allow a drop of at most 0.05 points per metric. Also report differences from the FPN plan. Continue performance and full PQ measurements after per-image failures to distinguish local output changes from aggregate metrics.
 
-Inspector 确认六个 `linear1` 和六个 `linear2` 均使用 FP16 Tensor Core tactic。六个 `linear2` 被编译成包含输出转换及残差/归一化的融合层，因此统计使用 ONNX 元数据归属，不能仅按 TensorRT 层名搜索 `linear2`。对照与候选有 60 个同名 Cask 卷积/池化层，tactic 名称均一致，包含先前优化的 FPN 3×3 卷积。 [候选构建信息](results/ffn-full-half/build/build.json) · [Engine Inspector](results/ffn-full-half/build/layers.json)
+## TensorRT Build
 
-## 32 张逐图
+Engine Inspector confirms FP16 Tensor Core tactics for all six `linear1` and six `linear2` operations. All six `linear2` operations compile into fused layers with output conversion and residual/normalization work. Use ONNX metadata for attribution because searching TensorRT layer names for `linear2` alone misses them. Control and candidate share 60 matching Cask convolution/pooling layers with identical tactic names, including the previously optimized FPN 3×3 convolution. [Candidate build details](results/ffn-full-half/build/build.json) · [Engine Inspector](results/ffn-full-half/build/layers.json)
 
-B1/S1、B1/S2 相对 FPN 对照均为 **26/32**，两种 slot 的 32 张分割图和 metadata 文件全部逐字节一致。下表为六个未通过样本，未配对 segment 按 FPN / 候选列出。
+## 32-Image Alignment
 
-| COCO 图像 ID | 类别一致率 | 最小同类 IoU | 未配对 segment |
+B1/S1 and B1/S2 both pass **26/32** against the FPN control. All 32 segmentation maps and metadata files match byte for byte across the two slot settings. The table lists the six failing samples and gives unmatched segment counts as FPN / candidate.
+
+| COCO image ID | Category agreement | Minimum same-class IoU | Unmatched segments |
 | --- | ---: | ---: | ---: |
 | 562229 | 99.8875% | 0.98942 | 0 / 0 |
 | 485237 | 95.3071% | 0.99946 | 1 / 0 |
@@ -26,38 +28,38 @@ B1/S1、B1/S2 相对 FPN 对照均为 **26/32**，两种 slot 的 32 张分割�
 | 435081 | 85.6848% | 0.16608 | 1 / 1 |
 | 36494 | 99.7195% | 0.97870 | 1 / 0 |
 
-[S1 逐图结果](results/ffn-full-half/ab/ffn-half-align-s1/validation.json) · [S2 逐图结果](results/ffn-full-half/ab/ffn-half-align-s2/validation.json)
+[S1 per-image results](results/ffn-full-half/ab/ffn-half-align-s1/validation.json) · [S2 per-image results](results/ffn-full-half/ab/ffn-half-align-s2/validation.json)
 
-## 原生 500 图性能
+## Native Performance on 500 Images
 
-表中取三轮中位数。两套 plan、两种 slot 的 12 轮各完成 500 张，零失败。每轮都观察到同方向的延迟和吞吐改善。
+The table reports medians across three rounds. All 12 runs across two plans and two slot settings complete 500 images with zero failures. Latency and throughput improve in the same direction in every round.
 
-| Engine | 配置 | 网络 GPU P50 / P95（ms） | 端到端 P50 / P95（ms） | 稳态吞吐（图/s） | 进程峰值显存（GiB） |
+| Engine | Configuration | Network GPU P50 / P95 (ms) | End-to-end P50 / P95 (ms) | Steady-state throughput (images/s) | Peak process GPU memory (GiB) |
 | --- | --- | ---: | ---: | ---: | ---: |
-| FPN 对照 | B1/S1 | 13.99 / 14.01 | 15.50 / 16.10 | 64.64 | 1.15 |
-| 六层 FFN FP16 | B1/S1 | **11.77 / 11.78** | **13.29 / 13.90** | **75.41** | **1.08** |
-| FPN 对照 | B1/S2 | 24.12 / 25.80 | 26.12 / 27.87 | 76.39 | 1.70 |
-| 六层 FFN FP16 | B1/S2 | **20.36 / 22.22** | **22.33 / 24.28** | **89.22** | **1.56** |
+| FPN control | B1/S1 | 13.99 / 14.01 | 15.50 / 16.10 | 64.64 | 1.15 |
+| Six FP16 FFN layers | B1/S1 | **11.77 / 11.78** | **13.29 / 13.90** | **75.41** | **1.08** |
+| FPN control | B1/S2 | 24.12 / 25.80 | 26.12 / 27.87 | 76.39 | 1.70 |
+| Six FP16 FFN layers | B1/S2 | **20.36 / 22.22** | **22.33 / 24.28** | **89.22** | **1.56** |
 
-相对同轮 FPN 对照，候选的 B1/S1 端到端 P95 降低 **13.7%**，B1/S2 端到端 P95 降低 **12.9%**，B1/S2 稳态吞吐提高 **16.8%**。 [中位数](results/ffn-full-half/summary.json) · [逐轮记录](results/ffn-full-half/ab/summary.json) · [逐请求文件校验](results/ffn-full-half/ab/raw.sha256)
+Against the same-session FPN control, the candidate lowers B1/S1 end-to-end P95 by **13.7%**, lowers B1/S2 end-to-end P95 by **12.9%**, and improves B1/S2 steady-state throughput by **16.8%**. [Medians](results/ffn-full-half/summary.json) · [Per-run records](results/ffn-full-half/ab/summary.json) · [Per-request file checksums](results/ffn-full-half/ab/raw.sha256)
 
-![六层 FFN FP16 诊断候选和 FPN 对照的离线性能](results/ffn-full-half/comparison.svg)
+![Offline performance for the six-layer FFN FP16 diagnostic candidate and FPN control](results/ffn-full-half/comparison.svg)
 
-## 全量 COCO PQ
+## Full COCO PQ
 
-两种 slot 各处理 5,000 张，预测 ID 唯一且完整，零运行失败。两种 slot 的三项分数一致。FPN 对照的 PQ 复用已验收的全量结果，与本次原生计时的同轮对照分开。
+Both slot settings process 5,000 images with unique and complete prediction IDs and zero run failures. All three scores match across slot settings. The FPN control PQ comes from the accepted full evaluation, separate from the control run alongside the native timings here.
 
-| 配置 | 覆盖 | PQ | PQ Things | PQ Stuff |
+| Configuration | Coverage | PQ | PQ Things | PQ Stuff |
 | --- | ---: | ---: | ---: | ---: |
-| FPN 对照 | 5,000 | 53.17180 | 59.01222 | 44.35606 |
-| 六层 FFN FP16，B1/S1 | 5,000 | 53.18563 | 59.02411 | 44.37283 |
-| 六层 FFN FP16，B1/S2 | 5,000 | 53.18563 | 59.02411 | 44.37283 |
+| FPN control | 5,000 | 53.17180 | 59.01222 | 44.35606 |
+| Six FP16 FFN layers, B1/S1 | 5,000 | 53.18563 | 59.02411 | 44.37283 |
+| Six FP16 FFN layers, B1/S2 | 5,000 | 53.18563 | 59.02411 | 44.37283 |
 
-候选相对同口径 PyTorch FP32 的三项变化为 **−0.00062 / −0.00315 / +0.00319** 点，均通过全量 PQ 门槛。相对 FPN 对照的变化为 **+0.01383 / +0.01189 / +0.01677** 点。候选因逐图 26/32 未通过当前逐图门槛，保留为实验配置。 [S1 全量](results/ffn-full-half/ab/ffn-half-pq-s1/validation.json) · [S2 全量](results/ffn-full-half/ab/ffn-half-pq-s2/validation.json) · [FPN 对照全量](results/fpn-half-ab/pq/b1s1/validation.json)
+Against PyTorch FP32 with the same setup, the candidate changes the three metrics by **−0.00062 / −0.00315 / +0.00319** points and passes all full PQ thresholds. Changes from the FPN control are **+0.01383 / +0.01189 / +0.01677** points. The candidate remains experimental because 26/32 falls short of the current per-image gate. [S1 full evaluation](results/ffn-full-half/ab/ffn-half-pq-s1/validation.json) · [S2 full evaluation](results/ffn-full-half/ab/ffn-half-pq-s2/validation.json) · [FPN control full evaluation](results/fpn-half-ab/pq/b1s1/validation.json)
 
-## 复现入口
+## Reproduction
 
-准备 [FPN 单层实验](fpn-half-ab.md) 的 FP16 候选 ONNX、已验收 plan 目录、对应 timing cache 和 Stage 6 的 `previous` 目录。进入干净 checkout，在 4090 上确认 GPU 空闲。以下命令使用新运行目录。
+Prepare the FP16 candidate ONNX from the [single-layer FPN experiment](fpn-half-ab.md), the accepted plan directory, its timing cache, and the Stage 6 `previous` directory. Use a clean checkout and confirm the 4090 is idle. The commands below use a new run directory.
 
 ```bash
 root="$PWD"
@@ -97,4 +99,4 @@ docker run "${common[@]}" -v "$out/ab:/output" -v "$previous:/previous:ro" \
   '
 ```
 
-原始运行目录位于 4090 的 `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/ffn-full-half/`。
+The original run directory is on the 4090 at `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/ffn-full-half/`.

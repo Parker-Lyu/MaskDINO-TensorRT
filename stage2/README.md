@@ -1,37 +1,39 @@
-# Stage 2 · 调整预处理方法并建立性能基线
+# Stage 2 · Adapt Preprocessing and Establish a Performance Baseline
 
-本阶段固定 MaskDINO R50 panoptic 权重，建立 TensorRT 转换前的 PyTorch 对照。先统一输入形状并固定两套样本，再用全量 PQ 筛选尺寸、用离线 benchmark 量化速度与显存代价。最终采用 **1024×1024** 作为基线尺寸，**B1** 作为下一阶段优先优化的配置。[阶段决策、完整结果表与对比图](../README.md#stage-2--调整预处理方法并建立性能基线)
+**English** · [简体中文](README.zh-CN.md)
 
-## 输入与输出
+This stage fixes the MaskDINO R50 panoptic weights to establish the PyTorch reference before TensorRT conversion. Standardize the input shape and fix two sample sets, then use full PQ to select an input size and offline benchmarks to quantify speed and GPU memory costs. The resulting baseline is **1024×1024**, with **B1** as the priority for the next stage. [Stage decision, full results tables, and comparison chart](../README.md#stage-2--adapt-preprocessing-and-establish-a-performance-baseline)
 
-为了让同一尺寸的图片直接组成 batch，JPEG 按 EXIF 方向解码为 RGB，使用 Detectron2 双线性 resize 等比缩放到指定长边。短边用 Python `round` 取整，最小为 1。右侧和底部在像素空间填 128，与官方 R50 panoptic 训练 mapper 的 `FixedSizeCrop` 默认值一致，再按官方配置归一化。mask logits 双线性插值到方形画布，裁出有效区域，恢复到原图尺寸后执行官方 panoptic 合并。推理用 FP32，关闭 autocast、TF32 和 OOM 回退。
+## Inputs and Outputs
 
-Stage 1 官方输入采用短边 800、长边上限 1333。两阶段的 PQ 差异反映整套输入策略的变化，包括缩放和填充。
+To batch images at a common size, decode JPEGs to RGB with EXIF orientation applied and resize proportionally to the target long side using Detectron2 bilinear resize. Round the short side with Python `round` and clamp it to at least 1. Pad the right and bottom with 128 in pixel space, matching the default for `FixedSizeCrop` in the official R50 panoptic training mapper, then normalize using the official configuration. Bilinearly interpolate mask logits to the square canvas, crop to the valid region, restore them to the original image size, and run the official panoptic merge. Inference uses FP32 with autocast, TF32, and OOM fallback disabled.
 
-## 数据与验证用途
+Stage 1 uses the official input policy of a short side of 800 and a maximum long side of 1333. The PQ difference between stages reflects the entire input policy change, including resizing and padding.
 
-| 数据 | 选择方法 | 用途 |
+## Data and Validation Uses
+
+| Data | Selection method | Use |
 | --- | --- | --- |
-| 32 张数值验证样本 | 覆盖原图面积、宽高比、Things 数和 panoptic segment 数的极端样本，再固定种子补齐 | 先检查横、竖、方图的合成几何，再按图比较 B1 与 B2/B4/B8 的 logits、ID map 和 segment metadata |
-| 500 张性能验证样本 | 按原图像素数三分位和宽高比阈值 0.9、1.1 分层，按全量比例分配配额，种子为 20261106 | 固定图像 ID 和执行顺序，用同一负载比较各尺寸及 batch |
-| COCO 2017 val 全量 5,000 张 | 使用官方图像与 panoptic 标注 | 三档分辨率各跑一次 B4 PQ，核对完整预测覆盖 |
+| 32 images for numerical validation | Cover extremes in original image area, aspect ratio, Things count, and panoptic segment count, then fill the sample with a fixed seed | Check synthetic geometry for landscape, portrait, and square images first, then compare B1 and B2/B4/B8 logits, ID maps, and segment metadata per image |
+| 500 images for performance validation | Stratify by original pixel-count tertiles and aspect ratio thresholds of 0.9 and 1.1, allocate proportionally to the full set, and use seed 20261106 | Fix image IDs and execution order to compare input sizes and batches on the same workload |
+| All 5,000 COCO 2017 validation images | Use the official images and panoptic annotations | Run B4 PQ once at each of the three resolutions and verify full prediction coverage |
 
-两套样本存放在 [sample.json](sample.json)，对应 `smoke_image_ids` 和 `image_ids`。500 张样本的每图平均 segment 数为 11.47，全量为 11.35。面积小于 32² 像素的非 crowd Things 占比分别为 43.47% 和 42.37%。光照未参与分层。
+[sample.json](sample.json) stores the two sample sets as `smoke_image_ids` and `image_ids`. The 500-image sample averages 11.47 segments per image, versus 11.35 for the full set. Non-crowd Things smaller than 32² pixels account for 43.47% and 42.37%, respectively. Lighting was excluded from stratification.
 
-## 复现
+## Reproduction
 
-### 环境和运行版本
+### Environment and Run Revisions
 
-参考环境是 RTX 4090、驱动 595.84、CUDA 13.0、PyTorch `2.10.0a0+b558c986e8.nv25.11`。沿用 [Stage 1 镜像](../stage1/README.md)与[数据及权重](../docs/experiment-environment.md)。正式运行的镜像 ID 为 `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`。启动脚本校验数据标注与权重的 SHA-256，要求工作区干净，并将输出写到 `stage2/runs/<run-id>/`。
+The reference environment uses an RTX 4090, driver 595.84, CUDA 13.0, and PyTorch `2.10.0a0+b558c986e8.nv25.11`. Reuse the [Stage 1 image](../stage1/README.md) and [data and weights](../docs/experiment-environment.md). The official runs used image ID `sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e`. The launcher verifies the annotation and checkpoint SHA-256 hashes, requires a clean working tree, and writes outputs to `stage2/runs/<run-id>/`.
 
-| 实验 | 实际运行提交 |
+| Experiment | Run commit |
 | --- | --- |
-| 32 张数值验证、B1/B2/B4/B8 | `7b0decc6145fbac5508b8f8e6cb0cdc0173ee324` |
-| 640/800/1024 全量 PQ、B1 复跑、800/1024 的 B1/B4 性能对照 | `7d8788b99327dd359b2cad29d8ae14141660d8da` |
-| 1024 的 B2/B8 性能补测 | `1f96771234baefb607dceb61092fa6474fd17123` |
-| 结果归档、绘图数据与统计脚本 | `stage2-pytorch-square` |
+| 32-image numerical validation, B1/B2/B4/B8 | `7b0decc6145fbac5508b8f8e6cb0cdc0173ee324` |
+| 640/800/1024 full PQ, B1 rerun, and B1/B4 performance comparison at 800/1024 | `7d8788b99327dd359b2cad29d8ae14141660d8da` |
+| Follow-up 1024 B2/B8 benchmarks | `1f96771234baefb607dceb61092fa6474fd17123` |
+| Results archive, plotting data, and aggregation scripts | `stage2-pytorch-square` |
 
-在仓库根目录执行以下命令，再在同一个 Bash 会话依次运行各实验块。填写现有数据和权重的绝对路径。`MASKDINO_RUN_ID` 加上时间戳，避免与已有结果目录冲突。
+Run the following commands from the repository root, then run the experiment blocks in order in the same Bash session. Set absolute paths to existing data and weights. Add a timestamp to `MASKDINO_RUN_ID` to avoid collisions with existing result directories.
 
 ```bash
 repo=$(git rev-parse --show-toplevel)
@@ -44,9 +46,9 @@ export MASKDINO_CHECKPOINT=/absolute/path/to/maskdino_r50_panoptic.pth
 export MASKDINO_IMAGE=maskdino:stage1
 ```
 
-### 1. 样本和数值验证
+### 1. Sampling and Numerical Validation
 
-每个尺寸先跑 B1，保存该尺寸的参考输出。同一批次对照使用相同的运行 ID。
+Run B1 first at each size to save reference outputs for that size. Reuse the same run ID within each batch-size comparison.
 
 ```bash
 git switch --detach 7b0decc6145fbac5508b8f8e6cb0cdc0173ee324
@@ -61,9 +63,9 @@ for size in 640 800 1024; do
 done
 ```
 
-### 2. 三档全量 PQ
+### 2. Full PQ at Three Input Sizes
 
-评估使用 Detectron2 的 `COCOPanopticEvaluator` 和官方验证集类别映射。评估循环包括 JPEG 读盘和 evaluator 的 PNG 编码，性能对照使用下一节的独立入口。
+Evaluation uses Detectron2's `COCOPanopticEvaluator` and the official validation set category mapping. The evaluation loop includes reading JPEGs from disk and encoding evaluator PNGs. Use the separate entry point in the next section for performance comparisons.
 
 ```bash
 git switch --detach 7d8788b99327dd359b2cad29d8ae14141660d8da
@@ -73,9 +75,9 @@ for size in 640 800 1024; do
 done
 ```
 
-### 3. 800 与 1024 的 B1/B4 性能对照
+### 3. B1/B4 Performance at 800 and 1024
 
-每组在独立容器中运行，JPEG 预读后用首批输入预热 20 个 batch，再测完整 500 张。三轮轮换配置的执行顺序。
+Run each configuration in a separate container. Preload the JPEGs, use the first input batch to warm up for 20 batches, then measure all 500 images. Rotate the configuration order across the three runs.
 
 ```bash
 git switch --detach 7d8788b99327dd359b2cad29d8ae14141660d8da
@@ -89,9 +91,9 @@ for order in '800-1 1024-4 800-4 1024-1' '1024-1 800-4 1024-4 800-1' '800-4 1024
 done
 ```
 
-### 4. 1024 的 B2/B8 性能补测
+### 4. Follow-Up B2/B8 Benchmarks at 1024
 
-补测提交增加批末累计墙钟记录，沿用相同的推理路径。B8 的 500 张整轮包含 62 个满批和一个 4 张尾批。前 496 张另用于 B2/B8 满批对照。
+The follow-up commit records cumulative wall-clock time at each batch end and uses the same inference path. The 500-image B8 run contains 62 full batches and a final batch of four images. Use the first 496 images for a separate full-batch B2/B8 comparison.
 
 ```bash
 git switch --detach 1f96771234baefb607dceb61092fa6474fd17123
@@ -105,9 +107,9 @@ for order in '2 8' '8 2' '2 8'; do
 done
 ```
 
-### 5. 汇总
+### 5. Aggregation
 
-统计脚本位于验收 tag 中。切回该 tag 后汇总各次运行，`stage2/runs/` 中的输出可继续读取。
+The aggregation script is in the acceptance tag. Check out that tag to summarize the runs. Outputs in `stage2/runs/` remain available.
 
 ```bash
 git switch --detach stage2-pytorch-square
@@ -117,19 +119,19 @@ python3 stage2/summarize_benchmark.py --prefix-images 496 \
   stage2/runs/batch-"${run_stamp}"-r*/benchmark/*/result.json
 ```
 
-## 指标口径
+## Metric Definitions
 
-- **网络 GPU 延迟**用 CUDA events 计量 backbone 和分割 head，按批统计 P50/P95。
-- **端到端延迟**从该批的内存 JPEG 开始处理，到最后一张图的 CPU panoptic map 和 segment metadata 就绪，按批统计 P50/P95。汇总 JSON 的 `batch_e2e_*` 是批次指标，`e2e_*` 保留单请求指标。负载使用预先分好的离线批次，计时覆盖解码、前处理、H2D、推理、后处理和 D2H。
-- **离线端到端吞吐**用完成图数除以整轮墙钟秒数，包含循环内的 CPU 调度开销。预读和预热在测量前完成。满批对照使用第 496 张完成后的累计墙钟。
-- **峰值显存**使用预热后重置的 PyTorch CUDA allocator peak allocated 和 peak reserved，覆盖整轮。
-- 结果表取各指标的三轮中位数。逐轮最小值、最大值及原始样本保存在结果目录。
+- **Network GPU latency** uses CUDA events around the backbone and segmentation head. P50 and P95 are per batch.
+- **End-to-end latency** runs from the start of processing the batch's in-memory JPEGs until the last image's CPU panoptic map and segment metadata are ready. P50 and P95 are per batch. In the summary JSON, `batch_e2e_*` contains batch metrics and `e2e_*` retains per-request metrics. The offline workload uses preassembled batches. Timing includes decoding, preprocessing, H2D, inference, postprocessing, and D2H.
+- **Offline end-to-end throughput** divides the number of completed images by full-run wall-clock seconds, including CPU scheduling overhead inside the loop. Preloading and warmup finish before measurement. The full-batch comparison uses the cumulative time when image 496 completes.
+- **Peak GPU memory** uses PyTorch CUDA allocator peak allocated and peak reserved after resetting the peaks following warmup. The measurement covers the full run.
+- Tables report medians of each metric across three runs. Per-run minima, maxima, and raw samples are in the results directories.
 
-## 验证结果与归档
+## Validation Results and Archives
 
-- **数值验证。** 12 组探测均完成。32 张的 segment metadata 在各组相同。B4 相对 B1 的最坏逐图 ID map 像素差在 640 和 800 为 0，在 1024 为 0.000326%，因此全量统一采用 B4。800 和 1024 的 B4 逐 query mask logit 最大绝对差分别为 52.93 和 152.44。该比较未做 query 重配对，差异原因待定位。B1 复跑的 logits、ID map 和 metadata 逐项一致。 [逐图记录与 B1 复跑](results/probe/)
-- **全量 PQ。** 三档各有 5,000 个唯一预测 ID，与真值完全匹配。640、800、1024 的 PQ 分别为 49.9662、52.0120、53.1862。 [评估日志与指标 JSON](results/evaluate/)
-- **800 与 1024 的性能对照。** 12 轮均完成 500 张，无 OOM 或回退。1024/B1 的端到端 P95 为 51.93 ms，800/B1 为 37.85 ms。结合 1024 的 1.1742 PQ 优势，选择 1024 作为保留精度的部署基线。 [逐轮统计与原始数据](results/benchmark/)
-- **1024 的 B2 与 B8 补测。** 六轮均完成 500 张，无 OOM 或回退。按根 README 使用的完整 500 张口径，吞吐分别为 21.33 和 22.56 图/s，批次端到端 P95 分别为 97.81 和 365.04 ms。单独统计前 496 张满批时，吞吐分别为 21.33 和 22.57 图/s，P95 分别为 97.83 和 365.06 ms。B8 尾批的网络时间为 138.90–141.55 ms，最后一张 CPU 输出于批开始后 183.28–186.11 ms 就绪。 [500 张汇总](results/batch-sweep/summary-500.json) · [496 张满批汇总](results/batch-sweep/summary-496.json) · [批次明细与日志](results/batch-sweep/)
+- **Numerical validation.** All 12 probes completed. Segment metadata for the 32 images matched across configurations. The worst per-image B4 vs. B1 ID-map pixel difference was 0 at 640 and 800, and 0.000326% at 1024, so all full evaluations used B4. The largest absolute differences in B4 per-query mask logits were 52.93 at 800 and 152.44 at 1024. Queries were not rematched for this comparison, and the cause remains unverified. The B1 rerun matched logits, ID maps, and metadata exactly. [Per-image records and B1 rerun](results/probe/)
+- **Full PQ.** Each resolution produced 5,000 unique prediction IDs, exactly matching ground truth. PQ was 49.9662, 52.0120, and 53.1862 at 640, 800, and 1024, respectively. [Evaluation logs and metric JSON](results/evaluate/)
+- **Performance at 800 and 1024.** All 12 runs completed 500 images with zero OOMs or fallbacks. End-to-end P95 was 51.93 ms for 1024/B1 and 37.85 ms for 800/B1. The 1.1742-point PQ advantage led to selecting 1024 as the deployment baseline to preserve accuracy. [Per-run statistics and raw data](results/benchmark/)
+- **Follow-up B2 and B8 benchmarks at 1024.** All six runs completed 500 images with zero OOMs or fallbacks. On the full 500-image basis used in the root README, throughput was 21.33 and 22.56 images/s, with batch end-to-end P95 of 97.81 and 365.04 ms, respectively. For the first 496 images in full batches, throughput was 21.33 and 22.57 images/s, with P95 of 97.83 and 365.06 ms. B8's final partial batch spent 138.90–141.55 ms in the network. Its last CPU output was ready 183.28–186.11 ms after batch start. [500-image summary](results/batch-sweep/summary-500.json) · [496-image full-batch summary](results/batch-sweep/summary-496.json) · [Batch details and logs](results/batch-sweep/)
 
-完整运行目录保存在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-stage2/stage2/runs/`。仓库归档指标、批次明细和评估日志，原始预测 JSON 和 B1 大体积张量参考保存在运行主机。
+Complete run directories are on the 4090 host at `/home/parker/Code/MaskDINO-TensorRT-stage2/stage2/runs/`. The repository archives metrics, batch details, and evaluation logs. Raw prediction JSON and large B1 reference tensors remain on the experiment host.

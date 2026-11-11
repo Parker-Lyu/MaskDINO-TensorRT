@@ -1,12 +1,14 @@
-# Stage 1 · 复现原始模型精度
+# Stage 1 · Reproduce Original Model Accuracy
 
-使用官方 MaskDINO 提交 `3831d8514a3728535ace8d4ecc7d28044c42dd14`、R50 50 epoch panoptic 配置和对应权重。输入短边缩放到 800、长边上限 1333，保留官方配置的 panoptic、instance 和 semantic 三个输出分支。
+**English** · [简体中文](README.zh-CN.md)
 
-## 复现
+Use official MaskDINO commit `3831d8514a3728535ace8d4ecc7d28044c42dd14`, the 50-epoch R50 panoptic configuration, and its checkpoint. Resize the input short side to 800 and cap the long side at 1333. Keep the official configuration's panoptic, instance, and semantic output branches.
 
-在 Linux x86_64 GPU 主机上准备 Docker、NVIDIA Container Toolkit 和兼容 CUDA 13 的驱动。当前构建针对 RTX 4090 的 SM 8.9。按[数据与权重说明](../docs/experiment-environment.md)准备 COCO 文件。下载脚本会获取权重并校验哈希。
+## Reproduction
 
-从仓库根目录执行：
+On a Linux x86_64 GPU host, install Docker, NVIDIA Container Toolkit, and a driver compatible with CUDA 13. The current build targets SM 8.9 on the RTX 4090. Prepare the COCO files using the [data and weights instructions](../docs/experiment-environment.md). The download script fetches the checkpoint and verifies its hash.
+
+Run from the repository root.
 
 ```bash
 python3 maskdino/scripts/fetch.py assets
@@ -16,12 +18,12 @@ bash stage1/run.sh \
   /path/to/instances_val2017.json
 ```
 
-[Dockerfile](../maskdino/Dockerfile) 指定基础镜像标签并固定依赖版本，并应用 [CUDA 扩展兼容补丁](../maskdino/patches/maskdino-pytorch.patch)。基础镜像的参考 ID 见 [依赖锁文件](../maskdino/dependencies.lock.json)。脚本默认使用 `maskdino:stage1`，也可通过 `MASKDINO_IMAGE` 指定使用同一构建配方的其他镜像。
+The [Dockerfile](../maskdino/Dockerfile) specifies the base image tag, pins dependencies, and applies the [CUDA extension compatibility patch](../maskdino/patches/maskdino-pytorch.patch). The [dependency lock file](../maskdino/dependencies.lock.json) records the reference base image ID. The launcher defaults to `maskdino:stage1`. Set `MASKDINO_IMAGE` to use another image built from the same recipe.
 
-脚本校验权重和 panoptic 标注 JSON 的 SHA-256，将输入只读挂载，调用官方预处理脚本生成语义标签，并运行官方 evaluator。日志和预测写到 `stage1/runs/<run-id>/`。
+The launcher verifies the SHA-256 hashes of the checkpoint and panoptic annotation JSON, mounts inputs read-only, calls the official preprocessing script to generate semantic labels, and runs the official evaluator. Logs and predictions go to `stage1/runs/<run-id>/`.
 
-## 结果
+## Results
 
-2026-11-06 从项目提交 `6eb01c17745e10756558464f3f85b35e76bbca09` 在 RTX 4090 上重跑官方评估，预测覆盖 COCO 2017 val 全部 5,000 张图。PQ 为 **52.9567**，PQ Things 为 **58.9645**，PQ Stuff 为 **43.8884**，与原始评估一致。
+The official evaluation was rerun on an RTX 4090 on 2026-11-06 from project commit `6eb01c17745e10756558464f3f85b35e76bbca09`. Predictions cover all 5,000 COCO 2017 validation images. PQ was **52.9567**, PQ Things was **58.9645**, and PQ Stuff was **43.8884**, matching the original evaluation.
 
-[重跑日志摘录和覆盖校验](results/official-r50-20261106-6eb01c1.log) · [原始评估日志摘录](results/official-r50-20261106.log)
+[Rerun log excerpt and coverage check](results/official-r50-20261106-6eb01c1.log) · [Original evaluation log excerpt](results/official-r50-20261106.log)
