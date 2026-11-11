@@ -4,7 +4,25 @@
 
 **End-to-end GPU inference engineering for model deployment, profiling, optimization, and accuracy validation**
 
-This project uses MaskDINO R50 panoptic segmentation as a real workload. It deploys the PyTorch model with TensorRT on an RTX 4090 and builds a native C++/CUDA inference pipeline. It covers ONNX export and operator compatibility, pre- and postprocessing, concurrent execution, GPU profiling, and targeted mixed-precision optimization. Per-image output alignment, full COCO PQ evaluation, and paired benchmarks document the performance gains, numerical risks, and engineering trade-offs.
+<table>
+  <tr>
+    <td align="center">
+      <h2>2.62×</h2>
+      TensorRT FP32 offline throughput
+    </td>
+    <td align="center">
+      <h2>4.37×</h2>
+      Experimental peak offline throughput
+    </td>
+    <td align="center">
+      <h2>73.2% lower</h2>
+      Experimental single-slot P95 latency
+    </td>
+  </tr>
+</table>
+
+<sub>Compared with the PyTorch FP32 baseline on an RTX 4090.</sub>
+
 
 [Official MaskDINO implementation](https://github.com/IDEA-Research/MaskDINO) · [Experiment environment and data](docs/experiment-environment.md)
 

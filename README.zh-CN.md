@@ -4,7 +4,24 @@
 
 **端到端 GPU 推理工程实践：模型部署、性能分析、优化与精度验证**
 
-以 MaskDINO R50 全景分割为实际工作负载，在 RTX 4090 上将 PyTorch 模型部署至 TensorRT，并构建 C++/CUDA 原生推理链路。项目围绕 ONNX 导出与算子兼容、前后处理、并发执行、GPU Profiling 和定向混合精度优化展开，通过逐图输出对齐、COCO 全量 PQ 评估与配对性能实验，记录优化收益、数值风险和工程取舍。
+<table>
+  <tr>
+    <td align="center">
+      <h2>2.62×</h2>
+      TensorRT FP32 离线吞吐
+    </td>
+    <td align="center">
+      <h2>4.37×</h2>
+      实验峰值离线吞吐
+    </td>
+    <td align="center">
+      <h2>降低 73.2%</h2>
+      实验配置的单 slot P95 延迟
+    </td>
+  </tr>
+</table>
+
+<sub>以 RTX 4090 上的 PyTorch FP32 为基线。</sub>
 
 [MaskDINO 官方实现](https://github.com/IDEA-Research/MaskDINO) · [实验环境与数据](docs/experiment-environment.zh-CN.md)
 
