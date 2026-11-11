@@ -63,8 +63,12 @@
 <rect x="870.17" y="259.13" width="24.33" height="67.86" rx="3" fill="#a14c17"/>
 <text x="882.33" y="253.13" text-anchor="middle" font-size="12" font-weight="650">38.78</text>
 <text x="957.00" y="351" text-anchor="middle" font-size="14" font-weight="650">Stage 4</text>
-<rect x="942.00" y="250.40" width="30.00" height="76.60" rx="3" fill="#3365a6"/>
-<text x="957.00" y="244.40" text-anchor="middle" font-size="12" font-weight="650">43.77</text>
+<rect x="918.83" y="250.61" width="24.33" height="76.39" rx="3" fill="#3365a6"/>
+<text x="931.00" y="244.61" text-anchor="middle" font-size="12" font-weight="650">43.65</text>
+<rect x="944.83" y="225.05" width="24.33" height="101.95" rx="3" fill="#067969"/>
+<text x="957.00" y="219.05" text-anchor="middle" font-size="12" font-weight="650">58.26</text>
+<rect x="970.83" y="216.68" width="24.33" height="110.32" rx="3" fill="#a14c17"/>
+<text x="983.00" y="210.68" text-anchor="middle" font-size="12" font-weight="650">63.04</text>
 <text x="1063.00" y="351" text-anchor="middle" font-size="14" font-weight="650">Stage 5</text>
 <rect x="1019.50" y="233.62" width="24.33" height="93.38" rx="3" fill="#3365a6"/>
 <text x="1031.67" y="227.62" text-anchor="middle" font-size="12" font-weight="650">53.36</text>
