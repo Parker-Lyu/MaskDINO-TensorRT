@@ -1,6 +1,17 @@
 # MaskDINO-TensorRT
 
-在 RTX 4090 上将 MaskDINO R50 全景分割从 PyTorch 迁移到 TensorRT，逐步优化网络、C++/CUDA 前后处理和多 CUDA stream 调度。[MaskDINO 官方实现](https://github.com/IDEA-Research/MaskDINO) · [实验环境与数据](docs/experiment-environment.md)
+**端到端 GPU 推理工程实践：模型部署、性能分析、优化与精度验证**
+
+以 MaskDINO R50 全景分割为实际工作负载，在 RTX 4090 上将 PyTorch 模型部署至 TensorRT，并构建 C++/CUDA 原生推理链路。项目围绕 ONNX 导出与算子兼容、前后处理、并发执行、GPU Profiling 和定向混合精度优化展开，通过逐图输出对齐、COCO 全量 PQ 评估与配对性能实验，记录优化收益、数值风险和工程取舍。
+
+[MaskDINO 官方实现](https://github.com/IDEA-Research/MaskDINO) · [实验环境与数据](docs/experiment-environment.md)
+
+## 工程亮点（Engineering Highlights）
+
+1. **TensorRT 集成（TensorRT Integration）：** 定位并修复 ONNX 导出中的常量设备兼容问题；集成 MSDeformAttn PluginV3，构建 TensorRT Engine，并验证插件数值及模型输出。
+2. **原生推理链路（Native Inference Pipeline）：** 使用 C++/CUDA 实现 JPEG 解码后的预处理、分割后处理与结果恢复，管理 GPU / pinned host 缓冲区，完成 TensorRT 异步执行及 CPU 全景分割图和 segment metadata 交付。
+3. **并发与性能分析（Concurrency & Profiling）：** 采用独立 execution context、CUDA stream 和缓冲区的多 slot 调度；结合 Nsight Systems、Nsight Compute 与 TensorRT 逐层 Profiling，分析 GPU 执行重叠、延迟、吞吐及算子热点。
+4. **精度优化与故障归因（Precision Optimization & Debugging）：** 针对 FPN 卷积和 Encoder FFN 进行局部 FP16 实验；排查 TensorRT tactic 变化，结合逐图对齐与 COCO 全量 PQ 验证性能收益和精度风险。**FPN 优化已通过当前验收；FFN 优化仍为未通过严格逐图验收的实验配置。**
 
 ## 推理性能对比
 
