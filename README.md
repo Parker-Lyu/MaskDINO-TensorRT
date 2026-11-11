@@ -4,8 +4,8 @@
 
 ## 推理性能对比
 
-固定 **1024×1024、batch 1**，以使用相同 letterbox 输入的 PyTorch FP32 为基线。性能取同一份 500 张 JPEG 的三轮中位数，括号内为相对 PyTorch 的改善。  
-TensorRT FP32（TF32 on）和TensorRT FP16 混合精度（TF32 on）虽然有较低的精度损失，但是在 COCO 验证集上的 PQ 得分，仍然**高于**官方源码报告的 53.0 。
+固定 **1024×1024、batch 1**，以使用相同 letterbox 输入的 PyTorch FP32 为基线。性能取同一份 500 张 JPEG 的三轮中位数，括号内为相对 PyTorch 的改善。
+
 
 | 模型 / Engine | 全量 COCO PQ | 单 slot 端到端 P95 ↓ | 峰值离线吞吐 ↑ | 精度损失 |
 | --- | ---: | ---: | ---: | --- |
@@ -13,23 +13,26 @@ TensorRT FP32（TF32 on）和TensorRT FP16 混合精度（TF32 on）虽然有较
 | TensorRT FP32（TF32 off） | 53.1863 | **23.63 ms**（缩短 28.30 ms / 54.5%） | **53.36 图/s**（2.62×，S3） | PQ 持平（四位小数），逐图 32/32 通过 |
 | TensorRT FP32（TF32 on） | 53.1745 | **17.74 ms**（缩短 34.19 ms / 65.8%） | **66.43 图/s**（3.26×，S3） | PQ 降 0.0117 点，逐图 27/32 通过 |
 | TensorRT FP16 混合精度（TF32 on） | 53.1680 | **16.45 ms**（缩短 35.48 ms / 68.3%） | **74.35 图/s**（3.65×，S2） | PQ 降 0.0182 点，逐图 16/32 通过，最差类别一致率 91.63% |
+| Stage 6 · FPN + Encoder FFN FP16（TF32 on） | **53.1856** | **13.90 ms**（缩短 38.03 ms / 73.2%） | **89.22 图/s**（4.38×，S2） | PQ 降 0.0006 点；相对已验收 FPN Engine 逐图 26/32 通过，最差类别一致率 85.68% |
 
-![四种配置的单 slot 端到端 P95 和峰值离线吞吐柱状图](docs/precision-performance.svg)
+![PyTorch、三种 TensorRT 精度策略及 Stage 6 FFN 的单 slot P95 与离线吞吐对比](docs/precision-performance.svg)
 
-P95 从处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪，TensorRT 取 Stage 4 单 slot 结果。吞吐取 Stage 5 的 S1–S4 初筛峰值，S 为并发 slot 数。表中倍数为跨阶段归档对比。  
-PQ 取 PyTorch B1 和 Stage 4 原生链路各自的 COCO val2017 全量评估（5,000 张）。逐图通过数取 Stage 3 的 32 张筛选，三种 engine 统一与 PyTorch 对比。  
+**统计口径：** 表格均为 RTX 4090、1024×1024、B1 下的归档实验结果。PyTorch 与 Stage 4 单 slot 的 P95 从开始处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪；Stage 6 的 P95 从请求派发到 slot 起算。前四组吞吐来自 Stage 2 单路或 Stage 5 的 S1–S4 离线初筛峰值，Stage 6 吞吐则取 B1/S2 同轮实验中间 90% 窗口的**稳态吞吐**。因此括号中的缩短比例和吞吐倍数仅作跨阶段历史描述，**不是统一口径的配对加速比**；具体性能改善应以各 Stage 的 A/B 为准。
+
+**精度口径：** 全量 PQ 使用相同 letterbox 输入的 PyTorch FP32 B1 作为基线，在 COCO val2017 的 5,000 张图上计算。前面 TensorRT 精度策略的逐图通过数取 Stage 3 对 PyTorch 的 32 张检查；Stage 6 FFN 的 **26/32** 则是与已验收 FPN Engine 的 32 张逐图检查，**参考对象不同**。全量 PQ 接近并不代表逐图预测一致，详见 [Stage 3](#stage-3--将网络转换为-tensorrt) 和 [Stage 6](#stage-6--tensorrt-逐层-profiling-与进一步优化)。
+
 ## 技术路线
 
-1. [Stage 1](stage1/README.md) · 用官方 PyTorch 配置复现 COCO PQ 得分。
-2. [Stage 2](stage2/README.md) · 修改预处理为使用 letterbox，选定输入尺寸 1024×1024 / B1 作为部署基线，并选定32张对齐数据和500张计时样本。
-3. [Stage 3](stage3/README.md) · 导出 ONNX，接入 MSDeformAttn 插件，构建trt engine, 替换网络后端并筛选精度策略。
-4. [Stage 4](stage4/README.md) · 用 C++/CUDA 实现前后处理，在单 slot 下对比三种 engine。
-5. [Stage 5](stage5/README.md) · 用多 CUDA stream 重叠 GPU 工作，对比各 engine 的 S1–S4 吞吐。
-6. [Stage 6](stage6/README.md) · 逐层定位 TensorRT 热点，验证 FPN 和 encoder FFN 的局部混合精度。
+1. [Stage 1](#stage-1--复现原始模型精度) · 用官方 PyTorch 配置复现 COCO PQ 得分。
+2. [Stage 2](#stage-2--调整预处理方法并建立性能基线) · 修改预处理为使用 letterbox，选定输入尺寸 1024×1024 / B1 作为部署基线，并选定32张对齐数据和500张计时样本。
+3. [Stage 3](#stage-3--将网络转换为-tensorrt) · 导出 ONNX，接入 MSDeformAttn 插件，构建trt engine, 替换网络后端并筛选精度策略。
+4. [Stage 4](#stage-4--用-ccuda-实现前后处理) · 用 C++/CUDA 实现前后处理，在单 slot 下对比三种 engine。
+5. [Stage 5](#stage-5--用多-cuda-stream-实现异步并发) · 用多 CUDA stream 重叠 GPU 工作，对比各 engine 的 S1–S4 吞吐。
+6. [Stage 6](#stage-6--tensorrt-逐层-profiling-与进一步优化) · 逐层定位 TensorRT 热点，验证 FPN 和 encoder FFN 的局部混合精度。
 
-![分阶段性能柱状图。Stage 2 为 PyTorch，Stage 3 和 Stage 4 分别对比三种 TensorRT engine 的单 slot 结果，Stage 5 对比三种 engine 的多 slot 吞吐。](docs/roadmap-performance.svg)
+![Stage 2–6 性能路线图：PyTorch、TensorRT 精度策略、原生 C++/CUDA、Stage 5 多 Slot 与 Stage 6 FPN/FFN 精度优化。](docs/roadmap-performance.svg)
 
-Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stage 5 展示各自吞吐峰值（S3 / S3 / S2）。README 图表可用 `python3 docs/plot-roadmap.py` 重绘。
+Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stage 5 展示三种 Engine 的离线吞吐峰值（S3 / S3 / S2）。Stage 6 展示 FPN 与进一步叠加 FFN FP16 的 **B1/S1 P95** 和 **B1/S2 稳态吞吐**，FFN 逐图一致性为 26/32；不同阶段的计时起点与吞吐口径并非完全一致。图表可用 `python3 docs/plot-roadmap.py` 重绘。
 
 ## Stage 1 · 复现原始模型精度
 
@@ -195,7 +198,7 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 
 ![Stage 2–6 累计性能里程碑：包含 PyTorch、TensorRT、原生 C++/CUDA、多 Slot 及 Stage 6 FPN/FFN FP16；FFN 为实验配置。](docs/stage6-cumulative.svg)
 
-图中保留主要阶段的**历史结果**，不是同轮配对：Stage 2–4 延迟从开始处理内存 JPEG 起算，Stage 6 从派发到 slot 起算；Stage 5 的吞吐来自 500 图离线初筛峰值，Stage 6 为中间 90% 窗口稳态吞吐。**跨阶段数据只展示优化路线，不应据此精确归因性能收益；具体收益以各阶段同轮 A/B 为准。** Stage 6 FFN 虽有更高性能，但尚未通过当前逐图一致性门槛。
+图中保留主要阶段的**历史结果**，不是同轮配对：Stage 2–4 延迟从开始处理内存 JPEG 起算，Stage 6 从派发到 slot 起算；Stage 5 的吞吐来自 500 图离线初筛峰值，Stage 6 为中间 90% 窗口稳态吞吐。**跨阶段数据只展示优化路线，不应据此精确归因性能收益；具体收益以各阶段同轮 A/B 为准。** Stage 6 FFN 的逐图对齐为 **26/32**；如同 Stage 3 的部分精度策略，这一事实在正文和数据表中明确说明，不通过图例星号区分。
 
 [Stage 6 完整实验流程、证据、复现与局限](stage6/README.md)
 
