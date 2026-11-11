@@ -242,7 +242,10 @@ def main():
     for stage in (3, 4, 5):
         draw(stage, panels)
     peak_throughput = [values[slots - 1] for values, slots in zip(throughput[3], PEAK_THROUGHPUT_SLOTS)]
-    draw_precision(latency[:3], (*throughput[:3], peak_throughput))
+    # README overview figures also include Stage 6 FPN/FFN results.
+    # The standalone generator reads the archived Stage 6 A/B summaries.
+    import runpy
+    runpy.run_path(str(DOCS / "plot-stage6-overviews.py"), run_name="__main__")
 
 
 if __name__ == "__main__":
