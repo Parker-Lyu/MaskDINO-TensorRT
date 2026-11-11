@@ -175,6 +175,27 @@ FPN 证明了局部精度切换能够带来真实收益，但系统级收益有�
 
 三轮配对均观察到同方向性能改善。**性能假设得到支持，但还不能仅凭加速就验收。**
 
+#### 网络 GPU 时间省在哪里
+
+在 RTX 4090 上复用原实验的 FPN 对照（`d80102c6…`）和六层 FFN FP16 候选（`51e613b7…`），使用干净的 `301764c` 和原实验容器。固定 1024×1024、B1/S1 和 native 预处理后的 COCO 149770 输入，关闭 benchmark 输入输出传输。Nsight Systems 2025.5.1.121 同时采集 CUDA 和 NVTX，每套 Engine 预热 500 ms，分析 trace 中最后 40 次 `enqueueV3`。 [实验环境](ffn-full-half.zh-CN.md)
+
+用 Engine Inspector 的 ONNX 元数据匹配 NVTX 层范围，按线程和时间区间找到 CUDA launch，再按 correlation ID 匹配实际 GPU kernel。六段 FFN 都从 `norm1` 算到输出边界。前五段计入下一层 attention 的输入 add，最后一段计入 encoder 输出的 slice/transpose，因为两套 Engine 在这些边界的融合方式不同。脚本核对了各段 kernel 的完整性及单流执行。
+
+| 六个 block 的 GPU 工作 | FPN 对照（ms） | FFN FP16（ms） | 节省（ms） |
+| --- | ---: | ---: | ---: |
+| `norm1` 与 FFN 入口 cast | 0.230 | 0.287 | −0.057 |
+| `linear1`（含 bias 和 ReLU） | 1.740 | 0.719 | **1.021** |
+| `linear2` 到输出边界（含 residual 和 `norm2`） | 2.442 | 1.311 | **1.131** |
+| **FFN 与精度边界合计** | **4.411** | **2.317** | **2.094** |
+| 网络其余 kernel | 8.850 | 8.852 | −0.002 |
+| **全网络 kernel 合计** | **13.261** | **11.169** | **2.092** |
+
+Trace 中的 kernel 耗时下降几乎全部来自 FFN 及其边界。对照的两个 GEMM 已经使用 TF32 Tensor Core，候选改用 FP16 tactic，并把 `linear2` 与转回 FP32、residual add 和 `norm2` 融合。这里测得的是 tactic 与融合叠加的效果。若要量化各自贡献或判断 DRAM 流量变化，需要额外的对照或硬件计数器。
+
+表中是单张固定输入上各组 kernel 耗时之和的均值。原实验在 500 张图上用 CUDA events 测到的**网络 P95 改善是 2.23 ms**。独立的 `trtexec` 逐层采样也得到相同归因：同一 FFN 范围的层均值之和节省 **2.123 ms**，全网络层均值之和节省 **2.122 ms**，其余层基本持平。 [对照逐层数据](results/ffn-full-half/ab/fpn.layers.json) · [候选逐层数据](results/ffn-full-half/ab/ffn-half.layers.json)
+
+原始报告和 SQLite 保存在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/ffn-attribution-x8sP2E/`。 [复现命令](README.md#where-the-network-time-was-saved) · [报告校验和](results/ffn-full-half/attribution/reports.sha256) · [对照逐次推理数据](results/ffn-full-half/attribution/fpn.csv) · [候选逐次推理数据](results/ffn-full-half/attribution/ffn-half.csv) · [对照 kernel 映射](results/ffn-full-half/attribution/fpn.kernels.csv) · [候选 kernel 映射](results/ffn-full-half/attribution/ffn-half.kernels.csv)
+
 ### 4.4 精度出现矛盾：全量 PQ 几乎不变，逐图仅 26/32
 
 两种 slot 各完成 **5,000 张 COCO** 全量评估，结果一致：

@@ -175,6 +175,46 @@ This A/B uses **the engine with the accepted FPN optimization** as its control. 
 
 All three paired rounds improved in the same direction. **The performance hypothesis is supported. Acceptance also requires accuracy checks.**
 
+#### Where the network time was saved
+
+Reused the original FPN control (`d80102c6…`) and six-layer FFN FP16 candidate (`51e613b7…`) on the RTX 4090, from clean commit `301764c` and the same reference container. Nsight Systems 2025.5.1.121 captured CUDA and NVTX at 1024×1024, B1/S1, with the same natively preprocessed COCO 149770 input and benchmark I/O transfers disabled. Each plan warmed up for 500 ms and ran 40 measured inferences. The capture included warm-up, so the analysis used the last 40 `enqueueV3` ranges per plan. [Reference environment](ffn-full-half.md#measurement-definitions)
+
+For each inference, match Engine Inspector layers to NVTX ranges using ONNX metadata, match CUDA launches by thread and range, then join launches to GPU kernels by correlation ID. The comparison covers all six blocks, from `norm1` through `linear2` and the output boundary. That boundary includes the next attention input add for blocks 0–4 and the encoder output slice/transpose for block 5 because these operations fuse differently across the plans. The analysis verified complete coverage of each block on a single stream.
+
+| GPU kernel work across six blocks | FPN control (ms) | FFN FP16 (ms) | Time saved (ms) |
+| --- | ---: | ---: | ---: |
+| `norm1` and FFN input cast | 0.230 | 0.287 | −0.057 |
+| `linear1` with bias and ReLU | 1.740 | 0.719 | **1.021** |
+| `linear2` through the output boundary, including residual and `norm2` | 2.442 | 1.311 | **1.131** |
+| **FFN and boundaries** | **4.411** | **2.317** | **2.094** |
+| Other network kernels | 8.850 | 8.852 | −0.002 |
+| **All network kernels** | **13.261** | **11.169** | **2.092** |
+
+The trace attributes essentially all of its kernel-time reduction to the FFN and its boundaries. Both GEMMs already used TF32 Tensor Cores in the control. The candidate uses FP16 Tensor Core tactics, with `linear2` fused with the FP32 conversion, residual add and `norm2`. The trace measures the combined gain from the new tactic and fusion. Quantifying their individual contributions or changes in DRAM traffic would require additional controls or hardware counters.
+
+These values are mean sums of kernel durations on one input. The original 500-image native benchmark measured the **2.23 ms network P95 reduction** with CUDA events. The separate `trtexec` layer exports cross-check the attribution: the same FFN boundaries save **2.123 ms** out of **2.122 ms** in summed mean layer time, with the remaining layers effectively flat. [Control layer export](results/ffn-full-half/ab/fpn.layers.json) · [Candidate layer export](results/ffn-full-half/ab/ffn-half.layers.json)
+
+For each plan, mount the original engine at `/network.engine` and the input tensor at `/input.f32`. Run both `nsys` commands in a writable bind-mounted directory inside the reference container with a distinct `label` per plan. [Input checksums](results/layer-profile-b1/inputs.sha256)
+
+```bash
+nsys profile --trace=cuda,nvtx --sample=none --cpuctxsw=none \
+  --capture-range=cudaProfilerApi --capture-range-end=stop --output="$label" \
+  /opt/tensorrt/bin/trtexec --loadEngine=/network.engine --loadInputs=image:/input.f32 \
+  --infStreams=1 --noDataTransfers --warmUp=500 --duration=0 --iterations=40
+nsys export --type sqlite --output "$label.sqlite" "$label.nsys-rep"
+```
+
+From the repository root, point `trace_dir` to the exported SQLite files and run the summary with the Inspector export for each plan.
+
+```bash
+python3 stage6/ffn_trace_summary.py "$trace_dir/fpn.sqlite" \
+  stage6/results/fpn-half-ab/cached/fpn-half/layers.json "$trace_dir/fpn.csv"
+python3 stage6/ffn_trace_summary.py "$trace_dir/ffn-half.sqlite" \
+  stage6/results/ffn-full-half/build/layers.json "$trace_dir/ffn-half.csv"
+```
+
+Raw reports and SQLite exports are on the 4090 at `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/ffn-attribution-x8sP2E/`. [Report checksums](results/ffn-full-half/attribution/reports.sha256) · [Control per-inference timings](results/ffn-full-half/attribution/fpn.csv) · [Candidate per-inference timings](results/ffn-full-half/attribution/ffn-half.csv) · [Control kernel mapping](results/ffn-full-half/attribution/fpn.kernels.csv) · [Candidate kernel mapping](results/ffn-full-half/attribution/ffn-half.kernels.csv)
+
 ### 4.4 Nearly Flat Full PQ With Only 26/32 Per-Image Passes
 
 Both slot settings evaluated all **5,000 COCO images** and produced identical results.

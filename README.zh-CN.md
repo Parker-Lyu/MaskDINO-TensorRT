@@ -218,6 +218,8 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 | B1/S2 整轮吞吐 | 76.22 图/s | 89.02 图/s | **+16.8%** |
 | B1/S1 峰值显存 | 1.15 GiB | 1.08 GiB | −0.07 GiB |
 
+**性能归因。** B1/S1 网络 GPU P95 从 **14.01 ms 降到 11.78 ms**。另用固定输入采集 Nsight Systems A/B，通过 NVTX 和 Engine Inspector 对齐六段 FFN 的 GPU kernel。`linear1` 节省 **1.02 ms**，`linear2` 及输出边界节省 **1.13 ms**，融合入口 cast 的 `norm1` 累计多用约 **0.06 ms**，FFN 相关 kernel 净省 **2.09 ms**。网络其余 kernel 耗时基本持平。 [分析方法和结果](stage6/README.zh-CN.md#网络-gpu-时间省在哪里)
+
 **精度的关键区别：** 全量 COCO PQ 达 **53.1856**，相对同输入 PyTorch FP32 基线约 **53.1863** 只下降 **0.0006 点**，PQ Things / PQ Stuff 也满足当前容差；但与已验收 FPN 对照的 32 张**逐图一致性检查仅 26/32 通过**，最差图片像素类别一致率只有 **85.68%**。
 
 这意味着：**全量任务精度几乎不变，不代表优化前后的每张图输出仍然接近。** PQ 评估对 ground truth 的整体分割质量；逐图对齐评估候选相对参考 Engine 的预测行为。FFN 数值变化是否通过 Encoder 特征、proposal TopK 和 Decoder query 放大，**尚未完成中间张量因果验证**。

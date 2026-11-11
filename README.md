@@ -219,6 +219,8 @@ The sum of layer profiler times differs from network latency in a normal run. Th
 | B1/S2 full-run throughput | 76.22 images/s | 89.02 images/s | **+16.8%** |
 | B1/S1 peak GPU memory | 1.15 GiB | 1.08 GiB | −0.07 GiB |
 
+**Performance attribution.** B1/S1 network GPU P95 fell from **14.01 to 11.78 ms**. In a separate fixed-input Nsight Systems A/B, NVTX and Engine Inspector mapped GPU kernels to the six FFNs. `linear1` saved **1.02 ms**, and `linear2` through its output boundary saved **1.13 ms**. The `norm1` kernel with the new input cast took about **0.06 ms** more across the six blocks, leaving a **2.09 ms** net FFN kernel-time reduction. Other network kernels were effectively flat. [Method and trace results](stage6/README.md#where-the-network-time-was-saved)
+
 **Accuracy results.** Full COCO PQ is **53.1856**, just **0.0006 points** below the PyTorch FP32 baseline of about **53.1863** on the same inputs. PQ Things and PQ Stuff also meet the current tolerances. Against the accepted FPN control, **only 26/32 images pass the per-image agreement check**, with pixel-level category agreement as low as **85.68%**.
 
 **Nearly unchanged aggregate accuracy can coexist with substantial changes in individual predictions.** PQ measures overall segmentation quality against ground truth. Per-image alignment measures how closely the candidate reproduces the reference engine's predictions. **Intermediate tensors have yet to establish** whether encoder features, proposal TopK, and decoder queries amplify the numerical differences introduced by the FFN change.
