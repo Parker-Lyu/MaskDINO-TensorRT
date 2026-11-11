@@ -5,6 +5,7 @@ from html import escape
 import json
 from pathlib import Path
 import re
+import runpy
 from statistics import median
 
 
@@ -37,7 +38,7 @@ def draw(stage, panels):
         ]
     if stage == 6:
         footer.extend([
-            "Stage 5 throughput uses the full offline run. Stage 6 uses the middle 90% steady-state window.",
+            "Offline throughput uses the full timed run after warmup.",
             "Stage 6: FPN FP16 passed offline acceptance. FPN + FFN FP16 is experimental (26/32 image alignment).",
         ])
     height = 112 + 2 * panel_height + (8 + 20 * len(footer) if footer else 0)
@@ -175,21 +176,22 @@ def slot_rows(values_by_engine):
     ]
 
 
-def stage6_panels():
+def stage6_panels(throughput):
     fpn_path = "stage6/results/fpn-half-ab"
     fpn = read_json(f"{fpn_path}/summary.json")["native"]["fpn-half"]
     ffn = read_json("stage6/results/ffn-full-half/summary.json")
-    rows = {key: [] for key in ("pq", "network_p95_ms", "end_to_end_p95_ms", "steady_images_per_second")}
+    rows = {key: [] for key in ("pq", "network_p95_ms", "end_to_end_p95_ms", "makespan_images_per_second")}
     for slots in (1, 2):
         config = f"b1s{slots}"
         fpn_pq = read_json(f"{fpn_path}/pq/{config}/validation.json")["scores"]["PQ"]
-        for name, color, timing, pq in (
-            ("FPN FP16", "#348f79", fpn[config], fpn_pq),
-            ("FPN + FFN", "#8051a3", ffn["native"]["ffn-half"][config], ffn["pq"]["scores"]["PQ"]),
+        for engine, name, color, timing, pq in (
+            ("fpn-half", "FPN FP16", "#348f79", fpn[config], fpn_pq),
+            ("ffn-half", "FPN + FFN", "#8051a3", ffn["native"]["ffn-half"][config], ffn["pq"]["scores"]["PQ"]),
         ):
             label = f"Stage 6 · {name} · B1/S{slots}"
+            values = {**timing, "pq": pq, "makespan_images_per_second": throughput[engine, slots]}
             for key, panel_rows in rows.items():
-                panel_rows.append((6, label, pq if key == "pq" else timing[key], color))
+                panel_rows.append((6, label, values[key], color))
     return rows
 
 
@@ -253,7 +255,9 @@ def main(cumulative_only=False):
     ]
     # Full COCO results cover only B1/S1–S3 with TF32 off.
     unavailable = [None] * len(SLOT_COUNTS)
-    stage6 = stage6_panels()
+    overviews = runpy.run_path(str(DOCS / "plot-stage6-overviews.py"))
+    stage6_throughput = overviews["stage6_throughput"]()
+    stage6 = stage6_panels(stage6_throughput)
     pq = [
         (1, "Stage 1 · Official input", official_pq, COLORS[0]),
         (2, "Stage 2 · 1024/B4", square_pq, COLORS[0]),
@@ -265,20 +269,15 @@ def main(cumulative_only=False):
     for title, values, stage6_key in (
         ("Network GPU P95 (ms/batch)", network, "network_p95_ms"),
         ("End-to-end P95 (ms)", latency, "end_to_end_p95_ms"),
-        ("Offline throughput (img/s)", throughput, "steady_images_per_second"),
+        ("Offline throughput (img/s)", throughput, "makespan_images_per_second"),
     ):
         baseline = (2, "Stage 2 · PyTorch", values[0][0], COLORS[0])
         panels.append((title, 2, [baseline, *engine_rows(values[1:3]), *slot_rows(values[3]), *stage6[stage6_key]]))
 
     for stage in (3, 4, 5, 6):
         draw(stage, panels)
-    if cumulative_only:
-        return
-    peak_throughput = [values[slots - 1] for values, slots in zip(throughput[3], PEAK_THROUGHPUT_SLOTS)]
-    # README overview figures also include Stage 6 FPN/FFN results.
-    # The standalone generator reads the archived Stage 6 A/B summaries.
-    import runpy
-    runpy.run_path(str(DOCS / "plot-stage6-overviews.py"), run_name="__main__")
+    if not cumulative_only:
+        overviews["main"](stage6_throughput)
 
 
 if __name__ == "__main__":

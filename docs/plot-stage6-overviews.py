@@ -7,6 +7,7 @@ These are cross-stage milestone comparisons, not paired experiments.
 from html import escape
 import json
 from pathlib import Path
+from statistics import median
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
@@ -19,14 +20,25 @@ FPN = "#348f79"
 FFN = "#8051a3"
 
 
-def stage6():
+def stage6_throughput():
+    throughput = {}
+    for path, engine in (("fpn-half-ab/cached/ab", "fpn-half"), ("ffn-full-half/ab", "ffn-half")):
+        rows = json.loads((ROOT / "stage6/results" / path / "summary.json").read_text())
+        for slots in (1, 2):
+            runs = [row for row in rows if row["engine"] == engine and row["slots"] == slots]
+            assert sorted(row["round"] for row in runs) == [1, 2, 3], (path, slots)
+            throughput[engine, slots] = median(row["makespan_images_per_second"] for row in runs)
+    return throughput
+
+
+def stage6(throughput):
     fpn = json.loads((ROOT / "stage6/results/fpn-half-ab/summary.json").read_text())
     ffn = json.loads((ROOT / "stage6/results/ffn-full-half/summary.json").read_text())
     return {
         "fpn_p95": fpn["native"]["fpn-half"]["b1s1"]["end_to_end_p95_ms"],
-        "fpn_throughput": fpn["native"]["fpn-half"]["b1s2"]["steady_images_per_second"],
+        "fpn_throughput": throughput["fpn-half", 2],
         "ffn_p95": ffn["native"]["ffn-half"]["b1s1"]["end_to_end_p95_ms"],
-        "ffn_throughput": ffn["native"]["ffn-half"]["b1s2"]["steady_images_per_second"],
+        "ffn_throughput": throughput["ffn-half", 2],
     }
 
 
@@ -35,7 +47,7 @@ def render(path, title, subtitle, groups, foot1, foot2):
     svg = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title description">',
         f'<title id="title">{escape(title)}</title>',
-        f'<desc id="description">{escape(subtitle)}. Different stage timing boundaries; refer to README for acceptance checks.</desc>',
+        f'<desc id="description">{escape(subtitle)}. Historical figures have different measurement boundaries; consult README for precision acceptance and comparisons.</desc>',
         f'<rect width="{width}" height="{height}" rx="16" fill="#f3f6fa"/>',
         '<g font-family="system-ui, sans-serif" fill="#172b43">',
         f'<text x="25" y="38" font-size="24" font-weight="700">{escape(title)}</text>',
@@ -61,7 +73,8 @@ def render(path, title, subtitle, groups, foot1, foot2):
             svg.append(f'<text x="{center:.2f}" y="351" text-anchor="middle" font-size="14" font-weight="650">{escape(group["name"])}</text>')
             active = [item for item in group["values"] if item.get(key) is not None]
             bar_width = min(30, (group_width - 12) / max(1, len(active)) - 7)
-            spacing = min(37, (group_width - 12) / max(1, len(active)))
+            spacing_limit = group.get("throughput_spacing", 37) if key == "thr" else 37
+            spacing = min(spacing_limit, (group_width - 12) / max(1, len(active)))
             for subindex, item in enumerate(active):
                 cx = center + (subindex - (len(active) - 1) / 2) * spacing
                 amount = item[key]
@@ -78,7 +91,7 @@ def render(path, title, subtitle, groups, foot1, foot2):
             if value["name"] not in seen:
                 seen.add(value["name"])
                 legend.append(value)
-    start = 630 - sum(len(value["name"]) * 8 + 36 for value in legend) / 2
+    start = 630 - sum(len(value["name"]) * 8 + 36 for value in legend) // 2
     for value in legend:
         svg.extend([
             f'<rect x="{start}" y="401" width="12" height="12" rx="2" fill="{value["color"]}"/>',
@@ -93,8 +106,8 @@ def render(path, title, subtitle, groups, foot1, foot2):
     (DOCS / path).write_text("\n".join(svg) + "\n")
 
 
-def main():
-    six = stage6()
+def main(throughput):
+    six = stage6(throughput)
     def item(name, color, lat=None, thr=None):
         return {"name": name, "color": color, "lat": lat, "thr": thr}
 
@@ -110,7 +123,7 @@ def main():
         "RTX 4090 · 1024×1024 · batch 1 · historical 500-JPEG runs",
         [{"name": row["name"], "values": [row]} for row in precision],
         "Stage 2–4 P95 starts at JPEG processing; Stage 6 starts at slot dispatch. Stage 5 uses peak S3/S3/S2 throughput.",
-        "Stage 6 FFN uses steady-state B1/S2 throughput; PQ 53.1856, strict image agreement 26/32 (see README).",
+        "All throughput uses the full offline run. Stage 6 FFN uses B1/S2, with PQ 53.1856 and 26/32 image agreement.",
     )
 
     stages = [
@@ -120,7 +133,7 @@ def main():
             item("FP32 on", TEAL, 29.92, 37.06),
             item("FP16 mix", ORANGE, 28.71, 38.78),
         ]},
-        {"name": "Stage 4", "values": [
+        {"name": "Stage 4", "throughput_spacing": 26, "values": [
             item("FP32 off", BLUE, 23.63, 43.65),
             item("FP32 on", TEAL, 17.74, 58.26),
             item("FP16 mix", ORANGE, 16.45, 63.04),
@@ -139,10 +152,10 @@ def main():
         "roadmap-performance.svg", "Inference performance by stage · Stage 2–6",
         "Stage 2 PyTorch · Stage 3 Python/TRT · Stage 4 native · Stage 5 streams · Stage 6 layer optimization",
         stages,
-        "Stage 6 FPN & FFN are B1/S1 for P95 and B1/S2 steady throughput; Stage 5 throughput uses offline peak screening.",
-        "Cross-stage figures differ in timing boundary / throughput metric; use within-stage paired A/B to assess improvements.",
+        "Stage 6 FPN and FFN use B1/S1 for P95 and B1/S2 for throughput. All throughput values use the full offline run.",
+        "Stage 5 shows peak screening results. Use within-stage paired A/B to assess improvements.",
     )
 
 
 if __name__ == "__main__":
-    main()
+    main(stage6_throughput())

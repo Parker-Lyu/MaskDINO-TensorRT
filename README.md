@@ -18,17 +18,17 @@
 固定 **1024×1024、batch 1**，以使用相同 letterbox 输入的 PyTorch FP32 为基线。性能取同一份 500 张 JPEG 的三轮中位数，括号内为相对 PyTorch 的改善。
 
 
-| 模型 / Engine | 全量 COCO PQ | 单 slot 端到端 P95 ↓ | 峰值离线吞吐 ↑ | 精度损失 |
+| 模型 / Engine | 全量 COCO PQ | 单 slot 端到端 P95 ↓ | 整轮离线吞吐 ↑ | 精度损失 |
 | --- | ---: | ---: | ---: | --- |
 | PyTorch FP32 基线（TF32 off） | 53.1863 | 51.93 ms | 20.38 图/s（单路） | 基线 |
 | TensorRT FP32（TF32 off） | 53.1863 | **23.63 ms**（缩短 28.30 ms / 54.5%） | **53.36 图/s**（2.62×，S3） | PQ 持平（四位小数），逐图 32/32 通过 |
 | TensorRT FP32（TF32 on） | 53.1745 | **17.74 ms**（缩短 34.19 ms / 65.8%） | **66.43 图/s**（3.26×，S3） | PQ 降 0.0117 点，逐图 27/32 通过 |
 | TensorRT FP16 混合精度（TF32 on） | 53.1680 | **16.45 ms**（缩短 35.48 ms / 68.3%） | **74.35 图/s**（3.65×，S2） | PQ 降 0.0182 点，逐图 16/32 通过，最差类别一致率 91.63% |
-| Stage 6 · FPN + Encoder FFN FP16（TF32 on） | **53.1856** | **13.90 ms**（缩短 38.03 ms / 73.2%） | **89.22 图/s**（4.38×，S2） | PQ 降 0.0006 点；相对已验收 FPN Engine 逐图 26/32 通过，最差类别一致率 85.68% |
+| Stage 6 · FPN + Encoder FFN FP16（TF32 on） | **53.1856** | **13.90 ms**（缩短 38.03 ms / 73.2%） | **89.02 图/s**（4.37×，S2） | PQ 降 0.0006 点；相对已验收 FPN Engine 逐图 26/32 通过，最差类别一致率 85.68% |
 
 ![PyTorch、三种 TensorRT 精度策略及 Stage 6 FFN 的单 slot P95 与离线吞吐对比](docs/precision-performance.svg)
 
-**统计口径：** 表格均为 RTX 4090、1024×1024、B1 下的归档实验结果。PyTorch 与 Stage 4 单 slot 的 P95 从开始处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪；Stage 6 的 P95 从请求派发到 slot 起算。前四组吞吐来自 Stage 2 单路或 Stage 5 的 S1–S4 离线初筛峰值，Stage 6 吞吐则取 B1/S2 同轮实验中间 90% 窗口的**稳态吞吐**。。
+**统计口径：** 表格均为 RTX 4090、1024×1024、B1 下的归档实验结果。PyTorch 与 Stage 4 单 slot 的 P95 从开始处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪，Stage 6 的 P95 从请求派发到 slot 起算。吞吐均按预热后整轮完成图数除以墙钟时间，分别取 Stage 2 单路、Stage 5 的 S1–S4 离线初筛峰值和 Stage 6 的 B1/S2 结果。
 
 **精度口径：** 全量 PQ 使用相同 letterbox 输入的 PyTorch FP32 B1 作为基线，在 COCO val2017 的 5,000 张图上计算。前面 TensorRT 精度策略的逐图通过数取 Stage 3 对 PyTorch 的 32 张检查；Stage 6 FFN 的 **26/32** 则是与已验收 FPN Engine 的 32 张逐图检查，详见 [Stage 3](#stage-3--将网络转换为-tensorrt) 和 [Stage 6](#stage-6--tensorrt-逐层-profiling-与进一步优化)。
 
@@ -43,7 +43,7 @@
 
 ![Stage 2–6 性能路线图：PyTorch、TensorRT 精度策略、原生 C++/CUDA、Stage 5 多 Slot 与 Stage 6 FPN/FFN 精度优化。](docs/roadmap-performance.svg)
 
-Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stage 5 展示三种 Engine 的离线吞吐峰值（S3 / S3 / S2）。Stage 6 展示 FPN 与进一步叠加 FFN FP16 的 **B1/S1 P95** 和 **B1/S2 稳态吞吐**，FFN 逐图一致性为 26/32；不同阶段的计时起点与吞吐口径并非完全一致。图表可用 `python3 docs/plot-roadmap.py` 重绘。
+Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stage 5 展示三种 Engine 的离线吞吐峰值（S3 / S3 / S2）。Stage 6 展示 FPN 与进一步叠加 FFN FP16 的 **B1/S1 P95** 和 **B1/S2 整轮吞吐**，FFN 逐图一致性为 26/32。图表可用 `python3 docs/plot-roadmap.py` 重绘。
 
 ## Stage 1 · 复现原始模型精度
 
@@ -183,7 +183,7 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 | --- | ---: | ---: | ---: |
 | 目标 Conv 耗时 | 0.9035 ms | 0.2505 ms | **−72.3%** |
 | B1/S1 端到端 P95 | 16.27 ms | 15.85 ms | **−2.6%** |
-| B1/S2 稳态吞吐 | 74.21 图/s | 76.33 图/s | **+2.9%** |
+| B1/S2 整轮吞吐 | 74.10 图/s | 76.24 图/s | **+2.9%** |
 
 **关键排查：** 首轮候选只有 **31/32** 张通过逐图一致性检查。针对异常图交叉替换不同 Engine 的 logits/masks，发现缺失的 segment 跟随 **logits**，而不是被修改的 masks 分支。Engine Inspector 又发现首次重建时，四个**非目标 Backbone 卷积**也更换了 tactic。使用共享 Timing Cache 重建配对 Engine 后，目标以外的同名 Conv/Pooling tactic 保持一致，异常图 logits/boxes 也恢复逐元素一致，最终 **32/32** 通过。该结果支持首轮异常与非目标构建差异有关，但不能由此断言某个具体 tactic 是唯一根因。
 
@@ -196,7 +196,7 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 | 指标 | FPN 对照 | FPN + FFN FP16 | 改善 |
 | --- | ---: | ---: | ---: |
 | B1/S1 端到端 P95 | 16.10 ms | 13.90 ms | **−13.7%** |
-| B1/S2 稳态吞吐 | 76.39 图/s | 89.22 图/s | **+16.8%** |
+| B1/S2 整轮吞吐 | 76.22 图/s | 89.02 图/s | **+16.8%** |
 | B1/S1 峰值显存 | 1.15 GiB | 1.08 GiB | −0.07 GiB |
 
 **精度的关键区别：** 全量 COCO PQ 达 **53.1856**，相对同输入 PyTorch FP32 基线约 **53.1863** 只下降 **0.0006 点**，PQ Things / PQ Stuff 也满足当前容差；但与已验收 FPN 对照的 32 张**逐图一致性检查仅 26/32 通过**，最差图片像素类别一致率只有 **85.68%**。
@@ -210,7 +210,7 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 ![Stage 1–6 累计对比。保留 Stage 1–5 的数据和四个面板，加入 Stage 6 FPN FP16 与实验配置 FPN + 六层 FFN FP16 的 B1/S1、B1/S2 结果。](docs/stage6-cumulative.svg)
 
 
-端到端 P95 在 Stage 2–4 从开始处理内存 JPEG 起算，在 Stage 5–6 从派发到 slot 起算，均计到 CPU 结果就绪。Stage 5 吞吐按 500 图离线初筛的整轮统计，Stage 6 取中间 90% 窗口的稳态吞吐。优化收益以同轮 A/B 为准，例如 FPN 在 B1/S2 下的稳态吞吐从 **74.21** 提高到 **76.33 图/s（+2.9%）**。
+端到端 P95 在 Stage 2–4 从开始处理内存 JPEG 起算，在 Stage 5–6 从派发到 slot 起算，均计到 CPU 结果就绪。离线吞吐统一按预热后的整轮墙钟时间统计，优化收益以同轮 A/B 为准。
 
 运行 `python3 docs/plot-roadmap.py --cumulative-only` 可重绘累计图。
 

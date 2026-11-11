@@ -57,8 +57,8 @@
 <rect x="1048.00" y="196.89" width="30.00" height="130.11" rx="3" fill="#a14c17"/>
 <text x="1063.00" y="190.89" text-anchor="middle" font-size="12" font-weight="650">74.35</text>
 <text x="1169.00" y="351" text-anchor="middle" font-size="14" font-weight="650">Stage 6 FFN</text>
-<rect x="1154.00" y="170.87" width="30.00" height="156.13" rx="3" fill="#8051a3"/>
-<text x="1169.00" y="164.87" text-anchor="middle" font-size="12" font-weight="650">89.22</text>
+<rect x="1154.00" y="171.21" width="30.00" height="155.79" rx="3" fill="#8051a3"/>
+<text x="1169.00" y="165.21" text-anchor="middle" font-size="12" font-weight="650">89.02</text>
 <rect x="376" y="401" width="12" height="12" rx="2" fill="#61748b"/>
 <text x="394" y="412" font-size="12">PyTorch</text>
 <rect x="468" y="401" width="12" height="12" rx="2" fill="#3365a6"/>
@@ -70,5 +70,5 @@
 <rect x="760" y="401" width="12" height="12" rx="2" fill="#8051a3"/>
 <text x="778" y="412" font-size="12">Stage 6 FFN</text>
 <text x="24" y="446" font-size="13">Stage 2–4 P95 starts at JPEG processing; Stage 6 starts at slot dispatch. Stage 5 uses peak S3/S3/S2 throughput.</text>
-<text x="24" y="465" font-size="13">Stage 6 FFN uses steady-state B1/S2 throughput; PQ 53.1856, strict image agreement 26/32 (see README).</text>
+<text x="24" y="465" font-size="13">All throughput uses the full offline run. Stage 6 FFN uses B1/S2, with PQ 53.1856 and 26/32 image agreement.</text>
 </g></svg>
