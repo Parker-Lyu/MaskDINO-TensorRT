@@ -19,6 +19,13 @@ engine_sha=96facc4e2ee6e2bb61b2a55ae634447a6a019b3c90ef5bb88049143c523cb37a
 if [[ -f "$build" ]]; then
     engine_sha=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["engine_sha256"])' "$build")
 fi
+batch_mounts=()
+if [[ -n "${MASKDINO_BATCH_ENGINES:-}" ]]; then
+    batch_dir=$(realpath -- "$MASKDINO_BATCH_ENGINES")
+    [[ -d "$batch_dir" && -f "$build" ]] || { echo "Batch directory and B1 build.json required" >&2; exit 1; }
+    batch_mounts=(--mount "type=bind,source=$batch_dir,target=/batch-engines,readonly"
+                  --mount "type=bind,source=$build,target=/b1-build.json,readonly")
+fi
 output="$root/stage5/runs/$id"
 mkdir -p "$(dirname "$output")"
 mkdir "$output"
@@ -40,6 +47,7 @@ mkdir "$output"
         --mount "type=bind,source=$dataset,target=/coco,readonly" \
         --mount "type=bind,source=$previous,target=/previous,readonly" \
         --mount "type=bind,source=$engine,target=/b1.engine,readonly" \
+        "${batch_mounts[@]}" \
         --mount "type=bind,source=$root,target=/project,readonly" \
         --mount "type=bind,source=$output,target=/output" \
         --entrypoint bash "$image" -ec '

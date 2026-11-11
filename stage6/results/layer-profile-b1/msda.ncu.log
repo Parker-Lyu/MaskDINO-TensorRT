@@ -1,0 +1,109 @@
+&&&& RUNNING TensorRT.trtexec [TensorRT v101401] [b48] # /opt/tensorrt/bin/trtexec --loadEngine=/network.engine --loadInputs=image:149770.f32 --infStreams=1 --noDataTransfers --warmUp=0 --duration=0 --iterations=20
+==WARNING== Note: Running with uncontrolled GPU caches. Profiling results may be inconsistent.
+==WARNING== Note: Running with unmodified GPU clocks. If not controlled otherwise, profiling results may be inconsistent.
+==PROF== Connected to process 122 (/opt/tensorrt/bin/trtexec)
+[11/10/2026-11:33:43] [I] TF32 is enabled by default. Add --noTF32 flag to further improve accuracy with some performance cost.
+[11/10/2026-11:33:43] [I] === Model Options ===
+[11/10/2026-11:33:43] [I] Format: *
+[11/10/2026-11:33:43] [I] Model: 
+[11/10/2026-11:33:43] [I] Output:
+[11/10/2026-11:33:43] [I] 
+[11/10/2026-11:33:43] [I] === System Options ===
+[11/10/2026-11:33:43] [I] Device: 0
+[11/10/2026-11:33:43] [I] DLACore: 
+[11/10/2026-11:33:43] [I] Plugins:
+[11/10/2026-11:33:43] [I] setPluginsToSerialize:
+[11/10/2026-11:33:43] [I] dynamicPlugins:
+[11/10/2026-11:33:43] [I] ignoreParsedPluginLibs: 0
+[11/10/2026-11:33:43] [I] 
+[11/10/2026-11:33:43] [I] === Inference Options ===
+[11/10/2026-11:33:43] [I] Batch: Explicit
+[11/10/2026-11:33:43] [I] Input inference shapes: model
+[11/10/2026-11:33:43] [I] Iterations: 20
+[11/10/2026-11:33:43] [I] Duration: 0s (+ 0ms warm up)
+[11/10/2026-11:33:43] [I] Sleep time: 0ms
+[11/10/2026-11:33:43] [I] Idle time: 0ms
+[11/10/2026-11:33:43] [I] Inference Streams: 1
+[11/10/2026-11:33:43] [I] ExposeDMA: Disabled
+[11/10/2026-11:33:43] [I] Data transfers: Disabled
+[11/10/2026-11:33:43] [I] Spin-wait: Disabled
+[11/10/2026-11:33:43] [I] Multithreading: Disabled
+[11/10/2026-11:33:43] [I] CUDA Graph: Disabled
+[11/10/2026-11:33:43] [I] Separate profiling: Disabled
+[11/10/2026-11:33:43] [I] Time Deserialize: Disabled
+[11/10/2026-11:33:43] [I] Time Refit: Disabled
+[11/10/2026-11:33:43] [I] NVTX verbosity: 0
+[11/10/2026-11:33:43] [I] Persistent Cache Ratio: 0
+[11/10/2026-11:33:43] [I] Optimization Profile Index: 0
+[11/10/2026-11:33:43] [I] Weight Streaming Budget: 100.000000%
+[11/10/2026-11:33:43] [I] Inputs:
+[11/10/2026-11:33:43] [I] image<-149770.f32
+[11/10/2026-11:33:43] [I] Debug Tensor Save Destinations:
+[11/10/2026-11:33:43] [I] Dump All Debug Tensor in Formats: 
+[11/10/2026-11:33:43] [I] === Reporting Options ===
+[11/10/2026-11:33:43] [I] Verbose: Disabled
+[11/10/2026-11:33:43] [I] Averages: 10 inferences
+[11/10/2026-11:33:43] [I] Percentiles: 90,95,99
+[11/10/2026-11:33:43] [I] Dump refittable layers:Disabled
+[11/10/2026-11:33:43] [I] Dump output: Disabled
+[11/10/2026-11:33:43] [I] Profile: Disabled
+[11/10/2026-11:33:43] [I] Export timing to JSON file: 
+[11/10/2026-11:33:43] [I] Export output to JSON file: 
+[11/10/2026-11:33:43] [I] Export profile to JSON file: 
+[11/10/2026-11:33:43] [I] 
+[11/10/2026-11:33:43] [I] === Device Information ===
+[11/10/2026-11:33:43] [I] Available Devices: 
+[11/10/2026-11:33:43] [I]   Device 0: "NVIDIA GeForce RTX 4090" UUID: GPU-3c6c5772-1bd4-ee17-8b92-d5303186211e
+[11/10/2026-11:33:43] [I] Selected Device: NVIDIA GeForce RTX 4090
+[11/10/2026-11:33:43] [I] Selected Device ID: 0
+[11/10/2026-11:33:43] [I] Selected Device UUID: GPU-3c6c5772-1bd4-ee17-8b92-d5303186211e
+[11/10/2026-11:33:43] [I] Compute Capability: 8.9
+[11/10/2026-11:33:43] [I] SMs: 128
+[11/10/2026-11:33:43] [I] Device Global Memory: 24060 MiB
+[11/10/2026-11:33:43] [I] Shared Memory per SM: 100 KiB
+[11/10/2026-11:33:43] [I] Memory Bus Width: 384 bits (ECC disabled)
+[11/10/2026-11:33:43] [I] Application Compute Clock Rate: 2.61 GHz
+[11/10/2026-11:33:43] [I] Application Memory Clock Rate: 10.501 GHz
+[11/10/2026-11:33:43] [I] 
+[11/10/2026-11:33:43] [I] Note: The application clock rates do not reflect the actual clock rates that the GPU is currently running at.
+[11/10/2026-11:33:43] [I] 
+[11/10/2026-11:33:43] [I] TensorRT version: 10.14.1
+[11/10/2026-11:33:43] [I] Loading standard plugins
+[11/10/2026-11:33:43] [I] [TRT] Loaded engine size: 164 MiB
+[11/10/2026-11:33:43] [I] Engine deserialized in 0.0684052 sec.
+[11/10/2026-11:33:43] [I] [TRT] [MemUsageChange] TensorRT-managed allocation in IExecutionContext creation: CPU +0, GPU +461, now: CPU 0, GPU 616 (MiB)
+[11/10/2026-11:33:43] [I] Setting persistentCacheLimit to 0 bytes.
+[11/10/2026-11:33:43] [I] Created execution context with device memory size: 461.014 MiB
+[11/10/2026-11:33:43] [I] Using values loaded from 149770.f32 for input image
+[11/10/2026-11:33:43] [I] Input binding for image with dimensions 1x3x1024x1024 is created.
+[11/10/2026-11:33:43] [I] Output binding for logits with dimensions 1x300x133 is created.
+[11/10/2026-11:33:43] [I] Output binding for masks with dimensions 1x300x256x256 is created.
+[11/10/2026-11:33:43] [I] Output binding for boxes with dimensions 1x300x4 is created.
+[11/10/2026-11:33:43] [I] Starting inference
+==PROF== Profiling "ms_deformable_im2col_gpu_kernel": 0%....50%....100% - 8 passes
+[11/10/2026-11:33:44] [I] Warmup completed 0 queries over 0 ms
+[11/10/2026-11:33:44] [I] Timing trace has 20 queries over 1.0943 s
+[11/10/2026-11:33:44] [I] 
+[11/10/2026-11:33:44] [I] === Trace details ===
+[11/10/2026-11:33:44] [I] Trace averages of 10 runs:
+[11/10/2026-11:33:44] [I] Average on 10 runs - GPU latency: 81.91 ms - Host latency: 81.91 ms (enqueue 81.5429 ms)
+[11/10/2026-11:33:44] [I] Average on 10 runs - GPU latency: 27.5167 ms - Host latency: 27.5167 ms (enqueue 27.3862 ms)
+[11/10/2026-11:33:44] [I] 
+[11/10/2026-11:33:44] [I] === Performance summary ===
+[11/10/2026-11:33:44] [I] Throughput: 18.2766 qps
+[11/10/2026-11:33:44] [I] Latency: min = 27.3748 ms, max = 476.764 ms, mean = 54.7133 ms, median = 27.5519 ms, percentile(90%) = 30.6319 ms, percentile(95%) = 115.595 ms, percentile(99%) = 476.764 ms
+[11/10/2026-11:33:44] [I] Enqueue Time: min = 27.2463 ms, max = 474.85 ms, mean = 54.4645 ms, median = 27.4205 ms, percentile(90%) = 30.4753 ms, percentile(95%) = 114.986 ms, percentile(99%) = 474.85 ms
+[11/10/2026-11:33:44] [I] H2D Latency: min = 0 ms, max = 0 ms, mean = 0 ms, median = 0 ms, percentile(90%) = 0 ms, percentile(95%) = 0 ms, percentile(99%) = 0 ms
+[11/10/2026-11:33:44] [I] GPU Compute Time: min = 27.3748 ms, max = 476.764 ms, mean = 54.7133 ms, median = 27.5519 ms, percentile(90%) = 30.6319 ms, percentile(95%) = 115.595 ms, percentile(99%) = 476.764 ms
+[11/10/2026-11:33:44] [I] D2H Latency: min = 0 ms, max = 0 ms, mean = 0 ms, median = 0 ms, percentile(90%) = 0 ms, percentile(95%) = 0 ms, percentile(99%) = 0 ms
+[11/10/2026-11:33:44] [I] Total Host Walltime: 1.0943 s
+[11/10/2026-11:33:44] [I] Total GPU Compute Time: 1.09427 s
+[11/10/2026-11:33:44] [W] * Throughput may be bound by Enqueue Time rather than GPU Compute and the GPU may be under-utilized.
+[11/10/2026-11:33:44] [W]   If not already in use, --useCudaGraph (utilize CUDA graphs where possible) may increase the throughput.
+[11/10/2026-11:33:44] [W] * GPU compute time is unstable, with coefficient of variance = 180.38%.
+[11/10/2026-11:33:44] [W]   If not already in use, locking GPU clock frequency or adding --useSpinWait may improve the stability.
+[11/10/2026-11:33:44] [I] Explanations of the performance metrics are printed in the verbose logs.
+[11/10/2026-11:33:44] [I] 
+&&&& PASSED TensorRT.trtexec [TensorRT v101401] [b48] # /opt/tensorrt/bin/trtexec --loadEngine=/network.engine --loadInputs=image:149770.f32 --infStreams=1 --noDataTransfers --warmUp=0 --duration=0 --iterations=20
+==PROF== Disconnected from process 122
+==PROF== Report: /run-output/msda.ncu-rep

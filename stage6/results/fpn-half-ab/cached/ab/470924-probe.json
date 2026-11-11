@@ -1,0 +1,183 @@
+{
+  "tensors_vs_shipped": {
+    "control": {
+      "logits": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "relative_l2": 0.0,
+        "exact": true
+      },
+      "masks": {
+        "max_abs": 1.5,
+        "mean_abs": 0.025288306176662445,
+        "relative_l2": 0.0005385225522331893,
+        "exact": false
+      },
+      "boxes": {
+        "max_abs": 8.414685726165771e-05,
+        "mean_abs": 1.4781321624468546e-06,
+        "relative_l2": 1.628031714062672e-05,
+        "exact": false
+      }
+    },
+    "fpn-half": {
+      "logits": {
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "relative_l2": 0.0,
+        "exact": true
+      },
+      "masks": {
+        "max_abs": 3.75,
+        "mean_abs": 0.06343420594930649,
+        "relative_l2": 0.0013733694795519114,
+        "exact": false
+      },
+      "boxes": {
+        "max_abs": 8.414685726165771e-05,
+        "mean_abs": 1.4781321624468546e-06,
+        "relative_l2": 1.628031714062672e-05,
+        "exact": false
+      }
+    }
+  },
+  "candidate_tensors_vs_control": {
+    "logits": {
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "relative_l2": 0.0,
+      "exact": true
+    },
+    "masks": {
+      "max_abs": 3.75,
+      "mean_abs": 0.059384785592556,
+      "relative_l2": 0.0013423605123534799,
+      "exact": false
+    },
+    "boxes": {
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "relative_l2": 0.0,
+      "exact": true
+    }
+  },
+  "swaps_vs_shipped": {
+    "shipped-logits/shipped-masks": {
+      "category_agreement": 1.0,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "shipped-logits/control-masks": {
+      "category_agreement": 0.9999055989583333,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "shipped-logits/fpn-half-masks": {
+      "category_agreement": 0.999873046875,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "control-logits/shipped-masks": {
+      "category_agreement": 1.0,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "control-logits/control-masks": {
+      "category_agreement": 0.9999055989583333,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "control-logits/fpn-half-masks": {
+      "category_agreement": 0.999873046875,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "fpn-half-logits/shipped-masks": {
+      "category_agreement": 1.0,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "fpn-half-logits/control-masks": {
+      "category_agreement": 0.9999055989583333,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    },
+    "fpn-half-logits/fpn-half-masks": {
+      "category_agreement": 0.999873046875,
+      "segment_counts": [
+        72,
+        72
+      ],
+      "metadata_equal": true,
+      "category_metadata_counts_equal": true,
+      "unmatched_segments": [
+        0,
+        0
+      ]
+    }
+  }
+}

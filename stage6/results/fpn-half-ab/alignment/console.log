@@ -1,0 +1,63 @@
+Project commit: d9e30d7ef747830980334cd6103e8be0aa08a7b0
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Tue Nov 10 19:43:44 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.84                 Driver Version: 595.84         CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        Off |   00000000:01:00.0 Off |                  Off |
+| 30%   40C    P5             15W /  500W |     109MiB /  24564MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A            1980      G   /usr/lib/xorg/Xorg                       57MiB |
+|    0   N/A  N/A            2216      G   /usr/bin/gnome-shell                     15MiB |
++-----------------------------------------------------------------------------------------+
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+e85e414df139c58194b5f9d59599fbde8a9d1f0abf371eabc454735d6b326362  /home/parker/Code/MaskDINO-TensorRT-precision/previous-autocast-on/perf-native-r1/manifest.tsv
+5a5ed5a74dcef54bcbf5dc14684f215486c0c84fdaadf28930d930d1358530a6  /home/parker/Code/MaskDINO-TensorRT-precision/previous-autocast-on/native-align-fixed/manifest.tsv
+d1a81865ad14eaaa59a7240d23a3d9ba50273993ce508ef7d1cac5135cbbc72b  /home/parker/Code/MaskDINO-TensorRT-precision/previous-autocast-on/perf-native-r1/things.txt
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+5ab995446fe9320ad83357e2b869a3e716a2b3fcb537fa9be6fcb67573f2325f  /output/maskdino-slots
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+shipped ab6054100b6256861ad320df440543d2e82cf2a833db2e77c159b736021401cf 944bfb6a2cb7df23815aec6c1683baf43068cbe674759b5bd2949e8220c80558
+control 1ec0243fb115bc1ccbad2e1fdfee6703bfa71a06666e61d288d785152043689b 944bfb6a2cb7df23815aec6c1683baf43068cbe674759b5bd2949e8220c80558
+fpn-half 00ee2da96e330cd225a875179eee25eb961571e85d16e3e66a1c3e5b75b51c9c 2243373972e4476b985218124617baacd36b0ed4c5400a648248a0c5ac22b567
+Run /output/maskdino-slots /plans/shipped/network.engine - /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/shipped-align-s1 1 1 predict 1 0 64
+Completed 32/32 images in 0.54293 s
+Run /output/maskdino-slots /plans/control/network.engine - /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/control-align-s1 1 1 predict 1 0 64
+Completed 32/32 images in 0.542276 s
+control-align-s1 32 / 32
+Run /output/maskdino-slots /plans/fpn-half/network.engine - /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/fpn-half-align-s1 1 1 predict 1 0 64
+Completed 32/32 images in 0.53063 s
+fpn-half-align-s1 31 / 32
+Run /output/maskdino-slots /plans/fpn-half/network.engine - /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/fpn-half-align-s2 1 2 predict 1 0 64
+Completed 32/32 images in 0.470951 s
+fpn-half-align-s2 31 / 32
+FPN candidate failed the per-image alignment gate

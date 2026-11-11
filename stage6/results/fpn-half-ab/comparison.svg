@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="345" viewBox="0 0 1080 345">
+<rect width="1080" height="345" rx="16" fill="#f3f6fa"/>
+<g font-family="system-ui,sans-serif" fill="#172b43">
+<text x="28" y="37" font-size="23" font-weight="700">MaskDINO R50 panoptic · FPN convolution A/B</text>
+<text x="28" y="60" font-size="13" font-weight="400">RTX 4090 · 1024 × 1024 · B1 · 500 JPEGs per round · 3-run medians · steady throughput over middle 90%</text>
+<rect x="24" y="78" width="337" height="249" rx="10" fill="white"/>
+<text x="40" y="107" font-size="16" font-weight="650">Throughput</text>
+<text x="40" y="137" font-size="12" font-weight="600">Accepted · S1</text>
+<rect x="169" y="125" width="76.39" height="15" rx="3" fill="#168477"/>
+<text x="269" y="137" font-size="12" font-weight="400">64.07 img/s</text>
+<text x="40" y="172" font-size="12" font-weight="600">Rebuilt control · S1</text>
+<rect x="169" y="160" width="76.37" height="15" rx="3" fill="#168477"/>
+<text x="269" y="172" font-size="12" font-weight="400">64.06 img/s</text>
+<text x="40" y="207" font-size="12" font-weight="600">FPN FP16 · S1</text>
+<rect x="169" y="195" width="78.40" height="15" rx="3" fill="#168477"/>
+<text x="269" y="207" font-size="12" font-weight="400">65.76 img/s</text>
+<text x="40" y="242" font-size="12" font-weight="600">Accepted · S2</text>
+<rect x="169" y="230" width="88.51" height="15" rx="3" fill="#168477"/>
+<text x="269" y="242" font-size="12" font-weight="400">74.24 img/s</text>
+<text x="40" y="277" font-size="12" font-weight="600">Rebuilt control · S2</text>
+<rect x="169" y="265" width="88.47" height="15" rx="3" fill="#168477"/>
+<text x="269" y="277" font-size="12" font-weight="400">74.21 img/s</text>
+<text x="40" y="312" font-size="12" font-weight="600">FPN FP16 · S2</text>
+<rect x="169" y="300" width="91.00" height="15" rx="3" fill="#168477"/>
+<text x="269" y="312" font-size="12" font-weight="400">76.33 img/s</text>
+<rect x="370" y="78" width="337" height="249" rx="10" fill="white"/>
+<text x="386" y="107" font-size="16" font-weight="650">Per-image dispatch-to-result P95</text>
+<text x="386" y="137" font-size="12" font-weight="600">Accepted · S1</text>
+<rect x="515" y="125" width="51.75" height="15" rx="3" fill="#168477"/>
+<text x="615" y="137" font-size="12" font-weight="400">16.24 ms</text>
+<text x="386" y="172" font-size="12" font-weight="600">Rebuilt control · S1</text>
+<rect x="515" y="160" width="51.84" height="15" rx="3" fill="#168477"/>
+<text x="615" y="172" font-size="12" font-weight="400">16.26 ms</text>
+<text x="386" y="207" font-size="12" font-weight="600">FPN FP16 · S1</text>
+<rect x="515" y="195" width="50.51" height="15" rx="3" fill="#168477"/>
+<text x="615" y="207" font-size="12" font-weight="400">15.85 ms</text>
+<text x="386" y="242" font-size="12" font-weight="600">Accepted · S2</text>
+<rect x="515" y="230" width="90.63" height="15" rx="3" fill="#168477"/>
+<text x="615" y="242" font-size="12" font-weight="400">28.44 ms</text>
+<text x="386" y="277" font-size="12" font-weight="600">Rebuilt control · S2</text>
+<rect x="515" y="265" width="91.00" height="15" rx="3" fill="#168477"/>
+<text x="615" y="277" font-size="12" font-weight="400">28.55 ms</text>
+<text x="386" y="312" font-size="12" font-weight="600">FPN FP16 · S2</text>
+<rect x="515" y="300" width="88.61" height="15" rx="3" fill="#168477"/>
+<text x="615" y="312" font-size="12" font-weight="400">27.80 ms</text>
+<rect x="716" y="78" width="337" height="249" rx="10" fill="white"/>
+<text x="732" y="107" font-size="16" font-weight="650">Peak process VRAM</text>
+<text x="732" y="137" font-size="12" font-weight="600">Accepted · S1</text>
+<rect x="861" y="125" width="61.43" height="15" rx="3" fill="#168477"/>
+<text x="961" y="137" font-size="12" font-weight="400">1.15 GiB</text>
+<text x="732" y="172" font-size="12" font-weight="600">Rebuilt control · S1</text>
+<rect x="861" y="160" width="61.43" height="15" rx="3" fill="#168477"/>
+<text x="961" y="172" font-size="12" font-weight="400">1.15 GiB</text>
+<text x="732" y="207" font-size="12" font-weight="600">FPN FP16 · S1</text>
+<rect x="861" y="195" width="61.43" height="15" rx="3" fill="#168477"/>
+<text x="961" y="207" font-size="12" font-weight="400">1.15 GiB</text>
+<text x="732" y="242" font-size="12" font-weight="600">Accepted · S2</text>
+<rect x="861" y="230" width="91.00" height="15" rx="3" fill="#168477"/>
+<text x="961" y="242" font-size="12" font-weight="400">1.70 GiB</text>
+<text x="732" y="277" font-size="12" font-weight="600">Rebuilt control · S2</text>
+<rect x="861" y="265" width="90.90" height="15" rx="3" fill="#168477"/>
+<text x="961" y="277" font-size="12" font-weight="400">1.70 GiB</text>
+<text x="732" y="312" font-size="12" font-weight="600">FPN FP16 · S2</text>
+<rect x="861" y="300" width="90.90" height="15" rx="3" fill="#168477"/>
+<text x="961" y="312" font-size="12" font-weight="400">1.70 GiB</text>
+</g></svg>

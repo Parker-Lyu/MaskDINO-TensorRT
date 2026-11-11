@@ -1,0 +1,106 @@
+{
+  "native": {
+    "shipped": {
+      "b1s1": {
+        "network_p50_ms": 14.1322240829,
+        "network_p95_ms": 14.1691837311,
+        "end_to_end_p50_ms": 15.642035999999734,
+        "end_to_end_p95_ms": 16.23673400000007,
+        "steady_images_per_second": 64.07342387439581,
+        "peak_process_gib": 1.1484375
+      },
+      "b1s2": {
+        "network_p50_ms": 24.7531528473,
+        "network_p95_ms": 26.3239688873,
+        "end_to_end_p50_ms": 26.812314000000015,
+        "end_to_end_p95_ms": 28.437458999999997,
+        "steady_images_per_second": 74.24395726022642,
+        "peak_process_gib": 1.701171875
+      }
+    },
+    "control": {
+      "b1s1": {
+        "network_p50_ms": 14.1364803314,
+        "network_p95_ms": 14.1690883636,
+        "end_to_end_p50_ms": 15.639756999999918,
+        "end_to_end_p95_ms": 16.264987999999903,
+        "steady_images_per_second": 64.05909283789114,
+        "peak_process_gib": 1.1484375
+      },
+      "b1s2": {
+        "network_p50_ms": 24.8381443024,
+        "network_p95_ms": 26.3843841553,
+        "end_to_end_p50_ms": 26.834607000000005,
+        "end_to_end_p95_ms": 28.553007999999977,
+        "steady_images_per_second": 74.20565791026819,
+        "peak_process_gib": 1.69921875
+      }
+    },
+    "fpn-half": {
+      "b1s1": {
+        "network_p50_ms": 13.7294082642,
+        "network_p95_ms": 13.7615356445,
+        "end_to_end_p50_ms": 15.236821000000418,
+        "end_to_end_p95_ms": 15.847365999999965,
+        "steady_images_per_second": 65.76094218686339,
+        "peak_process_gib": 1.1484375
+      },
+      "b1s2": {
+        "network_p50_ms": 24.0527362823,
+        "network_p95_ms": 25.6890888214,
+        "end_to_end_p50_ms": 26.096806000000015,
+        "end_to_end_p95_ms": 27.802238000000102,
+        "steady_images_per_second": 76.3308013468724,
+        "peak_process_gib": 1.69921875
+      }
+    }
+  },
+  "profile": {
+    "shipped": {
+      "profile_count": 180,
+      "layer_mean_ms": {
+        "__myl_Add_myl962_0": 0.213948,
+        "Reformatting CopyNode for Input Tensor 0 to /sem_seg_head/layer_1/Conv": 0,
+        "/sem_seg_head/layer_1/Conv": 0.903947,
+        "__myl_Move_myl968_2": 0.00257937,
+        "__myl_Move_myl968_3": 0.00254151,
+        "__myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddReluMeanMean_myl968_4": 0.156142
+      },
+      "conv_mean_ms": 0.903947,
+      "local_mean_ms": 1.2791578799999999,
+      "network_p50_ms": 14.1332,
+      "network_p95_ms": 14.1636
+    },
+    "control": {
+      "profile_count": 181,
+      "layer_mean_ms": {
+        "__myl_Add_myl926_0": 0.213931,
+        "/sem_seg_head/layer_1/Conv": 0.903504,
+        "__myl_Move_myl931_2": 0.0025775,
+        "__myl_Move_myl931_3": 0.00258033,
+        "__myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddReluMeanMean_myl931_4": 0.155985
+      },
+      "conv_mean_ms": 0.903504,
+      "local_mean_ms": 1.27857783,
+      "network_p50_ms": 14.1261,
+      "network_p95_ms": 14.1567
+    },
+    "fpn-half": {
+      "profile_count": 183,
+      "layer_mean_ms": {
+        "__myl_Add_myl926_0": 0.215715,
+        "__myl_Cast_myl927_0": 0.0943153,
+        "Reformatting CopyNode for Input Tensor 0 to /sem_seg_head/layer_1/Conv": 0,
+        "/sem_seg_head/layer_1/Conv": 0.250522,
+        "__myl_Move_myl934_2": 0.00244668,
+        "__myl_Move_myl934_3": 0.00240314,
+        "__myl_ReshCastCastSubMulAddSqrtDivMulAddCastMeanMean_myl934_4": 0.122374,
+        "__myl_MulAddRelu_myl934_5": 0.132526
+      },
+      "conv_mean_ms": 0.250522,
+      "local_mean_ms": 0.82030212,
+      "network_p50_ms": 13.7156,
+      "network_p95_ms": 13.7502
+    }
+  }
+}

@@ -1,0 +1,49 @@
+Project commit: 54e6f15057f18b90071164282ed0bbb4407ba7a7
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Phase: pq 1s1 1s2 --pq-reference pytorch
+name, driver_version, memory.total [MiB]
+NVIDIA GeForce RTX 4090, 595.84, 24564 MiB
+/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/fpn-cache-pair/fpn-half/network.engine: OK
+007b74e4a1da185a8c9bc4c7bc27c10c9dd965795557aff6e2432c23f7997f64  /home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/fpn-cache-pair/fpn-half/build.json
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+d80102c6351fd9c860b657e14b6553dc75260322e61cf375fad6ee04504641db  /home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/fpn-cache-pair/fpn-half/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+MaskDINO commit: 3831d8514a3728535ace8d4ecc7d28044c42dd14
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /output/coco/manifest.tsv /output/b1s1 1 1 predict 1 0 64
+Completed 5000/5000 images in 78.4947 s
+b1s1 {'scores': {'PQ': np.float64(53.171796687488246), 'SQ': np.float64(83.32891180363553), 'RQ': 63.01063493960862, 'PQ_th': np.float64(59.01221994829121), 'SQ_th': np.float64(84.62834444219241), 'RQ_th': 69.26969895006467, 'PQ_st': np.float64(44.35606346363469), 'SQ_st': np.float64(81.3675040473233), 'RQ_st': 53.562991150241004}, 'unique_prediction_ids': 5000, 'delta_vs_stage3': {'PQ': np.float64(-0.014459653816651041), 'PQ_th': np.float64(-0.015041061347773166), 'PQ_st': np.float64(-0.013582057543267467)}, 'passed': True, 'delta_vs_pytorch': {'PQ': np.float64(-0.014455083724222106), 'PQ_th': np.float64(-0.015038708775819032), 'PQ_st': np.float64(-0.01357414025007131)}}
+Run /output/maskdino-slots /b1.engine /b1.engine /previous/perf-native-r1/things.txt /output/coco/manifest.tsv /output/b1s2 1 2 predict 1 0 64
+Completed 5000/5000 images in 65.6372 s
+b1s2 {'scores': {'PQ': np.float64(53.171796687488246), 'SQ': np.float64(83.32891180363553), 'RQ': 63.01063493960862, 'PQ_th': np.float64(59.01221994829121), 'SQ_th': np.float64(84.62834444219241), 'RQ_th': 69.26969895006467, 'PQ_st': np.float64(44.35606346363469), 'SQ_st': np.float64(81.3675040473233), 'RQ_st': 53.562991150241004}, 'unique_prediction_ids': 5000, 'delta_vs_stage3': {'PQ': np.float64(-0.014459653816651041), 'PQ_th': np.float64(-0.015041061347773166), 'PQ_st': np.float64(-0.013582057543267467)}, 'passed': True, 'delta_vs_pytorch': {'PQ': np.float64(-0.014455083724222106), 'PQ_th': np.float64(-0.015038708775819032), 'PQ_st': np.float64(-0.01357414025007131)}}

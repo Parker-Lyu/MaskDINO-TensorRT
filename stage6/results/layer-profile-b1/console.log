@@ -1,0 +1,63 @@
+Project commit: 8e3964b29c0f082b7d2ade365cf6241ebc2e55f0
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+ab6054100b6256861ad320df440543d2e82cf2a833db2e77c159b736021401cf  /home/parker/Code/MaskDINO-TensorRT-precision/repo/stage3/runs/precision-input-autocast-on/network.engine
+454873a8a01114246066ac841750eb742df3b5e42ce927ef38b49690084ec75a  /home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+Tue Nov 10 19:31:17 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.84                 Driver Version: 595.84         CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        Off |   00000000:01:00.0 Off |                  Off |
+|  0%   40C    P8             11W /  500W |     110MiB /  24564MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A            1980      G   /usr/lib/xorg/Xorg                       57MiB |
+|    0   N/A  N/A            2216      G   /usr/bin/gnome-shell                     16MiB |
++-----------------------------------------------------------------------------------------+
+/etc/bash.bashrc: line 9: PS1: unbound variable
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Wed_Aug_20_01:58:59_PM_PDT_2025
+Cuda compilation tools, release 13.0, V13.0.88
+Build cuda_13.0.r13.0/compiler.36424714_0
+libjpeg-turbo8:amd64	2.1.5-2ubuntu2
+libnvinfer10	10.14.1.48-1+cuda13.0
+COCO 149770: original and valid geometry [145, 200, 742, 1024]
+COCO 456394: original and valid geometry [176, 220, 819, 1024]
+COCO 107339: original and valid geometry [180, 240, 768, 1024]
+Profiling 149770-r1
+Profiling 149770-r2
+Profiling 149770-r3
+Profiling 456394-r1
+Profiling 107339-r1
+Tue Nov 10 19:32:34 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.84                 Driver Version: 595.84         CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        Off |   00000000:01:00.0 Off |                  Off |
+| 58%   55C    P0            303W /  500W |     109MiB /  24564MiB |      7%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A            1980      G   /usr/lib/xorg/Xorg                       57MiB |
+|    0   N/A  N/A            2216      G   /usr/bin/gnome-shell                     15MiB |
++-----------------------------------------------------------------------------------------+

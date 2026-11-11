@@ -25,15 +25,11 @@ PQ 取 PyTorch B1 和 Stage 4 原生链路各自的 COCO val2017 全量评估（
 3. [Stage 3](stage3/README.md) · 导出 ONNX，接入 MSDeformAttn 插件，构建trt engine, 替换网络后端并筛选精度策略。
 4. [Stage 4](stage4/README.md) · 用 C++/CUDA 实现前后处理，在单 slot 下对比三种 engine。
 5. [Stage 5](stage5/README.md) · 用多 CUDA stream 重叠 GPU 工作，对比各 engine 的 S1–S4 吞吐。
-6. [Stage 6](stage6/README.md) · 对比 batch × slot，按离线吞吐和在线 P99 选型。
+6. [Stage 6](stage6/README.md) · 逐层定位 TensorRT 热点，验证 FPN 和 encoder FFN 的局部混合精度。
 
 ![分阶段性能柱状图。Stage 2 为 PyTorch，Stage 3 和 Stage 4 分别对比三种 TensorRT engine 的单 slot 结果，Stage 5 对比三种 engine 的多 slot 吞吐。](docs/roadmap-performance.svg)
 
 Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stage 5 展示各自吞吐峰值（S3 / S3 / S2）。README 图表可用 `python3 docs/plot-roadmap.py` 重绘。
-
-## TODO
-
-- **基于 profiling 进一步优化。** 用 Nsight Systems 定位 CPU/GPU 空闲和同步等待，用 TensorRT profiling 定位热点层，再用 Nsight Compute 分析关键 kernel 的执行效率、内存带宽和资源利用率。通过对照实验验证优化对端到端性能和准确率的影响。
 
 ## Stage 1 · 复现原始模型精度
 
@@ -143,23 +139,13 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 | FP32 / TF32 on | 1.24 | 1.79 | 2.34 | 2.89 |
 | FP16 混合精度 / TF32 on | 1.15 | 1.70 | 2.26 | 2.81 |
 
-## Stage 6 · 对比 batch × slot 组合并按负载选型
+## Stage 6 · 逐层 profiling 与局部混合精度
 
-固定 **TensorRT FP32（TF32 off）**，比较固定 batch 和 slot 数。离线选 B1/S3，17,500 张长测为 **53.22 图/s**、进程峰值显存 **2.34 GiB**。在线按计划到达到 CPU 结果就绪统计 P99，要求三轮达标、零拒绝、零错误且队列无持续积压。两组均通过时选显存更低的 B1/S1（1.24 GiB，B1/S2 为 1.79 GiB）。[离线初筛与 B8 补测](stage6/README.md#500-张离线筛选) · [在线粗扫](stage6/README.md#在线粗扫)
+固定已验收的 FP16 B1 模型并用共享 timing cache 重建配对。将 FPN 的一个 3×3 卷积切到 FP16 Tensor Core 后，B1/S1 的端到端 P95 从 **16.27 降至 15.85 ms**，B1/S2 的稳态吞吐从 **74.21 提高至 76.33 图/s**。两个配置各完成 5,000 张 COCO val2017 的评估，PQ 均为 **53.1718**。FPN 实验验收提交为 `5f7b57f`。 [逐层 profiling](stage6/layer-profile.md) · [配对计时与全量 PQ](stage6/fpn-half-ab.md)
 
-| 到达负载 | P99 预算（ms） | 每轮时长 | B1/S1 最差 P99（ms） | B1/S2 最差 P99（ms） | 选型与依据 |
-| --- | ---: | ---: | ---: | ---: | --- |
-| 匀速 25 请求/s | 30 | 420 s | 24.57 | 仅做短测 | **B1/S1** 三轮达标 |
-| 泊松 20 请求/s | 100 | 525 s | 83.06 | 79.52 | 两组达标，选显存更低的 **B1/S1** |
-| 周期突发，平均 15 请求/s | 100 | 180 s | 100.007 | 92.46 | B1/S1 有一轮略超预算，选 **B1/S2** |
-| 泊松 5 请求/s | 50 | 180 s | 45.85 | 44.48 | 两组达标，选显存更低的 **B1/S1** |
-| 周期突发，平均 5 请求/s | 50 | 180 s | 46.47 | 45.00 | 两组达标，选显存更低的 **B1/S1** |
+![FPN 单层优化的离线配对，比较 B1/S1 与 B1/S2 的稳态吞吐、端到端 P95 和进程峰值显存](stage6/results/fpn-half-ab/comparison.svg)
 
-匀速 25 请求/s 的同序列短测为 15 秒、375 个请求，B1/S1 和 B1/S2 的 P99 分别为 24.73 和 28.17 ms。该负载只对 B1/S1 做了三轮长测。 [匀速短测](stage6/results/pilot-uniform/summary.jsonl)
-
-[在线长测数据（每轮超过 10,000 请求）](stage6/results/long-capacity.json) · [180 秒缩短验证数据](stage6/results/compact-capacity.json)
-
-[Stage 6 batch 筛选、在线回放与选型](stage6/README.md)
+六层 encoder FFN 的两个 Linear 全部切到 FP16 后，B1/S1 端到端 P95 为 **13.90 ms**，B1/S2 稳态吞吐为 **89.22 图/s**。全量 PQ 为 **53.1856**，两种 slot 的逐图对齐均为 **26/32**，保留为实验配置。 [FFN 离线 A/B](stage6/ffn-full-half.md)
 
 ## 仓库结构
 
@@ -171,7 +157,7 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 | [stage3/](stage3/) | 单 slot TensorRT FP32 验收与 Nsight 基线 |
 | [stage4/](stage4/) | 原生 TensorRT/CUDA 单请求流水线与全量评估 |
 | [stage5/](stage5/) | B1 多 slot、Nsight 时间线及两阶段共用的调度器 |
-| [stage6/](stage6/) | 固定 batch、联合配置、在线回放与选型 |
+| [stage6/](stage6/) | 逐层 profiling、FPN 与 encoder FFN 精度实验 |
 | [docs/](docs/) | 环境、数据及权重说明 |
 
 构建镜像时会检出指定版本的官方 MaskDINO 源码。

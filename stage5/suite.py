@@ -1,5 +1,6 @@
 """Run Stage 5 scenarios in the reference container."""
 import argparse
+from hashlib import file_digest
 import itertools
 import json
 from pathlib import Path
@@ -11,14 +12,42 @@ from stage5.measure import arrivals, summarize
 OUTPUT = Path("/output")
 PREVIOUS = Path("/previous")
 B1 = Path("/b1.engine")
+BATCH_ENGINES = Path("/batch-engines")
 BASELINE = PREVIOUS / "perf-native-r1"
 ALIGN = PREVIOUS / "native-align-fixed"
 BINARY = OUTPUT / "maskdino-slots"
 
 
+def engine_path(batch):
+    if batch == 1:
+        return B1
+    directory = BATCH_ENGINES if BATCH_ENGINES.is_dir() else Path("/project/stage3/runs")
+    return directory / f"build-b{batch}/network.engine"
+
+
+def verify_batch_engines(configs):
+    if not BATCH_ENGINES.is_dir():
+        return
+    b1 = json.loads(Path("/b1-build.json").read_text())
+    for batch in sorted({batch for batch, _ in configs} - {1}):
+        engine = engine_path(batch)
+        build = json.loads(engine.with_name("build.json").read_text())
+        policy = ("precision", "tf32", "tensorrt")
+        if any(build[key] != b1[key] for key in policy):
+            raise ValueError(f"{engine} precision or TensorRT version differs from B1")
+        image = b1["io"]["image"]["shape"]
+        if build["io"]["image"]["shape"] != [batch, *image[1:]]:
+            raise ValueError(f"{engine} has an unexpected input shape")
+        with engine.open("rb") as stream:
+            sha = file_digest(stream, "sha256").hexdigest()
+        if sha != build["engine_sha256"]:
+            raise ValueError(f"{engine} does not match build.json")
+        print("Verified batch engine", engine, sha, *(build[key] for key in policy))
+
+
 def native(output, batch, slots, mode, manifest, workload, delay=0, prefix=()):
     output.mkdir()
-    engine = B1 if batch == 1 else Path(f"/project/stage3/runs/build-b{batch}/network.engine")
+    engine = engine_path(batch)
     if not engine.is_file():
         raise FileNotFoundError(engine)
     command = [*prefix, BINARY, engine, B1, BASELINE / "things.txt", manifest, output,
@@ -61,7 +90,7 @@ def screen(configs, repeats, *, include_stage4=True):
         print(name(config), values, "median", statistics.median(values))
 
 
-def check(configs):
+def check(configs, *, strict=True):
     from stage5.validate import alignment
     for config in configs:
         output = OUTPUT / name(config)
@@ -69,7 +98,7 @@ def check(configs):
         result = alignment(output, ALIGN)
         (output / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
         print(name(config), sum(row["passed"] for row in result["per_image"]), "/", result["images"])
-        if not result["passed"]:
+        if strict and not result["passed"]:
             raise RuntimeError(f"{name(config)} correctness gate failed")
     if (4, 2) in configs:
         output = OUTPUT / "tail"
@@ -80,8 +109,10 @@ def check(configs):
         result = alignment(output, ALIGN, {int(line.split()[0]) for line in lines})
         (output / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
         report = summarize(output)
-        assert result["passed"] and report["batch_dispatch_histogram"] == {4: 7, 1: 3}
-        print("Offline tail:", report["batch_dispatch_histogram"])
+        assert report["batch_dispatch_histogram"] == {4: 7, 1: 3}
+        print("Offline tail:", report["batch_dispatch_histogram"], "aligned", result["passed"])
+        if strict and not result["passed"]:
+            raise RuntimeError("Offline tail correctness gate failed")
     if (2, 2) in configs:
         output = OUTPUT / "mixed"
         trace = OUTPUT / "mixed-arrivals.txt"
@@ -90,8 +121,10 @@ def check(configs):
         result = alignment(output, ALIGN)
         (output / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
         report = summarize(output, 2.0)
-        assert result["passed"] and report["batch_dispatch_histogram"].keys() == {1, 2}
-        print("Mixed B1/B2:", report["batch_dispatch_histogram"])
+        assert report["batch_dispatch_histogram"].keys() == {1, 2}
+        print("Mixed B1/B2:", report["batch_dispatch_histogram"], "aligned", result["passed"])
+        if strict and not result["passed"]:
+            raise RuntimeError("Mixed B1/B2 correctness gate failed")
 
 
 def online(configs, delays, shapes, rates, seconds, seeds):
@@ -112,7 +145,7 @@ def online(configs, delays, shapes, rates, seconds, seeds):
                       "sustained", row["sustained"])
 
 
-def pq(configs):
+def pq(configs, reference):
     from stage5.validate import full_pq
 
     manifest_dir = OUTPUT / "coco"
@@ -121,7 +154,7 @@ def pq(configs):
     for config in configs:
         output = OUTPUT / name(config)
         native(output, *config, "predict", manifest_dir / "manifest.tsv", 1)
-        result = full_pq(output)
+        result = full_pq(output, reference=reference)
         (output / "validation.json").write_text(json.dumps(result, indent=2) + "\n")
         print(name(config), result)
         if not result["passed"]:
@@ -142,14 +175,18 @@ def main():
     parser.add_argument("configs", nargs="+", type=configuration, help="Example: 2s2")
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--skip-stage4", action="store_true", help="Reuse existing Stage 4 serial benchmarks")
+    parser.add_argument("--pq-reference", choices=("stage4", "pytorch"), default="stage4")
+    parser.add_argument("--report-alignment", action="store_true",
+                        help="Report numeric differences for check without failing the run")
     parser.add_argument("--rates", type=float, nargs="+")
     parser.add_argument("--delays", type=float, nargs="+", default=[0])
     parser.add_argument("--shapes", choices=("uniform", "poisson", "burst"), nargs="+", default=["poisson"])
     parser.add_argument("--seconds", type=float, default=10)
     parser.add_argument("--seeds", type=int, nargs="+", default=[47])
     args = parser.parse_args()
+    verify_batch_engines(args.configs)
     if args.phase == "check":
-        check(args.configs)
+        check(args.configs, strict=not args.report_alignment)
     elif args.phase in ("screen", "offline"):
         screen(args.configs, args.repeats, include_stage4=not args.skip_stage4)
     elif args.phase == "online":
@@ -157,7 +194,7 @@ def main():
             parser.error("Online requires positive rates and duration")
         online(args.configs, args.delays, args.shapes, args.rates, args.seconds, args.seeds)
     elif args.phase == "pq":
-        pq(args.configs)
+        pq(args.configs, args.pq_reference)
     else:
         trace(args.configs)
 

@@ -1,6 +1,6 @@
 # Stage 5 · 用多 CUDA stream 实现异步并发
 
-固定 RTX 4090、MaskDINO R50 panoptic、1024×1024，复用 Stage 4 的 B1 engine 和 C++/CUDA 前后处理。每个请求处理一张内存 JPEG，交付原图尺寸的 CPU panoptic map 和 segment metadata。固定 batch 为 1，只扫 slot 数。先给出 FP32/TF32 off 的流水线参考，再比较两种允许 TF32 的精度策略。批大小与在线负载的比较见 [Stage 6](../stage6/README.md)。
+固定 RTX 4090、MaskDINO R50 panoptic、1024×1024，复用 Stage 4 的 B1 engine 和 C++/CUDA 前后处理。每个请求处理一张内存 JPEG，交付原图尺寸的 CPU panoptic map 和 segment metadata。固定 batch 为 1，只扫 slot 数。先给出 FP32/TF32 off 的流水线参考，再比较两种允许 TF32 的精度策略。历史 batch 与在线负载选型可在提交 `fcc7dc9` 的 `stage6/README.md` 查看。本分支的 [Stage 6](../stage6/README.md) 继续定位网络热点并验证局部混合精度。
 
 ## Slot 生命周期
 
@@ -49,7 +49,7 @@ B1/S3 的前三个请求在饱和离线队列启动时被不同 worker 取走。
 | B1/S3 | 53.36 | 58.54 | 2.34 |
 | B1/S4 | 53.08 | 77.74 | 2.89 |
 
-同轮 Stage 4 原生 B1/S1 为 43.77 图/s，新调度器 B1/S1 为 43.67 图/s。以新调度器 B1/S1 为对照，B1/S3 吞吐提高 22.2%，S4 的延迟和显存进一步上升，因此选 S3 进入离线长测。 [逐轮结果（含同轮 batch 候选）](../stage6/results/screen/summary.json)
+同轮 Stage 4 原生 B1/S1 为 43.77 图/s，新调度器 B1/S1 为 43.67 图/s。以新调度器 B1/S1 为对照，B1/S3 吞吐提高 22.2%，S4 的延迟和显存进一步上升，因此选 S3 进入离线长测。 [B1 逐轮结果](results/screen/summary.json)
 
 ![500 张筛选的 B1/S1–S4 吞吐、逐图 P95 和进程显存](results/comparison.svg)
 
@@ -66,7 +66,7 @@ B1/S3 的稳态吞吐提高 **21.7%**，固定任务总完成时间缩短 **17.8
 
 ### 正确性
 
-32 张逐图对齐使用 Stage 4 的类别一致率、segment 配对和 IoU 阈值，B1/S1、S2、S3、S4 均通过。B1/S1、S2、S3 的正式评估在 `c8d4796` 上运行，各覆盖 5,000 个唯一 COCO 预测 ID。三组 PQ / PQ_th / PQ_st 均为 **53.186256 / 59.027261 / 44.369645**，与 Stage 4 一致。 [S1/S2/S4 对齐](../stage6/results/check/console.log) · [S3 对齐](../stage6/results/check-b8/b1s3/validation.json) · [全量 PQ](results/pq/)
+32 张逐图对齐使用 Stage 4 的类别一致率、segment 配对和 IoU 阈值，B1/S1、S2、S3、S4 均通过。B1/S1、S2、S3 的正式评估在 `c8d4796` 上运行，各覆盖 5,000 个唯一 COCO 预测 ID。三组 PQ / PQ_th / PQ_st 均为 **53.186256 / 59.027261 / 44.369645**，与 Stage 4 一致。 逐图日志保存在 `fcc7dc9` 的 `stage6/results/check/console.log` 和 `stage6/results/check-b8/b1s3/validation.json`。 [全量 PQ](results/pq/)
 
 ### 三种精度的 B1 × S1–S4 筛选
 
@@ -100,10 +100,10 @@ B1/S3 的稳态吞吐提高 **21.7%**，固定任务总完成时间缩短 **17.8
 ```bash
 bash stage5/run.sh "$data" "$previous" "$engine" precision-check-new check 1s1 1s2 1s3 1s4
 bash stage5/run.sh "$data" "$previous" "$engine" precision-screen-new screen 1s1 1s2 1s3 1s4 --skip-stage4
-python3 -m stage5.plot stage6/results --precision-comparison stage5/results/precision-comparison.svg
+python3 -m stage5.plot stage5/results --precision-comparison stage5/results/precision-comparison.svg
 ```
 
-逐请求 TSV、验收 JSON 和运行日志位于结果目录。完整预测和运行目录保存在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-precision/native-repo/stage5/runs/`。Stage 6 的现有负载选型使用 TF32 off 的历史结果。
+逐请求 TSV、验收 JSON 和运行日志位于结果目录。完整预测和运行目录保存在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-precision/native-repo/stage5/runs/`。
 
 ## 复现入口
 

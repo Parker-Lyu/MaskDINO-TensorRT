@@ -93,7 +93,7 @@ def export(model, image, precision, cpu_constants, mixed_scope):
     })
 
 
-def make_plan(path, logger, *, allow_tf32=False):
+def make_plan(path, logger, *, allow_tf32=False, timing_cache=None):
     import tensorrt as trt
 
     trt.init_libnvinfer_plugins(logger, "")
@@ -111,19 +111,32 @@ def make_plan(path, logger, *, allow_tf32=False):
     config.max_aux_streams = 0
     config.set_memory_pool_limit(trt.MemoryPoolType.WORKSPACE, 4 * 1024**3)
     config.profiling_verbosity = trt.ProfilingVerbosity.DETAILED
+    if timing_cache is not None:
+        cache = config.create_timing_cache(timing_cache.read_bytes() if timing_cache.exists() else b"")
+        if not config.set_timing_cache(cache, ignore_mismatch=False):
+            raise RuntimeError(f"Incompatible TensorRT timing cache: {timing_cache}")
     plan = builder.build_serialized_network(network, config)
     if plan is None:
         raise RuntimeError("TensorRT engine build failed")
+    if timing_cache is not None:
+        updated = timing_cache.with_suffix(".tmp")
+        updated.write_bytes(bytes(config.get_timing_cache().serialize()))
+        updated.replace(timing_cache)
     return plan
 
 
-def build(path, precision, batch=1, *, allow_tf32=False):
+def build(path, precision, batch=1, *, allow_tf32=False, timing_cache=None):
     import json
     import tensorrt as trt
 
     assert precision in ("fp32", "mixed")
     start = time.perf_counter()
-    plan = make_plan(path, trt.Logger(trt.Logger.INFO), allow_tf32=allow_tf32)
+    cache_info = {}
+    if timing_cache is not None:
+        cache_info["timing_cache_input_sha256"] = digest(timing_cache) if timing_cache.exists() else None
+    plan = make_plan(path, trt.Logger(trt.Logger.INFO), allow_tf32=allow_tf32, timing_cache=timing_cache)
+    if timing_cache is not None:
+        cache_info["timing_cache_output_sha256"] = digest(timing_cache)
     destination = OUTPUT / "network.engine"
     destination.write_bytes(bytes(plan))
     engine = Engine(destination, batch)
@@ -141,7 +154,7 @@ def build(path, precision, batch=1, *, allow_tf32=False):
         "onnx_sha256": digest(path), "engine_sha256": digest(destination),
         "tensorrt": trt.__version__, "precision": precision, "seconds": time.perf_counter() - start,
         "strongly_typed": True, "tf32": allow_tf32, "max_aux_streams": 0, "workspace_bytes": 4 * 1024**3,
-        "plugin_count": len(plugin_layers), "finite_smoke": True,
+        "plugin_count": len(plugin_layers), "finite_smoke": True, **cache_info,
         "io": {name: {"shape": shape, "dtype": str(engine.engine.get_tensor_dtype(name))}
                for name, shape in engine.shapes.items()},
     })

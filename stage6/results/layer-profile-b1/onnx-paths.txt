@@ -1,0 +1,16 @@
+Source ONNX SHA-256: 944bfb6a2cb7df23815aec6c1683baf43068cbe674759b5bd2949e8220c80558
+Method: traverse tensor consumers from the named node's outputs and intersect the visited tensors with the ONNX graph outputs and TopK outputs.
+
+/sem_seg_head/layer_1/Conv
+Inputs: /sem_seg_head/Add_1_output_0, model.sem_seg_head.pixel_decoder.layer_1.weight
+Output: /sem_seg_head/layer_1/Conv_output_0
+Immediate consumers: /sem_seg_head/layer_1/norm/Reshape, /sem_seg_head/layer_1/norm/Shape
+Reachable engine outputs: masks
+Reachable TopK nodes: none
+
+/sem_seg_head/transformer/encoder/layers.1/linear2/MatMul
+Inputs: /sem_seg_head/transformer/encoder/layers.1/Relu_output_0, onnx::MatMul_7444
+Output: /sem_seg_head/transformer/encoder/layers.1/linear2/MatMul_output_0
+Immediate consumers: /sem_seg_head/transformer/encoder/layers.1/linear2/Add
+Reachable engine outputs: logits, masks, boxes
+Reachable TopK nodes: /sem_seg_head/predictor/TopK

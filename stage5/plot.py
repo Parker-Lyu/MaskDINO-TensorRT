@@ -42,7 +42,7 @@ def draw(path, title, subtitle, labels, columns, label_width):
     path.write_text("\n".join(svg) + "\n")
 
 
-def plot(results, finalist=None, comparison=None):
+def plot(results, finalist=None, comparison=None, *, precision_label="TensorRT FP32"):
     groups = defaultdict(list)
     for row in json.loads((results / "screen/summary.json").read_text()):
         groups[row["config"]].append(row)
@@ -60,7 +60,7 @@ def plot(results, finalist=None, comparison=None):
         label = name.upper().replace("S", "/S")
         labels.append(f"{label}*" if name in followups else label)
     columns = [[median(metric(row) for row in rows) for rows in screening.values()] for _, _, metric in PANELS]
-    subtitle = "RTX 4090 · 1024 × 1024 · TensorRT FP32 · same 500 JPEGs · median of 3 rounds"
+    subtitle = f"RTX 4090 · 1024 × 1024 · {precision_label} · same 500 JPEGs · median of 3 rounds"
     screen_subtitle = subtitle
     if followups:
         screen_subtitle += " · * B8 follow-up runs"
@@ -110,8 +110,9 @@ if __name__ == "__main__":
     parser.add_argument("--finalist")
     parser.add_argument("--comparison", type=Path, help="Output path for the Stage 5 slot comparison")
     parser.add_argument("--precision-comparison", type=Path, help="Output path for the three-policy slot comparison")
+    parser.add_argument("--precision-label", default="TensorRT FP32", help="Precision shown in the screening chart")
     args = parser.parse_args()
     if args.precision_comparison:
         plot_precision(args.results, args.precision_comparison)
     else:
-        plot(args.results, args.finalist, args.comparison)
+        plot(args.results, args.finalist, args.comparison, precision_label=args.precision_label)

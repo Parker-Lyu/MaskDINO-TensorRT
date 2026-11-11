@@ -1,0 +1,167 @@
+Project commit: 301764c5ddcfd717f94ca2c3c0ebc99624c347d4
+Container image: sha256:24a707391a7592235352cb91d58e11da356aefe3f7512a698a5402671cd83d1e
+Tue Nov 10 22:24:08 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.84                 Driver Version: 595.84         CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        Off |   00000000:01:00.0 Off |                  Off |
+|  0%   39C    P8             11W /  500W |     109MiB /  24564MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A            1937      G   /usr/lib/xorg/Xorg                       57MiB |
+|    0   N/A  N/A            2179      G   /usr/bin/gnome-shell                     15MiB |
++-----------------------------------------------------------------------------------------+
+/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/fpn-onnx/fpn-half.onnx: OK
+/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/fpn-cache-pair/paired.cache: OK
+/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/fpn-cache-pair/fpn-half/network.engine: OK
+/home/parker/datasets/coco2017-panoptic-val/annotations/panoptic_val2017.json: OK
+270bfc21e7d7b38eeaf4b42bb5a673bb8a3ed67ba94c0ea35bf784e80241f8b5  stage2/sample.json
+e85e414df139c58194b5f9d59599fbde8a9d1f0abf371eabc454735d6b326362  /home/parker/Code/MaskDINO-TensorRT-precision/previous-autocast-on/perf-native-r1/manifest.tsv
+5a5ed5a74dcef54bcbf5dc14684f215486c0c84fdaadf28930d930d1358530a6  /home/parker/Code/MaskDINO-TensorRT-precision/previous-autocast-on/native-align-fixed/manifest.tsv
+d1a81865ad14eaaa59a7240d23a3d9ba50273993ce508ef7d1cac5135cbbc72b  /home/parker/Code/MaskDINO-TensorRT-precision/previous-autocast-on/perf-native-r1/things.txt
+{
+  "onnx_sha256": "f1906b350e70fb6cb2f1239c3930cf50484a7ba59af7496dd08aef44053173d6",
+  "engine_sha256": "51e613b76b9ab3bb34645099b1b316de7c8395b4c7eb8dc2fd09699268f64ee1",
+  "tensorrt": "10.14.1.48",
+  "precision": "mixed",
+  "seconds": 12.006126873000085,
+  "strongly_typed": true,
+  "tf32": true,
+  "max_aux_streams": 0,
+  "workspace_bytes": 4294967296,
+  "plugin_count": 15,
+  "finite_smoke": true,
+  "timing_cache_input_sha256": "68549769028feeeaf3c558186771b8ae61972a8a695459e232459fde4298b909",
+  "timing_cache_output_sha256": "97cf5ad8dbea3e33effb5c25678d33a8eca314d95d47ca876c0646c1b6c24bab",
+  "io": {
+    "image": {
+      "shape": [
+        1,
+        3,
+        1024,
+        1024
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    "logits": {
+      "shape": [
+        1,
+        300,
+        133
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    "masks": {
+      "shape": [
+        1,
+        300,
+        256,
+        256
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    "boxes": {
+      "shape": [
+        1,
+        300,
+        4
+      ],
+      "dtype": "DataType.FLOAT"
+    }
+  }
+}
+fatal: detected dubious ownership in repository at '/opt/maskdino/third_party/MaskDINO'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /opt/maskdino/third_party/MaskDINO
+MaskDINO commit: 
+5ab995446fe9320ad83357e2b869a3e716a2b3fcb537fa9be6fcb67573f2325f  /output/maskdino-slots
+57c717886b45877f85cc61106028f065efd2d09f5bb9a79affd5198224127497  /inputs/149770.f32
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+fpn d80102c6351fd9c860b657e14b6553dc75260322e61cf375fad6ee04504641db 2243373972e4476b985218124617baacd36b0ed4c5400a648248a0c5ac22b567
+ffn-half 51e613b76b9ab3bb34645099b1b316de7c8395b4c7eb8dc2fd09699268f64ee1 f1906b350e70fb6cb2f1239c3930cf50484a7ba59af7496dd08aef44053173d6
+Run /output/maskdino-slots /plans/fpn/network.engine - /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/fpn-align-s1 1 1 predict 1 0 64
+Completed 32/32 images in 0.53401 s
+Run /output/maskdino-slots /plans/ffn-half/network.engine - /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/ffn-half-align-s1 1 1 predict 1 0 64
+Completed 32/32 images in 0.463249 s
+ffn-half-align-s1 26 / 32
+Run /output/maskdino-slots /plans/ffn-half/network.engine - /previous/perf-native-r1/things.txt /previous/native-align-fixed/manifest.tsv /output/ffn-half-align-s2 1 2 predict 1 0 64
+Completed 32/32 images in 0.407551 s
+ffn-half-align-s2 26 / 32
+Run /output/maskdino-slots /plans/fpn/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/fpn-s1-r1 1 1 benchmark 1 0 64
+Completed 500/500 images in 7.75175 s
+Run /output/maskdino-slots /plans/ffn-half/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/ffn-half-s1-r1 1 1 benchmark 1 0 64
+Completed 500/500 images in 6.64557 s
+Run /output/maskdino-slots /plans/fpn/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/fpn-s2-r1 1 2 benchmark 1 0 64
+Completed 500/500 images in 6.57159 s
+Run /output/maskdino-slots /plans/ffn-half/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/ffn-half-s2-r1 1 2 benchmark 1 0 64
+Completed 500/500 images in 5.61652 s
+Run /output/maskdino-slots /plans/ffn-half/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/ffn-half-s2-r2 1 2 benchmark 1 0 64
+Completed 500/500 images in 5.62224 s
+Run /output/maskdino-slots /plans/fpn/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/fpn-s2-r2 1 2 benchmark 1 0 64
+Completed 500/500 images in 6.55998 s
+Run /output/maskdino-slots /plans/ffn-half/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/ffn-half-s1-r2 1 1 benchmark 1 0 64
+Completed 500/500 images in 6.64771 s
+Run /output/maskdino-slots /plans/fpn/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/fpn-s1-r2 1 1 benchmark 1 0 64
+Completed 500/500 images in 7.75537 s
+Run /output/maskdino-slots /plans/fpn/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/fpn-s1-r3 1 1 benchmark 1 0 64
+Completed 500/500 images in 7.73039 s
+Run /output/maskdino-slots /plans/ffn-half/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/ffn-half-s1-r3 1 1 benchmark 1 0 64
+Completed 500/500 images in 6.62486 s
+Run /output/maskdino-slots /plans/fpn/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/fpn-s2-r3 1 2 benchmark 1 0 64
+Completed 500/500 images in 6.54639 s
+Run /output/maskdino-slots /plans/ffn-half/network.engine - /previous/perf-native-r1/things.txt /previous/perf-native-r1/manifest.tsv /output/ffn-half-s2-r3 1 2 benchmark 1 0 64
+Completed 500/500 images in 5.59904 s
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+fpn d80102c6351fd9c860b657e14b6553dc75260322e61cf375fad6ee04504641db 2243373972e4476b985218124617baacd36b0ed4c5400a648248a0c5ac22b567
+ffn-half 51e613b76b9ab3bb34645099b1b316de7c8395b4c7eb8dc2fd09699268f64ee1 f1906b350e70fb6cb2f1239c3930cf50484a7ba59af7496dd08aef44053173d6
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/opt/maskdino/third_party/MaskDINO/maskdino/utils/utils.py:34: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/ops/modules/ms_deform_attn.py:83: SyntaxWarning: invalid escape sequence '\s'
+  """
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/pixel_decoder/maskdino_encoder.py:362: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/transformer_decoder/dino_decoder.py:220: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled=False)
+/opt/maskdino/third_party/MaskDINO/maskdino/modeling/criterion.py:344: SyntaxWarning: "is not" with 'str' literal. Did you mean "!="?
+  if self.dn is not "no" and mask_dict is not None:
+Run /output/maskdino-slots /plans/ffn-half/network.engine - /previous/perf-native-r1/things.txt /output/coco/manifest.tsv /output/ffn-half-pq-s1 1 1 predict 1 0 64
+Completed 5000/5000 images in 67.6207 s
+ffn-half-pq-s1 {'scores': {'PQ': np.float64(53.18562987558379), 'SQ': np.float64(83.3296663172004), 'RQ': 63.02777007831942, 'PQ_th': np.float64(59.024110766153434), 'SQ_th': np.float64(84.61136389014318), 'RQ_th': 69.29629671328146, 'PQ_st': np.float64(44.37282853132775), 'SQ_st': np.float64(81.39502847124906), 'RQ_st': 53.565843082150266}, 'unique_prediction_ids': 5000, 'delta_vs_stage3': {'PQ': np.float64(-0.0006264657211048075), 'PQ_th': np.float64(-0.0031502434855497086), 'PQ_st': np.float64(0.0031830101497902774)}, 'passed': True, 'delta_vs_pytorch': {'PQ': np.float64(-0.0006218956286758726), 'PQ_th': np.float64(-0.0031478909135955746), 'PQ_st': np.float64(0.0031909274429864354)}}
+Run /output/maskdino-slots /plans/ffn-half/network.engine - /previous/perf-native-r1/things.txt /output/coco/manifest.tsv /output/ffn-half-pq-s2 1 2 predict 1 0 64
+Completed 5000/5000 images in 56.1757 s
+ffn-half-pq-s2 {'scores': {'PQ': np.float64(53.18562987558379), 'SQ': np.float64(83.3296663172004), 'RQ': 63.02777007831942, 'PQ_th': np.float64(59.024110766153434), 'SQ_th': np.float64(84.61136389014318), 'RQ_th': 69.29629671328146, 'PQ_st': np.float64(44.37282853132775), 'SQ_st': np.float64(81.39502847124906), 'RQ_st': 53.565843082150266}, 'unique_prediction_ids': 5000, 'delta_vs_stage3': {'PQ': np.float64(-0.0006264657211048075), 'PQ_th': np.float64(-0.0031502434855497086), 'PQ_st': np.float64(0.0031830101497902774)}, 'passed': True, 'delta_vs_pytorch': {'PQ': np.float64(-0.0006218956286758726), 'PQ_th': np.float64(-0.0031478909135955746), 'PQ_st': np.float64(0.0031909274429864354)}}

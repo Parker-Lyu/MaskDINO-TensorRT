@@ -1,0 +1,960 @@
+&&&& RUNNING TensorRT.trtexec [TensorRT v101401] [b48] # trtexec --loadEngine=/network.engine --infStreams=1 --noDataTransfers --warmUp=2000 --duration=5 --iterations=300 --percentile=50,95 --loadInputs=image:107339.f32 --separateProfileRun --dumpProfile --exportProfile=107339-r1.layers.json --exportTimes=107339-r1.times.json
+[11/10/2026-11:32:19] [I] TF32 is enabled by default. Add --noTF32 flag to further improve accuracy with some performance cost.
+[11/10/2026-11:32:19] [I] === Model Options ===
+[11/10/2026-11:32:19] [I] Format: *
+[11/10/2026-11:32:19] [I] Model: 
+[11/10/2026-11:32:19] [I] Output:
+[11/10/2026-11:32:19] [I] 
+[11/10/2026-11:32:19] [I] === System Options ===
+[11/10/2026-11:32:19] [I] Device: 0
+[11/10/2026-11:32:19] [I] DLACore: 
+[11/10/2026-11:32:19] [I] Plugins:
+[11/10/2026-11:32:19] [I] setPluginsToSerialize:
+[11/10/2026-11:32:19] [I] dynamicPlugins:
+[11/10/2026-11:32:19] [I] ignoreParsedPluginLibs: 0
+[11/10/2026-11:32:19] [I] 
+[11/10/2026-11:32:19] [I] === Inference Options ===
+[11/10/2026-11:32:19] [I] Batch: Explicit
+[11/10/2026-11:32:19] [I] Input inference shapes: model
+[11/10/2026-11:32:19] [I] Iterations: 300
+[11/10/2026-11:32:19] [I] Duration: 5s (+ 2000ms warm up)
+[11/10/2026-11:32:19] [I] Sleep time: 0ms
+[11/10/2026-11:32:19] [I] Idle time: 0ms
+[11/10/2026-11:32:19] [I] Inference Streams: 1
+[11/10/2026-11:32:19] [I] ExposeDMA: Disabled
+[11/10/2026-11:32:19] [I] Data transfers: Disabled
+[11/10/2026-11:32:19] [I] Spin-wait: Disabled
+[11/10/2026-11:32:19] [I] Multithreading: Disabled
+[11/10/2026-11:32:19] [I] CUDA Graph: Disabled
+[11/10/2026-11:32:19] [I] Separate profiling: Enabled
+[11/10/2026-11:32:19] [I] Time Deserialize: Disabled
+[11/10/2026-11:32:19] [I] Time Refit: Disabled
+[11/10/2026-11:32:19] [I] NVTX verbosity: 0
+[11/10/2026-11:32:19] [I] Persistent Cache Ratio: 0
+[11/10/2026-11:32:19] [I] Optimization Profile Index: 0
+[11/10/2026-11:32:19] [I] Weight Streaming Budget: 100.000000%
+[11/10/2026-11:32:19] [I] Inputs:
+[11/10/2026-11:32:19] [I] image<-107339.f32
+[11/10/2026-11:32:19] [I] Debug Tensor Save Destinations:
+[11/10/2026-11:32:19] [I] Dump All Debug Tensor in Formats: 
+[11/10/2026-11:32:19] [I] === Reporting Options ===
+[11/10/2026-11:32:19] [I] Verbose: Disabled
+[11/10/2026-11:32:19] [I] Averages: 10 inferences
+[11/10/2026-11:32:19] [I] Percentiles: 50,95
+[11/10/2026-11:32:19] [I] Dump refittable layers:Disabled
+[11/10/2026-11:32:19] [I] Dump output: Disabled
+[11/10/2026-11:32:19] [I] Profile: Enabled
+[11/10/2026-11:32:19] [I] Export timing to JSON file: 107339-r1.times.json
+[11/10/2026-11:32:19] [I] Export output to JSON file: 
+[11/10/2026-11:32:19] [I] Export profile to JSON file: 107339-r1.layers.json
+[11/10/2026-11:32:19] [I] 
+[11/10/2026-11:32:19] [I] === Device Information ===
+[11/10/2026-11:32:19] [I] Available Devices: 
+[11/10/2026-11:32:19] [I]   Device 0: "NVIDIA GeForce RTX 4090" UUID: GPU-3c6c5772-1bd4-ee17-8b92-d5303186211e
+[11/10/2026-11:32:19] [I] Selected Device: NVIDIA GeForce RTX 4090
+[11/10/2026-11:32:19] [I] Selected Device ID: 0
+[11/10/2026-11:32:19] [I] Selected Device UUID: GPU-3c6c5772-1bd4-ee17-8b92-d5303186211e
+[11/10/2026-11:32:19] [I] Compute Capability: 8.9
+[11/10/2026-11:32:19] [I] SMs: 128
+[11/10/2026-11:32:19] [I] Device Global Memory: 24060 MiB
+[11/10/2026-11:32:19] [I] Shared Memory per SM: 100 KiB
+[11/10/2026-11:32:19] [I] Memory Bus Width: 384 bits (ECC disabled)
+[11/10/2026-11:32:19] [I] Application Compute Clock Rate: 2.61 GHz
+[11/10/2026-11:32:19] [I] Application Memory Clock Rate: 10.501 GHz
+[11/10/2026-11:32:19] [I] 
+[11/10/2026-11:32:19] [I] Note: The application clock rates do not reflect the actual clock rates that the GPU is currently running at.
+[11/10/2026-11:32:19] [I] 
+[11/10/2026-11:32:19] [I] TensorRT version: 10.14.1
+[11/10/2026-11:32:19] [I] Loading standard plugins
+[11/10/2026-11:32:20] [I] [TRT] Loaded engine size: 164 MiB
+[11/10/2026-11:32:20] [I] Engine deserialized in 0.0662685 sec.
+[11/10/2026-11:32:20] [I] [TRT] [MemUsageChange] TensorRT-managed allocation in IExecutionContext creation: CPU +0, GPU +461, now: CPU 0, GPU 616 (MiB)
+[11/10/2026-11:32:20] [I] Setting persistentCacheLimit to 0 bytes.
+[11/10/2026-11:32:20] [I] Created execution context with device memory size: 461.014 MiB
+[11/10/2026-11:32:20] [I] Using values loaded from 107339.f32 for input image
+[11/10/2026-11:32:20] [I] Input binding for image with dimensions 1x3x1024x1024 is created.
+[11/10/2026-11:32:20] [I] Output binding for logits with dimensions 1x300x133 is created.
+[11/10/2026-11:32:20] [I] Output binding for masks with dimensions 1x300x256x256 is created.
+[11/10/2026-11:32:20] [I] Output binding for boxes with dimensions 1x300x4 is created.
+[11/10/2026-11:32:20] [I] Starting inference
+[11/10/2026-11:32:27] [I] Warmup completed 139 queries over 2000 ms
+[11/10/2026-11:32:27] [I] Timing trace has 356 queries over 5.02554 s
+[11/10/2026-11:32:27] [I] 
+[11/10/2026-11:32:27] [I] === Trace details ===
+[11/10/2026-11:32:27] [I] Trace averages of 10 runs:
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1109 ms - Host latency: 14.1109 ms (enqueue 10.6356 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1158 ms - Host latency: 14.1158 ms (enqueue 10.6661 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1151 ms - Host latency: 14.1151 ms (enqueue 10.6464 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.119 ms - Host latency: 14.119 ms (enqueue 10.6431 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1136 ms - Host latency: 14.1136 ms (enqueue 10.6653 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1148 ms - Host latency: 14.1148 ms (enqueue 10.6317 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1106 ms - Host latency: 14.1106 ms (enqueue 10.6737 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1286 ms - Host latency: 14.1286 ms (enqueue 10.6467 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.113 ms - Host latency: 14.113 ms (enqueue 10.6417 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1295 ms - Host latency: 14.1295 ms (enqueue 10.6387 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1157 ms - Host latency: 14.1157 ms (enqueue 10.6332 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1168 ms - Host latency: 14.1168 ms (enqueue 10.6644 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1162 ms - Host latency: 14.1162 ms (enqueue 10.6293 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1052 ms - Host latency: 14.1052 ms (enqueue 10.6495 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.113 ms - Host latency: 14.113 ms (enqueue 10.6351 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.109 ms - Host latency: 14.109 ms (enqueue 10.6646 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1103 ms - Host latency: 14.1103 ms (enqueue 10.7236 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1168 ms - Host latency: 14.1168 ms (enqueue 10.6855 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1108 ms - Host latency: 14.1108 ms (enqueue 10.6858 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1129 ms - Host latency: 14.1129 ms (enqueue 10.6587 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1182 ms - Host latency: 14.1182 ms (enqueue 10.6437 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1118 ms - Host latency: 14.1118 ms (enqueue 10.6561 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1125 ms - Host latency: 14.1125 ms (enqueue 10.632 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1146 ms - Host latency: 14.1146 ms (enqueue 10.6634 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1152 ms - Host latency: 14.1152 ms (enqueue 10.6468 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.118 ms - Host latency: 14.118 ms (enqueue 10.6289 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1178 ms - Host latency: 14.1178 ms (enqueue 10.6611 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1159 ms - Host latency: 14.1159 ms (enqueue 10.6375 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1114 ms - Host latency: 14.1114 ms (enqueue 10.6494 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1093 ms - Host latency: 14.1093 ms (enqueue 10.64 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1146 ms - Host latency: 14.1146 ms (enqueue 10.6618 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1076 ms - Host latency: 14.1076 ms (enqueue 10.6832 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1171 ms - Host latency: 14.1171 ms (enqueue 10.6806 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1128 ms - Host latency: 14.1128 ms (enqueue 10.6902 ms)
+[11/10/2026-11:32:27] [I] Average on 10 runs - GPU latency: 14.1115 ms - Host latency: 14.1115 ms (enqueue 10.656 ms)
+[11/10/2026-11:32:27] [I] 
+[11/10/2026-11:32:27] [I] === Performance summary ===
+[11/10/2026-11:32:27] [I] Throughput: 70.8382 qps
+[11/10/2026-11:32:27] [I] Latency: min = 14.0884 ms, max = 14.291 ms, mean = 14.115 ms, median = 14.1138 ms, percentile(50%) = 14.1138 ms, percentile(95%) = 14.1313 ms
+[11/10/2026-11:32:27] [I] Enqueue Time: min = 10.5898 ms, max = 11.0845 ms, mean = 10.6568 ms, median = 10.6401 ms, percentile(50%) = 10.6401 ms, percentile(95%) = 10.8184 ms
+[11/10/2026-11:32:27] [I] H2D Latency: min = 0 ms, max = 0 ms, mean = 0 ms, median = 0 ms, percentile(50%) = 0 ms, percentile(95%) = 0 ms
+[11/10/2026-11:32:27] [I] GPU Compute Time: min = 14.0884 ms, max = 14.291 ms, mean = 14.115 ms, median = 14.1138 ms, percentile(50%) = 14.1138 ms, percentile(95%) = 14.1313 ms
+[11/10/2026-11:32:27] [I] D2H Latency: min = 0 ms, max = 0 ms, mean = 0 ms, median = 0 ms, percentile(50%) = 0 ms, percentile(95%) = 0 ms
+[11/10/2026-11:32:27] [I] Total Host Walltime: 5.02554 s
+[11/10/2026-11:32:27] [I] Total GPU Compute Time: 5.02494 s
+[11/10/2026-11:32:27] [I] Explanations of the performance metrics are printed in the verbose logs.
+[11/10/2026-11:32:27] [I] 
+[11/10/2026-11:32:34] [I] 
+[11/10/2026-11:32:34] [I] === Profile (419 iterations ) ===
+[11/10/2026-11:32:34] [I]    Time(ms)     Avg.(ms)   Median(ms)   Time(%)   Layer
+[11/10/2026-11:32:34] [I]       13.95       0.0333       0.0329       0.2   /backbone/stem/conv1/Cast
+[11/10/2026-11:32:34] [I]       24.26       0.0579       0.0580       0.4   /backbone/stem/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.23       0.0029       0.0031       0.0   __myl_Cast_myl3_0
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl5_0
+[11/10/2026-11:32:34] [I]        1.12       0.0027       0.0031       0.0   __myl_Cast_myl7_0
+[11/10/2026-11:32:34] [I]        1.34       0.0032       0.0031       0.0   ONNXTRT_castHelper_10
+[11/10/2026-11:32:34] [I]        1.12       0.0027       0.0031       0.0   __myl_Cast_myl11_0
+[11/10/2026-11:32:34] [I]        8.47       0.0202       0.0205       0.1   __myl_CastCastCastCastCastCastAddSqrtSubDivMulMulAddMaxCast_myl17_0
+[11/10/2026-11:32:34] [I]        5.93       0.0142       0.0143       0.1   /backbone/stem/MaxPool
+[11/10/2026-11:32:34] [I]       15.06       0.0359       0.0358       0.2   /backbone/res2/res2.0/shortcut/Conv || /backbone/res2/res2.0/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.23       0.0029       0.0031       0.0   __myl_Cast_myl23_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl25_0
+[11/10/2026-11:32:34] [I]        1.40       0.0033       0.0031       0.0   ONNXTRT_castHelper_24
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl29_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl31_0
+[11/10/2026-11:32:34] [I]        4.27       0.0102       0.0102       0.1   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl36_0
+[11/10/2026-11:32:34] [I]       12.54       0.0299       0.0297       0.2   /backbone/res2/res2.0/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl40_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl42_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_38
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl46_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl48_0
+[11/10/2026-11:32:34] [I]        3.25       0.0078       0.0082       0.1   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl54_0
+[11/10/2026-11:32:34] [I]       10.06       0.0240       0.0237       0.2   /backbone/res2/res2.0/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.21       0.0029       0.0031       0.0   __myl_Cast_myl59_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl61_0
+[11/10/2026-11:32:34] [I]        1.37       0.0033       0.0031       0.0   ONNXTRT_castHelper_66
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl65_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl67_0
+[11/10/2026-11:32:34] [I]        1.11       0.0026       0.0031       0.0   Identity_1921
+[11/10/2026-11:32:34] [I]        1.09       0.0026       0.0031       0.0   __myl_Cast_myl70_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl72_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_52
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl76_0
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl78_0
+[11/10/2026-11:32:34] [I]       11.31       0.0270       0.0266       0.2   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddCast_myl83_0
+[11/10/2026-11:32:34] [I]       35.42       0.0845       0.0844       0.6   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl89_0
+[11/10/2026-11:32:34] [I]        9.67       0.0231       0.0228       0.2   /backbone/res2/res2.1/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.26       0.0030       0.0031       0.0   __myl_Cast_myl93_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl95_0
+[11/10/2026-11:32:34] [I]        1.47       0.0035       0.0032       0.0   ONNXTRT_castHelper_80
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl99_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl101_0
+[11/10/2026-11:32:34] [I]        3.25       0.0078       0.0082       0.1   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl107_0
+[11/10/2026-11:32:34] [I]       11.59       0.0277       0.0276       0.2   /backbone/res2/res2.1/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl111_0
+[11/10/2026-11:32:34] [I]        1.12       0.0027       0.0031       0.0   __myl_Cast_myl113_0
+[11/10/2026-11:32:34] [I]        1.28       0.0030       0.0031       0.0   ONNXTRT_castHelper_94
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl117_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl119_0
+[11/10/2026-11:32:34] [I]        3.02       0.0072       0.0072       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl125_0
+[11/10/2026-11:32:34] [I]        9.69       0.0231       0.0236       0.2   /backbone/res2/res2.1/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_Cast_myl129_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl131_0
+[11/10/2026-11:32:34] [I]        1.34       0.0032       0.0031       0.0   ONNXTRT_castHelper_108
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl135_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl137_0
+[11/10/2026-11:32:34] [I]       21.58       0.0515       0.0512       0.3   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl142_0
+[11/10/2026-11:32:34] [I]        9.70       0.0232       0.0236       0.2   /backbone/res2/res2.2/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.24       0.0030       0.0031       0.0   __myl_Cast_myl145_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl147_0
+[11/10/2026-11:32:34] [I]        1.43       0.0034       0.0031       0.0   ONNXTRT_castHelper_122
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl151_0
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl153_0
+[11/10/2026-11:32:34] [I]        3.31       0.0079       0.0082       0.1   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl159_0
+[11/10/2026-11:32:34] [I]       11.99       0.0286       0.0287       0.2   /backbone/res2/res2.2/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl163_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl165_0
+[11/10/2026-11:32:34] [I]        1.31       0.0031       0.0031       0.0   ONNXTRT_castHelper_136
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl169_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl171_0
+[11/10/2026-11:32:34] [I]        3.02       0.0072       0.0072       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl177_0
+[11/10/2026-11:32:34] [I]        9.76       0.0233       0.0236       0.2   /backbone/res2/res2.2/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Cast_myl181_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl183_0
+[11/10/2026-11:32:34] [I]        1.38       0.0033       0.0031       0.0   ONNXTRT_castHelper_150
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl187_0
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl189_0
+[11/10/2026-11:32:34] [I]       22.90       0.0547       0.0543       0.4   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl194_0
+[11/10/2026-11:32:34] [I]       12.11       0.0289       0.0287       0.2   /backbone/res3/res3.0/shortcut/Conv
+[11/10/2026-11:32:34] [I]       12.68       0.0303       0.0300       0.2   /backbone/res3/res3.0/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl201_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl203_0
+[11/10/2026-11:32:34] [I]        1.37       0.0033       0.0031       0.0   ONNXTRT_castHelper_164
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl207_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl209_0
+[11/10/2026-11:32:34] [I]        5.08       0.0121       0.0123       0.1   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl214_0
+[11/10/2026-11:32:34] [I]       10.96       0.0262       0.0260       0.2   /backbone/res3/res3.0/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_Cast_myl217_0
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl219_0
+[11/10/2026-11:32:34] [I]        1.36       0.0032       0.0031       0.0   ONNXTRT_castHelper_178
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl223_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl225_0
+[11/10/2026-11:32:34] [I]        2.34       0.0056       0.0054       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl231_0
+[11/10/2026-11:32:34] [I]        7.28       0.0174       0.0174       0.1   /backbone/res3/res3.0/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl236_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl238_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_206
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Cast_myl242_0
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl244_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   Identity_1920
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl247_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl249_0
+[11/10/2026-11:32:34] [I]        1.28       0.0031       0.0031       0.0   ONNXTRT_castHelper_192
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl253_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl255_0
+[11/10/2026-11:32:34] [I]        4.72       0.0113       0.0113       0.1   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddCast_myl257_0
+[11/10/2026-11:32:34] [I]        8.00       0.0191       0.0195       0.1   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl263_0
+[11/10/2026-11:32:34] [I]        5.59       0.0133       0.0133       0.1   /backbone/res3/res3.1/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_Cast_myl266_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl268_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_220
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl272_0
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl274_0
+[11/10/2026-11:32:34] [I]        2.39       0.0057       0.0061       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl280_0
+[11/10/2026-11:32:34] [I]        9.21       0.0220       0.0218       0.1   /backbone/res3/res3.1/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl284_0
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl286_0
+[11/10/2026-11:32:34] [I]        1.30       0.0031       0.0031       0.0   ONNXTRT_castHelper_234
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl290_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl292_0
+[11/10/2026-11:32:34] [I]        2.35       0.0056       0.0054       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl298_0
+[11/10/2026-11:32:34] [I]        7.43       0.0177       0.0174       0.1   /backbone/res3/res3.1/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl302_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl304_0
+[11/10/2026-11:32:34] [I]        1.30       0.0031       0.0031       0.0   ONNXTRT_castHelper_248
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl308_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl310_0
+[11/10/2026-11:32:34] [I]        5.71       0.0136       0.0133       0.1   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl313_0
+[11/10/2026-11:32:34] [I]        5.79       0.0138       0.0137       0.1   /backbone/res3/res3.2/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Cast_myl317_0
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl319_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_262
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl323_0
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl325_0
+[11/10/2026-11:32:34] [I]        2.37       0.0057       0.0055       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl331_0
+[11/10/2026-11:32:34] [I]        9.34       0.0223       0.0225       0.1   /backbone/res3/res3.2/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl335_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl337_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_276
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl341_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl343_0
+[11/10/2026-11:32:34] [I]        2.35       0.0056       0.0053       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl349_0
+[11/10/2026-11:32:34] [I]        7.31       0.0174       0.0174       0.1   /backbone/res3/res3.2/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl353_0
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl355_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_290
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl359_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl361_0
+[11/10/2026-11:32:34] [I]        5.64       0.0135       0.0133       0.1   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl363_0
+[11/10/2026-11:32:34] [I]        5.82       0.0139       0.0143       0.1   /backbone/res3/res3.3/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl367_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl369_0
+[11/10/2026-11:32:34] [I]        1.28       0.0031       0.0031       0.0   ONNXTRT_castHelper_304
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl373_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl375_0
+[11/10/2026-11:32:34] [I]        2.38       0.0057       0.0061       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl381_0
+[11/10/2026-11:32:34] [I]        9.29       0.0222       0.0225       0.1   /backbone/res3/res3.3/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl385_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl387_0
+[11/10/2026-11:32:34] [I]        1.30       0.0031       0.0031       0.0   ONNXTRT_castHelper_318
+[11/10/2026-11:32:34] [I]        1.12       0.0027       0.0031       0.0   __myl_Cast_myl391_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl393_0
+[11/10/2026-11:32:34] [I]        2.33       0.0056       0.0053       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl399_0
+[11/10/2026-11:32:34] [I]        7.27       0.0174       0.0174       0.1   /backbone/res3/res3.3/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl403_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl405_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_332
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl409_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl411_0
+[11/10/2026-11:32:34] [I]        5.66       0.0135       0.0133       0.1   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl413_0
+[11/10/2026-11:32:34] [I]        8.01       0.0191       0.0195       0.1   /sem_seg_head/Cast_1
+[11/10/2026-11:32:34] [I]       27.03       0.0645       0.0645       0.4   /sem_seg_head/input_proj.0/input_proj.0.0/Conv
+[11/10/2026-11:32:34] [I]        9.15       0.0218       0.0215       0.1   /backbone/res4/res4.0/shortcut/Conv
+[11/10/2026-11:32:34] [I]        9.18       0.0219       0.0215       0.1   /backbone/res4/res4.0/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_Cast_myl423_0
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl425_0
+[11/10/2026-11:32:34] [I]        1.37       0.0033       0.0031       0.0   ONNXTRT_castHelper_346
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl429_0
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl431_0
+[11/10/2026-11:32:34] [I]        3.32       0.0079       0.0082       0.1   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl437_0
+[11/10/2026-11:32:34] [I]       12.30       0.0294       0.0297       0.2   /backbone/res4/res4.0/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl441_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl443_0
+[11/10/2026-11:32:34] [I]        1.28       0.0031       0.0031       0.0   ONNXTRT_castHelper_360
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl447_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl449_0
+[11/10/2026-11:32:34] [I]        1.77       0.0042       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl455_0
+[11/10/2026-11:32:34] [I]        5.74       0.0137       0.0133       0.1   /backbone/res4/res4.0/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Cast_myl460_0
+[11/10/2026-11:32:34] [I]        1.12       0.0027       0.0031       0.0   __myl_Cast_myl462_0
+[11/10/2026-11:32:34] [I]        1.32       0.0032       0.0031       0.0   ONNXTRT_castHelper_388
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl466_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl468_0
+[11/10/2026-11:32:34] [I]        1.08       0.0026       0.0025       0.0   Identity_1919
+[11/10/2026-11:32:34] [I]        1.09       0.0026       0.0031       0.0   __myl_Cast_myl471_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl473_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_374
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl477_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl479_0
+[11/10/2026-11:32:34] [I]        3.17       0.0076       0.0072       0.1   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddCast_myl481_0
+[11/10/2026-11:32:34] [I]        3.59       0.0086       0.0082       0.1   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl483_0
+[11/10/2026-11:32:34] [I]        6.09       0.0145       0.0143       0.1   /backbone/res4/res4.1/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl487_0
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Cast_myl489_0
+[11/10/2026-11:32:34] [I]        1.32       0.0031       0.0031       0.0   ONNXTRT_castHelper_402
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl493_0
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl495_0
+[11/10/2026-11:32:34] [I]        1.78       0.0042       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl501_0
+[11/10/2026-11:32:34] [I]        8.71       0.0208       0.0205       0.1   /backbone/res4/res4.1/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.12       0.0027       0.0031       0.0   __myl_Cast_myl505_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl507_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_416
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl511_0
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl513_0
+[11/10/2026-11:32:34] [I]        1.78       0.0043       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl519_0
+[11/10/2026-11:32:34] [I]        5.72       0.0136       0.0133       0.1   /backbone/res4/res4.1/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl523_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl525_0
+[11/10/2026-11:32:34] [I]        1.30       0.0031       0.0031       0.0   ONNXTRT_castHelper_430
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl529_0
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl531_0
+[11/10/2026-11:32:34] [I]        3.53       0.0084       0.0082       0.1   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl533_0
+[11/10/2026-11:32:34] [I]        6.04       0.0144       0.0143       0.1   /backbone/res4/res4.2/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl537_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl539_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_444
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl543_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl545_0
+[11/10/2026-11:32:34] [I]        1.79       0.0043       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl551_0
+[11/10/2026-11:32:34] [I]        8.53       0.0204       0.0205       0.1   /backbone/res4/res4.2/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Cast_myl555_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl557_0
+[11/10/2026-11:32:34] [I]        1.33       0.0032       0.0031       0.0   ONNXTRT_castHelper_458
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl561_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl563_0
+[11/10/2026-11:32:34] [I]        1.77       0.0042       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl569_0
+[11/10/2026-11:32:34] [I]        5.74       0.0137       0.0134       0.1   /backbone/res4/res4.2/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl573_0
+[11/10/2026-11:32:34] [I]        1.12       0.0027       0.0031       0.0   __myl_Cast_myl575_0
+[11/10/2026-11:32:34] [I]        1.30       0.0031       0.0031       0.0   ONNXTRT_castHelper_472
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl579_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl581_0
+[11/10/2026-11:32:34] [I]        3.54       0.0084       0.0082       0.1   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl583_0
+[11/10/2026-11:32:34] [I]        6.09       0.0145       0.0143       0.1   /backbone/res4/res4.3/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl587_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl589_0
+[11/10/2026-11:32:34] [I]        1.27       0.0030       0.0031       0.0   ONNXTRT_castHelper_486
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl593_0
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl595_0
+[11/10/2026-11:32:34] [I]        1.77       0.0042       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl601_0
+[11/10/2026-11:32:34] [I]        8.62       0.0206       0.0205       0.1   /backbone/res4/res4.3/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl605_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl607_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_500
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl611_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl613_0
+[11/10/2026-11:32:34] [I]        1.77       0.0042       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl619_0
+[11/10/2026-11:32:34] [I]        5.72       0.0137       0.0133       0.1   /backbone/res4/res4.3/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl623_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl625_0
+[11/10/2026-11:32:34] [I]        1.37       0.0033       0.0031       0.0   ONNXTRT_castHelper_514
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl629_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl631_0
+[11/10/2026-11:32:34] [I]        3.52       0.0084       0.0082       0.1   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl633_0
+[11/10/2026-11:32:34] [I]        6.09       0.0145       0.0143       0.1   /backbone/res4/res4.4/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl637_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl639_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_528
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl643_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl645_0
+[11/10/2026-11:32:34] [I]        1.79       0.0043       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl651_0
+[11/10/2026-11:32:34] [I]        8.55       0.0204       0.0205       0.1   /backbone/res4/res4.4/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl655_0
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl657_0
+[11/10/2026-11:32:34] [I]        1.30       0.0031       0.0031       0.0   ONNXTRT_castHelper_542
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl661_0
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl663_0
+[11/10/2026-11:32:34] [I]        1.77       0.0042       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl669_0
+[11/10/2026-11:32:34] [I]        5.72       0.0137       0.0133       0.1   /backbone/res4/res4.4/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl673_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl675_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_556
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl679_0
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl681_0
+[11/10/2026-11:32:34] [I]        3.51       0.0084       0.0082       0.1   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl683_0
+[11/10/2026-11:32:34] [I]        6.15       0.0147       0.0143       0.1   /backbone/res4/res4.5/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Cast_myl687_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl689_0
+[11/10/2026-11:32:34] [I]        1.35       0.0032       0.0031       0.0   ONNXTRT_castHelper_570
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl693_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl695_0
+[11/10/2026-11:32:34] [I]        1.76       0.0042       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl701_0
+[11/10/2026-11:32:34] [I]        8.54       0.0204       0.0205       0.1   /backbone/res4/res4.5/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl705_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl707_0
+[11/10/2026-11:32:34] [I]        1.28       0.0030       0.0031       0.0   ONNXTRT_castHelper_584
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl711_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl713_0
+[11/10/2026-11:32:34] [I]        1.76       0.0042       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl719_0
+[11/10/2026-11:32:34] [I]        5.71       0.0136       0.0133       0.1   /backbone/res4/res4.5/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.15       0.0028       0.0031       0.0   __myl_Cast_myl723_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl725_0
+[11/10/2026-11:32:34] [I]        1.30       0.0031       0.0031       0.0   ONNXTRT_castHelper_598
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl729_0
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl731_0
+[11/10/2026-11:32:34] [I]        3.53       0.0084       0.0082       0.1   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl733_0
+[11/10/2026-11:32:34] [I]        4.69       0.0112       0.0113       0.1   /sem_seg_head/Cast_2
+[11/10/2026-11:32:34] [I]       13.60       0.0325       0.0328       0.2   /sem_seg_head/input_proj.1/input_proj.1.0/Conv
+[11/10/2026-11:32:34] [I]        8.74       0.0209       0.0207       0.1   /backbone/res5/res5.0/shortcut/Conv
+[11/10/2026-11:32:34] [I]        8.07       0.0192       0.0195       0.1   /backbone/res5/res5.0/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl741_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl743_0
+[11/10/2026-11:32:34] [I]        1.25       0.0030       0.0031       0.0   ONNXTRT_castHelper_612
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl747_0
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl749_0
+[11/10/2026-11:32:34] [I]        2.48       0.0059       0.0061       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl751_0
+[11/10/2026-11:32:34] [I]       12.62       0.0301       0.0298       0.2   /backbone/res5/res5.0/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl755_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl757_0
+[11/10/2026-11:32:34] [I]        1.33       0.0032       0.0031       0.0   ONNXTRT_castHelper_626
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl761_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl763_0
+[11/10/2026-11:32:34] [I]        1.65       0.0039       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl765_0
+[11/10/2026-11:32:34] [I]        5.19       0.0124       0.0123       0.1   /backbone/res5/res5.0/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   ONNXTRT_castHelper_651
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   ONNXTRT_castHelper_650
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_654
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   ONNXTRT_castHelper_653
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   ONNXTRT_castHelper_652
+[11/10/2026-11:32:34] [I]        1.09       0.0026       0.0028       0.0   Identity_1918
+[11/10/2026-11:32:34] [I]        1.09       0.0026       0.0031       0.0   ONNXTRT_castHelper_637
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   ONNXTRT_castHelper_636
+[11/10/2026-11:32:34] [I]        1.27       0.0030       0.0031       0.0   ONNXTRT_castHelper_640
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   ONNXTRT_castHelper_639
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   ONNXTRT_castHelper_638
+[11/10/2026-11:32:34] [I]        2.68       0.0064       0.0061       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddCast_myl795_0
+[11/10/2026-11:32:34] [I]        2.83       0.0068       0.0072       0.0   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl802_0
+[11/10/2026-11:32:34] [I]        6.67       0.0159       0.0164       0.1   /backbone/res5/res5.1/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_Cast_myl807_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl809_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_668
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl813_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl815_0
+[11/10/2026-11:32:34] [I]        1.64       0.0039       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl817_0
+[11/10/2026-11:32:34] [I]       10.00       0.0239       0.0236       0.2   /backbone/res5/res5.1/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Cast_myl821_0
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl823_0
+[11/10/2026-11:32:34] [I]        1.37       0.0033       0.0031       0.0   ONNXTRT_castHelper_682
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl827_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl829_0
+[11/10/2026-11:32:34] [I]        1.74       0.0041       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl831_0
+[11/10/2026-11:32:34] [I]        5.14       0.0123       0.0123       0.1   /backbone/res5/res5.1/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   ONNXTRT_castHelper_693
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   ONNXTRT_castHelper_692
+[11/10/2026-11:32:34] [I]        1.28       0.0031       0.0031       0.0   ONNXTRT_castHelper_696
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   ONNXTRT_castHelper_695
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   ONNXTRT_castHelper_694
+[11/10/2026-11:32:34] [I]        2.70       0.0064       0.0061       0.0   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl849_0
+[11/10/2026-11:32:34] [I]        6.50       0.0155       0.0154       0.1   /backbone/res5/res5.2/conv1/Conv
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl853_0
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl855_0
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   ONNXTRT_castHelper_710
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl859_0
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Cast_myl861_0
+[11/10/2026-11:32:34] [I]        1.64       0.0039       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl863_0
+[11/10/2026-11:32:34] [I]       10.09       0.0241       0.0236       0.2   /backbone/res5/res5.2/conv2/Conv
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Cast_myl867_0
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl869_0
+[11/10/2026-11:32:34] [I]        1.34       0.0032       0.0031       0.0   ONNXTRT_castHelper_724
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl873_0
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl875_0
+[11/10/2026-11:32:34] [I]        1.73       0.0041       0.0041       0.0   __myl_CastCastCastCastCastCastSubAddSqrtDivMulMulAddMaxCast_myl877_0
+[11/10/2026-11:32:34] [I]        5.11       0.0122       0.0123       0.1   /backbone/res5/res5.2/conv3/Conv
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   ONNXTRT_castHelper_735
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   ONNXTRT_castHelper_734
+[11/10/2026-11:32:34] [I]        1.28       0.0031       0.0031       0.0   ONNXTRT_castHelper_738
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   ONNXTRT_castHelper_737
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   ONNXTRT_castHelper_736
+[11/10/2026-11:32:34] [I]        2.68       0.0064       0.0061       0.0   __myl_CastCastCastCastCastCastCastSubAddSqrtDivMulMulAddAddMaxCast_myl895_0
+[11/10/2026-11:32:34] [I]        3.05       0.0073       0.0072       0.0   /sem_seg_head/Cast
+[11/10/2026-11:32:34] [I]        2.96       0.0071       0.0072       0.0   /sem_seg_head/Cast_3
+[11/10/2026-11:32:34] [I]        9.14       0.0218       0.0215       0.1   /sem_seg_head/input_proj.2/input_proj.2.0/Conv
+[11/10/2026-11:32:34] [I]      128.08       0.3057       0.3061       2.0   /sem_seg_head/input_proj.3/input_proj.3.0/Conv
+[11/10/2026-11:32:34] [I]        1.36       0.0032       0.0031       0.0   Reformatting CopyNode for Input Tensor 0 to {ForeignNode[/sem_seg_head/pe_layer/Constant_3_output_0 + /sem_seg_head/transformer/Flatten_3.../sem_seg_head/transformer/encoder/layers.0/self_attn/Add]}
+[11/10/2026-11:32:34] [I]        3.56       0.0085       0.0082       0.1   Reformatting CopyNode for Input Tensor 2 to {ForeignNode[/sem_seg_head/pe_layer/Constant_3_output_0 + /sem_seg_head/transformer/Flatten_3.../sem_seg_head/transformer/encoder/layers.0/self_attn/Add]}
+[11/10/2026-11:32:34] [I]        1.39       0.0033       0.0031       0.0   Reformatting CopyNode for Input Tensor 3 to {ForeignNode[/sem_seg_head/pe_layer/Constant_3_output_0 + /sem_seg_head/transformer/Flatten_3.../sem_seg_head/transformer/encoder/layers.0/self_attn/Add]}
+[11/10/2026-11:32:34] [I]        1.23       0.0029       0.0031       0.0   __myl_Move_myl904_0
+[11/10/2026-11:32:34] [I]        1.80       0.0043       0.0041       0.0   __myl_Cums_myl904_1
+[11/10/2026-11:32:34] [I]        1.77       0.0042       0.0041       0.0   __myl_Cums_myl904_2
+[11/10/2026-11:32:34] [I]        1.66       0.0040       0.0041       0.0   __myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicCosReshSlicEtc_myl904_3
+[11/10/2026-11:32:34] [I]        1.33       0.0032       0.0031       0.0   __myl_ReshTran_myl904_4
+[11/10/2026-11:32:34] [I]        1.77       0.0042       0.0041       0.0   __myl_Cums_myl904_5
+[11/10/2026-11:32:34] [I]        1.79       0.0043       0.0041       0.0   __myl_Cums_myl904_6
+[11/10/2026-11:32:34] [I]        2.59       0.0062       0.0061       0.0   __myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicCosReshSlicEtc_myl904_7
+[11/10/2026-11:32:34] [I]        2.06       0.0049       0.0051       0.0   __myl_ReshTran_myl904_8
+[11/10/2026-11:32:34] [I]        1.85       0.0044       0.0041       0.0   __myl_Cums_myl904_9
+[11/10/2026-11:32:34] [I]        1.85       0.0044       0.0041       0.0   __myl_Cums_myl904_10
+[11/10/2026-11:32:34] [I]        6.44       0.0154       0.0154       0.1   __myl_SlicSlicAddDivMulAddDivMulMulReshMulReshMulSlicCosReshSlicSinReshConcReshMulSlicCosReshSlicEtc_myl904_11
+[11/10/2026-11:32:34] [I]        4.64       0.0111       0.0113       0.1   __myl_ReshTran_myl904_12
+[11/10/2026-11:32:34] [I]        1.76       0.0042       0.0041       0.0   __myl_Cums_myl904_13
+[11/10/2026-11:32:34] [I]        1.41       0.0034       0.0031       0.0   __myl_SlicAddDivMulMulReshMulSlicCosReshSlicSinReshConcResh_myl904_14
+[11/10/2026-11:32:34] [I]        1.77       0.0042       0.0041       0.0   __myl_Cums_myl904_15
+[11/10/2026-11:32:34] [I]        1.36       0.0032       0.0031       0.0   __myl_SlicAddDivMulMulReshMulSlicCosReshSlicSinReshConcResh_myl904_16
+[11/10/2026-11:32:34] [I]        2.31       0.0055       0.0052       0.0   __myl_Gnor_myl904_17
+[11/10/2026-11:32:34] [I]        1.30       0.0031       0.0031       0.0   __myl_Tran_myl904_18
+[11/10/2026-11:32:34] [I]        1.03       0.0024       0.0020       0.0   __myl_Move_myl904_19
+[11/10/2026-11:32:34] [I]        1.03       0.0025       0.0021       0.0   __myl_Move_myl904_20
+[11/10/2026-11:32:34] [I]        5.08       0.0121       0.0123       0.1   __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_myl904_21
+[11/10/2026-11:32:34] [I]        2.02       0.0048       0.0051       0.0   __myl_Tran_myl904_22
+[11/10/2026-11:32:34] [I]        1.02       0.0024       0.0020       0.0   __myl_Move_myl904_23
+[11/10/2026-11:32:34] [I]        1.03       0.0025       0.0022       0.0   __myl_Move_myl904_24
+[11/10/2026-11:32:34] [I]       16.81       0.0401       0.0399       0.3   __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_myl904_25
+[11/10/2026-11:32:34] [I]        4.60       0.0110       0.0113       0.1   __myl_Tran_myl904_26
+[11/10/2026-11:32:34] [I]        2.07       0.0049       0.0051       0.0   __myl_Gnor_myl904_27
+[11/10/2026-11:32:34] [I]       46.77       0.1116       0.1116       0.7   __myl_TranConcConcReshAddAddAddAddConcAdd_myl904_28
+[11/10/2026-11:32:34] [I]       26.78       0.0639       0.0636       0.4   /sem_seg_head/transformer/encoder/layers_0/self_attn/attention_weights/MatMul+/sem_seg_head/transformer/encoder/layers_0/self_attn/sampling_offsets/MatMul_myl904_29
+[11/10/2026-11:32:34] [I]        1.30       0.0031       0.0031       0.0   __myl_SumReshCastDiv_myl904_30
+[11/10/2026-11:32:34] [I]        1.22       0.0029       0.0031       0.0   __myl_SumReshCastDiv_myl904_31
+[11/10/2026-11:32:34] [I]        1.24       0.0030       0.0031       0.0   __myl_SumReshCastDiv_myl904_32
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_SumReshCastDiv_myl904_33
+[11/10/2026-11:32:34] [I]        1.23       0.0029       0.0031       0.0   __myl_SumReshCastDiv_myl904_34
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_SumReshCastDiv_myl904_35
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_ReshConcReshReshConcReshReshReshConcReshReshReshConcReshConcReshSlicReshSlicSlicReshSlicEtc_myl904_36
+[11/10/2026-11:32:34] [I]       17.89       0.0427       0.0430       0.3   __myl_ReshMulReshReshReshReshReshReshReshMulMulMulMulMulMulDivMulReshMulDivMulReshDivMulReshConcEtc_myl904_37
+[11/10/2026-11:32:34] [I]       21.01       0.0501       0.0502       0.3   /sem_seg_head/transformer/encoder/layers_0/self_attn/value_proj/MatMul_myl904_38
+[11/10/2026-11:32:34] [I]        9.87       0.0236       0.0236       0.2   __myl_Sele_myl904_39
+[11/10/2026-11:32:34] [I]        9.31       0.0222       0.0225       0.1   __myl_ReshMaxrSubExpSumDiv_myl904_40
+[11/10/2026-11:32:34] [I]      104.61       0.2497       0.2499       1.7   /sem_seg_head/transformer/encoder/layers.0/self_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       19.74       0.0471       0.0471       0.3   /sem_seg_head/transformer/encoder/layers_0/self_attn/output_proj/MatMul_myl908_0
+[11/10/2026-11:32:34] [I]       16.50       0.0394       0.0390       0.3   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl908_1
+[11/10/2026-11:32:34] [I]      122.90       0.2933       0.2930       1.9   /sem_seg_head/transformer/encoder/layers_0/linear1/MatMul_myl908_2
+[11/10/2026-11:32:34] [I]      133.54       0.3187       0.3185       2.1   /sem_seg_head/transformer/encoder/layers_0/linear2/MatMul_myl908_3
+[11/10/2026-11:32:34] [I]       38.08       0.0909       0.0911       0.6   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl908_4
+[11/10/2026-11:32:34] [I]       26.83       0.0640       0.0639       0.4   /sem_seg_head/transformer/encoder/layers_1/self_attn/attention_weights/MatMul+/sem_seg_head/transformer/encoder/layers_1/self_attn/sampling_offsets/MatMul_myl908_5
+[11/10/2026-11:32:34] [I]        4.09       0.0098       0.0097       0.1   __myl_ReshMaxrSubExpSumDiv_myl908_6
+[11/10/2026-11:32:34] [I]        6.84       0.0163       0.0164       0.1   __myl_ReshMulAdd_myl908_7
+[11/10/2026-11:32:34] [I]       25.36       0.0605       0.0604       0.4   /sem_seg_head/transformer/encoder/layers_1/self_attn/value_proj/MatMul_myl908_8
+[11/10/2026-11:32:34] [I]        9.88       0.0236       0.0236       0.2   __myl_Sele_myl908_9
+[11/10/2026-11:32:34] [I]      104.16       0.2486       0.2488       1.6   /sem_seg_head/transformer/encoder/layers.1/self_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       19.68       0.0470       0.0471       0.3   /sem_seg_head/transformer/encoder/layers_1/self_attn/output_proj/MatMul_myl912_0
+[11/10/2026-11:32:34] [I]       16.65       0.0397       0.0399       0.3   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl912_1
+[11/10/2026-11:32:34] [I]      123.27       0.2942       0.2939       1.9   /sem_seg_head/transformer/encoder/layers_1/linear1/MatMul_myl912_2
+[11/10/2026-11:32:34] [I]      134.16       0.3202       0.3205       2.1   /sem_seg_head/transformer/encoder/layers_1/linear2/MatMul_myl912_3
+[11/10/2026-11:32:34] [I]       38.13       0.0910       0.0911       0.6   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl912_4
+[11/10/2026-11:32:34] [I]       26.67       0.0637       0.0635       0.4   /sem_seg_head/transformer/encoder/layers_2/self_attn/attention_weights/MatMul+/sem_seg_head/transformer/encoder/layers_2/self_attn/sampling_offsets/MatMul_myl912_5
+[11/10/2026-11:32:34] [I]        4.08       0.0097       0.0096       0.1   __myl_ReshMaxrSubExpSumDiv_myl912_6
+[11/10/2026-11:32:34] [I]        6.83       0.0163       0.0164       0.1   __myl_ReshMulAdd_myl912_7
+[11/10/2026-11:32:34] [I]       25.32       0.0604       0.0604       0.4   /sem_seg_head/transformer/encoder/layers_2/self_attn/value_proj/MatMul_myl912_8
+[11/10/2026-11:32:34] [I]        9.87       0.0236       0.0236       0.2   __myl_Sele_myl912_9
+[11/10/2026-11:32:34] [I]      104.17       0.2486       0.2488       1.6   /sem_seg_head/transformer/encoder/layers.2/self_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       19.70       0.0470       0.0471       0.3   /sem_seg_head/transformer/encoder/layers_2/self_attn/output_proj/MatMul_myl916_0
+[11/10/2026-11:32:34] [I]       16.70       0.0399       0.0399       0.3   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl916_1
+[11/10/2026-11:32:34] [I]      122.71       0.2929       0.2929       1.9   /sem_seg_head/transformer/encoder/layers_2/linear1/MatMul_myl916_2
+[11/10/2026-11:32:34] [I]      133.50       0.3186       0.3185       2.1   /sem_seg_head/transformer/encoder/layers_2/linear2/MatMul_myl916_3
+[11/10/2026-11:32:34] [I]       38.22       0.0912       0.0911       0.6   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl916_4
+[11/10/2026-11:32:34] [I]       26.76       0.0639       0.0635       0.4   /sem_seg_head/transformer/encoder/layers_3/self_attn/attention_weights/MatMul+/sem_seg_head/transformer/encoder/layers_3/self_attn/sampling_offsets/MatMul_myl916_5
+[11/10/2026-11:32:34] [I]        4.07       0.0097       0.0095       0.1   __myl_ReshMaxrSubExpSumDiv_myl916_6
+[11/10/2026-11:32:34] [I]        6.80       0.0162       0.0164       0.1   __myl_ReshMulAdd_myl916_7
+[11/10/2026-11:32:34] [I]       25.23       0.0602       0.0604       0.4   /sem_seg_head/transformer/encoder/layers_3/self_attn/value_proj/MatMul_myl916_8
+[11/10/2026-11:32:34] [I]        9.88       0.0236       0.0236       0.2   __myl_Sele_myl916_9
+[11/10/2026-11:32:34] [I]      103.18       0.2462       0.2460       1.6   /sem_seg_head/transformer/encoder/layers.3/self_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       19.73       0.0471       0.0471       0.3   /sem_seg_head/transformer/encoder/layers_3/self_attn/output_proj/MatMul_myl920_0
+[11/10/2026-11:32:34] [I]       16.73       0.0399       0.0399       0.3   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl920_1
+[11/10/2026-11:32:34] [I]      122.85       0.2932       0.2929       1.9   /sem_seg_head/transformer/encoder/layers_3/linear1/MatMul_myl920_2
+[11/10/2026-11:32:34] [I]      133.78       0.3193       0.3195       2.1   /sem_seg_head/transformer/encoder/layers_3/linear2/MatMul_myl920_3
+[11/10/2026-11:32:34] [I]       38.24       0.0913       0.0911       0.6   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl920_4
+[11/10/2026-11:32:34] [I]       26.67       0.0636       0.0635       0.4   /sem_seg_head/transformer/encoder/layers_4/self_attn/attention_weights/MatMul+/sem_seg_head/transformer/encoder/layers_4/self_attn/sampling_offsets/MatMul_myl920_5
+[11/10/2026-11:32:34] [I]        4.10       0.0098       0.0095       0.1   __myl_ReshMaxrSubExpSumDiv_myl920_6
+[11/10/2026-11:32:34] [I]        6.88       0.0164       0.0164       0.1   __myl_ReshMulAdd_myl920_7
+[11/10/2026-11:32:34] [I]       25.40       0.0606       0.0604       0.4   /sem_seg_head/transformer/encoder/layers_4/self_attn/value_proj/MatMul_myl920_8
+[11/10/2026-11:32:34] [I]        9.90       0.0236       0.0236       0.2   __myl_Sele_myl920_9
+[11/10/2026-11:32:34] [I]      102.48       0.2446       0.2447       1.6   /sem_seg_head/transformer/encoder/layers.4/self_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       19.75       0.0471       0.0471       0.3   /sem_seg_head/transformer/encoder/layers_4/self_attn/output_proj/MatMul_myl924_0
+[11/10/2026-11:32:34] [I]       16.66       0.0398       0.0399       0.3   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl924_1
+[11/10/2026-11:32:34] [I]      123.15       0.2939       0.2939       1.9   /sem_seg_head/transformer/encoder/layers_4/linear1/MatMul_myl924_2
+[11/10/2026-11:32:34] [I]      133.50       0.3186       0.3185       2.1   /sem_seg_head/transformer/encoder/layers_4/linear2/MatMul_myl924_3
+[11/10/2026-11:32:34] [I]       38.07       0.0909       0.0911       0.6   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl924_4
+[11/10/2026-11:32:34] [I]       26.83       0.0640       0.0639       0.4   /sem_seg_head/transformer/encoder/layers_5/self_attn/attention_weights/MatMul+/sem_seg_head/transformer/encoder/layers_5/self_attn/sampling_offsets/MatMul_myl924_5
+[11/10/2026-11:32:34] [I]        4.08       0.0097       0.0096       0.1   __myl_ReshMaxrSubExpSumDiv_myl924_6
+[11/10/2026-11:32:34] [I]        6.81       0.0162       0.0164       0.1   __myl_ReshMulAdd_myl924_7
+[11/10/2026-11:32:34] [I]       25.30       0.0604       0.0604       0.4   /sem_seg_head/transformer/encoder/layers_5/self_attn/value_proj/MatMul_myl924_8
+[11/10/2026-11:32:34] [I]        9.88       0.0236       0.0236       0.2   __myl_Sele_myl924_9
+[11/10/2026-11:32:34] [I]      103.71       0.2475       0.2478       1.6   /sem_seg_head/transformer/encoder/layers.5/self_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]        1.21       0.0029       0.0031       0.0   __myl_Move_myl928_0
+[11/10/2026-11:32:34] [I]       19.76       0.0472       0.0471       0.3   /sem_seg_head/transformer/encoder/layers_5/self_attn/output_proj/MatMul_myl928_1
+[11/10/2026-11:32:34] [I]       16.31       0.0389       0.0389       0.3   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl928_2
+[11/10/2026-11:32:34] [I]      122.84       0.2932       0.2929       1.9   /sem_seg_head/transformer/encoder/layers_5/linear1/MatMul_myl928_3
+[11/10/2026-11:32:34] [I]      133.45       0.3185       0.3185       2.1   /sem_seg_head/transformer/encoder/layers_5/linear2/MatMul_myl928_4
+[11/10/2026-11:32:34] [I]       19.77       0.0472       0.0471       0.3   __myl_AddMeanSubMulMean_myl928_5
+[11/10/2026-11:32:34] [I]       24.84       0.0593       0.0594       0.4   __myl_AddSqrtDivMulMulAddSlicSlicSlicSlicTran_myl928_6
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   __myl_Sum_myl928_7
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Sum_myl928_8
+[11/10/2026-11:32:34] [I]        1.21       0.0029       0.0031       0.0   __myl_ConcReshCastDiv_myl928_9
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Sum_myl928_10
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Sum_myl928_11
+[11/10/2026-11:32:34] [I]        1.10       0.0026       0.0031       0.0   __myl_ConcReshCastDiv_myl928_12
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Sum_myl928_13
+[11/10/2026-11:32:34] [I]        1.06       0.0025       0.0023       0.0   __myl_ConcReshCastDiv_myl928_14
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_Sum_myl928_15
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_ConcReshCastDiv_myl928_16
+[11/10/2026-11:32:34] [I]       31.13       0.0743       0.0742       0.5   __myl_MulMulMulMulConcReshConcReshConcReshConcReshConcSubDivLtGtrAndNotCastSlicSlicAddSlicAddSlicEtc_myl928_17
+[11/10/2026-11:32:34] [I]       19.86       0.0474       0.0471       0.3   /sem_seg_head/predictor/decoder/layers_0/cross_attn/value_proj/MatMul_myl928_18
+[11/10/2026-11:32:34] [I]        9.81       0.0234       0.0236       0.2   __myl_Sele_myl928_19
+[11/10/2026-11:32:34] [I]       11.65       0.0278       0.0276       0.2   /sem_seg_head/predictor/enc_output/MatMul_myl928_20
+[11/10/2026-11:32:34] [I]        8.51       0.0203       0.0205       0.1   __myl_CastMeanSubMulMeanAddSqrtDivMulMulAddCast_myl928_21
+[11/10/2026-11:32:34] [I]        8.14       0.0194       0.0195       0.1   /sem_seg_head/predictor/class_embed/MatMul_myl928_22
+[11/10/2026-11:32:34] [I]        2.43       0.0058       0.0061       0.0   __myl_SlicMaxrResh_myl928_23
+[11/10/2026-11:32:34] [I]       18.89       0.0451       0.0451       0.3   __myl_Topk_myl928_24
+[11/10/2026-11:32:34] [I]        8.60       0.0205       0.0205       0.1   /sem_seg_head/predictor/bbox_embed_0/layers_0/MatMul_myl928_25
+[11/10/2026-11:32:34] [I]        8.71       0.0208       0.0205       0.1   /sem_seg_head/predictor/bbox_embed_0/layers_1/MatMul_myl928_26
+[11/10/2026-11:32:34] [I]        5.36       0.0128       0.0125       0.1   /sem_seg_head/predictor/bbox_embed_0/layers_2/MatMul_myl928_27
+[11/10/2026-11:32:34] [I]        1.24       0.0030       0.0031       0.0   __myl_SumReshCastDiv_myl928_28
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_SumReshCastDiv_myl928_29
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_ReshReshConcResh_myl928_30
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_SumReshCastDiv_myl928_31
+[11/10/2026-11:32:34] [I]        1.12       0.0027       0.0031       0.0   __myl_SumReshCastDiv_myl928_32
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_ReshReshConcResh_myl928_33
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_ReshCastDivReshConc_myl928_34
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_ReshCastDivReshConcResh_myl928_35
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_ReshConcConcResh_myl928_36
+[11/10/2026-11:32:34] [I]        2.12       0.0051       0.0051       0.0   __myl_LogSeleSeleCastReshCastReplCastAddGathReshSigmCastReshMulReshSlicSlicSlicReshSlicReshSlicEtc_myl928_37
+[11/10/2026-11:32:34] [I]        2.12       0.0051       0.0051       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_0/MatMul_myl928_38
+[11/10/2026-11:32:34] [I]        1.86       0.0044       0.0041       0.0   __myl_FcCast_myl928_39
+[11/10/2026-11:32:34] [I]        1.27       0.0030       0.0031       0.0   __myl_ReplGathReshReshAdd_myl928_40
+[11/10/2026-11:32:34] [I]        2.80       0.0067       0.0072       0.0   /sem_seg_head/predictor/decoder/layers_0/self_attn/MatMul_1+/sem_seg_head/predictor/decoder/layers_0/self_attn/MatMul_myl928_41
+[11/10/2026-11:32:34] [I]        2.76       0.0066       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_0/self_attn/MatMul_3_myl928_42
+[11/10/2026-11:32:34] [I]        1.92       0.0046       0.0042       0.0   __myl_MaxrSubExpSumDivMul_myl928_43
+[11/10/2026-11:32:34] [I]        2.43       0.0058       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_0/self_attn/MatMul_2_myl928_44
+[11/10/2026-11:32:34] [I]        2.60       0.0062       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_0/self_attn/MatMul_4_myl928_45
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_Tran_myl928_46
+[11/10/2026-11:32:34] [I]        2.32       0.0055       0.0052       0.0   /sem_seg_head/predictor/decoder/layers_0/self_attn/Gemm_myl928_47
+[11/10/2026-11:32:34] [I]        1.51       0.0036       0.0035       0.0   __myl_AddReshMeanSubMulMeanAddSqrtDivMulMulAdd_myl928_48
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Add_myl928_49
+[11/10/2026-11:32:34] [I]        2.49       0.0060       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_0/cross_attn/attention_weights/MatMul+/sem_seg_head/predictor/decoder/layers_0/cross_attn/sampling_offsets/MatMul_myl928_50
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   __myl_ReshMaxrSubExpSumDiv_myl928_51
+[11/10/2026-11:32:34] [I]        1.21       0.0029       0.0031       0.0   __myl_ReshMulMulMulAdd_myl928_52
+[11/10/2026-11:32:34] [I]        4.26       0.0102       0.0102       0.1   /sem_seg_head/predictor/decoder/layers.0/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       21.06       0.0503       0.0502       0.3   /sem_seg_head/predictor/decoder/layers_1/cross_attn/value_proj/MatMul_myl932_0
+[11/10/2026-11:32:34] [I]        9.74       0.0232       0.0236       0.2   __myl_Sele_myl932_1
+[11/10/2026-11:32:34] [I]        2.49       0.0059       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_0/cross_attn/output_proj/MatMul_myl932_2
+[11/10/2026-11:32:34] [I]        1.61       0.0038       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl932_3
+[11/10/2026-11:32:34] [I]        5.03       0.0120       0.0123       0.1   /sem_seg_head/predictor/decoder/layers_0/linear1/MatMul_myl932_4
+[11/10/2026-11:32:34] [I]        5.79       0.0138       0.0136       0.1   /sem_seg_head/predictor/decoder/layers_0/linear2/MatMul_myl932_5
+[11/10/2026-11:32:34] [I]        1.56       0.0037       0.0041       0.0   __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl932_6
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl932_7
+[11/10/2026-11:32:34] [I]        1.95       0.0047       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_0/MatMul_myl932_8
+[11/10/2026-11:32:34] [I]        1.89       0.0045       0.0042       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_1/MatMul_myl932_9
+[11/10/2026-11:32:34] [I]        2.11       0.0050       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_2/MatMul_myl932_10
+[11/10/2026-11:32:34] [I]        1.94       0.0046       0.0045       0.0   __myl_MaxMinSubMaxMaxMinMinDivLogCastAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlicReshEtc_myl932_11
+[11/10/2026-11:32:34] [I]        2.05       0.0049       0.0051       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_0_1/MatMul_myl932_12
+[11/10/2026-11:32:34] [I]        1.87       0.0045       0.0041       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_1_1/MatMul_myl932_13
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_CastAdd_myl932_14
+[11/10/2026-11:32:34] [I]        2.80       0.0067       0.0066       0.0   /sem_seg_head/predictor/decoder/layers_1/self_attn/MatMul_1+/sem_seg_head/predictor/decoder/layers_1/self_attn/MatMul_myl932_15
+[11/10/2026-11:32:34] [I]        2.72       0.0065       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_1/self_attn/MatMul_3_myl932_16
+[11/10/2026-11:32:34] [I]        1.90       0.0045       0.0043       0.0   __myl_MaxrSubExpSumDivMul_myl932_17
+[11/10/2026-11:32:34] [I]        2.33       0.0056       0.0053       0.0   /sem_seg_head/predictor/decoder/layers_1/self_attn/MatMul_2_myl932_18
+[11/10/2026-11:32:34] [I]        2.53       0.0060       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_1/self_attn/MatMul_4_myl932_19
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Tran_myl932_20
+[11/10/2026-11:32:34] [I]        2.26       0.0054       0.0051       0.0   /sem_seg_head/predictor/decoder/layers_1/self_attn/Gemm_myl932_21
+[11/10/2026-11:32:34] [I]        1.55       0.0037       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl932_22
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Add_myl932_23
+[11/10/2026-11:32:34] [I]        2.40       0.0057       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_1/cross_attn/attention_weights/MatMul+/sem_seg_head/predictor/decoder/layers_1/cross_attn/sampling_offsets/MatMul_myl932_24
+[11/10/2026-11:32:34] [I]        1.23       0.0029       0.0031       0.0   __myl_ReshMaxrSubExpSumDiv_myl932_25
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_ReshMulMulMulAdd_myl932_26
+[11/10/2026-11:32:34] [I]        3.36       0.0080       0.0082       0.1   /sem_seg_head/predictor/decoder/layers.1/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       19.91       0.0475       0.0472       0.3   /sem_seg_head/predictor/decoder/layers_2/cross_attn/value_proj/MatMul_myl936_0
+[11/10/2026-11:32:34] [I]        9.77       0.0233       0.0236       0.2   __myl_Sele_myl936_1
+[11/10/2026-11:32:34] [I]        2.57       0.0061       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_1/cross_attn/output_proj/MatMul_myl936_2
+[11/10/2026-11:32:34] [I]        1.54       0.0037       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl936_3
+[11/10/2026-11:32:34] [I]        5.03       0.0120       0.0123       0.1   /sem_seg_head/predictor/decoder/layers_1/linear1/MatMul_myl936_4
+[11/10/2026-11:32:34] [I]        5.56       0.0133       0.0133       0.1   /sem_seg_head/predictor/decoder/layers_1/linear2/MatMul_myl936_5
+[11/10/2026-11:32:34] [I]        1.51       0.0036       0.0035       0.0   __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl936_6
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl936_7
+[11/10/2026-11:32:34] [I]        1.92       0.0046       0.0044       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_1/MatMul_myl936_8
+[11/10/2026-11:32:34] [I]        1.85       0.0044       0.0041       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_1/MatMul_myl936_9
+[11/10/2026-11:32:34] [I]        2.10       0.0050       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_1/MatMul_myl936_10
+[11/10/2026-11:32:34] [I]        1.92       0.0046       0.0044       0.0   __myl_MaxMinSubMaxMaxMinMinDivLogCastAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlicReshEtc_myl936_11
+[11/10/2026-11:32:34] [I]        2.04       0.0049       0.0051       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_0_2/MatMul_myl936_12
+[11/10/2026-11:32:34] [I]        1.87       0.0045       0.0041       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_1_2/MatMul_myl936_13
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_CastAdd_myl936_14
+[11/10/2026-11:32:34] [I]        2.80       0.0067       0.0065       0.0   /sem_seg_head/predictor/decoder/layers_2/self_attn/MatMul_1+/sem_seg_head/predictor/decoder/layers_2/self_attn/MatMul_myl936_15
+[11/10/2026-11:32:34] [I]        2.75       0.0066       0.0063       0.0   /sem_seg_head/predictor/decoder/layers_2/self_attn/MatMul_3_myl936_16
+[11/10/2026-11:32:34] [I]        1.90       0.0045       0.0043       0.0   __myl_MaxrSubExpSumDivMul_myl936_17
+[11/10/2026-11:32:34] [I]        2.39       0.0057       0.0055       0.0   /sem_seg_head/predictor/decoder/layers_2/self_attn/MatMul_2_myl936_18
+[11/10/2026-11:32:34] [I]        2.59       0.0062       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_2/self_attn/MatMul_4_myl936_19
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Tran_myl936_20
+[11/10/2026-11:32:34] [I]        2.33       0.0056       0.0052       0.0   /sem_seg_head/predictor/decoder/layers_2/self_attn/Gemm_myl936_21
+[11/10/2026-11:32:34] [I]        1.59       0.0038       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl936_22
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Add_myl936_23
+[11/10/2026-11:32:34] [I]        2.39       0.0057       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_2/cross_attn/attention_weights/MatMul+/sem_seg_head/predictor/decoder/layers_2/cross_attn/sampling_offsets/MatMul_myl936_24
+[11/10/2026-11:32:34] [I]        1.25       0.0030       0.0031       0.0   __myl_ReshMaxrSubExpSumDiv_myl936_25
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_ReshMulMulMulAdd_myl936_26
+[11/10/2026-11:32:34] [I]        3.35       0.0080       0.0082       0.1   /sem_seg_head/predictor/decoder/layers.2/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       19.97       0.0477       0.0481       0.3   /sem_seg_head/predictor/decoder/layers_3/cross_attn/value_proj/MatMul_myl940_0
+[11/10/2026-11:32:34] [I]        9.72       0.0232       0.0236       0.2   __myl_Sele_myl940_1
+[11/10/2026-11:32:34] [I]        2.49       0.0059       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_2/cross_attn/output_proj/MatMul_myl940_2
+[11/10/2026-11:32:34] [I]        1.58       0.0038       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl940_3
+[11/10/2026-11:32:34] [I]        5.07       0.0121       0.0123       0.1   /sem_seg_head/predictor/decoder/layers_2/linear1/MatMul_myl940_4
+[11/10/2026-11:32:34] [I]        5.62       0.0134       0.0133       0.1   /sem_seg_head/predictor/decoder/layers_2/linear2/MatMul_myl940_5
+[11/10/2026-11:32:34] [I]        1.57       0.0037       0.0041       0.0   __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl940_6
+[11/10/2026-11:32:34] [I]        1.13       0.0027       0.0031       0.0   __myl_Cast_myl940_7
+[11/10/2026-11:32:34] [I]        1.98       0.0047       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_2/MatMul_myl940_8
+[11/10/2026-11:32:34] [I]        1.85       0.0044       0.0041       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_2/MatMul_myl940_9
+[11/10/2026-11:32:34] [I]        2.09       0.0050       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_2/MatMul_myl940_10
+[11/10/2026-11:32:34] [I]        1.93       0.0046       0.0044       0.0   __myl_MaxMinSubMaxMaxMinMinDivLogCastAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlicReshEtc_myl940_11
+[11/10/2026-11:32:34] [I]        2.05       0.0049       0.0051       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_0_3/MatMul_myl940_12
+[11/10/2026-11:32:34] [I]        1.88       0.0045       0.0041       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_1_3/MatMul_myl940_13
+[11/10/2026-11:32:34] [I]        1.21       0.0029       0.0031       0.0   __myl_CastAdd_myl940_14
+[11/10/2026-11:32:34] [I]        2.77       0.0066       0.0064       0.0   /sem_seg_head/predictor/decoder/layers_3/self_attn/MatMul_1+/sem_seg_head/predictor/decoder/layers_3/self_attn/MatMul_myl940_15
+[11/10/2026-11:32:34] [I]        2.75       0.0066       0.0063       0.0   /sem_seg_head/predictor/decoder/layers_3/self_attn/MatMul_3_myl940_16
+[11/10/2026-11:32:34] [I]        1.90       0.0045       0.0042       0.0   __myl_MaxrSubExpSumDivMul_myl940_17
+[11/10/2026-11:32:34] [I]        2.36       0.0056       0.0055       0.0   /sem_seg_head/predictor/decoder/layers_3/self_attn/MatMul_2_myl940_18
+[11/10/2026-11:32:34] [I]        2.52       0.0060       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_3/self_attn/MatMul_4_myl940_19
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_Tran_myl940_20
+[11/10/2026-11:32:34] [I]        2.23       0.0053       0.0051       0.0   /sem_seg_head/predictor/decoder/layers_3/self_attn/Gemm_myl940_21
+[11/10/2026-11:32:34] [I]        1.54       0.0037       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl940_22
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Add_myl940_23
+[11/10/2026-11:32:34] [I]        2.49       0.0059       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_3/cross_attn/attention_weights/MatMul+/sem_seg_head/predictor/decoder/layers_3/cross_attn/sampling_offsets/MatMul_myl940_24
+[11/10/2026-11:32:34] [I]        1.29       0.0031       0.0031       0.0   __myl_ReshMaxrSubExpSumDiv_myl940_25
+[11/10/2026-11:32:34] [I]        1.24       0.0030       0.0031       0.0   __myl_ReshMulMulMulAdd_myl940_26
+[11/10/2026-11:32:34] [I]        3.35       0.0080       0.0082       0.1   /sem_seg_head/predictor/decoder/layers.3/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       20.05       0.0478       0.0481       0.3   /sem_seg_head/predictor/decoder/layers_4/cross_attn/value_proj/MatMul_myl944_0
+[11/10/2026-11:32:34] [I]        9.74       0.0233       0.0236       0.2   __myl_Sele_myl944_1
+[11/10/2026-11:32:34] [I]        2.44       0.0058       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_3/cross_attn/output_proj/MatMul_myl944_2
+[11/10/2026-11:32:34] [I]        1.75       0.0042       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl944_3
+[11/10/2026-11:32:34] [I]        5.05       0.0121       0.0123       0.1   /sem_seg_head/predictor/decoder/layers_3/linear1/MatMul_myl944_4
+[11/10/2026-11:32:34] [I]        5.64       0.0134       0.0133       0.1   /sem_seg_head/predictor/decoder/layers_3/linear2/MatMul_myl944_5
+[11/10/2026-11:32:34] [I]        1.55       0.0037       0.0041       0.0   __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl944_6
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl944_7
+[11/10/2026-11:32:34] [I]        1.97       0.0047       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_3/MatMul_myl944_8
+[11/10/2026-11:32:34] [I]        1.89       0.0045       0.0043       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_3/MatMul_myl944_9
+[11/10/2026-11:32:34] [I]        2.10       0.0050       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_3/MatMul_myl944_10
+[11/10/2026-11:32:34] [I]        1.92       0.0046       0.0044       0.0   __myl_MaxMinSubMaxMaxMinMinDivLogCastAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlicReshEtc_myl944_11
+[11/10/2026-11:32:34] [I]        2.06       0.0049       0.0051       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_0_4/MatMul_myl944_12
+[11/10/2026-11:32:34] [I]        1.87       0.0045       0.0041       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_1_4/MatMul_myl944_13
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_CastAdd_myl944_14
+[11/10/2026-11:32:34] [I]        2.83       0.0068       0.0072       0.0   /sem_seg_head/predictor/decoder/layers_4/self_attn/MatMul_1+/sem_seg_head/predictor/decoder/layers_4/self_attn/MatMul_myl944_15
+[11/10/2026-11:32:34] [I]        2.72       0.0065       0.0062       0.0   /sem_seg_head/predictor/decoder/layers_4/self_attn/MatMul_3_myl944_16
+[11/10/2026-11:32:34] [I]        1.90       0.0045       0.0043       0.0   __myl_MaxrSubExpSumDivMul_myl944_17
+[11/10/2026-11:32:34] [I]        2.46       0.0059       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_4/self_attn/MatMul_2_myl944_18
+[11/10/2026-11:32:34] [I]        2.51       0.0060       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_4/self_attn/MatMul_4_myl944_19
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Tran_myl944_20
+[11/10/2026-11:32:34] [I]        2.25       0.0054       0.0051       0.0   /sem_seg_head/predictor/decoder/layers_4/self_attn/Gemm_myl944_21
+[11/10/2026-11:32:34] [I]        1.55       0.0037       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl944_22
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Add_myl944_23
+[11/10/2026-11:32:34] [I]        2.42       0.0058       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_4/cross_attn/attention_weights/MatMul+/sem_seg_head/predictor/decoder/layers_4/cross_attn/sampling_offsets/MatMul_myl944_24
+[11/10/2026-11:32:34] [I]        1.24       0.0030       0.0031       0.0   __myl_ReshMaxrSubExpSumDiv_myl944_25
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_ReshMulMulMulAdd_myl944_26
+[11/10/2026-11:32:34] [I]        3.37       0.0080       0.0082       0.1   /sem_seg_head/predictor/decoder/layers.4/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       19.90       0.0475       0.0472       0.3   /sem_seg_head/predictor/decoder/layers_5/cross_attn/value_proj/MatMul_myl948_0
+[11/10/2026-11:32:34] [I]        9.73       0.0232       0.0236       0.2   __myl_Sele_myl948_1
+[11/10/2026-11:32:34] [I]        2.49       0.0059       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_4/cross_attn/output_proj/MatMul_myl948_2
+[11/10/2026-11:32:34] [I]        1.63       0.0039       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl948_3
+[11/10/2026-11:32:34] [I]        5.03       0.0120       0.0123       0.1   /sem_seg_head/predictor/decoder/layers_4/linear1/MatMul_myl948_4
+[11/10/2026-11:32:34] [I]        5.53       0.0132       0.0133       0.1   /sem_seg_head/predictor/decoder/layers_4/linear2/MatMul_myl948_5
+[11/10/2026-11:32:34] [I]        1.54       0.0037       0.0041       0.0   __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl948_6
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl948_7
+[11/10/2026-11:32:34] [I]        1.98       0.0047       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_4/MatMul_myl948_8
+[11/10/2026-11:32:34] [I]        1.93       0.0046       0.0044       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_4/MatMul_myl948_9
+[11/10/2026-11:32:34] [I]        2.10       0.0050       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_4/MatMul_myl948_10
+[11/10/2026-11:32:34] [I]        1.94       0.0046       0.0045       0.0   __myl_MaxMinSubMaxMaxMinMinDivLogCastAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlicReshEtc_myl948_11
+[11/10/2026-11:32:34] [I]        2.06       0.0049       0.0051       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_0_5/MatMul_myl948_12
+[11/10/2026-11:32:34] [I]        1.90       0.0045       0.0043       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_1_5/MatMul_myl948_13
+[11/10/2026-11:32:34] [I]        1.22       0.0029       0.0031       0.0   __myl_CastAdd_myl948_14
+[11/10/2026-11:32:34] [I]        2.80       0.0067       0.0072       0.0   /sem_seg_head/predictor/decoder/layers_5/self_attn/MatMul_1+/sem_seg_head/predictor/decoder/layers_5/self_attn/MatMul_myl948_15
+[11/10/2026-11:32:34] [I]        2.70       0.0064       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_5/self_attn/MatMul_3_myl948_16
+[11/10/2026-11:32:34] [I]        1.94       0.0046       0.0045       0.0   __myl_MaxrSubExpSumDivMul_myl948_17
+[11/10/2026-11:32:34] [I]        2.46       0.0059       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_5/self_attn/MatMul_2_myl948_18
+[11/10/2026-11:32:34] [I]        2.54       0.0061       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_5/self_attn/MatMul_4_myl948_19
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Tran_myl948_20
+[11/10/2026-11:32:34] [I]        2.27       0.0054       0.0051       0.0   /sem_seg_head/predictor/decoder/layers_5/self_attn/Gemm_myl948_21
+[11/10/2026-11:32:34] [I]        1.54       0.0037       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl948_22
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Add_myl948_23
+[11/10/2026-11:32:34] [I]        2.41       0.0058       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_5/cross_attn/attention_weights/MatMul+/sem_seg_head/predictor/decoder/layers_5/cross_attn/sampling_offsets/MatMul_myl948_24
+[11/10/2026-11:32:34] [I]        1.24       0.0030       0.0031       0.0   __myl_ReshMaxrSubExpSumDiv_myl948_25
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_ReshMulMulMulAdd_myl948_26
+[11/10/2026-11:32:34] [I]        3.35       0.0080       0.0082       0.1   /sem_seg_head/predictor/decoder/layers.5/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       20.04       0.0478       0.0481       0.3   /sem_seg_head/predictor/decoder/layers_6/cross_attn/value_proj/MatMul_myl952_0
+[11/10/2026-11:32:34] [I]        9.69       0.0231       0.0236       0.2   __myl_Sele_myl952_1
+[11/10/2026-11:32:34] [I]        2.51       0.0060       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_5/cross_attn/output_proj/MatMul_myl952_2
+[11/10/2026-11:32:34] [I]        1.59       0.0038       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl952_3
+[11/10/2026-11:32:34] [I]        5.08       0.0121       0.0123       0.1   /sem_seg_head/predictor/decoder/layers_5/linear1/MatMul_myl952_4
+[11/10/2026-11:32:34] [I]        5.66       0.0135       0.0133       0.1   /sem_seg_head/predictor/decoder/layers_5/linear2/MatMul_myl952_5
+[11/10/2026-11:32:34] [I]        1.58       0.0038       0.0041       0.0   __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl952_6
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Cast_myl952_7
+[11/10/2026-11:32:34] [I]        1.93       0.0046       0.0045       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_5/MatMul_myl952_8
+[11/10/2026-11:32:34] [I]        1.84       0.0044       0.0041       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_5/MatMul_myl952_9
+[11/10/2026-11:32:34] [I]        2.08       0.0050       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_5/MatMul_myl952_10
+[11/10/2026-11:32:34] [I]        1.92       0.0046       0.0044       0.0   __myl_MaxMinSubMaxMaxMinMinDivLogCastAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlicReshEtc_myl952_11
+[11/10/2026-11:32:34] [I]        2.06       0.0049       0.0051       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_0_6/MatMul_myl952_12
+[11/10/2026-11:32:34] [I]        1.88       0.0045       0.0041       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_1_6/MatMul_myl952_13
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_CastAdd_myl952_14
+[11/10/2026-11:32:34] [I]        2.81       0.0067       0.0072       0.0   /sem_seg_head/predictor/decoder/layers_6/self_attn/MatMul_1+/sem_seg_head/predictor/decoder/layers_6/self_attn/MatMul_myl952_15
+[11/10/2026-11:32:34] [I]        2.72       0.0065       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_6/self_attn/MatMul_3_myl952_16
+[11/10/2026-11:32:34] [I]        1.89       0.0045       0.0041       0.0   __myl_MaxrSubExpSumDivMul_myl952_17
+[11/10/2026-11:32:34] [I]        2.48       0.0059       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_6/self_attn/MatMul_2_myl952_18
+[11/10/2026-11:32:34] [I]        2.59       0.0062       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_6/self_attn/MatMul_4_myl952_19
+[11/10/2026-11:32:34] [I]        1.19       0.0028       0.0031       0.0   __myl_Tran_myl952_20
+[11/10/2026-11:32:34] [I]        2.34       0.0056       0.0053       0.0   /sem_seg_head/predictor/decoder/layers_6/self_attn/Gemm_myl952_21
+[11/10/2026-11:32:34] [I]        1.52       0.0036       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl952_22
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_Add_myl952_23
+[11/10/2026-11:32:34] [I]        2.45       0.0058       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_6/cross_attn/attention_weights/MatMul+/sem_seg_head/predictor/decoder/layers_6/cross_attn/sampling_offsets/MatMul_myl952_24
+[11/10/2026-11:32:34] [I]        1.26       0.0030       0.0031       0.0   __myl_ReshMaxrSubExpSumDiv_myl952_25
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_ReshMulMulMulAdd_myl952_26
+[11/10/2026-11:32:34] [I]       39.34       0.0939       0.0942       0.6   /sem_seg_head/Cast_4
+[11/10/2026-11:32:34] [I]       66.42       0.1585       0.1587       1.0   /sem_seg_head/adapter_1/Conv
+[11/10/2026-11:32:34] [I]        6.31       0.0151       0.0154       0.1   /sem_seg_head/predictor/decoder/layers.6/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]        1.14       0.0027       0.0031       0.0   __myl_Move_myl958_0
+[11/10/2026-11:32:34] [I]        1.08       0.0026       0.0031       0.0   __myl_Move_myl958_1
+[11/10/2026-11:32:34] [I]       57.85       0.1381       0.1382       0.9   __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddMeanMean_myl958_2
+[11/10/2026-11:32:34] [I]       21.94       0.0524       0.0522       0.3   /sem_seg_head/predictor/decoder/layers_7/cross_attn/value_proj/MatMul_myl958_3
+[11/10/2026-11:32:34] [I]        9.85       0.0235       0.0236       0.2   __myl_Sele_myl958_4
+[11/10/2026-11:32:34] [I]        2.63       0.0063       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_6/cross_attn/output_proj/MatMul_myl958_5
+[11/10/2026-11:32:34] [I]        1.78       0.0042       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl958_6
+[11/10/2026-11:32:34] [I]        5.23       0.0125       0.0123       0.1   /sem_seg_head/predictor/decoder/layers_6/linear1/MatMul_myl958_7
+[11/10/2026-11:32:34] [I]        5.80       0.0138       0.0137       0.1   /sem_seg_head/predictor/decoder/layers_6/linear2/MatMul_myl958_8
+[11/10/2026-11:32:34] [I]        1.57       0.0038       0.0041       0.0   __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl958_9
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Cast_myl958_10
+[11/10/2026-11:32:34] [I]        1.95       0.0046       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_6/MatMul_myl958_11
+[11/10/2026-11:32:34] [I]        1.84       0.0044       0.0041       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_6/MatMul_myl958_12
+[11/10/2026-11:32:34] [I]        2.10       0.0050       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_6/MatMul_myl958_13
+[11/10/2026-11:32:34] [I]        1.96       0.0047       0.0051       0.0   __myl_MaxMinSubMaxMaxMinMinDivLogCastAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlicReshEtc_myl958_14
+[11/10/2026-11:32:34] [I]        2.06       0.0049       0.0051       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_0_7/MatMul_myl958_15
+[11/10/2026-11:32:34] [I]        1.90       0.0045       0.0043       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_1_7/MatMul_myl958_16
+[11/10/2026-11:32:34] [I]        1.22       0.0029       0.0031       0.0   __myl_CastAdd_myl958_17
+[11/10/2026-11:32:34] [I]        2.79       0.0067       0.0066       0.0   /sem_seg_head/predictor/decoder/layers_7/self_attn/MatMul_1+/sem_seg_head/predictor/decoder/layers_7/self_attn/MatMul_myl958_18
+[11/10/2026-11:32:34] [I]        2.73       0.0065       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_7/self_attn/MatMul_3_myl958_19
+[11/10/2026-11:32:34] [I]        1.92       0.0046       0.0044       0.0   __myl_MaxrSubExpSumDivMul_myl958_20
+[11/10/2026-11:32:34] [I]        2.42       0.0058       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_7/self_attn/MatMul_2_myl958_21
+[11/10/2026-11:32:34] [I]        2.52       0.0060       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_7/self_attn/MatMul_4_myl958_22
+[11/10/2026-11:32:34] [I]        1.17       0.0028       0.0031       0.0   __myl_Tran_myl958_23
+[11/10/2026-11:32:34] [I]        2.26       0.0054       0.0051       0.0   /sem_seg_head/predictor/decoder/layers_7/self_attn/Gemm_myl958_24
+[11/10/2026-11:32:34] [I]        1.50       0.0036       0.0034       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl958_25
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_Add_myl958_26
+[11/10/2026-11:32:34] [I]        2.44       0.0058       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_7/cross_attn/attention_weights/MatMul+/sem_seg_head/predictor/decoder/layers_7/cross_attn/sampling_offsets/MatMul_myl958_27
+[11/10/2026-11:32:34] [I]        1.25       0.0030       0.0031       0.0   __myl_ReshMaxrSubExpSumDiv_myl958_28
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_ReshMulMulMulAdd_myl958_29
+[11/10/2026-11:32:34] [I]       39.26       0.0937       0.0936       0.6   /sem_seg_head/Resize
+[11/10/2026-11:32:34] [I]       89.41       0.2134       0.2131       1.4   __myl_Add_myl962_0
+[11/10/2026-11:32:34] [I]      379.06       0.9047       0.9034       6.0   /sem_seg_head/layer_1/Conv
+[11/10/2026-11:32:34] [I]        5.48       0.0131       0.0133       0.1   /sem_seg_head/predictor/decoder/layers.7/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]       21.53       0.0514       0.0512       0.3   /sem_seg_head/predictor/decoder/layers_8/cross_attn/value_proj/MatMul_myl968_0
+[11/10/2026-11:32:34] [I]        9.79       0.0234       0.0236       0.2   __myl_Sele_myl968_1
+[11/10/2026-11:32:34] [I]        1.10       0.0026       0.0031       0.0   __myl_Move_myl968_2
+[11/10/2026-11:32:34] [I]        1.06       0.0025       0.0023       0.0   __myl_Move_myl968_3
+[11/10/2026-11:32:34] [I]       65.39       0.1561       0.1567       1.0   __myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddReluMeanMean_myl968_4
+[11/10/2026-11:32:34] [I]        2.61       0.0062       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_7/cross_attn/output_proj/MatMul_myl968_5
+[11/10/2026-11:32:34] [I]        1.78       0.0042       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl968_6
+[11/10/2026-11:32:34] [I]        5.14       0.0123       0.0123       0.1   /sem_seg_head/predictor/decoder/layers_7/linear1/MatMul_myl968_7
+[11/10/2026-11:32:34] [I]        5.74       0.0137       0.0133       0.1   /sem_seg_head/predictor/decoder/layers_7/linear2/MatMul_myl968_8
+[11/10/2026-11:32:34] [I]        1.63       0.0039       0.0041       0.0   __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl968_9
+[11/10/2026-11:32:34] [I]        1.15       0.0027       0.0031       0.0   __myl_Cast_myl968_10
+[11/10/2026-11:32:34] [I]        1.96       0.0047       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_0_7/MatMul_myl968_11
+[11/10/2026-11:32:34] [I]        1.90       0.0045       0.0044       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_1_7/MatMul_myl968_12
+[11/10/2026-11:32:34] [I]        2.11       0.0050       0.0051       0.0   /sem_seg_head/predictor/decoder/bbox_embed_0/layers_2_7/MatMul_myl968_13
+[11/10/2026-11:32:34] [I]        1.93       0.0046       0.0044       0.0   __myl_MaxMinSubMaxMaxMinMinDivLogCastAddSigmReshMulReshSlicSlicSlicReshSlicReshSlicReshSlicReshEtc_myl968_14
+[11/10/2026-11:32:34] [I]        2.06       0.0049       0.0051       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_0_8/MatMul_myl968_15
+[11/10/2026-11:32:34] [I]        1.91       0.0046       0.0043       0.0   /sem_seg_head/predictor/decoder/ref_point_head/layers_1_8/MatMul_myl968_16
+[11/10/2026-11:32:34] [I]        1.22       0.0029       0.0031       0.0   __myl_CastAdd_myl968_17
+[11/10/2026-11:32:34] [I]        2.80       0.0067       0.0066       0.0   /sem_seg_head/predictor/decoder/layers_8/self_attn/MatMul_1+/sem_seg_head/predictor/decoder/layers_8/self_attn/MatMul_myl968_18
+[11/10/2026-11:32:34] [I]        2.72       0.0065       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_8/self_attn/MatMul_3_myl968_19
+[11/10/2026-11:32:34] [I]        1.90       0.0045       0.0043       0.0   __myl_MaxrSubExpSumDivMul_myl968_20
+[11/10/2026-11:32:34] [I]        2.44       0.0058       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_8/self_attn/MatMul_2_myl968_21
+[11/10/2026-11:32:34] [I]        2.61       0.0062       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_8/self_attn/MatMul_4_myl968_22
+[11/10/2026-11:32:34] [I]        1.18       0.0028       0.0031       0.0   __myl_Tran_myl968_23
+[11/10/2026-11:32:34] [I]        2.30       0.0055       0.0051       0.0   /sem_seg_head/predictor/decoder/layers_8/self_attn/Gemm_myl968_24
+[11/10/2026-11:32:34] [I]        1.58       0.0038       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl968_25
+[11/10/2026-11:32:34] [I]        1.16       0.0028       0.0031       0.0   __myl_Add_myl968_26
+[11/10/2026-11:32:34] [I]        2.39       0.0057       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_8/cross_attn/attention_weights/MatMul+/sem_seg_head/predictor/decoder/layers_8/cross_attn/sampling_offsets/MatMul_myl968_27
+[11/10/2026-11:32:34] [I]        1.27       0.0030       0.0031       0.0   __myl_ReshMaxrSubExpSumDiv_myl968_28
+[11/10/2026-11:32:34] [I]        1.20       0.0029       0.0031       0.0   __myl_ReshMulMulMulAdd_myl968_29
+[11/10/2026-11:32:34] [I]       67.52       0.1611       0.1608       1.1   /sem_seg_head/mask_features/Conv
+[11/10/2026-11:32:34] [I]        6.12       0.0146       0.0143       0.1   /sem_seg_head/predictor/decoder/layers.8/cross_attn/MultiscaleDeformableAttnPlugin_TRT
+[11/10/2026-11:32:34] [I]        2.51       0.0060       0.0061       0.0   /sem_seg_head/predictor/decoder/layers_8/cross_attn/output_proj/MatMul_myl973_0
+[11/10/2026-11:32:34] [I]        1.73       0.0041       0.0041       0.0   __myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl973_1
+[11/10/2026-11:32:34] [I]        5.10       0.0122       0.0123       0.1   /sem_seg_head/predictor/decoder/layers_8/linear1/MatMul_myl973_2
+[11/10/2026-11:32:34] [I]        5.87       0.0140       0.0143       0.1   /sem_seg_head/predictor/decoder/layers_8/linear2/MatMul_myl973_3
+[11/10/2026-11:32:34] [I]        2.08       0.0050       0.0051       0.0   __myl_ReshAddMeanSubMulMeanAddSqrtDivMulMulAddMeanSubMulMeanAddSqrtDivMulMulAddCastMeanSubMulMeanEtc_myl973_4
+[11/10/2026-11:32:34] [I]        2.99       0.0071       0.0072       0.0   /sem_seg_head/predictor/class_embed_1/MatMul_myl973_5
+[11/10/2026-11:32:34] [I]        1.12       0.0027       0.0031       0.0   __myl_Cast_myl973_6
+[11/10/2026-11:32:34] [I]        1.99       0.0048       0.0051       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_0_9/MatMul_myl973_7
+[11/10/2026-11:32:34] [I]        1.91       0.0046       0.0042       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_1_9/MatMul_myl973_8
+[11/10/2026-11:32:34] [I]        2.11       0.0050       0.0051       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_2_9/MatMul_myl973_9
+[11/10/2026-11:32:34] [I]        1.54       0.0037       0.0041       0.0   __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAddCast_myl973_10
+[11/10/2026-11:32:34] [I]        1.80       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_0_4/MatMul_myl973_11
+[11/10/2026-11:32:34] [I]        1.79       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_1_4/MatMul_myl973_12
+[11/10/2026-11:32:34] [I]        1.98       0.0047       0.0051       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_2_4/MatMul_myl973_13
+[11/10/2026-11:32:34] [I]        1.51       0.0036       0.0035       0.0   __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAddCast_myl973_14
+[11/10/2026-11:32:34] [I]        1.81       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_0_3/MatMul_myl973_15
+[11/10/2026-11:32:34] [I]        1.82       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_1_3/MatMul_myl973_16
+[11/10/2026-11:32:34] [I]        1.98       0.0047       0.0051       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_2_3/MatMul_myl973_17
+[11/10/2026-11:32:34] [I]        1.50       0.0036       0.0035       0.0   __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAddCast_myl973_18
+[11/10/2026-11:32:34] [I]        1.80       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_0_2/MatMul_myl973_19
+[11/10/2026-11:32:34] [I]        1.83       0.0044       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_1_2/MatMul_myl973_20
+[11/10/2026-11:32:34] [I]        1.98       0.0047       0.0051       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_2_2/MatMul_myl973_21
+[11/10/2026-11:32:34] [I]        1.57       0.0037       0.0041       0.0   __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAddCast_myl973_22
+[11/10/2026-11:32:34] [I]        1.80       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_0_1/MatMul_myl973_23
+[11/10/2026-11:32:34] [I]        1.86       0.0044       0.0042       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_1_1/MatMul_myl973_24
+[11/10/2026-11:32:34] [I]        1.98       0.0047       0.0051       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_2_1/MatMul_myl973_25
+[11/10/2026-11:32:34] [I]        1.51       0.0036       0.0035       0.0   __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAddCast_myl973_26
+[11/10/2026-11:32:34] [I]        1.79       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_0_8/MatMul_myl973_27
+[11/10/2026-11:32:34] [I]        1.81       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_1_8/MatMul_myl973_28
+[11/10/2026-11:32:34] [I]        1.97       0.0047       0.0051       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_2_8/MatMul_myl973_29
+[11/10/2026-11:32:34] [I]        1.50       0.0036       0.0034       0.0   __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAddCast_myl973_30
+[11/10/2026-11:32:34] [I]        1.80       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_0_7/MatMul_myl973_31
+[11/10/2026-11:32:34] [I]        1.81       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_1_7/MatMul_myl973_32
+[11/10/2026-11:32:34] [I]        1.98       0.0047       0.0051       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_2_7/MatMul_myl973_33
+[11/10/2026-11:32:34] [I]        1.52       0.0036       0.0035       0.0   __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAddCast_myl973_34
+[11/10/2026-11:32:34] [I]        1.80       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_0_6/MatMul_myl973_35
+[11/10/2026-11:32:34] [I]        1.81       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_1_6/MatMul_myl973_36
+[11/10/2026-11:32:34] [I]        1.96       0.0047       0.0051       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_2_6/MatMul_myl973_37
+[11/10/2026-11:32:34] [I]        1.52       0.0036       0.0041       0.0   __myl_MoveMeanSubMulMeanAddSqrtDivMulMulAddCast_myl973_38
+[11/10/2026-11:32:34] [I]        1.79       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_0_5/MatMul_myl973_39
+[11/10/2026-11:32:34] [I]        1.81       0.0043       0.0041       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_1_5/MatMul_myl973_40
+[11/10/2026-11:32:34] [I]        1.98       0.0047       0.0051       0.0   /sem_seg_head/predictor/bbox_embed_0/layers_2_5/MatMul_myl973_41
+[11/10/2026-11:32:34] [I]        1.24       0.0030       0.0031       0.0   __myl_SigmReshReshMaxMinSubMaxMaxMinMinDivLogReshMaxMinSubMaxCastAddSigmReshMaxMinMinDivLogReshEtc_myl973_42
+[11/10/2026-11:32:34] [I]        1.91       0.0046       0.0043       0.0   /sem_seg_head/predictor/mask_embed/layers_0/MatMul_myl973_43
+[11/10/2026-11:32:34] [I]        1.93       0.0046       0.0044       0.0   /sem_seg_head/predictor/mask_embed/layers_1/MatMul_myl973_44
+[11/10/2026-11:32:34] [I]        1.91       0.0046       0.0042       0.0   /sem_seg_head/predictor/mask_embed/layers_2/MatMul_myl973_45
+[11/10/2026-11:32:34] [I]       33.34       0.0796       0.0799       0.5   __myl_Cast_myl973_46
+[11/10/2026-11:32:34] [I]       28.15       0.0672       0.0676       0.4   /sem_seg_head/predictor/Einsum_myl973_47
+[11/10/2026-11:32:34] [I]       43.65       0.1042       0.1044       0.7   __myl_Cast_myl973_48
+[11/10/2026-11:32:34] [I]     6334.62      15.1184      15.1185     100.0   Total
+[11/10/2026-11:32:34] [I] 
+&&&& PASSED TensorRT.trtexec [TensorRT v101401] [b48] # trtexec --loadEngine=/network.engine --infStreams=1 --noDataTransfers --warmUp=2000 --duration=5 --iterations=300 --percentile=50,95 --loadInputs=image:107339.f32 --separateProfileRun --dumpProfile --exportProfile=107339-r1.layers.json --exportTimes=107339-r1.times.json

@@ -1,0 +1,6 @@
+timestamp, pid, process_name, used_gpu_memory [MiB]
+2026/11/10 19:43:54.959, 71937, /output/maskdino-slots, 1176 MiB
+2026/11/10 19:43:55.960, 71946, /output/maskdino-slots, 1176 MiB
+2026/11/10 19:43:56.960, 71955, /output/maskdino-slots, 1080 MiB
+2026/11/10 19:43:57.960, 71964, /output/maskdino-slots, 546 MiB
+2026/11/10 19:43:58.961, 71964, /output/maskdino-slots, 1644 MiB
