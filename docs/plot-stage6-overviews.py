@@ -58,7 +58,7 @@ def render(path, title, subtitle, groups, foot1, foot2):
         group_width = 530 / len(groups)
         for index, group in enumerate(groups):
             center = x + 52 + (index + 0.5) * group_width
-            svg.append(f'<text x="{center:.2f}" y="351" text-anchor="middle" font-size="14" font-weight="650">{escape(group['name'])}</text>')
+            svg.append(f'<text x="{center:.2f}" y="351" text-anchor="middle" font-size="14" font-weight="650">{escape(group["name"])}</text>')
             active = [item for item in group["values"] if item.get(key) is not None]
             bar_width = min(30, (group_width - 12) / max(1, len(active)) - 7)
             spacing = min(37, (group_width - 12) / max(1, len(active)))
@@ -68,23 +68,23 @@ def render(path, title, subtitle, groups, foot1, foot2):
                 h = 175 * amount / maximum
                 y = 327 - h
                 svg.extend([
-                    f'<rect x="{cx - bar_width / 2:.2f}" y="{y:.2f}" width="{bar_width:.2f}" height="{h:.2f}" rx="3" fill="{item['color']}"/>',
+                    f'<rect x="{cx - bar_width / 2:.2f}" y="{y:.2f}" width="{bar_width:.2f}" height="{h:.2f}" rx="3" fill="{item["color"]}"/>',
                     f'<text x="{cx:.2f}" y="{y - 6:.2f}" text-anchor="middle" font-size="12" font-weight="650">{amount:.2f}</text>'
                 ])
     legend = []
     seen = set()
     for group in groups:
         for value in group["values"]:
-            if value['name'] not in seen:
-                seen.add(value['name'])
+            if value["name"] not in seen:
+                seen.add(value["name"])
                 legend.append(value)
-    start = 630 - sum(len(value['name']) * 8 + 36 for value in legend) / 2
+    start = 630 - sum(len(value["name"]) * 8 + 36 for value in legend) / 2
     for value in legend:
         svg.extend([
-            f'<rect x="{start}" y="401" width="12" height="12" rx="2" fill="{value['color']}"/>',
-            f'<text x="{start + 18}" y="412" font-size="12">{escape(value['name'])}</text>',
+            f'<rect x="{start}" y="401" width="12" height="12" rx="2" fill="{value["color"]}"/>',
+            f'<text x="{start + 18}" y="412" font-size="12">{escape(value["name"])}</text>',
         ])
-        start += len(value['name']) * 8 + 36
+        start += len(value["name"]) * 8 + 36
     svg.extend([
         f'<text x="24" y="446" font-size="13">{escape(foot1)}</text>',
         f'<text x="24" y="465" font-size="13">{escape(foot2)}</text>',
@@ -108,7 +108,7 @@ def main():
     render(
         "precision-performance.svg", "PyTorch vs. TensorRT · Stage 6 included",
         "RTX 4090 · 1024×1024 · batch 1 · historical 500-JPEG runs",
-        [{"name": row['name'], "values": [row]} for row in precision],
+        [{"name": row["name"], "values": [row]} for row in precision],
         "Stage 2–4 P95 starts at JPEG processing; Stage 6 starts at slot dispatch. Stage 5 uses peak S3/S3/S2 throughput.",
         "Stage 6 FFN uses steady-state B1/S2 throughput; PQ 53.1856, strict image agreement 26/32 (see README).",
     )
