@@ -25,7 +25,7 @@
 
 1. [Stage 1](#stage-1--复现原始模型精度) · 用官方 PyTorch 配置复现 COCO PQ 得分。
 2. [Stage 2](#stage-2--调整预处理方法并建立性能基线) · 修改预处理为使用 letterbox，选定输入尺寸 1024×1024 / B1 作为部署基线，并选定32张对齐数据和500张计时样本。
-3. [Stage 3](#stage-3--将网络转换为-tensorrt) · 导出 ONNX，接入 MSDeformAttn 插件，构建trt engine, 替换网络后端并筛选精度策略。
+3. [Stage 3](#stage-3--将网络转换为-tensorrt) · 导出 ONNX，接入 MSDeformAttn 插件，构建TensorRT Engine, 替换网络后端并筛选精度策略。
 4. [Stage 4](#stage-4--用-ccuda-实现前后处理) · 用 C++/CUDA 实现前后处理，在单 slot 下对比三种 engine。
 5. [Stage 5](#stage-5--用多-cuda-stream-实现异步并发) · 用多 CUDA stream 重叠 GPU 工作，对比各 engine 的 S1–S4 吞吐。
 6. [Stage 6](#stage-6--tensorrt-逐层-profiling-与进一步优化) · 逐层定位 TensorRT 热点，验证 FPN 和 encoder FFN 的局部混合精度。
@@ -49,7 +49,7 @@ Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stag
 
 ## Stage 2 · 调整预处理方法并建立性能基线
 
-为了业务推理时使用batch，调整预处理方法，用 letterbox 将输入图片等比缩放并填充到正方形，再将分割输出恢复到原图坐标。1024 相比 800 高 **1.1742 PQ**，选为部署尺寸。。[32 张对齐与 500 张计时样本](stage2/sample.json)
+为为了支持固定形状批处理，并统一不同原始分辨率的输入，调整预处理方法，用 letterbox 将输入图片等比缩放并填充到正方形，再将分割输出恢复到原图坐标。1024 相比 800 高 **1.1742 PQ**，选为部署尺寸。[32 张对齐与 500 张计时样本](stage2/sample.json)
 
 ### 全量 COCO PQ
 
@@ -164,7 +164,7 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 
 逐层 profiler 的耗时总和与正常网络延迟并不等价；以上数值用于定位热点，而非直接预测端到端加速。[Profiling 方法、原始数据与 Kernel 分析](stage6/layer-profile.md)
 
-### 优化一：FPN 单层 FP16（已通过当前验收）
+### 优化一：FPN 单层 FP16
 
 **方法：** 只把 `/sem_seg_head/layer_1/Conv` 的输入和权重改为 FP16，促使 TensorRT 选择 FP16 Tensor Core tactic，并在 GroupNorm 前转回 FP32。性能统计包含新增 Cast/reformat 等相邻计算，而不仅是卷积 Kernel。
 
@@ -178,7 +178,7 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 
 **精度与结论：** B1/S1、B1/S2 各完成 5,000 张 COCO val2017，PQ 均为 **53.1718**，满足预设 PQ、PQ Things、PQ Stuff 精度容差。**接受该 FPN 优化**（验收提交 `5f7b57f`）。[完整 FPN A/B、交叉替换及全量 PQ](stage6/fpn-half-ab.md)
 
-### 优化二：Encoder FFN FP16（保留实验配置）
+### 优化二：Encoder FFN FP16
 
 **方法：** 在已通过验收的 FPN Engine 基础上，将 Encoder 六层 FFN 的 `linear1 → ReLU → linear2`（含 bias）计算切换为 FP16，共覆盖 **12 个 GEMM**；在 residual add 和 LayerNorm 前恢复 FP32。Inspector 确认使用了 FP16 Tensor Core tactic。
 
@@ -192,7 +192,7 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 
 这意味着：**全量任务精度几乎不变，不代表优化前后的每张图输出仍然接近。** PQ 评估对 ground truth 的整体分割质量；逐图对齐评估候选相对参考 Engine 的预测行为。FFN 数值变化是否通过 Encoder 特征、proposal TopK 和 Decoder query 放大，**尚未完成中间张量因果验证**。
 
-**结论：** 性能收益明显，但未满足当前严格逐图一致性门槛，**不标记为已验收优化**；后续需开展 FFN 分层精度敏感性与误差传播实验。[FFN 性能、六张失败图和全量 PQ](stage6/ffn-full-half.md)
+**结论：** 性能收益明显，但未满足严格逐图一致性门槛。[FFN 性能、六张失败图和全量 PQ](stage6/ffn-full-half.md)
 
 ### Stage 2–6 累计性能里程碑
 
