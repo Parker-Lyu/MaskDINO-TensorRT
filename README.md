@@ -11,7 +11,7 @@
 1. **TensorRT 集成（TensorRT Integration）：** 定位并修复 ONNX 导出中的常量设备兼容问题；集成 MSDeformAttn PluginV3，构建 TensorRT Engine，并验证插件数值及模型输出。
 2. **原生推理链路（Native Inference Pipeline）：** 使用 C++/CUDA 实现 JPEG 解码后的预处理、分割后处理与结果恢复，管理 GPU / pinned host 缓冲区，完成 TensorRT 异步执行及 CPU 全景分割图和 segment metadata 交付。
 3. **并发与性能分析（Concurrency & Profiling）：** 采用独立 execution context、CUDA stream 和缓冲区的多 slot 调度；结合 Nsight Systems、Nsight Compute 与 TensorRT 逐层 Profiling，分析 GPU 执行重叠、延迟、吞吐及算子热点。
-4. **精度优化与故障归因（Precision Optimization & Debugging）：** 针对 FPN 卷积和 Encoder FFN 进行局部 FP16 实验；排查 TensorRT tactic 变化，结合逐图对齐与 COCO 全量 PQ 验证性能收益和精度风险。**FPN 优化已通过当前验收；FFN 优化仍为未通过严格逐图验收的实验配置。**
+4. **精度优化与故障归因（Precision Optimization & Debugging）：** 针对 FPN 卷积和 Encoder FFN 进行局部 FP16 实验；排查 TensorRT tactic 变化，结合逐图对齐与 COCO 全量 PQ 验证性能收益和精度风险。
 
 ## 推理性能对比
 
@@ -28,9 +28,9 @@
 
 ![PyTorch、三种 TensorRT 精度策略及 Stage 6 FFN 的单 slot P95 与离线吞吐对比](docs/precision-performance.svg)
 
-**统计口径：** 表格均为 RTX 4090、1024×1024、B1 下的归档实验结果。PyTorch 与 Stage 4 单 slot 的 P95 从开始处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪；Stage 6 的 P95 从请求派发到 slot 起算。前四组吞吐来自 Stage 2 单路或 Stage 5 的 S1–S4 离线初筛峰值，Stage 6 吞吐则取 B1/S2 同轮实验中间 90% 窗口的**稳态吞吐**。因此括号中的缩短比例和吞吐倍数仅作跨阶段历史描述，**不是统一口径的配对加速比**；具体性能改善应以各 Stage 的 A/B 为准。
+**统计口径：** 表格均为 RTX 4090、1024×1024、B1 下的归档实验结果。PyTorch 与 Stage 4 单 slot 的 P95 从开始处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪；Stage 6 的 P95 从请求派发到 slot 起算。前四组吞吐来自 Stage 2 单路或 Stage 5 的 S1–S4 离线初筛峰值，Stage 6 吞吐则取 B1/S2 同轮实验中间 90% 窗口的**稳态吞吐**。。
 
-**精度口径：** 全量 PQ 使用相同 letterbox 输入的 PyTorch FP32 B1 作为基线，在 COCO val2017 的 5,000 张图上计算。前面 TensorRT 精度策略的逐图通过数取 Stage 3 对 PyTorch 的 32 张检查；Stage 6 FFN 的 **26/32** 则是与已验收 FPN Engine 的 32 张逐图检查，**参考对象不同**。全量 PQ 接近并不代表逐图预测一致，详见 [Stage 3](#stage-3--将网络转换为-tensorrt) 和 [Stage 6](#stage-6--tensorrt-逐层-profiling-与进一步优化)。
+**精度口径：** 全量 PQ 使用相同 letterbox 输入的 PyTorch FP32 B1 作为基线，在 COCO val2017 的 5,000 张图上计算。前面 TensorRT 精度策略的逐图通过数取 Stage 3 对 PyTorch 的 32 张检查；Stage 6 FFN 的 **26/32** 则是与已验收 FPN Engine 的 32 张逐图检查，详见 [Stage 3](#stage-3--将网络转换为-tensorrt) 和 [Stage 6](#stage-6--tensorrt-逐层-profiling-与进一步优化)。
 
 ## 技术路线
 
@@ -205,11 +205,14 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 
 **结论：** 性能收益明显，但未满足严格逐图一致性门槛。[FFN 性能、六张失败图和全量 PQ](stage6/ffn-full-half.md)
 
-### Stage 2–6 累计性能里程碑
+### Stage 1–6 累计对比
 
-![Stage 2–6 累计性能里程碑：包含 PyTorch、TensorRT、原生 C++/CUDA、多 Slot 及 Stage 6 FPN/FFN FP16；FFN 为实验配置。](docs/stage6-cumulative.svg)
+![Stage 1–6 累计对比。保留 Stage 1–5 的数据和四个面板，加入 Stage 6 FPN FP16 与实验配置 FPN + 六层 FFN FP16 的 B1/S1、B1/S2 结果。](docs/stage6-cumulative.svg)
 
-图中保留主要阶段的**历史结果**，不是同轮配对：Stage 2–4 延迟从开始处理内存 JPEG 起算，Stage 6 从派发到 slot 起算；Stage 5 的吞吐来自 500 图离线初筛峰值，Stage 6 为中间 90% 窗口稳态吞吐。**跨阶段数据只展示优化路线，不应据此精确归因性能收益；具体收益以各阶段同轮 A/B 为准。** Stage 6 FFN 的逐图对齐为 **26/32**；如同 Stage 3 的部分精度策略，这一事实在正文和数据表中明确说明，不通过图例星号区分。
+
+端到端 P95 在 Stage 2–4 从开始处理内存 JPEG 起算，在 Stage 5–6 从派发到 slot 起算，均计到 CPU 结果就绪。Stage 5 吞吐按 500 图离线初筛的整轮统计，Stage 6 取中间 90% 窗口的稳态吞吐。优化收益以同轮 A/B 为准，例如 FPN 在 B1/S2 下的稳态吞吐从 **74.21** 提高到 **76.33 图/s（+2.9%）**。
+
+运行 `python3 docs/plot-roadmap.py --cumulative-only` 可重绘累计图。
 
 [Stage 6 完整实验流程、证据、复现与局限](stage6/README.md)
 

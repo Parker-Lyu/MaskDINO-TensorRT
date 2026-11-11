@@ -1,52 +1,306 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="620" viewBox="0 0 1180 620" role="img" aria-labelledby="title desc">
-<title id="title">Stage 2–6: selected inference milestones</title>
-<desc id="desc">RTX 4090, 1024 square, batch 1. Cross-stage results have differing timing start boundaries and workload conditions. Stage 6 FFN FP16 is experimental and fails the 32-image strict alignment gate.</desc>
-<rect width="1180" height="620" rx="18" fill="#f3f6fa"/>
-<g font-family="Arial,Helvetica,sans-serif" fill="#142a45">
-<text x="34" y="44" font-size="25" font-weight="700">Stage 2–6 · Selected performance milestones</text>
-<text x="34" y="70" font-size="15">RTX 4090 · 1024×1024 · batch 1 · archived 500-JPEG runs (3-run medians)</text>
-<rect x="24" y="94" width="548" height="408" rx="13" fill="white"/>
-<text x="46" y="129" font-size="19" font-weight="700">End-to-end P95 ↓</text>
-<text x="45" y="178" font-size="13">Stage 2 · PyTorch FP32</text>
-<rect x="211" y="163" height="20" width="268.3" rx="4" fill="#697c93"/>
-<text x="482.305" y="178" font-size="13" font-weight="700">51.93</text>
-<text x="45" y="230" font-size="13">Stage 3 · TRT FP16 mixed</text>
-<rect x="211" y="215" height="20" width="148.3" rx="4" fill="#4e729f"/>
-<text x="362.33500000000004" y="230" font-size="13" font-weight="700">28.71</text>
-<text x="45" y="282" font-size="13">Stage 4 · Native FP16</text>
-<rect x="211" y="267" height="20" width="85.0" rx="4" fill="#197b76"/>
-<text x="298.9916666666667" y="282" font-size="13" font-weight="700">16.45</text>
-<text x="45" y="334" font-size="13">Stage 5 · FP16 multi-slot</text>
-<text x="214" y="334" font-size="13" fill="#718096">not shown</text>
-<text x="45" y="386" font-size="13">Stage 6 · FPN FP16</text>
-<rect x="211" y="371" height="20" width="81.9" rx="4" fill="#1b8d59"/>
-<text x="295.89166666666665" y="386" font-size="13" font-weight="700">15.85</text>
-<text x="45" y="438" font-size="13">Stage 6 · FFN FP16</text>
-<rect x="211" y="423" height="20" width="71.8" rx="4" fill="#b16b2f"/>
-<text x="285.81666666666666" y="438" font-size="13" font-weight="700">13.90</text>
-<text x="44" y="478" font-size="12" fill="#64758c">Stage 2–4: JPEG start; Stage 6: slot dispatch</text>
-<rect x="608" y="94" width="548" height="408" rx="13" fill="white"/>
-<text x="630" y="129" font-size="19" font-weight="700">Offline throughput ↑</text>
-<text x="629" y="178" font-size="13">Stage 2 · PyTorch FP32</text>
-<rect x="795" y="163" height="20" width="60.2" rx="4" fill="#697c93"/>
-<text x="858.1695238095238" y="178" font-size="13" font-weight="700">20.38</text>
-<text x="629" y="230" font-size="13">Stage 3 · TRT FP16 mixed</text>
-<rect x="795" y="215" height="20" width="114.5" rx="4" fill="#4e729f"/>
-<text x="912.4933333333333" y="230" font-size="13" font-weight="700">38.78</text>
-<text x="629" y="282" font-size="13">Stage 4 · Native FP16</text>
-<text x="798" y="282" font-size="13" fill="#718096">not shown</text>
-<text x="629" y="334" font-size="13">Stage 5 · FP16 multi-slot</text>
-<rect x="795" y="319" height="20" width="219.5" rx="4" fill="#197b76"/>
-<text x="1017.5095238095238" y="334" font-size="13" font-weight="700">74.35</text>
-<text x="629" y="386" font-size="13">Stage 6 · FPN FP16</text>
-<rect x="795" y="371" height="20" width="225.4" rx="4" fill="#1b8d59"/>
-<text x="1023.3552380952381" y="386" font-size="13" font-weight="700">76.33</text>
-<text x="629" y="438" font-size="13">Stage 6 · FFN FP16</text>
-<rect x="795" y="423" height="20" width="263.4" rx="4" fill="#b16b2f"/>
-<text x="1061.4114285714286" y="438" font-size="13" font-weight="700">89.22</text>
-<text x="628" y="478" font-size="12" fill="#64758c">Stage 5 peak screening vs Stage 6 steady-state A/B</text>
-<rect x="24" y="519" width="1132" height="78" rx="10" fill="#e7edf5"/>
-<text x="39" y="542" font-size="14" font-weight="700">Interpretation</text>
-<text x="39" y="562" font-size="13">Cross-stage bars are archived milestones, not one paired A/B. Timing windows and throughput definitions differ; use within-stage A/B for causal gains.</text>
-<text x="39" y="582" font-size="13">Stage 6 FFN FP16 is a diagnostic candidate: COCO PQ nearly unchanged, but strict image alignment only 26/32. Stage 6 FPN passed 32/32.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1520" viewBox="0 0 1000 1520" role="img" aria-labelledby="title">
+<title id="title">Stage 1–6 cumulative results</title>
+<rect width="1000" height="1520" rx="16" fill="#f3f6fa"/>
+<g font-family="system-ui, sans-serif" fill="#172b43">
+<text x="28" y="36" font-size="24" font-weight="700">Stage 1–6 · Cumulative results</text>
+<text x="28" y="61" font-size="14" font-weight="400">RTX 4090 · COCO val2017 PQ (5,000 images) · 500-image offline timing, 3-run medians</text>
+<rect x="20" y="76" width="474" height="660" rx="10" fill="white"/>
+<text x="36" y="105" font-size="17" font-weight="700">PQ on full COCO val2017</text>
+<text x="36" y="137" font-size="14" font-weight="400">Stage 1 · Official input</text>
+<rect x="270" y="123" width="130.43" height="17" rx="3" fill="#61748b"/>
+<text x="416" y="137" font-size="14" font-weight="650">52.9567</text>
+<path d="M36 144h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="36" y="162" font-size="14" font-weight="400">Stage 2 · 1024/B4</text>
+<rect x="270" y="148" width="131.00" height="17" rx="3" fill="#61748b"/>
+<text x="416" y="162" font-size="14" font-weight="650">53.1862</text>
+<path d="M36 169h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="36" y="187" font-size="14" font-weight="400">Stage 3 · FP32 / TF32 off</text>
+<rect x="270" y="173" width="131.00" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="187" font-size="14" font-weight="650">53.1863</text>
+<text x="36" y="212" font-size="14" font-weight="400">Stage 3 · FP32 / TF32 on</text>
+<rect x="270" y="198" width="130.97" height="17" rx="3" fill="#067969"/>
+<text x="416" y="212" font-size="14" font-weight="650">53.1745</text>
+<text x="36" y="237" font-size="14" font-weight="400">Stage 3 · FP16 mix / TF32 on</text>
+<rect x="270" y="223" width="130.96" height="17" rx="3" fill="#a14c17"/>
+<text x="416" y="237" font-size="14" font-weight="650">53.1680</text>
+<path d="M36 244h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="36" y="262" font-size="14" font-weight="400">Stage 4 · FP32 / TF32 off</text>
+<rect x="270" y="248" width="131.00" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="262" font-size="14" font-weight="650">53.1863</text>
+<text x="36" y="287" font-size="14" font-weight="400">Stage 4 · FP32 / TF32 on</text>
+<rect x="270" y="273" width="130.97" height="17" rx="3" fill="#067969"/>
+<text x="416" y="287" font-size="14" font-weight="650">53.1745</text>
+<text x="36" y="312" font-size="14" font-weight="400">Stage 4 · FP16 mix / TF32 on</text>
+<rect x="270" y="298" width="130.96" height="17" rx="3" fill="#a14c17"/>
+<text x="416" y="312" font-size="14" font-weight="650">53.1680</text>
+<path d="M36 319h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="36" y="337" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S1</text>
+<rect x="270" y="323" width="131.00" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="337" font-size="14" font-weight="650">53.1863</text>
+<text x="36" y="362" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S2</text>
+<rect x="270" y="348" width="131.00" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="362" font-size="14" font-weight="650">53.1863</text>
+<text x="36" y="387" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S3</text>
+<rect x="270" y="373" width="131.00" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="387" font-size="14" font-weight="650">53.1863</text>
+<text x="36" y="412" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S4</text>
+<text x="416" y="412" font-size="14" font-weight="650">—</text>
+<text x="36" y="437" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S1</text>
+<text x="416" y="437" font-size="14" font-weight="650">—</text>
+<text x="36" y="462" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S2</text>
+<text x="416" y="462" font-size="14" font-weight="650">—</text>
+<text x="36" y="487" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S3</text>
+<text x="416" y="487" font-size="14" font-weight="650">—</text>
+<text x="36" y="512" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S4</text>
+<text x="416" y="512" font-size="14" font-weight="650">—</text>
+<text x="36" y="537" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S1</text>
+<text x="416" y="537" font-size="14" font-weight="650">—</text>
+<text x="36" y="562" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S2</text>
+<text x="416" y="562" font-size="14" font-weight="650">—</text>
+<text x="36" y="587" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S3</text>
+<text x="416" y="587" font-size="14" font-weight="650">—</text>
+<text x="36" y="612" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S4</text>
+<text x="416" y="612" font-size="14" font-weight="650">—</text>
+<path d="M36 619h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="36" y="637" font-size="14" font-weight="400">Stage 6 · FPN FP16 · B1/S1</text>
+<rect x="270" y="623" width="130.96" height="17" rx="3" fill="#348f79"/>
+<text x="416" y="637" font-size="14" font-weight="650">53.1718</text>
+<text x="36" y="662" font-size="14" font-weight="400">Stage 6 · FPN + FFN · B1/S1</text>
+<rect x="270" y="648" width="131.00" height="17" rx="3" fill="#8051a3"/>
+<text x="416" y="662" font-size="14" font-weight="650">53.1856</text>
+<text x="36" y="687" font-size="14" font-weight="400">Stage 6 · FPN FP16 · B1/S2</text>
+<rect x="270" y="673" width="130.96" height="17" rx="3" fill="#348f79"/>
+<text x="416" y="687" font-size="14" font-weight="650">53.1718</text>
+<text x="36" y="712" font-size="14" font-weight="400">Stage 6 · FPN + FFN · B1/S2</text>
+<rect x="270" y="698" width="131.00" height="17" rx="3" fill="#8051a3"/>
+<text x="416" y="712" font-size="14" font-weight="650">53.1856</text>
+<rect x="506" y="76" width="474" height="660" rx="10" fill="white"/>
+<text x="522" y="105" font-size="17" font-weight="700">Network GPU P95 (ms/batch)</text>
+<text x="522" y="137" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
+<rect x="756" y="123" width="66.44" height="17" rx="3" fill="#61748b"/>
+<text x="902" y="137" font-size="14" font-weight="650">37.88</text>
+<path d="M522 144h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="522" y="162" font-size="14" font-weight="400">Stage 3 · FP32 / TF32 off</text>
+<rect x="756" y="148" width="38.22" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="162" font-size="14" font-weight="650">21.79</text>
+<text x="522" y="187" font-size="14" font-weight="400">Stage 3 · FP32 / TF32 on</text>
+<rect x="756" y="173" width="27.63" height="17" rx="3" fill="#067969"/>
+<text x="902" y="187" font-size="14" font-weight="650">15.75</text>
+<text x="522" y="212" font-size="14" font-weight="400">Stage 3 · FP16 mix / TF32 on</text>
+<rect x="756" y="198" width="25.53" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="212" font-size="14" font-weight="650">14.56</text>
+<path d="M522 219h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="522" y="237" font-size="14" font-weight="400">Stage 4 · FP32 / TF32 off</text>
+<rect x="756" y="223" width="38.25" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="237" font-size="14" font-weight="650">21.81</text>
+<text x="522" y="262" font-size="14" font-weight="400">Stage 4 · FP32 / TF32 on</text>
+<rect x="756" y="248" width="27.56" height="17" rx="3" fill="#067969"/>
+<text x="902" y="262" font-size="14" font-weight="650">15.71</text>
+<text x="522" y="287" font-size="14" font-weight="400">Stage 4 · FP16 mix / TF32 on</text>
+<rect x="756" y="273" width="25.25" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="287" font-size="14" font-weight="650">14.40</text>
+<path d="M522 294h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="522" y="312" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S1</text>
+<rect x="756" y="298" width="38.26" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="312" font-size="14" font-weight="650">21.81</text>
+<text x="522" y="337" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S2</text>
+<rect x="756" y="323" width="70.37" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="337" font-size="14" font-weight="650">40.12</text>
+<text x="522" y="362" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S3</text>
+<rect x="756" y="348" width="98.32" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="362" font-size="14" font-weight="650">56.05</text>
+<text x="522" y="387" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S4</text>
+<rect x="756" y="373" width="131.00" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="387" font-size="14" font-weight="650">74.69</text>
+<text x="522" y="412" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S1</text>
+<rect x="756" y="398" width="27.57" height="17" rx="3" fill="#067969"/>
+<text x="902" y="412" font-size="14" font-weight="650">15.72</text>
+<text x="522" y="437" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S2</text>
+<rect x="756" y="423" width="53.70" height="17" rx="3" fill="#067969"/>
+<text x="902" y="437" font-size="14" font-weight="650">30.61</text>
+<text x="522" y="462" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S3</text>
+<rect x="756" y="448" width="82.55" height="17" rx="3" fill="#067969"/>
+<text x="902" y="462" font-size="14" font-weight="650">47.06</text>
+<text x="522" y="487" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S4</text>
+<rect x="756" y="473" width="109.18" height="17" rx="3" fill="#067969"/>
+<text x="902" y="487" font-size="14" font-weight="650">62.24</text>
+<text x="522" y="512" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S1</text>
+<rect x="756" y="498" width="25.25" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="512" font-size="14" font-weight="650">14.40</text>
+<text x="522" y="537" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S2</text>
+<rect x="756" y="523" width="46.47" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="537" font-size="14" font-weight="650">26.49</text>
+<text x="522" y="562" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S3</text>
+<rect x="756" y="548" width="73.87" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="562" font-size="14" font-weight="650">42.12</text>
+<text x="522" y="587" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S4</text>
+<rect x="756" y="573" width="98.78" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="587" font-size="14" font-weight="650">56.31</text>
+<path d="M522 594h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="522" y="612" font-size="14" font-weight="400">Stage 6 · FPN FP16 · B1/S1</text>
+<rect x="756" y="598" width="24.14" height="17" rx="3" fill="#348f79"/>
+<text x="902" y="612" font-size="14" font-weight="650">13.76</text>
+<text x="522" y="637" font-size="14" font-weight="400">Stage 6 · FPN + FFN · B1/S1</text>
+<rect x="756" y="623" width="20.67" height="17" rx="3" fill="#8051a3"/>
+<text x="902" y="637" font-size="14" font-weight="650">11.78</text>
+<text x="522" y="662" font-size="14" font-weight="400">Stage 6 · FPN FP16 · B1/S2</text>
+<rect x="756" y="648" width="45.06" height="17" rx="3" fill="#348f79"/>
+<text x="902" y="662" font-size="14" font-weight="650">25.69</text>
+<text x="522" y="687" font-size="14" font-weight="400">Stage 6 · FPN + FFN · B1/S2</text>
+<rect x="756" y="673" width="38.97" height="17" rx="3" fill="#8051a3"/>
+<text x="902" y="687" font-size="14" font-weight="650">22.22</text>
+<rect x="20" y="752" width="474" height="660" rx="10" fill="white"/>
+<text x="36" y="781" font-size="17" font-weight="700">End-to-end P95 (ms)</text>
+<text x="36" y="813" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
+<rect x="270" y="799" width="87.50" height="17" rx="3" fill="#61748b"/>
+<text x="416" y="813" font-size="14" font-weight="650">51.93</text>
+<path d="M36 820h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="36" y="838" font-size="14" font-weight="400">Stage 3 · FP32 / TF32 off</text>
+<rect x="270" y="824" width="59.29" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="838" font-size="14" font-weight="650">35.18</text>
+<text x="36" y="863" font-size="14" font-weight="400">Stage 3 · FP32 / TF32 on</text>
+<rect x="270" y="849" width="50.42" height="17" rx="3" fill="#067969"/>
+<text x="416" y="863" font-size="14" font-weight="650">29.92</text>
+<text x="36" y="888" font-size="14" font-weight="400">Stage 3 · FP16 mix / TF32 on</text>
+<rect x="270" y="874" width="48.38" height="17" rx="3" fill="#a14c17"/>
+<text x="416" y="888" font-size="14" font-weight="650">28.71</text>
+<path d="M36 895h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="36" y="913" font-size="14" font-weight="400">Stage 4 · FP32 / TF32 off</text>
+<rect x="270" y="899" width="39.82" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="913" font-size="14" font-weight="650">23.63</text>
+<text x="36" y="938" font-size="14" font-weight="400">Stage 4 · FP32 / TF32 on</text>
+<rect x="270" y="924" width="29.90" height="17" rx="3" fill="#067969"/>
+<text x="416" y="938" font-size="14" font-weight="650">17.74</text>
+<text x="36" y="963" font-size="14" font-weight="400">Stage 4 · FP16 mix / TF32 on</text>
+<rect x="270" y="949" width="27.72" height="17" rx="3" fill="#a14c17"/>
+<text x="416" y="963" font-size="14" font-weight="650">16.45</text>
+<path d="M36 970h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="36" y="988" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S1</text>
+<rect x="270" y="974" width="40.01" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="988" font-size="14" font-weight="650">23.74</text>
+<text x="36" y="1013" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S2</text>
+<rect x="270" y="999" width="70.65" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="1013" font-size="14" font-weight="650">41.93</text>
+<text x="36" y="1038" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S3</text>
+<rect x="270" y="1024" width="98.65" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="1038" font-size="14" font-weight="650">58.54</text>
+<text x="36" y="1063" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S4</text>
+<rect x="270" y="1049" width="131.00" height="17" rx="3" fill="#3365a6"/>
+<text x="416" y="1063" font-size="14" font-weight="650">77.74</text>
+<text x="36" y="1088" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S1</text>
+<rect x="270" y="1074" width="29.98" height="17" rx="3" fill="#067969"/>
+<text x="416" y="1088" font-size="14" font-weight="650">17.79</text>
+<text x="36" y="1113" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S2</text>
+<rect x="270" y="1099" width="54.61" height="17" rx="3" fill="#067969"/>
+<text x="416" y="1113" font-size="14" font-weight="650">32.41</text>
+<text x="36" y="1138" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S3</text>
+<rect x="270" y="1124" width="84.20" height="17" rx="3" fill="#067969"/>
+<text x="416" y="1138" font-size="14" font-weight="650">49.97</text>
+<text x="36" y="1163" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S4</text>
+<rect x="270" y="1149" width="110.10" height="17" rx="3" fill="#067969"/>
+<text x="416" y="1163" font-size="14" font-weight="650">65.34</text>
+<text x="36" y="1188" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S1</text>
+<rect x="270" y="1174" width="27.77" height="17" rx="3" fill="#a14c17"/>
+<text x="416" y="1188" font-size="14" font-weight="650">16.48</text>
+<text x="36" y="1213" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S2</text>
+<rect x="270" y="1199" width="47.89" height="17" rx="3" fill="#a14c17"/>
+<text x="416" y="1213" font-size="14" font-weight="650">28.42</text>
+<text x="36" y="1238" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S3</text>
+<rect x="270" y="1224" width="75.33" height="17" rx="3" fill="#a14c17"/>
+<text x="416" y="1238" font-size="14" font-weight="650">44.70</text>
+<text x="36" y="1263" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S4</text>
+<rect x="270" y="1249" width="101.53" height="17" rx="3" fill="#a14c17"/>
+<text x="416" y="1263" font-size="14" font-weight="650">60.25</text>
+<path d="M36 1270h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="36" y="1288" font-size="14" font-weight="400">Stage 6 · FPN FP16 · B1/S1</text>
+<rect x="270" y="1274" width="26.71" height="17" rx="3" fill="#348f79"/>
+<text x="416" y="1288" font-size="14" font-weight="650">15.85</text>
+<text x="36" y="1313" font-size="14" font-weight="400">Stage 6 · FPN + FFN · B1/S1</text>
+<rect x="270" y="1299" width="23.42" height="17" rx="3" fill="#8051a3"/>
+<text x="416" y="1313" font-size="14" font-weight="650">13.90</text>
+<text x="36" y="1338" font-size="14" font-weight="400">Stage 6 · FPN FP16 · B1/S2</text>
+<rect x="270" y="1324" width="46.85" height="17" rx="3" fill="#348f79"/>
+<text x="416" y="1338" font-size="14" font-weight="650">27.80</text>
+<text x="36" y="1363" font-size="14" font-weight="400">Stage 6 · FPN + FFN · B1/S2</text>
+<rect x="270" y="1349" width="40.91" height="17" rx="3" fill="#8051a3"/>
+<text x="416" y="1363" font-size="14" font-weight="650">24.28</text>
+<rect x="506" y="752" width="474" height="660" rx="10" fill="white"/>
+<text x="522" y="781" font-size="17" font-weight="700">Offline throughput (img/s)</text>
+<text x="522" y="813" font-size="14" font-weight="400">Stage 2 · PyTorch</text>
+<rect x="756" y="799" width="29.92" height="17" rx="3" fill="#61748b"/>
+<text x="902" y="813" font-size="14" font-weight="650">20.38</text>
+<path d="M522 820h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="522" y="838" font-size="14" font-weight="400">Stage 3 · FP32 / TF32 off</text>
+<rect x="756" y="824" width="45.79" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="838" font-size="14" font-weight="650">31.18</text>
+<text x="522" y="863" font-size="14" font-weight="400">Stage 3 · FP32 / TF32 on</text>
+<rect x="756" y="849" width="54.41" height="17" rx="3" fill="#067969"/>
+<text x="902" y="863" font-size="14" font-weight="650">37.06</text>
+<text x="522" y="888" font-size="14" font-weight="400">Stage 3 · FP16 mix / TF32 on</text>
+<rect x="756" y="874" width="56.93" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="888" font-size="14" font-weight="650">38.78</text>
+<path d="M522 895h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="522" y="913" font-size="14" font-weight="400">Stage 4 · FP32 / TF32 off</text>
+<rect x="756" y="899" width="64.09" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="913" font-size="14" font-weight="650">43.65</text>
+<text x="522" y="938" font-size="14" font-weight="400">Stage 4 · FP32 / TF32 on</text>
+<rect x="756" y="924" width="85.54" height="17" rx="3" fill="#067969"/>
+<text x="902" y="938" font-size="14" font-weight="650">58.26</text>
+<text x="522" y="963" font-size="14" font-weight="400">Stage 4 · FP16 mix / TF32 on</text>
+<rect x="756" y="949" width="92.56" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="963" font-size="14" font-weight="650">63.04</text>
+<path d="M522 970h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="522" y="988" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S1</text>
+<rect x="756" y="974" width="64.12" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="988" font-size="14" font-weight="650">43.67</text>
+<text x="522" y="1013" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S2</text>
+<rect x="756" y="999" width="74.72" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="1013" font-size="14" font-weight="650">50.89</text>
+<text x="522" y="1038" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S3</text>
+<rect x="756" y="1024" width="78.34" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="1038" font-size="14" font-weight="650">53.36</text>
+<text x="522" y="1063" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 off · S4</text>
+<rect x="756" y="1049" width="77.93" height="17" rx="3" fill="#3365a6"/>
+<text x="902" y="1063" font-size="14" font-weight="650">53.08</text>
+<text x="522" y="1088" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S1</text>
+<rect x="756" y="1074" width="85.43" height="17" rx="3" fill="#067969"/>
+<text x="902" y="1088" font-size="14" font-weight="650">58.18</text>
+<text x="522" y="1113" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S2</text>
+<rect x="756" y="1099" width="97.48" height="17" rx="3" fill="#067969"/>
+<text x="902" y="1113" font-size="14" font-weight="650">66.39</text>
+<text x="522" y="1138" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S3</text>
+<rect x="756" y="1124" width="97.53" height="17" rx="3" fill="#067969"/>
+<text x="902" y="1138" font-size="14" font-weight="650">66.43</text>
+<text x="522" y="1163" font-size="14" font-weight="400">Stage 5 · FP32 / TF32 on · S4</text>
+<rect x="756" y="1149" width="95.90" height="17" rx="3" fill="#067969"/>
+<text x="902" y="1163" font-size="14" font-weight="650">65.32</text>
+<text x="522" y="1188" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S1</text>
+<rect x="756" y="1174" width="92.44" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="1188" font-size="14" font-weight="650">62.96</text>
+<text x="522" y="1213" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S2</text>
+<rect x="756" y="1199" width="109.16" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="1213" font-size="14" font-weight="650">74.35</text>
+<text x="522" y="1238" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S3</text>
+<rect x="756" y="1224" width="107.57" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="1238" font-size="14" font-weight="650">73.26</text>
+<text x="522" y="1263" font-size="14" font-weight="400">Stage 5 · FP16 mix / TF32 on · S4</text>
+<rect x="756" y="1249" width="105.73" height="17" rx="3" fill="#a14c17"/>
+<text x="902" y="1263" font-size="14" font-weight="650">72.01</text>
+<path d="M522 1270h442" stroke="#97aabd" stroke-dasharray="4 4"/>
+<text x="522" y="1288" font-size="14" font-weight="400">Stage 6 · FPN FP16 · B1/S1</text>
+<rect x="756" y="1274" width="96.55" height="17" rx="3" fill="#348f79"/>
+<text x="902" y="1288" font-size="14" font-weight="650">65.76</text>
+<text x="522" y="1313" font-size="14" font-weight="400">Stage 6 · FPN + FFN · B1/S1</text>
+<rect x="756" y="1299" width="110.72" height="17" rx="3" fill="#8051a3"/>
+<text x="902" y="1313" font-size="14" font-weight="650">75.41</text>
+<text x="522" y="1338" font-size="14" font-weight="400">Stage 6 · FPN FP16 · B1/S2</text>
+<rect x="756" y="1324" width="112.07" height="17" rx="3" fill="#348f79"/>
+<text x="902" y="1338" font-size="14" font-weight="650">76.33</text>
+<text x="522" y="1363" font-size="14" font-weight="400">Stage 6 · FPN + FFN · B1/S2</text>
+<rect x="756" y="1349" width="131.00" height="17" rx="3" fill="#8051a3"/>
+<text x="902" y="1363" font-size="14" font-weight="650">89.22</text>
+<text x="28" y="1446" font-size="14" font-weight="400">Latency ends at CPU result. Timing starts at JPEG processing in Stages 2–4 and at slot dispatch in Stages 5–6.</text>
+<text x="28" y="1466" font-size="14" font-weight="400">Stage 5 PQ: — indicates a configuration without a full COCO evaluation.</text>
+<text x="28" y="1486" font-size="14" font-weight="400">Stage 5 throughput uses the full offline run. Stage 6 uses the middle 90% steady-state window.</text>
+<text x="28" y="1506" font-size="14" font-weight="400">Stage 6: FPN FP16 passed offline acceptance. FPN + FFN FP16 is experimental (26/32 image alignment).</text>
 </g></svg>
