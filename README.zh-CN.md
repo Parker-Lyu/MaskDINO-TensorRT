@@ -23,6 +23,8 @@
 
 <sub>以 RTX 4090 上的 PyTorch FP32 为基线。</sub>
 
+![PyTorch、三种 TensorRT 精度策略及 Stage 6 FFN 的单 slot P95 与离线吞吐对比](docs/precision-performance.svg)
+
 [MaskDINO 官方实现](https://github.com/IDEA-Research/MaskDINO) · [实验环境与数据](docs/experiment-environment.zh-CN.md)
 
 ## 工程亮点（Engineering Highlights）
@@ -45,7 +47,7 @@
 | TensorRT FP16 混合精度（TF32 on） | 53.1680 | **16.45 ms**（缩短 35.48 ms / 68.3%） | **74.35 图/s**（3.65×，S2） | PQ 降 0.0182 点，逐图 16/32 通过，最差类别一致率 91.63% |
 | Stage 6 · FPN + Encoder FFN FP16（TF32 on） | **53.1856** | **13.90 ms**（缩短 38.03 ms / 73.2%） | **89.02 图/s**（4.37×，S2） | PQ 降 0.0006 点；相对已验收 FPN Engine 逐图 26/32 通过，最差类别一致率 85.68% |
 
-![PyTorch、三种 TensorRT 精度策略及 Stage 6 FFN 的单 slot P95 与离线吞吐对比](docs/precision-performance.svg)
+
 
 **统计口径：** 表格均为 RTX 4090、1024×1024、B1 下的归档实验结果。PyTorch 与 Stage 4 单 slot 的 P95 从开始处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪，Stage 6 的 P95 从请求派发到 slot 起算。吞吐均按预热后整轮完成图数除以墙钟时间，分别取 Stage 2 单路、Stage 5 的 S1–S4 离线初筛峰值和 Stage 6 的 B1/S2 结果。
 

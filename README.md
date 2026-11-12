@@ -23,6 +23,7 @@
 
 <sub>Compared with the PyTorch FP32 baseline on an RTX 4090.</sub>
 
+![Single-slot P95 and offline throughput for PyTorch, three TensorRT precision policies, and Stage 6 FFN](docs/precision-performance.svg)
 
 [Official MaskDINO implementation](https://github.com/IDEA-Research/MaskDINO) · [Experiment environment and data](docs/experiment-environment.md)
 
@@ -46,7 +47,7 @@ Fix the input at **1024×1024, batch 1** and use PyTorch FP32 with the same lett
 | TensorRT FP16 mixed precision (TF32 on) | 53.1680 | **16.45 ms** (35.48 ms / 68.3% lower) | **74.35 images/s** (3.65×, S2) | PQ down 0.0182 points, 16/32 images passed, lowest category agreement 91.63% |
 | Stage 6 · FPN + Encoder FFN FP16 (TF32 on) | **53.1856** | **13.90 ms** (38.03 ms / 73.2% lower) | **89.02 images/s** (4.37×, S2) | PQ down 0.0006 points, 26/32 images passed against the accepted FPN engine, lowest category agreement 85.68% |
 
-![Single-slot P95 and offline throughput for PyTorch, three TensorRT precision policies, and Stage 6 FFN](docs/precision-performance.svg)
+
 
 **Measurement scope.** The table uses archived results from the RTX 4090 at 1024×1024 and B1. For PyTorch and Stage 4 single-slot runs, P95 spans the start of processing an in-memory JPEG to the availability of the CPU segmentation map and segment metadata. Stage 6 starts timing at dispatch to a slot. Throughput divides the number of images completed after warmup by full-run wall-clock time. The table uses Stage 2 single-pipeline throughput, the peak from the Stage 5 S1–S4 offline screen, and Stage 6 B1/S2 results.
 
