@@ -1,0 +1,6 @@
+scope,trt_layer,cuda_kernel,grid,block,samples,mean_us
+fpn_add,__myl_Add_myl926_0,__myl_Add_0x940d01f802112b4a8a954775bfc1e673,"(16384, 1, 1)","(256, 1, 1)",40,212.792
+fpn_conv,/sem_seg_head/layer_1/Conv,trt_ampere_scudnn_winograd_128x128_ldg1_ldg4_relu_tile148t_nt_v1,"(8, 32, 16)","(256, 1, 1)",40,893.237
+fpn_groupnorm_relu,__myl_Move_myl931_2,__myl_Move_0x95a493ea3af58b211507cdaf271866a7,"(1, 1, 1)","(256, 1, 1)",40,1.136
+fpn_groupnorm_relu,__myl_Move_myl931_3,__myl_Move_0x95a493ea3af58b211507cdaf271866a7,"(1, 1, 1)","(256, 1, 1)",40,0.802
+fpn_groupnorm_relu,__myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddReluMeanMean_myl931_4,__myl_ReshCastSubMulAddSqrtDivMulAddCastReshMulAddReluMeanMean_0x3a79822cf3edfd92b751b85060b2d61b,"(128, 4, 1)","(384, 1, 1)",40,154.565

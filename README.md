@@ -176,57 +176,20 @@ Fix B1 and sample the inference process with NVML every 20 ms. Report the median
 
 ## Stage 6 · Profile and Further Optimize TensorRT Layers
 
-**Goal.** After TensorRT conversion, C++/CUDA pre- and postprocessing, and multi-stream concurrency in Stages 3–5, locate compute bottlenecks **inside the TensorRT engine**. Use targeted FP16 changes to speed up the network and validate end-to-end performance and segmentation accuracy. Fix the RTX 4090, 1024×1024, B1, and the existing mixed-precision (TF32 on) base engine.
-
-### Layer Profiling to Locate Hotspots and Choose Optimizations
-
-Use `trtexec --separateProfileRun --dumpProfile` to measure per-layer time, Nsight Systems to correlate CUDA kernels, and Nsight Compute to analyze execution paths and hardware resource usage.
-
-| Hotspot | Layer time (ms/image) | Share of total layer time |
-| --- | ---: | ---: |
-| Encoder FFN (6 layers × 2 GEMMs) | **3.675** | **24.30%** |
-| Encoder MSDeformAttn (6 plugin layers) | 1.480 | 9.78% |
-| FPN 3×3 Conv | **0.903** | **5.97%** |
-| Input Projection 3×3 Conv | 0.306 | 2.02% |
-
-These results identified two optimizations to test in sequence.
-
-1. **FP16 for one FPN convolution.** The most expensive single layer uses FP32 Winograd, and the representative kernel does not use Tensor Cores. In ONNX the convolution feeds only the masks branch, so this is the first, more localized precision change.
-2. **FP16 for encoder FFNs.** The 12 GEMMs account for **24.30%** of total layer time and offer more room for optimization. Their position in the encoder means they can affect downstream proposals and queries, making output agreement a priority.
-
-The sum of layer profiler times differs from network latency in a normal run. These figures locate hotspots and cannot directly predict end-to-end speedup. [Profiling method, raw data, and kernel analysis](stage6/layer-profile.md)
+RTX 4090, 1024×1024, B1. TensorRT layer profiling ranked the FPN convolution as the most expensive single layer (0.903 ms) and the 12 encoder FFN GEMMs as the largest cumulative hotspot (3.675 ms, 24.3%).
 
 ### Optimization 1 · Single-Layer FPN FP16
 
-**Method.** Convert only the inputs and weights of `/sem_seg_head/layer_1/Conv` to FP16 so TensorRT chooses an FP16 Tensor Core tactic, then cast back to FP32 before GroupNorm. The measurements include surrounding operations such as the added casts and reformats as well as the convolution kernel.
-
-| Metric | Paired control | FPN FP16 | Improvement |
-| --- | ---: | ---: | ---: |
-| Target convolution time | 0.9035 ms | 0.2505 ms | **−72.3%** |
-| B1/S1 end-to-end P95 | 16.27 ms | 15.85 ms | **−2.6%** |
-| B1/S2 full-run throughput | 74.10 images/s | 76.24 images/s | **+2.9%** |
-
-**Investigation.** Only **31/32** images passed the per-image check for the first candidate. Swapping logits and masks between engines on the failing image showed that the missing segment followed the **logits** regardless of which masks were used. Engine Inspector also showed that four **non-target backbone convolutions** changed tactics in the first rebuild. Rebuilding the pair with a shared timing cache kept tactics identical for matching non-target convolution and pooling layers. The failing image's logits and boxes matched elementwise again, and **32/32** images passed. This supports a link between the original failure and build differences outside the target layer, but does not establish any individual tactic as the sole cause.
-
-**Accuracy and acceptance.** B1/S1 and B1/S2 each completed all 5,000 COCO val2017 images and scored **53.1718** PQ, meeting the predefined tolerances for PQ, PQ Things, and PQ Stuff. **The FPN optimization was accepted** in commit `5f7b57f`. [Full FPN A/B, output swapping, and full PQ](stage6/fpn-half-ab.md)
+FP32 Winograd reached **74.2% of peak L2 throughput** with no Tensor Core activity. FP16 implicit GEMM activated Tensor Cores and cut L2 lookup traffic **3.27 → 0.87 GiB per launch**. The convolution saved **0.65 ms**, or **0.42 ms** across the branch after cast, layout conversion and GroupNorm costs. The shared-cache pair passed **32/32** and full COCO PQ (**53.1718**). [Kernel evidence](stage6/README.md#36-fpn-kernel-profiling) · [Accuracy and tactic debugging](stage6/fpn-half-ab.md)
 
 ### Optimization 2 · Encoder FFN FP16
 
-**Method.** Starting from the accepted FPN engine, switch `linear1 → ReLU → linear2` (including biases) to FP16 across all six encoder FFNs, covering **12 GEMMs**. Cast back to FP32 before the residual add and LayerNorm. Engine Inspector confirms FP16 Tensor Core tactics.
+The TF32 GEMMs had 238 registers/thread and **65–67% math-pipe throttle** in the profiled block. FP16 tactics and output fusion cut that block's measured DRAM traffic **517.0 → 316.5 MiB**. Across six blocks, Nsight Systems attributes **2.09 ms** saved to the FFN and its boundaries. Full COCO PQ was **53.1856**, with **26/32** per-image passes. FFN remains experimental. [Kernel evidence](stage6/README.md#ffn-kernel-profiling) · [Six failing images](stage6/ffn-full-half.md)
 
-| Metric | FPN control | FPN + FFN FP16 | Improvement |
-| --- | ---: | ---: | ---: |
-| B1/S1 end-to-end P95 | 16.10 ms | 13.90 ms | **−13.7%** |
-| B1/S2 full-run throughput | 76.22 images/s | 89.02 images/s | **+16.8%** |
-| B1/S1 peak GPU memory | 1.15 GiB | 1.08 GiB | −0.07 GiB |
-
-**Performance attribution.** B1/S1 network GPU P95 fell from **14.01 to 11.78 ms**. In a separate fixed-input Nsight Systems A/B, NVTX and Engine Inspector mapped GPU kernels to the six FFNs. `linear1` saved **1.02 ms**, and `linear2` through its output boundary saved **1.13 ms**. The `norm1` kernel with the new input cast took about **0.06 ms** more across the six blocks, leaving a **2.09 ms** net FFN kernel-time reduction. Other network kernels were effectively flat. [Method and trace results](stage6/README.md#where-the-network-time-was-saved)
-
-**Accuracy results.** Full COCO PQ is **53.1856**, just **0.0006 points** below the PyTorch FP32 baseline of about **53.1863** on the same inputs. PQ Things and PQ Stuff also meet the current tolerances. Against the accepted FPN control, **only 26/32 images pass the per-image agreement check**, with pixel-level category agreement as low as **85.68%**.
-
-**Nearly unchanged aggregate accuracy can coexist with substantial changes in individual predictions.** PQ measures overall segmentation quality against ground truth. Per-image alignment measures how closely the candidate reproduces the reference engine's predictions. **Intermediate tensors have yet to establish** whether encoder features, proposal TopK, and decoder queries amplify the numerical differences introduced by the FFN change.
-
-**Conclusion.** The performance gains are substantial, but the candidate falls short of the strict per-image agreement threshold. [FFN performance, six failing images, and full PQ](stage6/ffn-full-half.md)
+| Native offline A/B | B1/S1 end-to-end P95 | B1/S2 full-run throughput |
+| --- | ---: | ---: |
+| FPN FP16 (accepted) | 16.27 → 15.85 ms (**−2.6%**) | 74.10 → 76.24 images/s (**+2.9%**) |
+| FFN FP16 on top of FPN (experimental) | 16.10 → 13.90 ms (**−13.7%**) | 76.22 → 89.02 images/s (**+16.8%**) |
 
 ### Cumulative Stage 1–6 Comparison
 

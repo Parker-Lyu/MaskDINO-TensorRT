@@ -1,0 +1,13 @@
+scope,trt_layer,cuda_kernel,grid,block,samples,mean_us
+norm1_input_cast,__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_myl878_1,__myl_AddMeanSubMulMeanAddSqrtDivMulMulAdd_0x69b1bcc07c5a3d6848cb7d4609f7cf14,"(5440, 1, 1)","(32, 4, 1)",40,38.580
+linear1,/sem_seg_head/transformer/encoder/layers_1/linear1/MatMul_myl878_2,sm86_xmma_gemm_f32f32_tf32f32_f32_tn_n_tilesize128x128x16_stage3_warpsize2x2x1_tensor16x8x8_execute_kernel_trt,"(170, 16, 1)","(128, 1, 1)",40,290.973
+linear2_and_output_boundary,/sem_seg_head/transformer/encoder/layers_1/linear2/MatMul_myl878_3,sm86_xmma_gemm_f32f32_tf32f32_f32_tn_n_tilesize128x128x16_stage3_warpsize2x2x1_tensor16x8x8_execute_kernel_trt,"(170, 2, 1)","(128, 1, 1)",40,314.383
+linear2_and_output_boundary,__myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_myl878_4,__myl_AddMeanSubMulMeanAddSqrtDivMulMulAddAdd_0x1c023f86bc3010935b289f45ce2f4bf5,"(5440, 1, 1)","(32, 4, 1)",40,89.917
+fpn_add,__myl_Add_myl926_0,__myl_Add_0x940d01f802112b4a8a954775bfc1e673,"(16384, 1, 1)","(256, 1, 1)",40,213.243
+fpn_input_cast,__myl_Cast_myl927_0,__myl_Cast_0xae430feae245b611e45c574eb6d77c75,"(8192, 1, 1)","(512, 1, 1)",40,95.054
+fpn_conv,/sem_seg_head/layer_1/Conv,sm80_xmma_fprop_implicit_gemm_f16f16_f16f16_f16_nhwckrsc_nhwc_tilesize256x128x32_stage3_warpsize4x2x1_g1_tensor16x8x16_t1r3s3_execute_kernel_trt,"(2, 256, 1)","(256, 1, 1)",40,246.814
+fpn_output_reformat,Reformatting CopyNode for Input Tensor 2 to {ForeignNode[/sem_seg_head/predictor/decoder/layers.8/cross_attn/Cast.../sem_seg_head/predictor/decoder/layers.8/cross_attn/Add]},permutationKernelPLC3,"(4096, 2, 1)","(128, 1, 1)",40,30.135
+fpn_groupnorm_relu,__myl_Move_myl934_2,__myl_Move_0x95a493ea3af58b211507cdaf271866a7,"(1, 1, 1)","(256, 1, 1)",40,1.150
+fpn_groupnorm_relu,__myl_Move_myl934_3,__myl_Move_0x95a493ea3af58b211507cdaf271866a7,"(1, 1, 1)","(256, 1, 1)",40,0.805
+fpn_groupnorm_relu,__myl_ReshCastCastSubMulAddSqrtDivMulAddCastMeanMean_myl934_4,__myl_ReshCastCastSubMulAddSqrtDivMulAddCastMeanMean_0x076b1f344202beb62ae69958e38d56dc,"(128, 4, 1)","(384, 1, 1)",40,120.374
+fpn_groupnorm_relu,__myl_MulAddRelu_myl934_5,__myl_MulAddRelu_0x9d1c0405ea1ac4ba9029074292089f45,"(16384, 1, 1)","(256, 1, 1)",40,131.305

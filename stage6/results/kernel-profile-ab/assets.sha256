@@ -1,0 +1,4 @@
+3bd81d45da03f5f95a9ace1e5c1c3b1f6e9552bf85142532808f5aa9235e7570  /home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/fpn-cache-pair/control/network.engine
+d80102c6351fd9c860b657e14b6553dc75260322e61cf375fad6ee04504641db  /home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/fpn-cache-pair/fpn-half/network.engine
+51e613b76b9ab3bb34645099b1b316de7c8395b4c7eb8dc2fd09699268f64ee1  /home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/ffn-full-half/build/network.engine
+57c717886b45877f85cc61106028f065efd2d09f5bb9a79affd5198224127497  /home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/layer-profile-b1/149770.f32

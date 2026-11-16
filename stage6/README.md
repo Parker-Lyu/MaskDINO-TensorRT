@@ -127,7 +127,7 @@ The **shared-cache rebuilt control** and FPN FP16 candidate were measured in the
 | Metric | Control | FPN FP16 | Improvement |
 | --- | ---: | ---: | ---: |
 | Mean target convolution layer time | 0.9035 ms | 0.2505 ms | **−72.3%** |
-| Adjacent Add → GroupNorm/ReLU | 1.2786 ms | 0.8203 ms | **−35.8%** |
+| Selected Add → GroupNorm/ReLU layers | 1.2786 ms | 0.8203 ms | **−35.8%** |
 | B1/S1 network GPU P95 | 14.17 ms | 13.76 ms | About −0.41 ms |
 | B1/S1 end-to-end P95 | 16.27 ms | 15.85 ms | **−2.6%** |
 | B1/S2 steady-state throughput | 74.21 images/s | 76.33 images/s | **+2.9%** |
@@ -135,13 +135,41 @@ The **shared-cache rebuilt control** and FPN FP16 candidate were measured in the
 
 ![Paired native offline benchmark for the single-layer FPN optimization](results/fpn-half-ab/comparison.svg)
 
-**Why did a 72% reduction in convolution time translate to a 2.6% end-to-end improvement?** The convolution is one part of the network and pre- and postprocessing. Casts, reformats, and unaffected operations still take time. A single-layer speedup cannot predict system-level speedup.
-
 B1/S1 and B1/S2 each completed the full **5,000-image** COCO val2017 evaluation with unique and complete prediction IDs. Both scored **53.17180 / 59.01222 / 44.35606** for PQ / PQ Things / PQ Stuff, changes of **−0.01446 / −0.01504 / −0.01357 points** from PyTorch FP32 B1. Both pass the current **32/32** per-image gate.
 
 **Decision. Accept the targeted FPN FP16 optimization** (acceptance commit `5f7b57f`). Acceptance covers the RTX 4090, B1/S1–S2, the specified offline samples, and full COCO PQ. Online P99 and sustained stability remain unverified.
 
 [Per-run results, accuracy, and reproduction](fpn-half-ab.md) · [Raw A/B data](results/fpn-half-ab/cached/ab/summary.json) · [Full PQ](results/fpn-half-ab/pq/)
+
+### 3.6 FPN Kernel Profiling
+
+The control uses FP32 Winograd on a `1×256×256×256` feature map. Its candidate uses an NHWC FP16 Tensor Core implicit GEMM (`16×8×16` MMA). FP16 halves the logical input and output tensor sizes from 64 to 32 MiB each, and the new tactic changes both the arithmetic and layout. [Control Engine Inspector](results/fpn-half-ab/cached/control/layers.json) · [Candidate Engine Inspector](results/fpn-half-ab/cached/fpn-half/layers.json)
+
+| Convolution counter (median of 3 launches) | FP32 Winograd | FP16 implicit GEMM |
+| --- | ---: | ---: |
+| Tensor / FMA pipe active (% of peak) | 0.0 / 47.3 | 89.1 / 1.7 |
+| L2 / DRAM throughput (% of peak) | 74.2 / 14.6 | 71.2 / 17.1 |
+| L2 lookup traffic (GiB/launch) | 3.27 | 0.87 |
+| DRAM read + write (MiB/launch) | 127.3 | 41.8 |
+| Registers per thread / achieved occupancy | 126 / 32.8% | 178 / 16.7% |
+
+**Why the control is slow.** It processes 3.27 GiB of L2 lookup traffic per launch with a 99.4% L2 hit rate. Its hottest measured throughput is L2, and the convolution also spends substantial cycles on the FP32 FMA path. The low DRAM throughput leaves off-chip bandwidth headroom. Pins on clocks or cache state would affect the percentages, so the diagnosis uses bytes, activity and the tactic together.
+
+**Why the candidate is faster.** Tensor pipe activity reaches 89.1% and L2 lookup traffic drops 73.3% even though L2 throughput remains high and achieved occupancy falls. The candidate converts data to FP16 and changes to an implicit GEMM, so this A/B measures both effects together. Across the profiled convolution, conversions and normalization kernels, summed median DRAM traffic **rises from 252.3 to 352.5 MiB**. The convolution saves local traffic and compute time, while its new boundaries add off-chip traffic. [Nsight Compute counters](results/kernel-profile-ab/counters.csv)
+
+The paired Nsight Systems trace maps CUDA launches to the FPN branch using NVTX and Engine Inspector. Values are mean GPU kernel work per inference over the last 40 enqueues of each plan.
+
+| FPN kernel work | Control (µs) | FPN FP16 (µs) | Saved (µs) |
+| --- | ---: | ---: | ---: |
+| Add | 212.8 | 213.2 | −0.5 |
+| Input cast | 0 | 95.1 | −95.1 |
+| **3×3 convolution** | **893.2** | **246.8** | **646.4** |
+| Output layout conversion | 0 | 30.1 | −30.1 |
+| GroupNorm/ReLU path, including moves and candidate output cast | 156.5 | 253.6 | −97.1 |
+| **FPN region** | **1,262.5** | **838.9** | **423.7** |
+| All network kernels | 13,679.0 | 13,266.9 | 412.1 |
+
+The convolution accounts for the gross gain. Input conversion, output reformat, and the changed normalization path consume about 222 µs of it. Inspector connects the convolution output directly to a real NHWC-to-linear FP16 reformat. This launch was omitted from the historical selected-layer subtotal in §3.5. The input-side reformat is an Inspector no-op and launches no kernel. The net trace result is close to the separate native network P95 reduction of 0.41 ms. [Control kernel map](results/kernel-profile-ab/control.trace.csv) · [Candidate kernel map](results/kernel-profile-ab/fpn.trace.csv)
 
 ## 4. Experiment 2 · FP16 for 12 GEMMs Across Six Encoder FFNs
 
@@ -190,7 +218,7 @@ For each inference, match Engine Inspector layers to NVTX ranges using ONNX meta
 | Other network kernels | 8.850 | 8.852 | −0.002 |
 | **All network kernels** | **13.261** | **11.169** | **2.092** |
 
-The trace attributes essentially all of its kernel-time reduction to the FFN and its boundaries. Both GEMMs already used TF32 Tensor Cores in the control. The candidate uses FP16 Tensor Core tactics, with `linear2` fused with the FP32 conversion, residual add and `norm2`. The trace measures the combined gain from the new tactic and fusion. Quantifying their individual contributions or changes in DRAM traffic would require additional controls or hardware counters.
+The trace attributes essentially all of its kernel-time reduction to the FFN and its boundaries. Both GEMMs already used TF32 Tensor Cores in the control. The candidate uses FP16 Tensor Core tactics, with `linear2` fused with the FP32 conversion, residual add and `norm2`.
 
 These values are mean sums of kernel durations on one input. The original 500-image native benchmark measured the **2.23 ms network P95 reduction** with CUDA events. The separate `trtexec` layer exports cross-check the attribution: the same FFN boundaries save **2.123 ms** out of **2.122 ms** in summed mean layer time, with the remaining layers effectively flat. [Control layer export](results/ffn-full-half/ab/fpn.layers.json) · [Candidate layer export](results/ffn-full-half/ab/ffn-half.layers.json)
 
@@ -214,6 +242,27 @@ python3 stage6/ffn_trace_summary.py "$trace_dir/ffn-half.sqlite" \
 ```
 
 Raw reports and SQLite exports are on the 4090 at `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/ffn-attribution-x8sP2E/`. [Report checksums](results/ffn-full-half/attribution/reports.sha256) · [Control per-inference timings](results/ffn-full-half/attribution/fpn.csv) · [Candidate per-inference timings](results/ffn-full-half/attribution/ffn-half.csv) · [Control kernel mapping](results/ffn-full-half/attribution/fpn.kernels.csv) · [Candidate kernel mapping](results/ffn-full-half/attribution/ffn-half.kernels.csv)
+
+#### FFN Kernel Profiling
+
+At B1 each FFN transforms 21,760 tokens through `256 → 2048 → 256`. Engine Inspector shows that the activation between GEMMs shrinks from 170 to 85 MiB in logical tensor size. The `linear1` tactic changes from TF32 `128×128×16` to FP16 `128×256×32`, with bias and ReLU in the same kernel on both sides. The candidate `linear2` changes to a `128×128×64` FP16 GEMM with a fused output path. [FPN control Engine Inspector](results/fpn-half-ab/cached/fpn-half/layers.json) · [FFN candidate Engine Inspector](results/ffn-full-half/build/layers.json)
+
+Counter A/B uses encoder block 1 (zero-based). The `linear2` GEMM rows cover the control GEMM and candidate fused kernel. The output-boundary rows below them sum the corresponding GEMM and its following kernel.
+
+| Kernel or boundary | Counter | TF32 control | FP16 candidate |
+| --- | --- | ---: | ---: |
+| `linear1` | Nsight Systems time (µs) | 291.0 | 120.4 |
+| `linear1` | DRAM read + write (MiB) | 193.9 | 96.0 |
+| `linear1` | Tensor pipe active / math-pipe throttle (%) | 44.1 / 66.8 | 56.3 / 41.5 |
+| `linear2` GEMM | Achieved occupancy / math-pipe throttle (%) | 14.7 / 65.0 | 8.3 / 20.9 |
+| `linear2` GEMM | DRAM throughput / long-scoreboard stalls (%) | 68.9 / 8.7 | 87.5 / 37.8 |
+| `linear2` through output boundary | Nsight Systems time (µs) | 404.3 | 214.6 |
+| `linear2` through output boundary | DRAM read + write (MiB) | 290.1 | 178.3 |
+| Whole FFN and boundaries | DRAM read + write (MiB) | 517.0 | 316.5 |
+
+**Why the control is slow.** Both TF32 GEMMs use 238 registers/thread. Registers and shared memory cap them at two CTAs/SM. They achieve 16.3% and 14.7% occupancy, with 0.19 and 0.15 eligible warps per scheduler per active cycle. The math pipe accounts for about 65–67% of active warp cycles, while DRAM throughput is about 67–69% of peak. The tall, wide FP32 intermediate drives substantial data movement, and the warp state points to math-pipe contention in both GEMMs. The standalone residual/normalization kernel separately reaches 94.0% of peak DRAM throughput.
+
+**Where the gain comes from.** `linear1` moves 50.5% fewer DRAM bytes and spends a smaller fraction of warp cycles throttled on the math pipe with the wider FP16 tactic. In the `linear2` path, fusion eliminates the separate GEMM-to-normalization tensor boundary in the execution graph. The equivalent output path moves 38.5% fewer DRAM bytes. The fused kernel still reaches 87.5% of peak DRAM throughput, with more long-scoreboard stalls and lower occupancy, consistent with a shift toward memory pressure as math-pipe stalls fall. The next attention add still launches separately. Across six blocks, the trace attributes 1.02 ms saved to `linear1` and 1.13 ms to `linear2` through the output boundary, before the 0.06 ms input-cast cost. These counters measure representative block 1 and do not apportion the savings between precision, tiling and fusion. [Counter summary](results/kernel-profile-ab/counters.csv) · [Control kernel map](results/kernel-profile-ab/fpn.trace.csv) · [Candidate kernel map](results/kernel-profile-ab/ffn.trace.csv)
 
 ### 4.4 Nearly Flat Full PQ With Only 26/32 Per-Image Passes
 
@@ -252,7 +301,7 @@ The FFN candidate changes PQ / PQ Things / PQ Stuff by only **−0.00062 / −0.
 
 ## 6. Reproduction and Experiment Archives
 
-All figures come from archived RTX 4090 experiments. This report summarizes those records and adds no GPU rerun results. Before reproducing, verify GPU availability, original engines and ONNX, the reference container, weights, and sample SHA-256 hashes. Original runs used different commits and historical paths may differ from the current `stage6/` entry points. Use the reproduction commands in each detailed report.
+The native performance and accuracy figures come from the original RTX 4090 experiments. The paired kernel diagnostics reuse those exact engine plans on the same GPU. Before reproducing, verify GPU availability, original engines and ONNX, the reference container, weights, and sample SHA-256 hashes. Original runs used different commits and historical paths may differ from the current `stage6/` entry points. Use the reproduction commands in each detailed report.
 
 | Experiment | Original commit / acceptance | Code and procedure | Results |
 | --- | --- | --- | --- |
@@ -260,5 +309,20 @@ All figures come from archived RTX 4090 experiments. This report summarizes thos
 | Initial FPN build, per-image anomaly, and tensor swapping | `672f0aa`, `d9e30d7`, `9237433` | [fpn-half-ab.md](fpn-half-ab.md#reproduction) · [fpn_probe.py](fpn_probe.py) | [Initial A/B](results/fpn-half-ab/alignment/) · [Tensor recheck](results/fpn-half-ab/profile/470924-probe.json) |
 | Shared FPN cache, formal A/B, and full PQ | `54e6f15`, accepted at `5f7b57f` | [fpn_precision.py](fpn_precision.py) · [fpn_ab.py](fpn_ab.py) | [Paired records](results/fpn-half-ab/cached/) · [Full PQ](results/fpn-half-ab/pq/) |
 | Encoder FFN FP16 experiment | `301764c` | [ffn_precision.py](ffn_precision.py) · [ffn_ab.py](ffn_ab.py) | [ffn-full-half](results/ffn-full-half/) |
+
+### Paired Nsight Compute and Systems captures
+
+The 2026-11-16 run reused the shared-cache FP32-Winograd FPN control (`3bd81d45…`), accepted FPN FP16 plan (`d80102c6…`), and experimental six-FFN FP16 plan (`51e613b7…`). It ran at clean commit `301764c5ddcfd717f94ca2c3c0ebc99624c347d4`, driver 595.84, CUDA Toolkit 13.0.88 and TensorRT 10.14.1.48 in the reference container from §1. All runs used the same COCO 149770 FP32 input, 1024×1024, B1/S1, with preloaded inputs and benchmark transfers disabled. [Engine and input hashes](results/kernel-profile-ab/assets.sha256)
+
+Nsight Systems 2025.5.1.121 used the command in §4.3 and exported SQLite as `control.sqlite`, `fpn.sqlite` and `ffn.sqlite`. Runs warmed up for 500 ms and the analysis uses the last 40 enqueues per plan. Nsight Compute 2025.3.1 ran separately. It selected the launches with exact NVTX ranges in the `TensorRT` and `myelin-exec` domains, skipped eight sequences of matching launches, and profiled the next three. Application replay uses strict launch matching and retains application cache priming with `--cache-control none` and the GPU's default clock policy. Counter tables use the median of three launches of each kernel. The summary verifies all 45 launches against the Systems kernel names, grid sizes and block sizes before aggregating counters. Kernel times in the tables come from the Systems trace. [Profiler replay documentation](https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#replay) · [Per-launch counters, trace maps and reports' SHA-256](results/kernel-profile-ab/)
+
+Point `archived_runs` to the reference checkout's `stage3/runs`, `trace_dir` to the three SQLite files, and `profile_dir` to a fresh output directory. Run from the repository root on the 4090. The original binary reports and SQLite files are under `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/ncu-paired-20261116-tJgNqR/`.
+
+```bash
+evidence=stage6/results/kernel-profile-ab
+bash "$evidence/capture.sh" "$archived_runs" "$profile_dir"
+python3 "$evidence/trace_summary.py" "$trace_dir" "$profile_dir"
+python3 "$evidence/counter_summary.py" "$profile_dir"
+```
 
 Historical batch × slot and online workload experiments are still available under `stage6/` at commit `fcc7dc9`. FPN and FFN acceptance here covers the experiments above.

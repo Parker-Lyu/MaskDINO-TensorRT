@@ -1,0 +1,5 @@
+scope,trt_layer,cuda_kernel,grid,block,samples,mean_us
+norm1_input_cast,__myl_AddMeanSubMulMeanAddSqrtDivMulMulAddCast_myl878_1,__myl_AddMeanSubMulMeanAddSqrtDivMulMulAddCast_0x3a6522fb253386e8dc449bbd23ab0232,"(5440, 1, 1)","(32, 4, 1)",40,48.160
+linear1,/sem_seg_head/transformer/encoder/layers_1/linear1/MatMul_myl878_2,sm80_xmma_gemm_f16f16_f16f16_f16_nn_n_tilesize128x256x32_stage3_warpsize2x4x1_tensor16x8x16_execute_kernel_trt,"(170, 8, 1)","(256, 1, 1)",40,120.387
+linear2_and_output_boundary,__myl_FcCastAddMeanSubMulMeanAddSqrtDivMulMulAdd_myl878_3,sm80_xmma_gemm_f16f16_f16f16_f16_tn_n_tilesize128x128x64_stage3_warpsize2x2x1_tensor16x8x16_fused,"(2, 170, 1)","(128, 1, 1)",40,175.344
+linear2_and_output_boundary,__myl_Add_myl878_4,__myl_Add_0x6cacd0f5765bf652ae4679413b2e8567,"(5440, 1, 1)","(256, 1, 1)",40,39.246

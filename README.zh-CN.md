@@ -176,57 +176,20 @@ Stage 5 展示 12 组 500 张离线初筛结果。逐图 P95 从派发到 slot �
 
 ## Stage 6 · TensorRT 逐层 Profiling 与进一步优化
 
-**目标：** 在 Stage 3–5 完成 TensorRT 转换、C++/CUDA 前后处理和多 Stream 并发后，进一步定位 **TensorRT Engine 内部**的计算瓶颈，通过局部 FP16 精度优化加速网络，并同时验证端到端性能与分割精度。固定 RTX 4090、1024×1024、B1 和已构建的混合精度（TF32 on）基础 Engine。
-
-### 逐层 Profiling：定位热点并确定优化方向
-
-通过 `trtexec --separateProfileRun --dumpProfile` 统计各层耗时，结合 Nsight Systems 关联 CUDA Kernel，再用 Nsight Compute 分析实际执行路径与硬件资源使用。
-
-| 热点 | 逐层耗时（ms/图） | 占逐层总时间 |
-| --- | ---: | ---: |
-| Encoder FFN（6 层 × 2 GEMM） | **3.675** | **24.30%** |
-| Encoder MSDeformAttn（6 个插件层） | 1.480 | 9.78% |
-| FPN 3×3 Conv | **0.903** | **5.97%** |
-| Input Projection 3×3 Conv | 0.306 | 2.02% |
-
-由此选择两个依次验证的方向：
-
-1. **FPN 单卷积 FP16：** 最贵的单层使用 FP32 Winograd，代表 Kernel 没有利用 Tensor Core；且 ONNX 中该卷积只通向 masks 分支，优先做较局部的精度改动。
-2. **Encoder FFN FP16：** 12 个 GEMM 累计占时 **24.30%**，优化空间更大；但位于 Encoder 内部，可能影响后续 proposal/query，需要重点关注输出一致性。
-
-逐层 profiler 的耗时总和与正常网络延迟并不等价；以上数值用于定位热点，而非直接预测端到端加速。[Profiling 方法、原始数据与 Kernel 分析](stage6/layer-profile.zh-CN.md)
+RTX 4090，1024×1024，B1。TensorRT 逐层采样发现，FPN 卷积是最慢的单层（0.903 ms），Encoder FFN 的 12 个 GEMM 是最大的累计热点（3.675 ms，占 24.3%）。
 
 ### 优化一：FPN 单层 FP16
 
-**方法：** 只把 `/sem_seg_head/layer_1/Conv` 的输入和权重改为 FP16，促使 TensorRT 选择 FP16 Tensor Core tactic，并在 GroupNorm 前转回 FP32。性能统计包含新增 Cast/reformat 等相邻计算，而不仅是卷积 Kernel。
-
-| 指标 | 配对对照 | FPN FP16 | 改善 |
-| --- | ---: | ---: | ---: |
-| 目标 Conv 耗时 | 0.9035 ms | 0.2505 ms | **−72.3%** |
-| B1/S1 端到端 P95 | 16.27 ms | 15.85 ms | **−2.6%** |
-| B1/S2 整轮吞吐 | 74.10 图/s | 76.24 图/s | **+2.9%** |
-
-**关键排查：** 首轮候选只有 **31/32** 张通过逐图一致性检查。针对异常图交叉替换不同 Engine 的 logits/masks，发现缺失的 segment 跟随 **logits**，而不是被修改的 masks 分支。Engine Inspector 又发现首次重建时，四个**非目标 Backbone 卷积**也更换了 tactic。使用共享 Timing Cache 重建配对 Engine 后，目标以外的同名 Conv/Pooling tactic 保持一致，异常图 logits/boxes 也恢复逐元素一致，最终 **32/32** 通过。该结果支持首轮异常与非目标构建差异有关，但不能由此断言某个具体 tactic 是唯一根因。
-
-**精度与结论：** B1/S1、B1/S2 各完成 5,000 张 COCO val2017，PQ 均为 **53.1718**，满足预设 PQ、PQ Things、PQ Stuff 精度容差。**接受该 FPN 优化**（验收提交 `5f7b57f`）。[完整 FPN A/B、交叉替换及全量 PQ](stage6/fpn-half-ab.zh-CN.md)
+FP32 Winograd 达到 **74.2% 的 L2 峰值吞吐**，Tensor Core 活跃度为 0%。切换 FP16 implicit GEMM 后启用 Tensor Core，单次 launch 的 L2 查询流量 **3.27 → 0.87 GiB**。卷积毛省 **0.65 ms**，计入 cast、布局重排和 GroupNorm 后 FPN 分支净省 **0.42 ms**。共享 Cache 配对通过 **32/32** 逐图检查及全量 COCO PQ 验收（**53.1718**）。 [Kernel 证据](stage6/README.zh-CN.md#36-fpn-kernel-profiling) · [精度与 tactic 排查](stage6/fpn-half-ab.zh-CN.md)
 
 ### 优化二：Encoder FFN FP16
 
-**方法：** 在已通过验收的 FPN Engine 基础上，将 Encoder 六层 FFN 的 `linear1 → ReLU → linear2`（含 bias）计算切换为 FP16，共覆盖 **12 个 GEMM**；在 residual add 和 LayerNorm 前恢复 FP32。Inspector 确认使用了 FP16 Tensor Core tactic。
+代表性 block 的 TF32 GEMM 每线程占用 238 个寄存器，**65–67% 的活跃 warp 周期在等 math pipe**。FP16 tactic 和输出融合将该 block 实测 DRAM 流量从 **517.0 降至 316.5 MiB**。Nsight Systems 将六层合计 **2.09 ms** 的净收益归到 FFN 及其边界。全量 COCO PQ 为 **53.1856**，逐图仅 **26/32** 通过，仍为实验配置。 [Kernel 证据](stage6/README.zh-CN.md#ffn-kernel-profiling) · [六张失败图](stage6/ffn-full-half.zh-CN.md)
 
-| 指标 | FPN 对照 | FPN + FFN FP16 | 改善 |
-| --- | ---: | ---: | ---: |
-| B1/S1 端到端 P95 | 16.10 ms | 13.90 ms | **−13.7%** |
-| B1/S2 整轮吞吐 | 76.22 图/s | 89.02 图/s | **+16.8%** |
-| B1/S1 峰值显存 | 1.15 GiB | 1.08 GiB | −0.07 GiB |
-
-**性能归因。** B1/S1 网络 GPU P95 从 **14.01 ms 降到 11.78 ms**。另用固定输入采集 Nsight Systems A/B，通过 NVTX 和 Engine Inspector 对齐六段 FFN 的 GPU kernel。`linear1` 节省 **1.02 ms**，`linear2` 及输出边界节省 **1.13 ms**，融合入口 cast 的 `norm1` 累计多用约 **0.06 ms**，FFN 相关 kernel 净省 **2.09 ms**。网络其余 kernel 耗时基本持平。 [分析方法和结果](stage6/README.zh-CN.md#网络-gpu-时间省在哪里)
-
-**精度的关键区别：** 全量 COCO PQ 达 **53.1856**，相对同输入 PyTorch FP32 基线约 **53.1863** 只下降 **0.0006 点**，PQ Things / PQ Stuff 也满足当前容差；但与已验收 FPN 对照的 32 张**逐图一致性检查仅 26/32 通过**，最差图片像素类别一致率只有 **85.68%**。
-
-这意味着：**全量任务精度几乎不变，不代表优化前后的每张图输出仍然接近。** PQ 评估对 ground truth 的整体分割质量；逐图对齐评估候选相对参考 Engine 的预测行为。FFN 数值变化是否通过 Encoder 特征、proposal TopK 和 Decoder query 放大，**尚未完成中间张量因果验证**。
-
-**结论：** 性能收益明显，但未满足严格逐图一致性门槛。[FFN 性能、六张失败图和全量 PQ](stage6/ffn-full-half.zh-CN.md)
+| 原生离线配对 | B1/S1 端到端 P95 | B1/S2 全程吞吐 |
+| --- | ---: | ---: |
+| FPN FP16（已验收） | 16.27 → 15.85 ms（**−2.6%**） | 74.10 → 76.24 图/s（**+2.9%**） |
+| 在 FPN 上叠加 FFN FP16（实验） | 16.10 → 13.90 ms（**−13.7%**） | 76.22 → 89.02 图/s（**+16.8%**） |
 
 ### Stage 1–6 累计对比
 

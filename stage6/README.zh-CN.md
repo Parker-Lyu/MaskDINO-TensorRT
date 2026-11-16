@@ -127,7 +127,7 @@ Stage 6 不改变权重来源、COCO 数据、Engine 的 FP32 输入/输出接�
 | 指标 | 对照 | FPN FP16 | 改善 |
 | --- | ---: | ---: | ---: |
 | 目标 Conv 层均值 | 0.9035 ms | 0.2505 ms | **−72.3%** |
-| 相邻 Add → GroupNorm/ReLU | 1.2786 ms | 0.8203 ms | **−35.8%** |
+| 选定的 Add → GroupNorm/ReLU 层 | 1.2786 ms | 0.8203 ms | **−35.8%** |
 | B1/S1 网络 GPU P95 | 14.17 ms | 13.76 ms | 约 −0.41 ms |
 | B1/S1 端到端 P95 | 16.27 ms | 15.85 ms | **−2.6%** |
 | B1/S2 稳态吞吐 | 74.21 图/s | 76.33 图/s | **+2.9%** |
@@ -135,13 +135,41 @@ Stage 6 不改变权重来源、COCO 数据、Engine 的 FP32 输入/输出接�
 
 ![FPN 单层优化的原生离线配对](results/fpn-half-ab/comparison.svg)
 
-**为什么 Conv 自身快了 72%，端到端只改善 2.6%？** 因为它只是完整网络和前后处理的一部分，且 Cast、数据重排及其他未改变的计算仍需要时间。不能用单层加速倍数推断系统级加速倍数。
-
 候选 B1/S1、B1/S2 均完成 **5,000 张** COCO val2017 全量评估，预测 ID 唯一且完整。二者的 PQ / PQ Things / PQ Stuff 均为 **53.17180 / 59.01222 / 44.35606**，相对 PyTorch FP32 B1 分别变化 **−0.01446 / −0.01504 / −0.01357 点**；并通过当前 **32/32** 逐图门槛。
 
 **决策：接受 FPN 局部 FP16 优化**（验收提交 `5f7b57f`）。验收限于 RTX 4090、B1/S1–S2、指定离线样本和全量 COCO PQ；**不代表在线 P99 或长时间稳定性已经验证**。
 
 [逐轮、精度与复现说明](fpn-half-ab.zh-CN.md) · [A/B 原始数据](results/fpn-half-ab/cached/ab/summary.json) · [全量 PQ](results/fpn-half-ab/pq/)
+
+### 3.6 FPN Kernel Profiling
+
+对照组在 `1×256×256×256` 特征图上使用 FP32 Winograd。候选组改用 NHWC 布局的 FP16 Tensor Core implicit GEMM（`16×8×16` MMA）。FP16 将卷积输入、输出张量各从 64 MiB 缩到 32 MiB，tactic 同时改变了算术路径与布局。 [对照 Engine Inspector](results/fpn-half-ab/cached/control/layers.json) · [候选 Engine Inspector](results/fpn-half-ab/cached/fpn-half/layers.json)
+
+| 卷积计数器（3 次 launch 的中位数） | FP32 Winograd | FP16 implicit GEMM |
+| --- | ---: | ---: |
+| Tensor / FMA 管线活跃度（峰值百分比） | 0.0 / 47.3 | 89.1 / 1.7 |
+| L2 / DRAM 吞吐（峰值百分比） | 74.2 / 14.6 | 71.2 / 17.1 |
+| L2 查询流量（GiB/launch） | 3.27 | 0.87 |
+| DRAM 读写合计（MiB/launch） | 127.3 | 41.8 |
+| 每线程寄存器数 / 实测 occupancy | 126 / 32.8% | 178 / 16.7% |
+
+**对照为什么慢。** 单次 launch 有 3.27 GiB 的 L2 查询流量，命中率 99.4%。L2 是采集指标中最繁忙的吞吐资源，FP32 FMA 管线也承担了大量工作。DRAM 吞吐只有峰值的 14.6%，外存带宽仍有余量。
+
+**候选为什么快。** 切换后 Tensor pipe 活跃度达 89.1%，L2 查询流量减少 73.3%，同时 L2 吞吐仍然较高，实测 occupancy 反而下降。FP16 和 implicit GEMM tactic 在此 A/B 中一起变化。把采集到的卷积、转换和归一化 kernel 都计入后，DRAM 流量中位数加总**从 252.3 增到 352.5 MiB**。卷积本身减少了数据搬运和计算耗时，新增边界则增加了外存流量。 [Nsight Compute 计数器](results/kernel-profile-ab/counters.csv)
+
+配对 Nsight Systems trace 用 NVTX 和 Engine Inspector 定位 FPN 分支的 CUDA launch。下表为每个 engine 最后 40 次 enqueue 的单次推理 GPU kernel 耗时均值。
+
+| FPN Kernel 工作 | 对照（µs） | FPN FP16（µs） | 节省（µs） |
+| --- | ---: | ---: | ---: |
+| Add | 212.8 | 213.2 | −0.5 |
+| 入口 cast | 0 | 95.1 | −95.1 |
+| **3×3 卷积** | **893.2** | **246.8** | **646.4** |
+| 出口布局重排 | 0 | 30.1 | −30.1 |
+| GroupNorm/ReLU 路径（含 move 和候选的出口 cast） | 156.5 | 253.6 | −97.1 |
+| **FPN 范围合计** | **1,262.5** | **838.9** | **423.7** |
+| 全网络 kernel 合计 | 13,679.0 | 13,266.9 | 412.1 |
+
+卷积贡献全部毛收益，入口转换、出口重排及归一化路径变化合计抵消约 222 µs。Inspector 确认卷积输出连接到实际执行的 NHWC → linear FP16 reformat kernel，§3.5 的历史逐层小计漏计了这项工作。入口侧的 reformat 是 no-op，无 kernel launch。补齐边界后的 trace 净收益与独立原生实验的网络 P95 改善 0.41 ms 接近。 [对照 kernel 映射](results/kernel-profile-ab/control.trace.csv) · [候选 kernel 映射](results/kernel-profile-ab/fpn.trace.csv)
 
 ## 4. 实验二：把六层 Encoder FFN 的 12 个 GEMM 切换为 FP16
 
@@ -190,11 +218,32 @@ FPN 证明了局部精度切换能够带来真实收益，但系统级收益有�
 | 网络其余 kernel | 8.850 | 8.852 | −0.002 |
 | **全网络 kernel 合计** | **13.261** | **11.169** | **2.092** |
 
-Trace 中的 kernel 耗时下降几乎全部来自 FFN 及其边界。对照的两个 GEMM 已经使用 TF32 Tensor Core，候选改用 FP16 tactic，并把 `linear2` 与转回 FP32、residual add 和 `norm2` 融合。这里测得的是 tactic 与融合叠加的效果。若要量化各自贡献或判断 DRAM 流量变化，需要额外的对照或硬件计数器。
+Trace 中的 kernel 耗时下降几乎全部来自 FFN 及其边界。对照的两个 GEMM 已经使用 TF32 Tensor Core，候选改用 FP16 tactic，并把 `linear2` 与转回 FP32、residual add 和 `norm2` 融合。
 
 表中是单张固定输入上各组 kernel 耗时之和的均值。原实验在 500 张图上用 CUDA events 测到的**网络 P95 改善是 2.23 ms**。独立的 `trtexec` 逐层采样也得到相同归因：同一 FFN 范围的层均值之和节省 **2.123 ms**，全网络层均值之和节省 **2.122 ms**，其余层基本持平。 [对照逐层数据](results/ffn-full-half/ab/fpn.layers.json) · [候选逐层数据](results/ffn-full-half/ab/ffn-half.layers.json)
 
 原始报告和 SQLite 保存在 4090 的 `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/ffn-attribution-x8sP2E/`。 [复现命令](README.md#where-the-network-time-was-saved) · [报告校验和](results/ffn-full-half/attribution/reports.sha256) · [对照逐次推理数据](results/ffn-full-half/attribution/fpn.csv) · [候选逐次推理数据](results/ffn-full-half/attribution/ffn-half.csv) · [对照 kernel 映射](results/ffn-full-half/attribution/fpn.kernels.csv) · [候选 kernel 映射](results/ffn-full-half/attribution/ffn-half.kernels.csv)
+
+#### FFN Kernel Profiling
+
+B1 时每段 FFN 处理 21,760 个 token，形状为 `256 → 2048 → 256`。Inspector 显示两次 GEMM 间的激活张量由 170 MiB 缩到 85 MiB。`linear1` 由 TF32 `128×128×16` 切到 FP16 `128×256×32`，两边都已将 bias 和 ReLU 融进同一个 kernel。`linear2` 改用 `128×128×64` FP16 GEMM 并融合输出路径。 [FPN 对照 Engine Inspector](results/fpn-half-ab/cached/fpn-half/layers.json) · [FFN 候选 Engine Inspector](results/ffn-full-half/build/layers.json)
+
+计数器对照选择 Encoder block 1（从零编号）。表中 `linear2` GEMM 行分别对应对照的 GEMM 和候选的融合 kernel，输出边界行则将 GEMM 与其后续 kernel 合计。
+
+| Kernel 或路径 | 计数器 | TF32 对照 | FP16 候选 |
+| --- | --- | ---: | ---: |
+| `linear1` | Nsight Systems 耗时（µs） | 291.0 | 120.4 |
+| `linear1` | DRAM 读写合计（MiB） | 193.9 | 96.0 |
+| `linear1` | Tensor pipe 活跃度 / math-pipe throttle（%） | 44.1 / 66.8 | 56.3 / 41.5 |
+| `linear2` GEMM | 实测 occupancy / math-pipe throttle（%） | 14.7 / 65.0 | 8.3 / 20.9 |
+| `linear2` GEMM | DRAM 峰值吞吐占比 / long-scoreboard stall（%） | 68.9 / 8.7 | 87.5 / 37.8 |
+| `linear2` 到输出边界 | Nsight Systems 耗时（µs） | 404.3 | 214.6 |
+| `linear2` 到输出边界 | DRAM 读写合计（MiB） | 290.1 | 178.3 |
+| 整段 FFN 与边界 | DRAM 读写合计（MiB） | 517.0 | 316.5 |
+
+**对照为什么慢。** 两个 TF32 GEMM 每线程都用 238 个寄存器，寄存器和 shared memory 将驻留上限压到 2 CTA/SM。实测 occupancy 为 16.3% 和 14.7%，每个 scheduler 每活跃周期仅有 0.19 和 0.15 个 eligible warp。约 65–67% 的活跃 warp 周期在等 math pipe，同时 DRAM 达峰值吞吐的约 67–69%。大的 FP32 中间激活带来显著读写，warp 状态也显示两个 GEMM 存在 math-pipe 争用。独立的 residual/normalization kernel 则达到 94.0% 的 DRAM 峰值吞吐。
+
+**收益主要来自哪里。** `linear1` 换为更宽的 FP16 tile 后，DRAM 字节数减少 50.5%，math-pipe throttle 占比下降。`linear2` 融合消除了执行图中 GEMM 与归一化之间独立的张量边界，整段输出路径的 DRAM 字节数减少 38.5%。融合 kernel 仍达到 DRAM 峰值吞吐的 87.5%，long-scoreboard stall 上升、occupancy 下降，说明 math-pipe stall 减少后对访存压力更敏感。下一层 attention 的 add 仍单独 launch。六层 trace 分别把 **1.02 ms** 和 **1.13 ms** 的毛收益归到 `linear1` 和 `linear2` 到输出边界，再扣除 **0.06 ms** 入口 cast 开销。这组计数器只覆盖代表性的 block 1，精度、tiling 和融合的单独贡献仍未拆分。 [计数器汇总](results/kernel-profile-ab/counters.csv) · [对照 kernel 映射](results/kernel-profile-ab/fpn.trace.csv) · [候选 kernel 映射](results/kernel-profile-ab/ffn.trace.csv)
 
 ### 4.4 精度出现矛盾：全量 PQ 几乎不变，逐图仅 26/32
 
@@ -233,7 +282,7 @@ FFN 候选相对 PyTorch FP32 B1 的 PQ / PQ Things / PQ Stuff 变化仅 **−0.
 
 ## 6. 复现入口与实验档案
 
-所有数值来自 RTX 4090 上归档的实验；本文是对已有记录的整理，**没有新增 GPU 复跑结果**。正式复现前先确认 GPU 空闲、原始 Engine/ONNX、参考容器、权重及样本 SHA-256。原始实验分别在不同提交执行，历史路径不一定与当前 `stage6/` 入口相同；请以对应详细报告的复现命令为准。
+原生性能和精度沿用 RTX 4090 上的原始实验。配对 kernel 诊断在同一块 GPU 上复用了相同的 engine plan。正式复现前先确认 GPU 空闲、原始 Engine/ONNX、参考容器、权重及样本 SHA-256。原始实验分别在不同提交执行，历史路径不一定与当前 `stage6/` 入口相同；请以对应详细报告的复现命令为准。
 
 | 实验 | 原始提交 / 验收 | 代码和步骤 | 结果 |
 | --- | --- | --- | --- |
@@ -241,5 +290,20 @@ FFN 候选相对 PyTorch FP32 B1 的 PQ / PQ Things / PQ Stuff 变化仅 **−0.
 | FPN 首轮构建、逐图异常及交叉验证 | `672f0aa`、`d9e30d7`、`9237433` | [fpn-half-ab.zh-CN.md](fpn-half-ab.zh-CN.md#复现入口) · [fpn_probe.py](fpn_probe.py) | [首轮 A/B](results/fpn-half-ab/alignment/) · [张量复查](results/fpn-half-ab/profile/470924-probe.json) |
 | FPN 共享 Cache、正式 A/B、全量 PQ | `54e6f15`；验收 `5f7b57f` | [fpn_precision.py](fpn_precision.py) · [fpn_ab.py](fpn_ab.py) | [配对记录](results/fpn-half-ab/cached/) · [全量 PQ](results/fpn-half-ab/pq/) |
 | Encoder FFN FP16 实验 | `301764c` | [ffn_precision.py](ffn_precision.py) · [ffn_ab.py](ffn_ab.py) | [ffn-full-half](results/ffn-full-half/) |
+
+### 配对 Nsight Compute 与 Systems 采集
+
+2026-11-16 的实验复用了共享 Cache 的 FP32 Winograd FPN 对照（`3bd81d45…`）、已验收的 FPN FP16（`d80102c6…`）和六层 FFN FP16 候选（`51e613b7…`）。运行于干净提交 `301764c5ddcfd717f94ca2c3c0ebc99624c347d4`，使用 §1 的参考容器、驱动 595.84、CUDA Toolkit 13.0.88、TensorRT 10.14.1.48。固定 COCO 149770 的同一份 FP32 输入、1024×1024、B1/S1，预载输入并关闭 benchmark 传输。 [Engine 和输入校验和](results/kernel-profile-ab/assets.sha256)
+
+Nsight Systems 2025.5.1.121 用 §4.3 所链接的命令生成 `control.sqlite`、`fpn.sqlite` 和 `ffn.sqlite`。预热 500 ms，分析各 engine 的最后 40 次 enqueue。Nsight Compute 2025.3.1 独立运行，通过 `TensorRT` 和 `myelin-exec` 域的精确 NVTX range 筛选 launch，跳过前八组匹配序列后采集接下来三组。Application replay 使用严格匹配，并以 `--cache-control none` 保留应用的缓存预热行为，使用 GPU 默认频率策略。汇总脚本逐次核对 45 个 launch 的 kernel 名、grid 和 block，表中计数器取各 kernel 三次 launch 的中位数。耗时来自 Systems trace。 [Profiler replay 文档](https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#replay) · [逐次计数器、trace 映射与报告 SHA-256](results/kernel-profile-ab/)
+
+在 4090 上从仓库根目录执行。`archived_runs` 指向参考 checkout 的 `stage3/runs`，`trace_dir` 指向包含三份 SQLite 的目录，`profile_dir` 用新目录。原始二进制报告和 SQLite 保存在 `/home/parker/Code/MaskDINO-TensorRT-layer-profile-20261110/repo/stage3/runs/ncu-paired-20261116-tJgNqR/`。
+
+```bash
+evidence=stage6/results/kernel-profile-ab
+bash "$evidence/capture.sh" "$archived_runs" "$profile_dir"
+python3 "$evidence/trace_summary.py" "$trace_dir" "$profile_dir"
+python3 "$evidence/counter_summary.py" "$profile_dir"
+```
 
 历史 batch × slot 与在线负载尝试仍可从提交 `fcc7dc9` 的 `stage6/` 查看；这些历史内容**不属于本文所述的 FPN / FFN 验收范围**。
