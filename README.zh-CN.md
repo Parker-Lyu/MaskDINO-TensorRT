@@ -7,21 +7,25 @@
 <table>
   <tr>
     <td align="center">
-      <h2>2.62×</h2>
-      TensorRT FP32 离线吞吐
+      <h2>−73.2%</h2>
+      单 slot 端到端 P95 延迟<br><sub>51.93 → 13.90 ms</sub>
     </td>
     <td align="center">
       <h2>4.37×</h2>
-      实验峰值离线吞吐
+      实验峰值离线吞吐<br><sub>20.38 → 89.02 图/s</sub>
     </td>
     <td align="center">
-      <h2>降低 73.2%</h2>
-      实验配置的单 slot P95 延迟
+      <h2>−79.2%</h2>
+      单 slot 进程峰值显存<br><sub>5.19 → 1.08 GiB</sub>
+    </td>
+    <td align="center">
+      <h2>53.1856</h2>
+      全量 COCO val2017 PQ<br><sub>基线 53.1863（微小退化 Δ −0.0006）</sub>
     </td>
   </tr>
 </table>
 
-<sub>以 RTX 4090 上的 PyTorch FP32 为基线。</sub>
+<sub>以 RTX 4090 上的 PyTorch FP32（1024×1024, B1）为基线；峰值指标来自 Stage 6 FPN + Encoder FFN FP16 实验配置。</sub>
 
 ![PyTorch、三种 TensorRT 精度策略及 Stage 6 FFN 的单 slot P95 与离线吞吐对比](docs/precision-performance.svg)
 
@@ -29,29 +33,34 @@
 
 ## 工程亮点（Engineering Highlights）
 
-1. **TensorRT 集成（TensorRT Integration）：** 定位并修复 ONNX 导出中的常量设备兼容问题；集成 MSDeformAttn PluginV3，构建 TensorRT Engine，并验证插件数值及模型输出。
-2. **原生推理链路（Native Inference Pipeline）：** 使用 C++/CUDA 实现 JPEG 解码后的预处理、分割后处理与结果恢复，管理 GPU / pinned host 缓冲区，完成 TensorRT 异步执行及 CPU 全景分割图和 segment metadata 交付。
-3. **并发与性能分析（Concurrency & Profiling）：** 采用独立 execution context、CUDA stream 和缓冲区的多 slot 调度；结合 Nsight Systems、Nsight Compute 与 TensorRT 逐层 Profiling，分析 GPU 执行重叠、延迟、吞吐及算子热点。
-4. **精度优化与故障归因（Precision Optimization & Debugging）：** 针对 FPN 卷积和 Encoder FFN 进行局部 FP16 实验；排查 TensorRT tactic 变化，结合逐图对齐与 COCO 全量 PQ 验证性能收益和精度风险。
+1. **端到端 C++/CUDA 异步流水线与同步消除（Stage 3–5）：** 
+   通过 Nsight Systems 定位出 Python 后处理因布尔索引与 `.item()` 触发每图约 81 次隐式流同步（32 张图共 **2,591 次 `cudaStreamSynchronize`**）。使用原生 C++/CUDA 重写前后处理并对齐 Pillow 双线性插值与取整语义，将中间流同步降至 **0 次**，GPU 后处理耗时从 **4.34 ms 压至 0.11 ms**，单 slot 进程峰值显存从 **5.19 GiB 降至 1.24 GiB**（Stage 6 进一步降至 **1.08 GiB**）；结合多 Slot 独立 Execution Context 与 CUDA Stream 调度，实现 **37.32%** 的跨流 Kernel 执行重叠。
+2. **Nsight Compute (NCU) 算子级硬件瓶颈归因（Stage 6）：** 
+   结合 `trtexec` 逐层采样、Nsight Systems (NVTX/SQLite) 与 Nsight Compute 硬件计数器定位热点：
+   - **FPN 3×3 卷积：** 识别出 FP32 Winograd 路径 Tensor Core 活跃度为 `0%`、单次 Launch L2 查询流量高达 `3.27 GiB`（L2 吞吐达峰值 `74.2%`）；定向切换为 FP16 Implicit GEMM 后，Tensor Pipe 活跃度达 `89.1%`，L2 流量骤降至 `0.87 GiB`，计入边界 Cast/Reformat 后净省 `0.42 ms`。
+   - **Encoder FFN (12× GEMM)：** 定位出 TF32 GEMM 每线程占用 `238` 个寄存器（限制驻留为 `2 CTA/SM`，实测 Occupancy 仅 `14.7%`），且 `65%–67%` 活跃周期受阻于 `math-pipe throttle`；切换 FP16 Tactic 并融合输出边界后，单 Block DRAM 读写流量从 `517.0 MiB` 降至 `316.5 MiB`，六层净省 `2.09 ms`。
+3. **受控 A/B 实验设计与 Tactic 漂移排障（Stage 3 & 6）：** 
+   在局部修改单层 ONNX 节点的实验中，通过交叉替换 `logits` 与 `masks` 张量及对比 **Engine Inspector**，抓出“修改单个 FPN 节点却导致 4 个非目标 Backbone 卷积发生 Tactic 漂移”的隐蔽问题；通过复用 **TensorRT Timing Cache** 锁定非目标层 Tactic，恢复 `32/32` 逐图严格一致，确保性能与精度归因满足严格的单变量控制。
+4. **可复现基准测试与自动化回归管线（Stage 1–6）：** 
+   建立双层正确性门禁（32 张样本逐像素/IoU 行为一致性检查 + 5,000 张 COCO val2017 全量 PQ 验收），采用三轮轮换执行顺序消除热状态偏差；开发基于 Python 与 SQLite 的自动化分析脚本，自动关联 NVTX 区间与底层 CUDA Kernel Launch、聚合 NCU 性能计数器并生成可视化报告。
 
 ## 推理性能对比
 
-固定 **1024×1024、batch 1**，以使用相同 letterbox 输入的 PyTorch FP32 为基线。性能取同一份 500 张 JPEG 的三轮中位数，括号内为相对 PyTorch 的改善。
+固定 **1024×1024、batch 1**，以使用相同 letterbox 输入的 PyTorch FP32 为基线。性能取同一份 500 张 JPEG 的三轮中位数，括号内为相对 PyTorch 基线的改善。
 
+| 阶段与配置（1024×1024, Batch 1） | 前后处理 | 全量 COCO PQ | 单 slot 端到端 P95 ↓ | 峰值离线吞吐 ↑ | 单 slot 进程峰值显存 ↓ | 逐图一致性检查 (32张) |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| **Stage 2 · PyTorch FP32 基线**（TF32 off） | Python | 53.1863 | 51.93 ms | 20.38 图/s (S1) | 5.19 GiB | 基线 |
+| **Stage 3 · TensorRT FP32**（TF32 off） | Python | 53.1863 | 35.18 ms (−32.2%) | 31.18 图/s (1.53×, S1) | 4.98 GiB | **32/32 通过**（对齐 PyTorch） |
+| **Stage 4/5 · TensorRT FP32**（TF32 off） | **C++/CUDA** | 53.1863 | **23.63 ms** (−54.5%) | **53.36 图/s** (2.62×, S3) | **1.24 GiB** | **32/32 通过**（100% 像素一致） |
+| **Stage 4/5 · TensorRT FP32**（TF32 on） | C++/CUDA | 53.1745 | 17.74 ms (−65.8%) | 66.43 图/s (3.26×, S3) | 1.24 GiB | 27/32 通过（ΔPQ −0.0117） |
+| **Stage 4/5 · 全模型混合精度**（TF32 on） | C++/CUDA | 53.1680 | 16.45 ms (−68.3%) | 74.35 图/s (3.65×, S2) | 1.15 GiB | 16/32 通过（ΔPQ −0.0182） |
+| **Stage 6 · 定向 FPN FP16**（已验收） | C++/CUDA | 53.1718 | 15.85 ms (−69.5%) | 76.24 图/s (3.74×, S2) | 1.15 GiB | **32/32 通过**（相对混合控制组） |
+| **Stage 6 · FPN + 6层 FFN FP16**（实验） | C++/CUDA | **53.1856** | **13.90 ms** (−73.2%) | **89.02 图/s** (4.37×, S2) | **1.08 GiB** | 26/32 通过（ΔPQ −0.0006，相对 FPN 基线） |
 
-| 模型 / Engine | 全量 COCO PQ | 单 slot 端到端 P95 ↓ | 整轮离线吞吐 ↑ | 精度损失 |
-| --- | ---: | ---: | ---: | --- |
-| PyTorch FP32 基线（TF32 off） | 53.1863 | 51.93 ms | 20.38 图/s（单路） | 基线 |
-| TensorRT FP32（TF32 off） | 53.1863 | **23.63 ms**（缩短 28.30 ms / 54.5%） | **53.36 图/s**（2.62×，S3） | PQ 持平（四位小数），逐图 32/32 通过 |
-| TensorRT FP32（TF32 on） | 53.1745 | **17.74 ms**（缩短 34.19 ms / 65.8%） | **66.43 图/s**（3.26×，S3） | PQ 降 0.0117 点，逐图 27/32 通过 |
-| TensorRT FP16 混合精度（TF32 on） | 53.1680 | **16.45 ms**（缩短 35.48 ms / 68.3%） | **74.35 图/s**（3.65×，S2） | PQ 降 0.0182 点，逐图 16/32 通过，最差类别一致率 91.63% |
-| Stage 6 · FPN + Encoder FFN FP16（TF32 on） | **53.1856** | **13.90 ms**（缩短 38.03 ms / 73.2%） | **89.02 图/s**（4.37×，S2） | PQ 降 0.0006 点；相对已验收 FPN Engine 逐图 26/32 通过，最差类别一致率 85.68% |
+**统计口径：** 表格均为 RTX 4090、1024×1024、B1 下的归档实验结果。Stage 2–4 的单 slot P95 从开始处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪，Stage 5–6 从请求派发到 slot 起算（覆盖完整处理链路及派发开销）。吞吐均按预热后整轮完成图数除以墙钟时间，分别取 Stage 2/3 单路、Stage 5 的 S1–S4 离线初筛峰值和 Stage 6 的 B1/S2 结果。显存列统一报告 B1/S1 下 NVML 按 PID 采样的推理进程峰值（Stage 3 进程显存来自 Stage 4 同轮复测；多 slot 显存见 [Stage 5](#进程峰值显存-1) 与 [Stage 6](#stage-6--tensorrt-逐层-profiling-与进一步优化)）。
 
-
-
-**统计口径：** 表格均为 RTX 4090、1024×1024、B1 下的归档实验结果。PyTorch 与 Stage 4 单 slot 的 P95 从开始处理内存 JPEG 计到 CPU 分割图和 segment metadata 就绪，Stage 6 的 P95 从请求派发到 slot 起算。吞吐均按预热后整轮完成图数除以墙钟时间，分别取 Stage 2 单路、Stage 5 的 S1–S4 离线初筛峰值和 Stage 6 的 B1/S2 结果。
-
-**精度口径：** 全量 PQ 使用相同 letterbox 输入的 PyTorch FP32 B1 作为基线，在 COCO val2017 的 5,000 张图上计算。前面 TensorRT 精度策略的逐图通过数取 Stage 3 对 PyTorch 的 32 张检查；Stage 6 FFN 的 **26/32** 则是与已验收 FPN Engine 的 32 张逐图检查，详见 [Stage 3](#stage-3--将网络转换为-tensorrt) 和 [Stage 6](#stage-6--tensorrt-逐层-profiling-与进一步优化)。
+**精度口径：** 全量 PQ 使用相同 letterbox 输入的 PyTorch FP32 B1（53.186252）作为基线，在 COCO val2017 的 5,000 张图上计算。Stage 3–5 的逐图通过数以 PyTorch FP32 为参照（原生 C++/CUDA 与同 Engine Python 输出为 32/32 逐像素一致）；Stage 6 FPN 与 FFN 的逐图检查分别以共享 Cache 重建的混合精度控制组和已验收 FPN Engine 为参照，详见 [Stage 3](#stage-3--将网络转换为-tensorrt) 和 [Stage 6](#stage-6--tensorrt-逐层-profiling-与进一步优化)。
 
 ## 技术路线
 
@@ -81,7 +90,7 @@ Stage 3 使用 Python 前后处理，Stage 4 使用 C++/CUDA 前后处理，Stag
 
 ## Stage 2 · 调整预处理方法并建立性能基线
 
-为为了支持固定形状批处理，并统一不同原始分辨率的输入，调整预处理方法，用 letterbox 将输入图片等比缩放并填充到正方形，再将分割输出恢复到原图坐标。1024 相比 800 高 **1.1742 PQ**，选为部署尺寸。[32 张对齐与 500 张计时样本](stage2/sample.json)
+为了支持固定形状批处理，并统一不同原始分辨率的输入，调整预处理方法，用 letterbox 将输入图片等比缩放并填充到正方形，再将分割输出恢复到原图坐标。1024 相比 800 高 **1.1742 PQ**，选为部署尺寸。[32 张对齐与 500 张计时样本](stage2/sample.json)
 
 ### 全量 COCO PQ
 

@@ -7,21 +7,25 @@
 <table>
   <tr>
     <td align="center">
-      <h2>2.62×</h2>
-      TensorRT FP32 offline throughput
+      <h2>−73.2%</h2>
+      Single-slot end-to-end P95 latency<br><sub>51.93 → 13.90 ms</sub>
     </td>
     <td align="center">
       <h2>4.37×</h2>
-      Experimental peak offline throughput
+      Experimental peak offline throughput<br><sub>20.38 → 89.02 images/s</sub>
     </td>
     <td align="center">
-      <h2>73.2% lower</h2>
-      Experimental single-slot P95 latency
+      <h2>−79.2%</h2>
+      Single-slot peak process VRAM<br><sub>5.19 → 1.08 GiB</sub>
+    </td>
+    <td align="center">
+      <h2>53.1856</h2>
+      Full COCO val2017 PQ<br><sub>Baseline 53.1863 (minimal Δ −0.0006)</sub>
     </td>
   </tr>
 </table>
 
-<sub>Compared with the PyTorch FP32 baseline on an RTX 4090.</sub>
+<sub>Compared with the PyTorch FP32 baseline (1024×1024, B1) on an RTX 4090; peak figures reflect the experimental Stage 6 FPN + Encoder FFN FP16 configuration.</sub>
 
 ![Single-slot P95 and offline throughput for PyTorch, three TensorRT precision policies, and Stage 6 FFN](docs/precision-performance.svg)
 
@@ -29,29 +33,34 @@
 
 ## Engineering Highlights
 
-1. **TensorRT integration.** Diagnose and fix a device compatibility issue with constants during ONNX export. Integrate MSDeformAttn PluginV3, build TensorRT engines, and validate plugin numerics and model outputs.
-2. **Native inference pipeline.** Implement preprocessing after JPEG decoding, segmentation postprocessing, and output restoration in C++/CUDA. Manage GPU and pinned host buffers, run TensorRT asynchronously, and return a CPU panoptic map and segment metadata.
-3. **Concurrency and profiling.** Schedule multiple slots with independent execution contexts, CUDA streams, and buffers. Use Nsight Systems, Nsight Compute, and TensorRT layer profiling to analyze GPU execution overlap, latency, throughput, and operator hotspots.
-4. **Precision optimization and debugging.** Run targeted FP16 experiments on the FPN convolution and encoder FFNs. Investigate TensorRT tactic changes and use per-image alignment and full COCO PQ to evaluate performance gains and accuracy risks.
+1. **End-to-end C++/CUDA asynchronous pipeline and sync elimination (Stages 3–5).**
+   Nsight Systems traced ~81 implicit stream synchronizations per image (**2,591 `cudaStreamSynchronize` calls** across 32 images) in Python postprocessing caused by boolean indexing and `.item()`. Rewriting pre- and postprocessing in native C++/CUDA with exact Pillow bilinear/rounding semantics reduced intermediate stream syncs to **0**, cut GPU postprocessing time from **4.34 ms to 0.11 ms**, and lowered single-slot peak process VRAM from **5.19 GiB to 1.24 GiB** (further reduced to **1.08 GiB** in Stage 6). Multi-slot scheduling with independent execution contexts and CUDA streams achieved **37.32%** cross-stream kernel overlap.
+2. **Nsight Compute (NCU) kernel-level bottleneck attribution (Stage 6).**
+   Combined `trtexec` layer profiling, Nsight Systems (NVTX/SQLite), and Nsight Compute hardware counters to diagnose operator hotspots:
+   - **FPN 3×3 convolution:** Identified that the FP32 Winograd tactic had `0%` Tensor Core activity and `3.27 GiB` L2 lookup traffic per launch (`74.2%` of peak L2 throughput). Switching this layer to FP16 implicit GEMM raised Tensor pipe activity to `89.1%`, cut L2 lookup traffic to `0.87 GiB`, and saved a net `0.42 ms` after boundary cast/reformat costs.
+   - **Encoder FFN (12× GEMM):** Found that TF32 GEMMs used `238` registers/thread (limiting residency to `2 CTA/SM`, `14.7%` achieved occupancy) with `65%–67%` of active cycles stalled on `math-pipe throttle`. Switching to FP16 tactics with output fusion reduced single-block DRAM traffic from `517.0 MiB` to `316.5 MiB` and saved a net `2.09 ms` across six blocks.
+3. **Controlled A/B methodology and tactic-drift debugging (Stages 3 & 6).**
+   During single-node ONNX precision surgery, cross-swapping `logits` and `masks` tensors alongside **Engine Inspector** diffs revealed that modifying one FPN convolution caused tactic drift in 4 unrelated backbone convolutions. Reusing a shared **TensorRT Timing Cache** locked non-target tactics and restored `32/32` per-image agreement, enforcing strict single-variable control.
+4. **Reproducible benchmarking and automated regression pipeline (Stages 1–6).**
+   Built a two-tier correctness gate (32-image pixel/IoU behavioral alignment + 5,000-image full COCO val2017 PQ evaluation) and used 3-round rotated execution orders to eliminate thermal bias. Developed Python + SQLite automation scripts to correlate NVTX ranges with low-level CUDA kernel launches, aggregate NCU counters, and generate visual reports.
 
 ## Inference Performance Comparison
 
-Fix the input at **1024×1024, batch 1** and use PyTorch FP32 with the same letterbox input as the baseline. Performance figures are medians of three runs on the same 500 JPEGs. Parentheses show improvements over PyTorch.
+Fix the input at **1024×1024, batch 1** and use PyTorch FP32 with the same letterbox input as the baseline. Performance figures are medians of three runs on the same 500 JPEGs. Parentheses show improvements over the PyTorch baseline.
 
+| Stage & configuration (1024×1024, Batch 1) | Pre/Post | Full COCO PQ | Single-slot E2E P95 ↓ | Peak offline throughput ↑ | Single-slot process VRAM ↓ | Per-image check (32 images) |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| **Stage 2 · PyTorch FP32 baseline** (TF32 off) | Python | 53.1863 | 51.93 ms | 20.38 images/s (S1) | 5.19 GiB | Baseline |
+| **Stage 3 · TensorRT FP32** (TF32 off) | Python | 53.1863 | 35.18 ms (−32.2%) | 31.18 images/s (1.53×, S1) | 4.98 GiB | **32/32 passed** (vs. PyTorch) |
+| **Stage 4/5 · TensorRT FP32** (TF32 off) | **C++/CUDA** | 53.1863 | **23.63 ms** (−54.5%) | **53.36 images/s** (2.62×, S3) | **1.24 GiB** | **32/32 passed** (100% pixel match) |
+| **Stage 4/5 · TensorRT FP32** (TF32 on) | C++/CUDA | 53.1745 | 17.74 ms (−65.8%) | 66.43 images/s (3.26×, S3) | 1.24 GiB | 27/32 passed (ΔPQ −0.0117) |
+| **Stage 4/5 · Full mixed precision** (TF32 on) | C++/CUDA | 53.1680 | 16.45 ms (−68.3%) | 74.35 images/s (3.65×, S2) | 1.15 GiB | 16/32 passed (ΔPQ −0.0182) |
+| **Stage 6 · Targeted FPN FP16** (accepted) | C++/CUDA | 53.1718 | 15.85 ms (−69.5%) | 76.24 images/s (3.74×, S2) | 1.15 GiB | **32/32 passed** (vs. mixed control) |
+| **Stage 6 · FPN + 6-layer FFN FP16** (experimental) | C++/CUDA | **53.1856** | **13.90 ms** (−73.2%) | **89.02 images/s** (4.37×, S2) | **1.08 GiB** | 26/32 passed (ΔPQ −0.0006, vs. FPN) |
 
-| Model / engine | Full COCO PQ | Single-slot end-to-end P95 ↓ | Full-run offline throughput ↑ | Accuracy loss |
-| --- | ---: | ---: | ---: | --- |
-| PyTorch FP32 baseline (TF32 off) | 53.1863 | 51.93 ms | 20.38 images/s (single pipeline) | Baseline |
-| TensorRT FP32 (TF32 off) | 53.1863 | **23.63 ms** (28.30 ms / 54.5% lower) | **53.36 images/s** (2.62×, S3) | Same PQ to four decimal places, 32/32 images passed |
-| TensorRT FP32 (TF32 on) | 53.1745 | **17.74 ms** (34.19 ms / 65.8% lower) | **66.43 images/s** (3.26×, S3) | PQ down 0.0117 points, 27/32 images passed |
-| TensorRT FP16 mixed precision (TF32 on) | 53.1680 | **16.45 ms** (35.48 ms / 68.3% lower) | **74.35 images/s** (3.65×, S2) | PQ down 0.0182 points, 16/32 images passed, lowest category agreement 91.63% |
-| Stage 6 · FPN + Encoder FFN FP16 (TF32 on) | **53.1856** | **13.90 ms** (38.03 ms / 73.2% lower) | **89.02 images/s** (4.37×, S2) | PQ down 0.0006 points, 26/32 images passed against the accepted FPN engine, lowest category agreement 85.68% |
+**Measurement scope.** The table uses archived results from the RTX 4090 at 1024×1024 and B1. In Stages 2–4, single-slot P95 spans the start of processing an in-memory JPEG to the availability of the CPU segmentation map and segment metadata; Stages 5–6 start timing at dispatch to a slot (covering full processing plus slot dispatch overhead). Throughput divides the number of images completed after warmup by full-run wall-clock time, using Stage 2/3 single-pipeline runs, the peak from the Stage 5 S1–S4 offline screen, and Stage 6 B1/S2 results. The VRAM column reports B1/S1 peak inference-process memory sampled by PID via NVML (Stage 3 process VRAM comes from the Stage 4 same-session rerun; see [Stage 5](#peak-process-gpu-memory-1) and [Stage 6](#stage-6--profile-and-further-optimize-tensorrt-layers) for multi-slot VRAM).
 
-
-
-**Measurement scope.** The table uses archived results from the RTX 4090 at 1024×1024 and B1. For PyTorch and Stage 4 single-slot runs, P95 spans the start of processing an in-memory JPEG to the availability of the CPU segmentation map and segment metadata. Stage 6 starts timing at dispatch to a slot. Throughput divides the number of images completed after warmup by full-run wall-clock time. The table uses Stage 2 single-pipeline throughput, the peak from the Stage 5 S1–S4 offline screen, and Stage 6 B1/S2 results.
-
-**Accuracy reference.** Full PQ uses PyTorch FP32 B1 with identical letterbox inputs as the baseline and covers all 5,000 images in COCO val2017. The TensorRT precision policy pass counts come from the 32-image checks against PyTorch in Stage 3. Stage 6 FFN's **26/32** comes from a 32-image check against the accepted FPN engine. See [Stage 3](#stage-3--convert-the-network-to-tensorrt) and [Stage 6](#stage-6--profile-and-further-optimize-tensorrt-layers).
+**Accuracy reference.** Full PQ uses PyTorch FP32 B1 with identical letterbox inputs (53.186252) as the baseline across all 5,000 images in COCO val2017. In Stages 3–5, per-image pass counts are measured against PyTorch FP32 (native C++/CUDA outputs match same-engine Python outputs 32/32 pixel-for-pixel). In Stage 6, FPN and FFN per-image checks are measured against the shared-cache mixed-precision control engine and the accepted FPN engine, respectively. See [Stage 3](#stage-3--convert-the-network-to-tensorrt) and [Stage 6](#stage-6--profile-and-further-optimize-tensorrt-layers).
 
 ## Technical Roadmap
 
