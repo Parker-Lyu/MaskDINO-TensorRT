@@ -31,14 +31,14 @@ The reference environment uses an RTX 4090, driver 595.84, CUDA 13.0, and PyTorc
 | 32-image numerical validation, B1/B2/B4/B8 | `7b0decc6145fbac5508b8f8e6cb0cdc0173ee324` |
 | 640/800/1024 full PQ, B1 rerun, and B1/B4 performance comparison at 800/1024 | `7d8788b99327dd359b2cad29d8ae14141660d8da` |
 | Follow-up 1024 B2/B8 benchmarks | `1f96771234baefb607dceb61092fa6474fd17123` |
-| Results archive, plotting data, and aggregation scripts | `stage2-pytorch-square` |
+| Results archive, plotting data, and aggregation scripts | `9e9cb4734baa2b891ec8953e71f9f91dfe1373cf` |
 
 Run the following commands from the repository root, then run the experiment blocks in order in the same Bash session. Set absolute paths to existing data and weights. Add a timestamp to `MASKDINO_RUN_ID` to avoid collisions with existing result directories.
 
 ```bash
 repo=$(git rev-parse --show-toplevel)
 run_stamp=$(date -u +%Y%m%dT%H%M%SZ)
-git worktree add --detach "${repo}-stage2-repro-${run_stamp}" stage2-pytorch-square
+git worktree add --detach "${repo}-stage2-repro-${run_stamp}" 9e9cb4734baa2b891ec8953e71f9f91dfe1373cf
 cd "${repo}-stage2-repro-${run_stamp}"
 
 data=/absolute/path/to/coco2017-panoptic-val
@@ -109,10 +109,10 @@ done
 
 ### 5. Aggregation
 
-The aggregation script is in the acceptance tag. Check out that tag to summarize the runs. Outputs in `stage2/runs/` remain available.
+Switch to the results archive commit to run the aggregation script on the outputs in `stage2/runs/`.
 
 ```bash
-git switch --detach stage2-pytorch-square
+git switch --detach 9e9cb4734baa2b891ec8953e71f9f91dfe1373cf
 python3 stage2/summarize_benchmark.py stage2/runs/perf-"${run_stamp}"-r*/benchmark/*/result.json
 python3 stage2/summarize_benchmark.py stage2/runs/batch-"${run_stamp}"-r*/benchmark/*/result.json
 python3 stage2/summarize_benchmark.py --prefix-images 496 \

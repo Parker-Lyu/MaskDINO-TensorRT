@@ -133,4 +133,4 @@ done
 python3 -m stage5.trace_plot /tmp/b1s1.sqlite /tmp/b1s3.sqlite stage5/results/nsight-slot-overlap.svg
 ```
 
-The 500-image screen, sustained benchmark, PQ evaluation, and traces use results from before the stage split. The relevant run commits are listed in each section. See the [acceptance tag `stage5-batch-slots-accepted`](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/stage5-batch-slots-accepted/stage5) for historical entry points, logs, and layout.
+The 500-image screen, sustained benchmark, PQ evaluation, and traces use results from before the stage split. The relevant run commits are listed in each section. See the [archived Stage 5 snapshot](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/26978c397f28df804d986de76743b50f6e3987d7/stage5) for historical entry points, logs, and layout.

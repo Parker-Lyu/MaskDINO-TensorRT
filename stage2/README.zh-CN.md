@@ -31,14 +31,14 @@ Stage 1 官方输入采用短边 800、长边上限 1333。两阶段的 PQ 差�
 | 32 张数值验证、B1/B2/B4/B8 | `7b0decc6145fbac5508b8f8e6cb0cdc0173ee324` |
 | 640/800/1024 全量 PQ、B1 复跑、800/1024 的 B1/B4 性能对照 | `7d8788b99327dd359b2cad29d8ae14141660d8da` |
 | 1024 的 B2/B8 性能补测 | `1f96771234baefb607dceb61092fa6474fd17123` |
-| 结果归档、绘图数据与统计脚本 | `stage2-pytorch-square` |
+| 结果归档、绘图数据与统计脚本 | `9e9cb4734baa2b891ec8953e71f9f91dfe1373cf` |
 
 在仓库根目录执行以下命令，再在同一个 Bash 会话依次运行各实验块。填写现有数据和权重的绝对路径。`MASKDINO_RUN_ID` 加上时间戳，避免与已有结果目录冲突。
 
 ```bash
 repo=$(git rev-parse --show-toplevel)
 run_stamp=$(date -u +%Y%m%dT%H%M%SZ)
-git worktree add --detach "${repo}-stage2-repro-${run_stamp}" stage2-pytorch-square
+git worktree add --detach "${repo}-stage2-repro-${run_stamp}" 9e9cb4734baa2b891ec8953e71f9f91dfe1373cf
 cd "${repo}-stage2-repro-${run_stamp}"
 
 data=/absolute/path/to/coco2017-panoptic-val
@@ -109,10 +109,10 @@ done
 
 ### 5. 汇总
 
-统计脚本位于验收 tag 中。切回该 tag 后汇总各次运行，`stage2/runs/` 中的输出可继续读取。
+切换到结果归档提交，再用统计脚本汇总 `stage2/runs/` 中的输出。
 
 ```bash
-git switch --detach stage2-pytorch-square
+git switch --detach 9e9cb4734baa2b891ec8953e71f9f91dfe1373cf
 python3 stage2/summarize_benchmark.py stage2/runs/perf-"${run_stamp}"-r*/benchmark/*/result.json
 python3 stage2/summarize_benchmark.py stage2/runs/batch-"${run_stamp}"-r*/benchmark/*/result.json
 python3 stage2/summarize_benchmark.py --prefix-images 496 \

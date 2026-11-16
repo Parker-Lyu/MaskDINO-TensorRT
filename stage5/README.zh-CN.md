@@ -133,4 +133,4 @@ done
 python3 -m stage5.trace_plot /tmp/b1s1.sqlite /tmp/b1s3.sqlite stage5/results/nsight-slot-overlap.svg
 ```
 
-500 张筛选、长测、PQ 和 trace 沿用拆分前的结果，正式提交分别见各节。历史实验入口、日志与原始布局见 [验收 tag `stage5-batch-slots-accepted`](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/stage5-batch-slots-accepted/stage5)。
+500 张筛选、长测、PQ 和 trace 沿用拆分前的结果，正式提交分别见各节。历史实验入口、日志与原始布局见 [Stage 5 归档提交](https://github.com/Parker-Lyu/MaskDINO-TensorRT/tree/26978c397f28df804d986de76743b50f6e3987d7/stage5)。
